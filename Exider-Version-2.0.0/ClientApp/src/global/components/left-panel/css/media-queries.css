@@ -1,0 +1,43 @@
+@media (max-width: 1350px) {
+    
+    .left-panel {
+
+        width: 81px;
+
+    }
+
+    .progress-bar {
+
+        height: calc(70% - 40px);
+        width: 4px;
+        margin-bottom: 40px;
+
+    }
+
+    .line {
+
+        width: 4px;
+        height: var(--space-occupied);
+        margin-top: auto;
+
+    }
+
+    .button:hover {
+        
+        transform: scale(102%);
+
+    }
+
+    .button:active {
+        
+        transform: scale(95%);
+
+    }
+
+    .button nav {
+
+        display: none;
+
+    }
+
+}

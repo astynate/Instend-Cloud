@@ -26,7 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ClientApp\global\" />
+    <Folder Include="ClientApp\src\global\components\header\" />
+    <Folder Include="ClientApp\src\global\components\left-panel\css\" />
+    <Folder Include="ClientApp\src\global\components\left-panel\images\" />
+    <Folder Include="ClientApp\src\global\css\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
