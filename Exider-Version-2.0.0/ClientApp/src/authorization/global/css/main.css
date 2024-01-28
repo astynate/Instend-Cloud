@@ -1,0 +1,54 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.light {
+    --main-border-color: rgba(0, 0, 0, 0.1);
+    --main-background-color: rgb(255, 255, 255);
+    --main-button-color: black;
+    --main-accent-color: #f5f5f5;
+    --main-logo-filter: invert(0%);
+    --main-footer-background: #fbfbfd;
+    --main-button-font-color: white;
+    --main-placeholder-color: #aaa;
+    --main-input-color: black;
+    --active-indicator-color: black;
+}
+
+.dark {
+    --main-border-color: rgba(255, 255, 255, 0.1);
+    --main-background-color: rgb(0, 0, 0);
+    --main-button-color: white;
+    --main-accent-color: #121213;
+    --main-logo-filter: invert(100%);
+    --main-footer-background: black;
+    --main-button-font-color: rgb(0, 0, 0);
+    --main-placeholder-color: #777;
+    --main-input-color: white;
+    --active-indicator-color: white;
+}
+
+body {
+    height: 100vh;
+    width: 100vw;
+    background: var(--main-background-color);
+    overflow-y: hidden;
+    overflow-x: hidden;
+    transition: 0.75s ease;
+    font-family: 'Open Sans', sans-serif;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    transition: 0.4s ease;
+    background: var(--main-background-color);
+}

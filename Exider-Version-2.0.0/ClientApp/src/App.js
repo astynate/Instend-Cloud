@@ -1,13 +1,18 @@
-import React, { Component } from 'react';
+import React, { Component, useLayoutEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import AppRoutes from './AppRoutes';
 import Layout from './global/components/layout/Layout';
+import Authorization from './authorization/Authorization';
 
-export default class App extends Component {
 
-    render() {
+const App = () => {
 
-        return (
+    let [isAuthenticated, setisAuthenticated] = useState(false);
+
+    return (
+
+        isAuthenticated ?
+
             <Layout>
                 <Routes>
                     {AppRoutes.map((route, index) => {
@@ -16,8 +21,11 @@ export default class App extends Component {
                     })}
                 </Routes>
             </Layout>
-        );
 
-    }
+        : <Authorization />
 
-}
+    );
+
+};
+
+export default App;
