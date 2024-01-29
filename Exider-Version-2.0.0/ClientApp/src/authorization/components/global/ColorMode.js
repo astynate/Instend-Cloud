@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
-import light from '../images/light.png';
-import dark from '../images/dark.png';
+import light from '../../global/images/light.png';
+import dark from '../../global/images/dark.png';
 
 const ColorMode = () => {
 
@@ -20,14 +20,15 @@ const ColorMode = () => {
     };
 
     useEffect(() => {
-        if (!mode) {
-            localStorage.setItem('color-mode', 'light');
-        }
-    }, [mode]);
+
+        document.querySelector('#root')
+            .className = mode;
+
+    }, []);
 
     return (
         <div className="color-mode" onClick={toggleColorMode}>
-            <img src={imagePath} alt="Color Mode" />
+            <img src={imagePath} alt="Color Mode" draggable="false" />
         </div>
     );
 

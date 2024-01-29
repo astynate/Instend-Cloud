@@ -27,10 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ClientApp\src\authorization\components\fields\simple\" />
-    <Folder Include="ClientApp\src\authorization\components\fields\password\" />
-    <Folder Include="ClientApp\src\authorization\components\fields\divided\" />
-    <Folder Include="ClientApp\src\authorization\components\fields\" />
     <Folder Include="ClientApp\src\global\components\header\" />
     <Folder Include="ClientApp\src\global\components\left-panel\css\" />
     <Folder Include="ClientApp\src\global\components\left-panel\images\" />

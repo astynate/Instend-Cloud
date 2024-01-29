@@ -13,7 +13,7 @@
 
 .form {
     height: auto;
-    width: auto;
+    width: var(--form-width);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -32,6 +32,14 @@ form {
     width: 160px;
     transition: 1.25s ease;
     filter: var(--main-logo-filter);
+}
+.divided {
+
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 5px;
+
 }
 .color-mode {
     height: 60px;

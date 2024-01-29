@@ -38,7 +38,7 @@ body {
     background: var(--main-background-color);
     overflow-y: hidden;
     overflow-x: hidden;
-    transition: 0.75s ease;
+    /*transition: 0.75s ease;*/
     font-family: 'Open Sans', sans-serif;
 }
 
@@ -49,6 +49,6 @@ body {
     width: 100vw;
     overflow-y: hidden;
     overflow-x: hidden;
-    transition: 0.4s ease;
+    transition: 0.1s ease;
     background: var(--main-background-color);
 }

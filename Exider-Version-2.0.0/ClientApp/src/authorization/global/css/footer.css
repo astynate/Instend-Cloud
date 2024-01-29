@@ -7,7 +7,7 @@
     grid-template-columns: 1fr 500px 1fr;
     border-top: 1px solid var(--main-border-color);
     user-select: none;
-    transition: 0.3s ease;
+    transition: 0.1s ease;
     background: var(--main-footer-background);
 }
 
@@ -37,6 +37,12 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     position: relative;
+}
+
+.center a:hover {
+
+    color: #aaa;
+
 }
 
 .navigation-button {
