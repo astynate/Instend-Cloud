@@ -1,6 +1,16 @@
+using Exider_Version_2._0._0.ServerApp.Configuration;
+using Exider_Version_2._0._0.ServerApp.Dependencies;
+using Exider_Version_2._0._0.ServerApp.Repositories;
+using Exider_Version_2._0._0.ServerApp.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<DatabaseContext>();
+builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+builder.Services.AddScoped<ITokenService, JwtService>();
+//builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 
@@ -12,7 +22,6 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-
 
 app.MapControllerRoute(
     name: "default",

@@ -4,7 +4,7 @@ import './main.css';
 import hidden from './images/hidden.png';
 import show from './images/show.png';
 
-const PasswordField = () => {
+const PasswordField = (props) => {
 
     let [passwordVisibility, setPasswordVisibility] = useState(false);
 
@@ -15,6 +15,8 @@ const PasswordField = () => {
             <input
                 type={passwordVisibility ? "text" : "password"}
                 name="password"
+                value={props.value}
+                onChange={props.onChange}
                 placeholder="Password"
                 maxLength="40" />
 

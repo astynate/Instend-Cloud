@@ -9,6 +9,7 @@
     justify-content: center;
     align-items: center;
     user-select: none;
+    animation: content_in 1s ease;
 }
 
 .form {
@@ -17,28 +18,23 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    grid-gap: 10px;
     align-items: center;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-    grid-gap: 7px;
-    justify-content: center;
-}
-
 .logo {
-    height: 160px;
-    width: 160px;
+    height: 170px;
+    width: 170px;
     transition: 1.25s ease;
     filter: var(--main-logo-filter);
+    /*margin-bottom: 10px;*/
 }
 .divided {
 
     width: 100%;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-gap: 5px;
+    grid-gap: 10px;
 
 }
 .color-mode {
@@ -70,3 +66,19 @@ form {
     .color-mode:active {
         transform: scale(95%);
     }
+
+@keyframes content_in {
+
+    0% {
+
+        opacity: 0;
+
+    }
+
+    100% {
+
+        opacity: 1;
+
+    }
+
+}

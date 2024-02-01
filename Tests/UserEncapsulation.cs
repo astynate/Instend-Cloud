@@ -1,4 +1,5 @@
 using Exider_Version_2._0._0.ServerApp.Models;
+using Exider_Version_2._0._0.ServerApp.Services;
 
 namespace Tests
 {
@@ -6,14 +7,15 @@ namespace Tests
     public class UserEncapsulation
     {
 
-        private static UserModel? _user = new UserModel()
-        {
-            Name = "Test",
-            Surname = "Test",
-            Nickname = "Test",
-            Password = "Test",
-            Email = "sicome.a.s@gmail.com",
-        };
+        private static UserModel? _user = new UserModel(
+
+            "Name",
+            "Surname",
+            "Nickname",
+            "example@gmail.com",
+            "123123123"
+
+        );
 
         private delegate void UserDelegate();
 
@@ -30,12 +32,12 @@ namespace Tests
 
             Assert.ThrowsException<ArgumentNullException>
                 (() => SetNullableName());
-            //Assert.ThrowsException<ArgumentNullException>
-            //    (() => SetNullableSurname());
-            //Assert.ThrowsException<ArgumentNullException>
-            //    (() => SetNullableNickname());
-            //Assert.ThrowsException<ArgumentNullException>
-            //    (() => SetNullablePassword());
+            Assert.ThrowsException<ArgumentNullException>
+                (() => SetNullableSurname());
+            Assert.ThrowsException<ArgumentNullException>
+                (() => SetNullableNickname());
+            Assert.ThrowsException<ArgumentException>
+                (() => SetNullablePassword());
 
         }
 
@@ -58,5 +60,17 @@ namespace Tests
 
         }
 
+        [TestMethod]
+        public void TestIdEncryption()
+        {
+
+            uint privateId = EncryptionService
+                .DecryptPublicIdToPrivate(_user.PublicId);
+
+            Assert.AreEqual(privateId, (uint)0);
+
+        }
+
     }
+
 }

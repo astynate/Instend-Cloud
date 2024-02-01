@@ -7,7 +7,7 @@ const CheckBox = (props) => {
         <>
             <div className="check-box">
                 <input type="checkbox" id="remember-me" />
-                <label for="remember-me">{props.name}</label>
+                <label htmlFor="remember-me">{props.name}</label>
             </div>
         </>
 

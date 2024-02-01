@@ -9,7 +9,7 @@ const SubmitButton = (props) => {
                 value={props.value}
                 className="button"
                 id={props.isDisabled ? 'passive' : 'active'}
-                disabled={props.isDisabled ? true : false}
+                onClick={props.onClick}
             >
                 {props.value}
 

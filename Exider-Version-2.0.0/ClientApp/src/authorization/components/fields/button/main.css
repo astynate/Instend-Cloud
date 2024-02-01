@@ -16,21 +16,17 @@
     transition: 0.1s ease;
 }
 
-    .button:hover {
-        transform: none;
-    }
-
     .button[id="active"]:hover {
         cursor: pointer;
         transform: scale(100.5%);
     }
 
-    .button[id="active"]:active {
-        cursor: pointer;
-        transform: scale(98%);
-    }
-
     .button:hover {
         cursor: not-allowed;
         background: var(--main-button-color);
+        transform: none;
+    }
+
+    .button:active {
+        transform: scale(98%);
     }
