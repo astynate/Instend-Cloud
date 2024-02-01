@@ -3,8 +3,9 @@ using System.Net;
 using Exider_Version_2._0._0.ServerApp.Configuration;
 using Exider_Version_2._0._0.ServerApp.Models;
 using Exider_Version_2._0._0.ServerApp.Dependencies;
+using Exider.Services.Internal;
 
-namespace Exider_Version_2._0._0.ServerApp.Services
+namespace Exider.Services.Services.EmailService
 {
 
     public class EmailService : IEmailService

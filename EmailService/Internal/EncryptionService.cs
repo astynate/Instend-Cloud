@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Exider_Version_2._0._0.ServerApp.Services
+namespace Exider.Services.Internal
 {
 
     public static class EncryptionService

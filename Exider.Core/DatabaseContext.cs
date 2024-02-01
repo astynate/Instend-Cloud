@@ -13,7 +13,7 @@ namespace Exider_Version_2._0._0.ServerApp.Configuration
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySql(Options.mySqlConnectionString,
+            optionsBuilder.UseMySql(Configuration.mySqlConnectionString,
                 new MySqlServerVersion(new Version(8, 3, 0)));
         }
 

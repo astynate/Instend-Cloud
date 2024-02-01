@@ -4,7 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Exider_Version_2._0._0.ServerApp.Services
+namespace Exider.Services.Internal
 {
     public class JwtService : ITokenService
     {
