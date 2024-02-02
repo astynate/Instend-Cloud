@@ -7,11 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="External\EmailService\Emails\css\**" />
+    <EmbeddedResource Remove="External\EmailService\Emails\css\**" />
+    <None Remove="External\EmailService\Emails\css\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.3.0" />
+    <PackageReference Include="System.Threading" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Exider.Core\Exider.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="External\EmailService\Emails\images\" />
   </ItemGroup>
 
 </Project>
