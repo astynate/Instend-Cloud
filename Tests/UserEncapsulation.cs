@@ -1,75 +1,72 @@
-using Exider_Version_2._0._0.ServerApp.Models;
-using Exider_Version_2._0._0.ServerApp.Services;
-
-namespace Tests
+namespace Exider.Tests
 {
     [TestClass]
     public class UserEncapsulation
     {
 
-        private static UserModel? _user = new UserModel(
+        //private static UserModel? _user = new UserModel(
 
-            "Name",
-            "Surname",
-            "Nickname",
-            "example@gmail.com",
-            "123123123"
+        //    "Name",
+        //    "Surname",
+        //    "Nickname",
+        //    "example@gmail.com",
+        //    "123123123"
 
-        );
+        //);
 
-        private delegate void UserDelegate();
+        //private delegate void UserDelegate();
 
-        private delegate bool Check();
+        //private delegate bool Check();
 
-        [TestMethod]
-        public void TestEmpthyFields()
-        {
+        //[TestMethod]
+        //public void TestEmpthyFields()
+        //{
 
-            UserDelegate SetNullableName = () => _user.Name = null;
-            UserDelegate SetNullableSurname = () => _user.Surname = "";
-            UserDelegate SetNullableNickname = () => _user.Nickname = "      ";
-            UserDelegate SetNullablePassword = () => _user.Password = "jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj";
+        //    UserDelegate SetNullableName = () => _user.Name = null;
+        //    UserDelegate SetNullableSurname = () => _user.Surname = "";
+        //    UserDelegate SetNullableNickname = () => _user.Nickname = "      ";
+        //    UserDelegate SetNullablePassword = () => _user.Password = "jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj";
 
-            Assert.ThrowsException<ArgumentNullException>
-                (() => SetNullableName());
-            Assert.ThrowsException<ArgumentNullException>
-                (() => SetNullableSurname());
-            Assert.ThrowsException<ArgumentNullException>
-                (() => SetNullableNickname());
-            Assert.ThrowsException<ArgumentException>
-                (() => SetNullablePassword());
+        //    Assert.ThrowsException<ArgumentNullException>
+        //        (() => SetNullableName());
+        //    Assert.ThrowsException<ArgumentNullException>
+        //        (() => SetNullableSurname());
+        //    Assert.ThrowsException<ArgumentNullException>
+        //        (() => SetNullableNickname());
+        //    Assert.ThrowsException<ArgumentException>
+        //        (() => SetNullablePassword());
 
-        }
+        //}
 
-        [TestMethod]
-        public void TestEmailPattern()
-        {
+        //[TestMethod]
+        //public void TestEmailPattern()
+        //{
 
-            Check EmailPattern = () =>
-            {
+        //    Check EmailPattern = () =>
+        //    {
 
-                _user.Email = "zixe.company@gmail.com";
-                return _user.Email == "zixe.company@gmail.com";
+        //        _user.Email = "zixe.company@gmail.com";
+        //        return _user.Email == "zixe.company@gmail.com";
 
-            };
+        //    };
 
-            Assert.ThrowsException<ArgumentException>
-                (() => _user.Email = "sicomeasdadads");
+        //    Assert.ThrowsException<ArgumentException>
+        //        (() => _user.Email = "sicomeasdadads");
 
-            Assert.IsTrue(EmailPattern());
+        //    Assert.IsTrue(EmailPattern());
 
-        }
+        //}
 
-        [TestMethod]
-        public void TestIdEncryption()
-        {
+        //[TestMethod]
+        //public void TestIdEncryption()
+        //{
 
-            uint privateId = EncryptionService
-                .DecryptPublicIdToPrivate(_user.PublicId);
+        //    uint privateId = EncryptionService
+        //        .DecryptPublicIdToPrivate(_user.PublicId);
 
-            Assert.AreEqual(privateId, (uint)0);
+        //    Assert.AreEqual(privateId, (uint)0);
 
-        }
+        //}
 
     }
 

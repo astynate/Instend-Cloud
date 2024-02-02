@@ -1,6 +1,6 @@
-﻿namespace Exider_Version_2._0._0.ServerApp.Configuration
+﻿namespace Exider.Core
 {
-    public static class Options
+    public static class Configuration
     {
 
         public static readonly string mySqlConnectionString = "server=localhost;user=root;password=47188475;database=async_storage";

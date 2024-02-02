@@ -1,15 +1,15 @@
-﻿using Exider_Version_2._0._0.ServerApp.Configuration;
-using Exider_Version_2._0._0.ServerApp.Models;
+﻿using Exider.Core;
+using Exider.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Exider_Version_2._0._0.ServerApp.Repositories
+namespace Exider.Repositories
 {
-    public class SessionRepository
+    public class SessionsRepository
     {
 
         private readonly DatabaseContext _context = null!;
 
-        public SessionRepository(DatabaseContext context)
+        public SessionsRepository(DatabaseContext context)
         {
             _context = context;
         }
@@ -30,7 +30,6 @@ namespace Exider_Version_2._0._0.ServerApp.Repositories
 
         }
 
-
         public async Task<SessionModel> GetSessionByTokenAndUserId(uint userId, string token)
         {
 
@@ -50,7 +49,7 @@ namespace Exider_Version_2._0._0.ServerApp.Repositories
 
             List<SessionModel> userSessions = await GetSessionsByUserId(session._userId);
 
-            if (userSessions != null && userSessions.Count >= 5) 
+            if (userSessions != null && userSessions.Count >= 5)
             {
                 _context.Sessions.RemoveRange(userSessions[0]);
                 await _context.SaveChangesAsync();

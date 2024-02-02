@@ -1,10 +1,9 @@
-﻿using Exider_Version_2._0._0.ServerApp.Services;
-using Exider_Version_2._0._0.ServerApp.TransferObjects;
-using Newtonsoft.Json;
+﻿using Exider.Core.TransferModels;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
-namespace Exider_Version_2._0._0.ServerApp.Models
+namespace Exider.Core.Models
 {
     public class UserModel
     {
@@ -41,43 +40,37 @@ namespace Exider_Version_2._0._0.ServerApp.Models
         [NotMapped]
         public string PublicId
         {
-            get => EncryptionService
-                .GeneratePublicIdFromPrivate(id);
+            get => id.ToString();
         }
 
         public string Name
         {
             get => name;
-            set => name = ValidationService
-                .ValidateVarchar(value, 45);
+            set => name = value;
         }
 
         public string Surname
         {
             get => surname;
-            set => surname = ValidationService
-                .ValidateVarchar(value, 45);
+            set => surname = value;
         }
 
         public string Nickname
         {
             get => nickname;
-            set => nickname = ValidationService
-                .ValidateVarchar(value, 45);
+            set => nickname = value;
         }
 
         public string Password
         {
             get => password;
-            set => password = ValidationService
-                .ValidateVarchar(value, 250);
+            set => password = value;
         }
 
         public string Email
         {
             get => email;
-            set => email = ValidationService
-                .ValidateEmail(value);
+            set => email = value;
         }
 
     }

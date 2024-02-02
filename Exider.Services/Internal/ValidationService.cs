@@ -1,39 +1,39 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Exider.Services.Internal
+namespace Exider_Version_2._0._0.ServerApp.Services
 {
     public static class ValidationService
     {
 
         private static string _emailRegularExpression = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
 
-        public static string ValidateVarchar(string field, int maxLength)
+        public static bool ValidateVarchar(string field, int maxLength)
         {
 
             if (string.IsNullOrEmpty(field))
-                throw new ArgumentNullException();
+                return false;
 
             if (string.IsNullOrWhiteSpace(field))
-                throw new ArgumentNullException();
+                return false;
 
             if (field.Length > maxLength)
-                throw new ArgumentException();
+                return false;
 
-            return field;
+            return true;
 
         }
 
-        public static string ValidateEmail(string field)
+        public static bool ValidateEmail(string field)
         {
 
             ValidateVarchar(field, 45);
 
             if (Regex.IsMatch(field, _emailRegularExpression) == false)
             {
-                throw new ArgumentException();
+                return false;
             }
 
-            return field;
+            return true;
 
         }
 

@@ -1,11 +1,10 @@
 ﻿using System.Net.Mail;
 using System.Net;
-using Exider_Version_2._0._0.ServerApp.Configuration;
-using Exider_Version_2._0._0.ServerApp.Models;
-using Exider_Version_2._0._0.ServerApp.Dependencies;
-using Exider.Services.Internal;
+using Exider.Dependencies.Services;
+using Exider.Core;
+using Exider.Core.Models;
 
-namespace Exider.Services.Services.EmailService
+namespace Exider_Version_2._0._0.ServerApp.Services
 {
 
     public class EmailService : IEmailService
@@ -14,7 +13,7 @@ namespace Exider.Services.Services.EmailService
         private async Task SendEmailAsync(string email, string template)
         {
 
-            if (string.IsNullOrEmpty(email))
+            if (ValidationService.ValidateEmail(email) == false)
             {
                 throw new ArgumentNullException(nameof(email));
             }
@@ -24,8 +23,8 @@ namespace Exider.Services.Services.EmailService
                 throw new ArgumentException(nameof(template));
             }
 
-            MailAddress sender = new MailAddress(Options.corporateEmail, "Exider");
-            MailAddress recipient = new MailAddress(ValidationService.ValidateEmail(email));
+            MailAddress sender = new MailAddress(Configuration.corporateEmail, "Exider");
+            MailAddress recipient = new MailAddress(email);
             MailMessage mail = new MailMessage(sender, recipient);
 
             mail.Subject = "Please confirm your email address";
@@ -34,7 +33,7 @@ namespace Exider.Services.Services.EmailService
 
             SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
 
-            smtp.Credentials = new NetworkCredential(Options.corporateEmail, Options.corporatePassword);
+            smtp.Credentials = new NetworkCredential(Configuration.corporateEmail, Configuration.corporatePassword);
             smtp.EnableSsl = true;
 
             await smtp.SendMailAsync(mail);

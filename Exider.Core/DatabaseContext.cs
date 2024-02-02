@@ -1,7 +1,7 @@
-﻿using Exider_Version_2._0._0.ServerApp.Models;
+﻿using Exider.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Exider_Version_2._0._0.ServerApp.Configuration
+namespace Exider.Core
 {
     public class DatabaseContext : DbContext
     {

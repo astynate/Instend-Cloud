@@ -1,6 +1,6 @@
-﻿using Exider_Version_2._0._0.ServerApp.Models;
+﻿using Exider.Core.Models;
 
-namespace Exider_Version_2._0._0.ServerApp.TransferObjects
+namespace Exider.Core.TransferModels
 {
     public class PublicUserModel
     {
@@ -14,14 +14,14 @@ namespace Exider_Version_2._0._0.ServerApp.TransferObjects
         public PublicUserModel(UserModel user)
         {
 
-            id = user.PublicId; 
-            name = user.Name; 
-            surname = user.Surname; 
-            nickname = user.Nickname; 
+            id = user.PublicId;
+            name = user.Name;
+            surname = user.Surname;
+            nickname = user.Nickname;
             email = user.Email;
 
         }
-       
+
     }
 
 }

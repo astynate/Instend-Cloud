@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Exider_Version_2._0._0.ServerApp.Models
+namespace Exider.Core.Models
 {
     public class SessionModel
     {

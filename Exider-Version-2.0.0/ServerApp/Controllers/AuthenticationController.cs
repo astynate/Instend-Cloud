@@ -1,9 +1,9 @@
-﻿using Exider_Version_2._0._0.ServerApp.Configuration;
-using Exider_Version_2._0._0.ServerApp.Dependencies;
-using Exider_Version_2._0._0.ServerApp.Models;
+﻿using Exider.Core;
+using Exider.Core.Models;
+using Exider.Dependencies.Repositories;
+using Exider.Dependencies.Services;
 using Exider_Version_2._0._0.ServerApp.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Exider_Version_2._0._0.ServerApp.Controllers
 {
@@ -43,8 +43,8 @@ namespace Exider_Version_2._0._0.ServerApp.Controllers
 
                 if (user.Email == email && user.Password == EncryptionService.HashUsingSHA256(password))
                 {
-                    string accessToken = _tokenService.GenerateAccessToken(user, 30, Options.testEncryptionKey);
-                    string refreshToken = _tokenService.GenerateRefreshToken(user);
+                    string accessToken = _tokenService.GenerateAccessToken(user.PublicId, 30, Configuration.testEncryptionKey);
+                    string refreshToken = _tokenService.GenerateRefreshToken(user.PublicId);
 
                     return Ok(new string[] { accessToken, refreshToken });
                 }

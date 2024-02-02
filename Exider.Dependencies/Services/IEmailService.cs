@@ -1,6 +1,6 @@
-﻿using Exider_Version_2._0._0.ServerApp.Models;
+﻿using Exider.Core.Models;
 
-namespace Exider_Version_2._0._0.ServerApp.Dependencies
+namespace Exider.Dependencies.Services
 {
     public interface IEmailService
     {

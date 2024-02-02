@@ -1,17 +1,16 @@
-﻿using Exider_Version_2._0._0.ServerApp.Dependencies;
-using Exider_Version_2._0._0.ServerApp.Models;
+﻿using Exider.Dependencies.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Exider.Services.Internal
+namespace Exider_Version_2._0._0.ServerApp.Services
 {
     public class JwtService : ITokenService
     {
-        public string GenerateAccessToken(UserModel user, int time, string key)
+        public string GenerateAccessToken(string id, int time, string key)
         {
 
-            var claims = new List<Claim> { new Claim("sub", user.PublicId.ToString()) };
+            var claims = new List<Claim> { new Claim("sub", id) };
 
             var jwt = new JwtSecurityToken(
 
@@ -27,7 +26,7 @@ namespace Exider.Services.Internal
 
         }
 
-        public string GenerateRefreshToken(UserModel user)
+        public string GenerateRefreshToken(string id)
         {
 
             Random random = new Random();
@@ -35,7 +34,7 @@ namespace Exider.Services.Internal
             string refreshToken = new string(Enumerable.Range(0, 50)
                 .Select(_ => (char)random.Next(48, 123)).Where(char.IsLetterOrDigit).ToArray());
 
-            return user.id.ToString() + refreshToken;
+            return id + refreshToken;
 
         }
 

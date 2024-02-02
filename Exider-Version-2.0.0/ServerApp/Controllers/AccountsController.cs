@@ -1,6 +1,6 @@
-﻿using Exider_Version_2._0._0.ServerApp.Dependencies;
-using Exider_Version_2._0._0.ServerApp.Models;
-using Exider_Version_2._0._0.ServerApp.TransferObjects;
+﻿using Exider.Core.Models;
+using Exider.Core.TransferModels;
+using Exider.Dependencies.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Exider_Version_2._0._0.ServerApp.Controllers

@@ -1,10 +1,10 @@
-﻿using Exider_Version_2._0._0.ServerApp.Configuration;
-using Exider_Version_2._0._0.ServerApp.Dependencies;
-using Exider_Version_2._0._0.ServerApp.Models;
+﻿using Exider.Core;
+using Exider.Core.Models;
+using Exider.Dependencies.Repositories;
 using Exider_Version_2._0._0.ServerApp.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace Exider_Version_2._0._0.ServerApp.Repositories
+namespace Exider.Repositories
 {
     public class UsersRepository : IUsersRepository
     {
@@ -24,7 +24,7 @@ namespace Exider_Version_2._0._0.ServerApp.Repositories
 
             return await _context.Users
                 .AsNoTracking()
-                .FirstOrDefaultAsync(user => user.PublicId == id) 
+                .FirstOrDefaultAsync(user => user.PublicId == id)
                     ?? throw new ArgumentException("User id cannot be empty");
 
         }
@@ -34,7 +34,7 @@ namespace Exider_Version_2._0._0.ServerApp.Repositories
 
             return await _context.Users
                 .AsNoTracking()
-                .FirstOrDefaultAsync(user => user.Email == email) 
+                .FirstOrDefaultAsync(user => user.Email == email)
                     ?? throw new ArgumentException("User email cannot be empty");
 
         }
