@@ -1,6 +1,5 @@
-﻿using Exider.Core.Models;
-using Exider.Core.TransferModels;
-using Exider.Dependencies.Repositories;
+﻿using Exider.Core.TransferModels.Account;
+using Exider_Version_2._0._0.ServerApp.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Exider_Version_2._0._0.ServerApp.Controllers
@@ -11,13 +10,6 @@ namespace Exider_Version_2._0._0.ServerApp.Controllers
     public class AccountsController : ControllerBase
     {
 
-        private readonly IUsersRepository _usersRepository;
-
-        public AccountsController(IUsersRepository usersRepository)
-        {
-            _usersRepository = usersRepository;
-        }
-
         [HttpPost]
         public async Task<ActionResult> CreateAccount([FromBody] UserTransferModel userTransferModel)
         {
@@ -25,14 +17,14 @@ namespace Exider_Version_2._0._0.ServerApp.Controllers
             try
             {
 
-                UserModel user = new UserModel(userTransferModel);
+                //UserModel user = new UserModel(userTransferModel);
 
-                if (user == null)
-                {
-                    throw new ArgumentException(nameof(user));
-                }
+                //if (user == null)
+                //{
+                //    throw new ArgumentException(nameof(user));
+                //}
 
-                await _usersRepository.AddAsync(user);
+                //await _usersRepository.AddAsync(user);
 
             }
 

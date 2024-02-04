@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-
+    <meta name="google" content="notranslate">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
 
@@ -16,24 +14,57 @@
         }
 
         body {
-            display: flex;
-            justify-content: center;
             margin-top: 100px;
             font-family: 'Open Sans', sans-serif;
+            color: black;
+        }
+
+        .m-b {
+
+            margin-bottom: 20px;
+
+        }
+
+        h1 {
+
+            font-size: 28px;
+            color: black;
+
+        }
+
+        h2 {
+
+            color: black;
+
+        }
+
+        h3 {
+
+            font-size: 16px;
+            color: black;
+
         }
 
         .wrapper {
             height: auto;
-            width: 500px;
-            display: flex;
-            grid-gap: 23px;
+            width: 450px;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
             overflow: visible;
-            flex-direction: column;
+        }
+
+        .content-wrapper {
+
+            padding-left: 30px;
+            padding-right: 30px;
+
         }
 
         .logo {
-            height: 80px;
-            width: 80px;
+            height: 70px;
+            width: 70px;
+            margin-bottom: 10px;
             object-fit: contain;
             user-select: none;
         }
@@ -41,6 +72,7 @@
         p {
             text-align: justify;
             font-weight: 500;
+            font-size: 14px;
             color: #515151;
         }
 
@@ -54,49 +86,41 @@
             text-decoration: none;
         }
 
-        button {
+        .button {
             background: #5096ff;
             border-radius: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 17px 40px;
-            cursor: pointer;
+            text-align: center;
+            padding: 15px 45px;
+            width: fit-content;
             user-select: none;
+            font-weight: 600;
+            text-transform: uppercase;
             text-decoration: none;
             color: white;
             outline: none;
             border: none;
             outline: none;
-            font-size: 18px;
+            cursor: pointer;
+            font-size: 14px;
             transition: 0.1s ease;
         }
-
-            button:hover {
-                transform: scale(101%);
-            }
-
-            button:active {
-                transform: scale(99%);
-            }
 
         .code {
             height: auto;
             width: fit-content;
+            text-align: center;
             padding: 10px 20px;
             background: #f3f3f3;
-            display: inline;
+            margin-bottom: 20px;
             border-radius: 10px;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         footer {
-            height: 250px;
-            width: 110%;
-            padding: 4% 5%;
-            transform: translateX(-5%);
-            background: linear-gradient(180deg, #f6f6f6, transparent);
-            border-radius: 15px;
+            height: auto;
+            width: 100%;
+            padding: 20px 30px;
+            background: #f8f8f8;
             color: #bdbdbd;
             user-select: none;
         }
@@ -110,7 +134,6 @@
 
         .links {
             margin-left: auto;
-            grid-gap: 25px;
             display: flex;
         }
 
@@ -128,19 +151,27 @@
         }
 
         .app {
-            height: 30px;
+            height: 25px;
             cursor: pointer;
         }
 
         @media (max-width: 550px) {
 
+            .content-wrapper {
+
+                padding-left: 20px;
+                padding-right: 20px;
+
+            }
+
             .wrapper {
-                width: 85vw;
+                width: 95vw;
             }
 
             footer {
                 padding: none;
                 font-size: 11px;
+                padding: 20px 20px;
             }
 
             .header {
@@ -153,41 +184,58 @@
         }
     </style>
 
+</head>
+<body>
+
     <div class="wrapper">
-        <img src="images/logo.png" alt="logo" class="logo" draggable="false">
-        <h1>Successfully registered</h1>
-        <p>Thank you for choosing to register an account with us. To complete your registration, please <span>follow the link</span> below and enter the <span>confirmation code.</span></p>
-        <a href="#">
-            <button>Confirmation</button>
-        </a>
-        <p>You will be asked to enter <span>this code</span>,<br>
-        Pease <span>do not show</span> it to anyone</p>
-        <div class="code">
-            <h2>F5D7S8</h2>
+        <div class="content-wrapper">
+            <a href="https://exider.com">
+                <img src="https://lh3.googleusercontent.com/u/0/drive-viewer/AEYmBYS-b_pMLiSYlDXWgyda29nFKjnMYUtiWpiwYhqwvDkihZBzsq1RAQGsR9cCBgmo8NOBuyg03EXGrxatGF8bD1mbNB0E0w=w1960-h2358" alt="logo" class="logo" draggable="false" />
+            </a>
+            <h1 class="m-b">Successfully registered</h1>
+            <p class="m-b">Thank you for choosing to register an account with us. To complete your registration, please <span>follow the link</span> below and enter the <span>confirmation code.</span></p>
+            <a href="https://www.youtube.com/" style="width: fit-content; cursor: auto;">
+                <div class="button m-b" style="cursor: pointer;">confirm email</div>
+            </a>
+            <p class="m-b">You will be asked to enter <span>this code</span>,<br>
+            Pease <span>do not show</span> it to anyone</p>
+            <div class="code">
+                <h2>CODE</h2>
+            </div>
+            <p class="m-b">Exider helps you automatically sync files across your devices, share them with friends, and edit them using neural networks</p>
+            <h3 class="m-b">Why did you receive this letter?</h3>
+            <p class="m-b">An attempt was made to register an account using your email. If this is not you, then simply ignore this message and without email confirmation, the account will be automatically deleted after 7 days</p>
         </div>
-        <p>Exider helps you automatically sync files across your devices, share them with friends, and edit them using neural networks</p>
-        <h3>Why did you receive this letter?</h3>
-        <p>An attempt was made to register an account using your email. If this is not you, then simply ignore this message and without email confirmation, the account will be automatically deleted after 7 days</p>
         <footer>
             <div class="header">
-                <p>© Andreev S, Minsk 2024</p>
+                <p style="font-size: 11px;">© Andreev S, Minsk 2024</p>
                 <div class="links">
-                    <a href="#">Terms of use</a>
-                    <a href="#">Privacy policy</a>
-                    <a href="#" id="not-necessary">Report a bug</a>
+                    <a href="#" style="margin-right: 20px; color: #bdbdbd;">Terms of use</a>
+                    <a href="#" style="margin-right: 20px; color: #bdbdbd;">Privacy policy</a>
+                    <a href="#" style="color: #bdbdbd;" id="not-necessary">Report a bug</a>
                 </div>
             </div>
             <div class="content">
                 <div>
-                    <!-- <img src="images/app-store.png" class="app">
-                    <img src="images/google-play.png" class="app"> -->
-                    <h4>Contact us on social networks</h4>
-                    <p style="margin-top: 10px; font-size: 14px; margin-right: 30px;">If you have any suggestions about our service please let us know on social networks</p>
+                    <a href="#">
+                        <img src="https://lh3.google.com/u/0/d/1-LMzx-NaJXtCJfuyrlozf2mOSidgB35e=w2000-h2178-iv1" class="app">
+                    </a>
+                    <a href="#">
+                        <img src="https://lh3.google.com/u/0/d/16axLd8CivfQuwt5MZ03zYNjm3L61YmXq=w2000-h2178-iv1" class="app">
+                    </a>
+                    <h4 style="margin-top: 10px; font-size: 14px;">Contact us on social networks</h4>
+                    <p style="margin-top: 5px; font-size: 12px; margin-right: 30px;">If you have any suggestions about our service please let us know on social networks</p>
                 </div>
                 <div class="links">
-                    <img src="images/facebook.png" class="app">
-                    <img src="images/instagram.png" class="app">
-                    <img src="images/x.png" class="app">
+                    <a href="https://www.facebook.com/profile.php/?id=61553222136930&paipv=0&eav=AfYg6dkHp8U4FG3lqDfucLJeTJhV-2BSs3BHd1zuu6Jv5qQShEmPZRbBFigDzrt5DA4&_rdr">
+                        <img src="https://lh3.google.com/u/0/d/1UdJ7yljnnkA5ksJZ4j-B5g0p0Dca40LY=w2000-h2408-iv1" style="margin-right: 20px;" class="app">
+                    </a>
+                    <a href="https://instagram.com/exider_company">
+                        <img src="https://lh3.google.com/u/0/d/1XMjb8E4Kgw--4yLgg4X-b4m4x2XtBlZg=w2000-h2408-iv1" style="margin-right: 20px;" class="app">
+                    </a>
+                    <a href="https://twitter.com/exider_company">
+                        <img src="https://lh3.google.com/u/0/d/1JMbJYPGBVWsXrAlogCRwte8K352HwwsS=w2000-h2408-iv1" class="app">
+                    </a>
                 </div>
             </div>
         </footer>

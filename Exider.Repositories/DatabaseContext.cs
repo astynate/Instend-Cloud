@@ -1,4 +1,5 @@
-﻿using Exider.Core.Models;
+﻿using Exider.Core.Models.Account;
+using Exider.Core.Models.Email;
 using Microsoft.EntityFrameworkCore;
 
 namespace Exider.Core
@@ -7,13 +8,15 @@ namespace Exider.Core
     {
 
         public DbSet<UserModel> Users { get; set; } = null!;
+        public DbSet<EmailModel> Email { get; set; } = null!;
         public DbSet<SessionModel> Sessions { get; set; } = null!;
+        public DbSet<ConfirmationModel> Confirmations { get; set; } = null!;
 
         public DatabaseContext() => Database.EnsureCreated();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySql(Configuration.mySqlConnectionString,
+            optionsBuilder.UseMySql("server=localhost;user=root;password=47188475;database=async_storage",
                 new MySqlServerVersion(new Version(8, 3, 0)));
         }
 

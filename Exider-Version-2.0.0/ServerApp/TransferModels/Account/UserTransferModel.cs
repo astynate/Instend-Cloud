@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Exider.Core.TransferModels
+namespace Exider.Core.TransferModels.Account
 {
     public record UserTransferModel(
 

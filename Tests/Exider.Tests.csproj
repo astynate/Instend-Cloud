@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Exider.Core\Exider.Core.csproj" />
     <ProjectReference Include="..\Exider.Repositories\Exider.Repositories.csproj" />
+    <ProjectReference Include="..\Exider.Services\Exider.Services.csproj" />
   </ItemGroup>
 
 </Project>

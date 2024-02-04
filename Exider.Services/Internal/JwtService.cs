@@ -7,6 +7,14 @@ namespace Exider_Version_2._0._0.ServerApp.Services
 {
     public class JwtService : ITokenService
     {
+
+        private readonly IEncryptionService _encryptionService;
+
+        public JwtService(IEncryptionService encryptionService)
+        {
+            _encryptionService = encryptionService;
+        }
+
         public string GenerateAccessToken(string id, int time, string key)
         {
 
@@ -18,7 +26,7 @@ namespace Exider_Version_2._0._0.ServerApp.Services
                 audience: "User",
                 claims: claims,
                 expires: DateTime.UtcNow.Add(TimeSpan.FromDays(time)),
-                signingCredentials: new SigningCredentials(EncryptionService.GetSymmetricKey(key), SecurityAlgorithms.HmacSha256)
+                signingCredentials: new SigningCredentials(_encryptionService.GetSymmetricKey(key), SecurityAlgorithms.HmacSha256)
 
             );
 

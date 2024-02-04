@@ -1,7 +1,7 @@
 using Exider.Core;
-using Exider.Dependencies.Repositories;
+using Exider.Core.Dependencies.Repositories.Account;
 using Exider.Dependencies.Services;
-using Exider.Repositories;
+using Exider.Repositories.Repositories;
 using Exider_Version_2._0._0.ServerApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);

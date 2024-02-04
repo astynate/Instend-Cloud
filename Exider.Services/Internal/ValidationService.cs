@@ -2,12 +2,12 @@
 
 namespace Exider_Version_2._0._0.ServerApp.Services
 {
-    public static class ValidationService
+    public class ValidationService : IValidationService
     {
 
-        private static string _emailRegularExpression = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
+        private string _emailRegularExpression = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
 
-        public static bool ValidateVarchar(string field, int maxLength)
+        public bool ValidateVarchar(string field, int maxLength)
         {
 
             if (string.IsNullOrEmpty(field))
@@ -23,12 +23,32 @@ namespace Exider_Version_2._0._0.ServerApp.Services
 
         }
 
-        public static bool ValidateEmail(string field)
+        public bool ValidateEmail(string field)
         {
 
-            ValidateVarchar(field, 45);
+            if (ValidateVarchar(field, 45) == false)
+            {
+                return false;
+            }
 
             if (Regex.IsMatch(field, _emailRegularExpression) == false)
+            {
+                return false;
+            }
+
+            return true;
+
+        }
+
+        public bool ValidatePassword(string field, int minValue, int maxValue)
+        {
+
+            if (ValidateVarchar(field, maxValue) == false)
+            {
+                return false;
+            }
+
+            if (field.Length < minValue)
             {
                 return false;
             }

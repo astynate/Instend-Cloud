@@ -5,12 +5,12 @@ using System.Text;
 namespace Exider_Version_2._0._0.ServerApp.Services
 {
 
-    public static class EncryptionService
+    public class EncryptionService : IEncryptionService
     {
 
-        private static readonly byte[] _key = { 5, 4, 3, 8, 2, 6, 7, 8, 24, 123, 13, 2, 230, 32, 64, 12 };
+        private readonly byte[] _key = { 5, 4, 3, 8, 2, 6, 7, 8, 24, 123, 13, 2, 230, 32, 64, 12 };
 
-        public static string HashUsingSHA256(string password)
+        public string HashUsingSHA256(string password)
         {
             using (SHA256 sha256 = SHA256.Create())
             {
@@ -19,10 +19,10 @@ namespace Exider_Version_2._0._0.ServerApp.Services
             }
         }
 
-        public static SymmetricSecurityKey GetSymmetricKey(string key)
+        public SymmetricSecurityKey GetSymmetricKey(string key)
             => new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
 
-        public static string GeneratePublicIdFromPrivate(uint id)
+        public string GeneratePublicIdFromPrivate(uint id)
         {
 
             using (Aes aesAlg = Aes.Create())
@@ -46,7 +46,7 @@ namespace Exider_Version_2._0._0.ServerApp.Services
 
         }
 
-        public static uint DecryptPublicIdToPrivate(string encryptedId)
+        public uint DecryptPublicIdToPrivate(string encryptedId)
         {
 
             byte[] encryptedBytes = Convert
