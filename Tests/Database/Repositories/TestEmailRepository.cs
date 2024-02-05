@@ -38,12 +38,12 @@ namespace Exider.Tests.Database.Repositories
                 EmailModel emailModel = new EmailModel()
                 {
                     Email = user.Email,
-                    IsConfirmed = 0,
+                    IsConfirmed = false,
                     CreationTime = DateTime.Now,
                     UserId = user.Id,
                 };
 
-                await _emailRepository.AddEmailAsync(emailModel);
+                await _emailRepository.AddAsync(emailModel);
 
                 scope.Complete();
 

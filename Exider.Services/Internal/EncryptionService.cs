@@ -10,6 +10,10 @@ namespace Exider_Version_2._0._0.ServerApp.Services
 
         private readonly byte[] _key = { 5, 4, 3, 8, 2, 6, 7, 8, 24, 123, 13, 2, 230, 32, 64, 12 };
 
+        private readonly char[] _secretCodeValues = { 'A', 'B', 'F', 'C', 'D', 'G', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+
+        private readonly Random _random = new Random();
+
         public string HashUsingSHA256(string password)
         {
             using (SHA256 sha256 = SHA256.Create())
@@ -76,6 +80,21 @@ namespace Exider_Version_2._0._0.ServerApp.Services
             }
 
         }
+
+        public string GenerateRandomString(int length)
+        {
+            return new string(Enumerable.Range(0, length)
+                .Select(_ => (char)_random.Next(48, 123)).ToArray());
+        }
+
+        public string GenerateRandomString(int length, char[] values)
+        {
+            return new string((char[]?)Enumerable.Range(0, length)
+                .Select(_ => values[_random.Next(48, 123)]));
+        }
+
+        public string GenerateSecretCode(int length) 
+            => GenerateRandomString(length, _secretCodeValues);
 
     }
 

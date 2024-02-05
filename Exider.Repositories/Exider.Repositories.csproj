@@ -14,8 +14,4 @@
 	  <ProjectReference Include="..\Exider.Core\Exider.Core.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Email\" />
-	</ItemGroup>
-
 </Project>

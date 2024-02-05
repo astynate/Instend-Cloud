@@ -10,7 +10,7 @@ namespace Exider.Core
         public DbSet<UserModel> Users { get; set; } = null!;
         public DbSet<EmailModel> Email { get; set; } = null!;
         public DbSet<SessionModel> Sessions { get; set; } = null!;
-        public DbSet<ConfirmationModel> Confirmations { get; set; } = null!;
+        public DbSet<ConfirmationModel> Confirmation { get; set; } = null!;
 
         public DatabaseContext() => Database.EnsureCreated();
 

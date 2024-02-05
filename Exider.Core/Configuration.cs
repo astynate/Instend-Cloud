@@ -1,6 +1,4 @@
-﻿using System.Transactions;
-
-namespace Exider.Core
+﻿namespace Exider.Core
 {
     public static class Configuration
     {
@@ -10,6 +8,10 @@ namespace Exider.Core
         public static readonly string corporateEmail = "zixe.company@gmail.com";
 
         public static readonly string corporatePassword = "svgb zokl oqjy jzup";
+
+        public static readonly string URL = "https://localhost:44441/";
+
+        public static readonly int confirmationLifetimeInHours = 7;
 
     }
 

@@ -27,8 +27,9 @@ namespace Exider.Tests.Services
 
             EmailService emailService = new EmailService(new ValidationService());
 
-            await emailService.SendEmailConfirmation("svyat006@icloud.com", "12343434");
-            await emailService.SendEmailConfirmation("sicome.a.s@gmail.com", "12343434");
+            await emailService.SendEmailConfirmation("svyat006@icloud.com", "12343434", "asdasd");
+            await emailService.SendEmailConfirmation("sicome.a.s@gmail.com", "12343434", "asdasd");
+            await emailService.SendEmailConfirmation("andreeva_alesya@inbox.ru", "12343434", "asdasd");
 
         }
 

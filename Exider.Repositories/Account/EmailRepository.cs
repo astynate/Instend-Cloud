@@ -18,7 +18,7 @@ namespace Exider.Repositories.Account
             _validationService = validationService;
         }
 
-        public async Task<EmailModel> GetEmailModelAsync(string email)
+        public async Task<EmailModel> GetAsync(string email)
         {
 
             if (_validationService.ValidateEmail(email) == false)
@@ -38,7 +38,7 @@ namespace Exider.Repositories.Account
 
         }
 
-        public async Task AddEmailAsync(EmailModel emailModel)
+        public async Task AddAsync(EmailModel emailModel)
         {
 
             if (emailModel == null)

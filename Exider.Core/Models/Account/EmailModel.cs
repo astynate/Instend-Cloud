@@ -10,7 +10,7 @@ namespace Exider.Core.Models.Account
 
         [Column("creation_time")] public DateTime CreationTime { get; set; }
 
-        [Column("is_confirmed")] public short IsConfirmed { get; set; }
+        [Column("is_confirmed")] public bool IsConfirmed { get; set; }
 
         [Column("user_id")] public Guid UserId { get; set; }
 

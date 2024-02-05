@@ -4,7 +4,7 @@ namespace Exider.Repositories.Account
 {
     public interface IEmailRepository
     {
-        Task AddEmailAsync(EmailModel emailModel);
-        Task<EmailModel> GetEmailModelAsync(string email);
+        Task AddAsync(EmailModel emailModel);
+        Task<EmailModel> GetAsync(string email);
     }
 }

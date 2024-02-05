@@ -57,6 +57,23 @@ namespace Exider_Version_2._0._0.ServerApp.Services
 
         }
 
+        public bool ValidateVarchar(params string[] args)
+        {
+
+            if (args.Length == 0) 
+                return false;
+
+            foreach (string argument in args)
+            {
+                if (ValidateVarchar(argument, 45) == false)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+
+        }
     }
 
 }

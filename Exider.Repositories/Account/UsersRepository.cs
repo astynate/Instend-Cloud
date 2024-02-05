@@ -1,6 +1,8 @@
 ﻿using Exider.Core;
 using Exider.Core.Dependencies.Repositories.Account;
 using Exider.Core.Models.Account;
+using Exider_Version_2._0._0.ServerApp.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Exider.Repositories.Repositories
 {
@@ -9,45 +11,44 @@ namespace Exider.Repositories.Repositories
 
         private readonly DatabaseContext _context = null!;
 
-        public UsersRepository(DatabaseContext context)
+        private readonly IEncryptionService _encryptionService;
+
+        private readonly IValidationService _validationService;
+
+        public UsersRepository(DatabaseContext context, IEncryptionService encryptionService, IValidationService validationService)
         {
             _context = context;
-        }
-
-        public async Task<UserModel> GetUserByPublicId(string id)
-        {
-
-            //uint privateId = EncryptionService
-            //    .DecryptPublicIdToPrivate(id);
-
-            //return await _context.Users
-            //    .AsNoTracking()
-            //    .FirstOrDefaultAsync(user => user.PublicId == id)
-            //        ?? throw new ArgumentException("User id cannot be empty");
-
-            return null;
-
+            _encryptionService = encryptionService;
+            _validationService = validationService;
         }
 
         public async Task AddAsync(UserModel user)
         {
 
-            //if (user == null)
-            //{
-            //    throw new ArgumentNullException(nameof(user));
-            //}
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
 
-            //user.Password = EncryptionService
-            //    .HashUsingSHA256(user.Password);
+            if (_validationService.ValidateVarchar(user.Name, user.Surname, user.Nickname) == false) 
+                throw new ArgumentNullException("Something went wrong");
 
-            //await _context.Users.AddAsync(user);
-            //await _context.SaveChangesAsync();
+            if (_validationService.ValidateEmail(user.Email) == false)
+                throw new ArgumentNullException(nameof(user.Email));
+
+            if (_validationService.ValidatePassword(user.Password, 8, 45) == false)
+                throw new ArgumentNullException(nameof(user.Email));
+
+            user.Password = _encryptionService.HashUsingSHA256(user.Password);
+
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
 
         }
 
-        public Task<UserModel> GetUserByEmail(string email)
+        public async Task<UserModel> GetUserAsync(string email)
         {
-            throw new NotImplementedException();
+            return await _context.Users.AsNoTracking()
+                .FirstOrDefaultAsync(user => user.Email == email) ??
+                    throw new ArgumentNullException();
         }
     }
 

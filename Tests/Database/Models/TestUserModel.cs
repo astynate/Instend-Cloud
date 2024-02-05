@@ -20,30 +20,6 @@ namespace Exider.Tests.Database.Models
 
         private static readonly DatabaseContext _context = new DatabaseContext();
 
-        private delegate void Delegate();
-
-        private delegate bool Check();
-
-        [TestMethod]
-        public void TestWithIncorrectValues()
-        {
-
-            Delegate SetIncorrectName = () => _user.Name = null;
-            Delegate SetIncorrectSurname = () => _user.Surname = "";
-            Delegate SetIncorrectNickname = () => _user.Nickname = "      ";
-            Delegate SetIncorrectPassword = () => _user.Password = "jjj";
-
-            Assert.ThrowsException<ArgumentException>
-                (() => SetIncorrectName());
-            Assert.ThrowsException<ArgumentException>
-                (() => SetIncorrectSurname());
-            Assert.ThrowsException<ArgumentException>
-                (() => SetIncorrectNickname());
-            Assert.ThrowsException<ArgumentException>
-                (() => SetIncorrectPassword());
-
-        }
-
         [TestMethod]
         public async Task TestSavingModel()
         {
