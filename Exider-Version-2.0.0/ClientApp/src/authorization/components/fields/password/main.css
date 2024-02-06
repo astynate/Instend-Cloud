@@ -1,0 +1,25 @@
+﻿
+.input-button {
+    height: 35px;
+    width: 35px;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 10px;
+    cursor: pointer;
+    border-radius: 10px;
+    opacity: 0.2;
+    padding: 7px;
+    filter: var(--main-logo-filter);
+    transition: 0.15s ease;
+}
+
+    .input-button:hover {
+        background: #dfdfdf;
+        opacity: 0.7;
+        transform: scale(103%);
+    }
+
+    .input-button:active {
+        opacity: 1;
+        transform: scale(95%);
+    }
