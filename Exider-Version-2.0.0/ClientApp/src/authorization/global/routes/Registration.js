@@ -2,7 +2,7 @@
 import TextField from '../../components/fields/text/TextField';
 import SubmitButton from '../../components/fields/button/SubmitButton';
 import ValidationService from '../../services/ValidationService';
-import logo from '../../global/images/logo.svg';
+import logo from '../../global/images/logo.png';
 import { useEffect, useState } from 'react';
 import AlertService from '../../services/AlertService';
 import RegistrationService from '../../services/RegistrationService';
@@ -73,6 +73,7 @@ const Registration = () => {
                 className="logo"
                 draggable="false"
             />
+            <h1>Register in <span>Exider</span></h1>
             <div className="divided">
                 <TextField
                     name="name"

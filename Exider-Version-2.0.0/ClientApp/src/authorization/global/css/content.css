@@ -1,4 +1,14 @@
-﻿.content {
+﻿h1 {
+    font-size: 31px;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+    h1 span {
+        color: #a279fb;
+    }
+
+.content {
     --form-width: 500px;
 }
 
@@ -23,11 +33,12 @@
 }
 
 .logo {
-    height: 170px;
-    width: 170px;
+    height: 100px;
+    width: 100px;
+    margin-bottom: 10px;
+    object-fit: contain;
     transition: 1.25s ease;
     filter: var(--main-logo-filter);
-    /*margin-bottom: 10px;*/
 }
 .divided {
 

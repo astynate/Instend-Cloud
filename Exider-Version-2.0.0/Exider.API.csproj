@@ -30,10 +30,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ClientApp\src\global\components\header\" />
-    <Folder Include="ClientApp\src\global\components\left-panel\css\" />
-    <Folder Include="ClientApp\src\global\components\left-panel\images\" />
-    <Folder Include="ClientApp\src\global\css\" />
+    <Folder Include="ClientApp\src\app\components\header\" />
+    <Folder Include="ClientApp\src\pages\accounts\registration\" />
+    <Folder Include="ClientApp\src\pages\accounts\authorization\" />
+    <Folder Include="ClientApp\src\pages\accounts\confirmation\" />
+    <Folder Include="ClientApp\src\shared\" />
+    <Folder Include="ClientApp\src\entities\" />
+    <Folder Include="ClientApp\src\features\" />
+    <Folder Include="ClientApp\src\widgets\" />
+    <Folder Include="ClientApp\src\processes\" />
   </ItemGroup>
 
   <ItemGroup>
