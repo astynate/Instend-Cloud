@@ -4,10 +4,12 @@ using Exider.Dependencies.Services;
 using Exider.Repositories.Account;
 using Exider.Repositories.Email;
 using Exider.Repositories.Repositories;
+using Exider.Services.Middleware;
 using Exider_Version_2._0._0.ServerApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddTransient<LoggingMiddleware>();
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<DatabaseContext>();
@@ -16,10 +18,10 @@ builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 builder.Services.AddScoped<ISessionsRepository, SessionsRepository>();
 builder.Services.AddScoped<IConfirmationRespository, ConfirmationRespository>();
 
-builder.Services.AddScoped<IValidationService, ValidationService>();
-builder.Services.AddScoped<ITokenService, JwtService>();
-builder.Services.AddScoped<IEncryptionService, EncryptionService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddSingleton<IValidationService, ValidationService>();
+builder.Services.AddSingleton<ITokenService, JwtService>();
+builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
+builder.Services.AddSingleton<IEmailService, EmailService>();
 
 var app = builder.Build();
 
@@ -28,6 +30,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseMiddleware<LoggingMiddleware>();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();

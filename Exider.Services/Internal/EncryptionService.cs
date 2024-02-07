@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -10,7 +11,7 @@ namespace Exider_Version_2._0._0.ServerApp.Services
 
         private readonly byte[] _key = { 5, 4, 3, 8, 2, 6, 7, 8, 24, 123, 13, 2, 230, 32, 64, 12 };
 
-        private readonly char[] _secretCodeValues = { 'A', 'B', 'F', 'C', 'D', 'G', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+        private readonly string _secretCodeValues = "ABDEFGT123456789";
 
         private readonly Random _random = new Random();
 
@@ -25,6 +26,9 @@ namespace Exider_Version_2._0._0.ServerApp.Services
 
         public SymmetricSecurityKey GetSymmetricKey(string key)
             => new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+
+        public string GenerateSecretCode(int length)
+            => GenerateRandomString(length, _secretCodeValues);
 
         public string GeneratePublicIdFromPrivate(uint id)
         {
@@ -87,14 +91,12 @@ namespace Exider_Version_2._0._0.ServerApp.Services
                 .Select(_ => (char)_random.Next(48, 123)).ToArray());
         }
 
-        public string GenerateRandomString(int length, char[] values)
+        public string GenerateRandomString(int length, string values)
         {
-            return new string((char[]?)Enumerable.Range(0, length)
-                .Select(_ => values[_random.Next(48, 123)]));
+            return new string(Enumerable.Range(0, length)
+                .Select(_ => values[_random.Next(0, values.Length)])
+                .ToArray());
         }
-
-        public string GenerateSecretCode(int length) 
-            => GenerateRandomString(length, _secretCodeValues);
 
     }
 

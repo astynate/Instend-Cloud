@@ -17,12 +17,20 @@ namespace Exider_Version_2._0._0.ServerApp.Controllers
     [Route("[controller]")]
     public class AccountsController : ControllerBase
     {
-        private IUsersRepository _usersRepository { get; set; } = null!;
-        private IEmailRepository _emailRepository { get; set; } = null!;
-        private IConfirmationRespository _confirmationRespository { get; set; } = null!;
-        private IEncryptionService _encryptionService { get; set; } = null!;
-        private IEmailService _emailService { get; set; } = null!;
-        private ILogger _logger { get; set; } = null!;
+
+        private readonly IUsersRepository _usersRepository;
+
+        private readonly IEmailRepository _emailRepository;
+
+        private readonly IConfirmationRespository _confirmationRespository;
+
+
+        public AccountsController(IUsersRepository users, IEmailRepository email, IConfirmationRespository confirmation)
+        {
+            _usersRepository = users;
+            _emailRepository = email;
+            _confirmationRespository = confirmation;
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetAccount()
@@ -31,59 +39,38 @@ namespace Exider_Version_2._0._0.ServerApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAccount([FromBody] UserTransferModel userDTO)
+        public async Task<IActionResult> CreateAccount([FromBody] UserModel user, IEmailService emailService, IEncryptionService encryptionService)
         {
-            try
+
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
 
-                using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+                await _usersRepository.AddAsync(user);
+
+                EmailModel email = new EmailModel()
                 {
+                    Email = user.Email,
+                    CreationTime = DateTime.Now,
+                    IsConfirmed = false,
+                    UserId = user.Id
+                };
 
-                    UserModel user = new UserModel()
-                    {
-                        Name = userDTO.name, 
-                        Surname = userDTO.surname,
-                        Nickname = userDTO.nickname,
-                        Email = userDTO.email,
-                        Password = userDTO.password
-                    };
+                await _emailRepository.AddAsync(email);
 
-                    await _usersRepository.AddAsync(user);
+                ConfirmationModel confirmation = new ConfirmationModel()
+                {
+                    Email = user.Email,
+                    Code = encryptionService.GenerateSecretCode(6),
+                    EndTime = DateTime.Now.AddHours(Configuration.confirmationLifetimeInHours),
+                    UserId = user.Id
+                };
 
-                    EmailModel email = new EmailModel()
-                    {
-                        Email = user.Email,
-                        CreationTime = DateTime.Now,
-                        IsConfirmed = false,
-                        UserId = user.Id
-                    };
+                await _confirmationRespository.AddAsync(confirmation);
 
-                    await _emailRepository.AddAsync(email);
+                await emailService.SendEmailConfirmation(user.Email, confirmation.Code,
+                    Configuration.URL + "/accounts/confirmation" + confirmation.Link.ToString());
 
-                    ConfirmationModel confirmation = new ConfirmationModel()
-                    {
-                        Email = user.Email,
-                        Code = _encryptionService.GenerateSecretCode(6),
-                        EndTime = DateTime.Now.AddHours(Configuration.confirmationLifetimeInHours),
-                        UserId = user.Id
-                    };
-
-                    await _confirmationRespository.AddAsync(confirmation);
-
-                    await _emailService.SendEmailConfirmation(user.Email, confirmation.Code,
-                        Configuration.URL + "/accounts/confirmation" + confirmation.Link.ToString());
-
-                    scope.Complete();
-
-                }
-
-            }
-
-            catch (Exception exception)
-            {
-
-                _logger.LogError(exception, "An error occurred while processing the request.");
-                throw;
+                scope.Complete();
 
             }
 

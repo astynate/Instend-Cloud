@@ -9,7 +9,7 @@ namespace Exider_Version_2._0._0.ServerApp.Services
         SymmetricSecurityKey GetSymmetricKey(string key);
         string HashUsingSHA256(string password);
         string GenerateRandomString(int length);
-        string GenerateRandomString(int length, char[] values);
+        string GenerateRandomString(int length, string values);
         string GenerateSecretCode(int length);
     }
 }

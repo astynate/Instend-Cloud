@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exider.Core", "Exider.Core\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exider.Repositories", "Exider.Repositories\Exider.Repositories.csproj", "{B0C8F98C-762A-439B-9770-8CEAEB01277C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exider.Services", "Exider.Services\Exider.Services.csproj", "{6539FA9F-623C-4D0B-97CB-74C060FD9D0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exider.Services", "Exider.Services\Exider.Services.csproj", "{6539FA9F-623C-4D0B-97CB-74C060FD9D0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
