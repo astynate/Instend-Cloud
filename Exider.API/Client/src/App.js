@@ -1,40 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { Route, Routes, useLocation, Navigate } from 'react-router-dom';
-import AppRoutes from './AppRoutes';
-import Layout from './global/components/layout/Layout';
-import Authorization from './authorization/Authorization';
-
+import React, { useState } from 'react';
+import { Route, Redirect, Switch } from 'react-router-dom';
+import Authorization from './services/accounts/layout/Layout';
+import Layout from './services/cloud/layout/Layout';
+import PrivateRoutes from './routes/PrivateRoutes';
+import PublicRoutes from './routes/PublicRoutes';
 
 const App = () => {
 
-    let [isAuthenticated, setIsAuthenticated] = useState(false);
-    let location = useLocation();
-    let authRoutes = ['/login', '/registration', '/confirm'];
-
-    useEffect(() => {
-
-        if (!isAuthenticated && !authRoutes.includes(location.pathname)) {
-
-            window.location.href = '/login';
-
-        }
-
-    }, [isAuthenticated, location]);
+    const [isAuthenticated, setAuthificationParameter] = useState(false);
+    const applicationRoutes = [...PrivateRoutes, ...PublicRoutes];
 
     return (
 
         isAuthenticated ?
 
             <Layout>
-                <Routes>
-                    {AppRoutes.map((route, index) => {
-                        const { element, ...rest } = route;
-                        return <Route key={index} {...rest} element={element} />;
+                <Switch>
+                    {applicationRoutes.map((path, component) => {
+                        <Route path={path} component={component} exact={true} />
                     })}
-                </Routes>
+                    <Redirect to="/home" />
+                </Switch>
             </Layout>
 
-        : <Authorization />
+        :
+
+            <Authorization>
+                <Switch>
+                    {PrivateRoutes.map((path, component) => {
+                        <Route path={path} component={component} exact={true} />
+                    })}
+                    <Redirect to="/accounts/login" />
+                </Switch>
+            </Authorization>
 
     );
 

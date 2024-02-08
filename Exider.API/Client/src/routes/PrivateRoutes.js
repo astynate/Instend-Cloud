@@ -1,4 +1,4 @@
-﻿import Cloud from './routes/cloud/Cloud';
+import Cloud from './routes/cloud/Cloud';
 import Explore from './routes/explore/Explore';
 import Friends from './routes/friends/Friends';
 import Gallery from './routes/gallery/Gallery';
@@ -7,7 +7,7 @@ import Messages from './routes/messages/Messages';
 import Music from './routes/music/Music';
 import Profile from './routes/profile/Profile';
 
-const AppRoutes = [
+const PrivateRoutes = [
     {
         index: true,
         element: <Home />
@@ -42,4 +42,4 @@ const AppRoutes = [
     },
 ];
 
-export default AppRoutes;
+export default PrivateRoutes;

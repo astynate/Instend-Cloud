@@ -24,21 +24,18 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
-    <Compile Remove="Client\src\global\components\header\**" />
     <Content Remove="$(SpaRoot)**" />
-    <Content Remove="Client\src\global\components\header\**" />
-    <EmbeddedResource Remove="Client\src\global\components\header\**" />
     <None Remove="$(SpaRoot)**" />
-    <None Remove="Client\src\global\components\header\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Client\src\global\components\layout\" />
     <Folder Include="Client\src\services\accounts\entities\" />
     <Folder Include="Client\src\services\accounts\features\" />
     <Folder Include="Client\src\services\accounts\layout\" />
-    <Folder Include="Client\src\services\accounts\pages\" />
+    <Folder Include="Client\src\services\accounts\pages\login\" />
+    <Folder Include="Client\src\services\accounts\pages\create\" />
+    <Folder Include="Client\src\services\accounts\pages\confirm\" />
     <Folder Include="Client\src\services\accounts\shared\" />
     <Folder Include="Client\src\services\accounts\widgets\" />
     <Folder Include="Client\src\services\accounts\api\" />
@@ -47,13 +44,6 @@
     <Folder Include="Client\src\services\cloud\features\" />
     <Folder Include="Client\src\services\cloud\widgets\" />
     <Folder Include="Client\src\services\cloud\api\" />
-    <Folder Include="Client\src\services\information\entities\" />
-    <Folder Include="Client\src\services\information\features\" />
-    <Folder Include="Client\src\services\information\layout\" />
-    <Folder Include="Client\src\services\information\pages\" />
-    <Folder Include="Client\src\services\information\shared\" />
-    <Folder Include="Client\src\services\information\widgets\" />
-    <Folder Include="Client\src\services\information\api\" />
   </ItemGroup>
 
   <ItemGroup>
