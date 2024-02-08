@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exider.API", "Exider-Version-2.0.0\Exider.API.csproj", "{906DEEF1-B5C6-4F11-827C-2A7679287E55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exider.API", "Exider.API\Exider.API.csproj", "{906DEEF1-B5C6-4F11-827C-2A7679287E55}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exider.Tests", "Tests\Exider.Tests.csproj", "{D63F63E7-EE7E-4D41-872E-547F38FE3725}"
 EndProject

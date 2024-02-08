@@ -7,7 +7,7 @@ import Authorization from './authorization/Authorization';
 
 const App = () => {
 
-    let [isAuthenticated, setisAuthenticated] = useState(false);
+    let [isAuthenticated, setIsAuthenticated] = useState(false);
     let location = useLocation();
     let authRoutes = ['/login', '/registration', '/confirm'];
 
