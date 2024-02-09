@@ -1,0 +1,52 @@
+﻿.header{
+    top: 0;
+    left: 0;
+    height: 50px;
+    width: auto;
+    display: flex;
+    padding-left: 20vw;
+    padding-right: 20vw;
+    flex-direction: row;
+    background: var(--header-background-color);
+    overflow: hidden;
+    position: sticky;
+    padding-top: 5px;
+    z-index: 9999999;
+    padding-bottom: 5px;
+    transition: 0.5s ease;
+    margin-bottom: 50px;
+    border-bottom: 1px solid var(--main-border-color);
+    backdrop-filter: blur(15px) saturate(75%);
+    -webkit-backdrop-filter: blur(15px) saturate(75%);
+    align-items: center;
+}
+
+.product-logo {
+    display: flex;
+    user-select: none;
+    cursor: pointer;
+}
+
+.company-name {
+    font-weight: 600;
+}
+
+.logo {
+    height: 50px;
+    width: 50px;
+    filter: var(--header-icon-filter);
+}
+
+.product-name {
+    font-size: 18px;
+    color: var(--main-font-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.links {
+    display: flex;
+    margin-left: auto;
+    grid-gap: 30px;
+}

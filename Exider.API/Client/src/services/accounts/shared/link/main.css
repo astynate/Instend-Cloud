@@ -1,0 +1,17 @@
+﻿.link {
+    display: flex;
+    grid-gap: 5px;
+    align-items: center;
+}
+
+.icon {
+    height: 14px;
+    filter: var(--main-header-link-icon-filter);
+    opacity: 0.5;
+}
+
+.name {
+    font-size: 14px;
+    color: #777;
+    cursor: pointer;
+}

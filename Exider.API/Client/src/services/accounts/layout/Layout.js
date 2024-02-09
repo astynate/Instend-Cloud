@@ -1,10 +1,13 @@
+import './styles/colors.css'
+import Header from "../widgets/header/Header";
+
 const Layout = ({ children }) => {
 
     return (
 
         <>
 
-            <h1>Auth</h1>
+            <Header />
             {children}
 
         </>

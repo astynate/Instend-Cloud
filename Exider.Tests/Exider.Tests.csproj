@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Exider-Version-2.0.0\Exider.API.csproj" />
+    <ProjectReference Include="..\Exider.API\Exider.API.csproj" />
     <ProjectReference Include="..\Exider.Core\Exider.Core.csproj" />
     <ProjectReference Include="..\Exider.Repositories\Exider.Repositories.csproj" />
     <ProjectReference Include="..\Exider.Services\Exider.Services.csproj" />
