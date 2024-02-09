@@ -4,7 +4,7 @@ const Layout = ({ children }) => {
 
         <>
 
-            <h1>Layout</h1>
+            <h1>Auth</h1>
             {children}
 
         </>

@@ -1,16 +1,19 @@
-﻿import Login from '././services/'
+﻿import Login from '../services/accounts/pages/login/Login';
+import Create from '../services/accounts/pages/create/Create';
+import Confirm from '../services/accounts/pages/confirm/Confirm';
+
 
 const PublicRoutes = [
     {
-        path: '/accounts/login',
+        path: '/login',
         element: <Login />
     },
     {
-        path: '/accounts/create',
+        path: '/create',
         element: <Create />
     },
     {
-        path: '/accounts/confirm',
+        path: '/confirm',
         element: <Confirm />
     }
 ];

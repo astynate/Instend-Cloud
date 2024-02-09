@@ -30,19 +30,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Client\src\services\accounts\entities\" />
-    <Folder Include="Client\src\services\accounts\features\" />
-    <Folder Include="Client\src\services\accounts\layout\" />
+    <Folder Include="Client\src\services\accounts\shared\button\" />
+    <Folder Include="Client\src\services\accounts\shared\input\" />
+    <Folder Include="Client\src\services\accounts\shared\text\" />
+    <Folder Include="Client\src\services\accounts\shared\password\" />
+    <Folder Include="Client\src\services\accounts\features\slider\" />
     <Folder Include="Client\src\services\accounts\pages\login\" />
     <Folder Include="Client\src\services\accounts\pages\create\" />
     <Folder Include="Client\src\services\accounts\pages\confirm\" />
     <Folder Include="Client\src\services\accounts\shared\" />
-    <Folder Include="Client\src\services\accounts\widgets\" />
     <Folder Include="Client\src\services\accounts\api\" />
+    <Folder Include="Client\src\services\accounts\widgets\form\" />
+    <Folder Include="Client\src\services\accounts\widgets\footer\" />
+    <Folder Include="Client\src\services\accounts\widgets\header\" />
     <Folder Include="Client\src\services\cloud\shared\" />
     <Folder Include="Client\src\services\cloud\entities\" />
     <Folder Include="Client\src\services\cloud\features\" />
-    <Folder Include="Client\src\services\cloud\widgets\" />
     <Folder Include="Client\src\services\cloud\api\" />
   </ItemGroup>
 
