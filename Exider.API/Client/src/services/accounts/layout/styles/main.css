@@ -1,4 +1,4 @@
-﻿* {
+﻿/* * {
     margin: 0;
     padding: 0;
     height: 100vh;
@@ -6,10 +6,18 @@
     box-sizing: border-box;
     font-family: 'Open Sans', sans-serif;
 }
-
-body {
+*/
+/* body {
     overflow-y: scroll;
     overflow-x: hidden;
-    transition: 0.5s ease;
-    background: var(--main-background-color);
+    transition: 0.25s ease;
 }
+*/ 
+#root {
+
+    height: 100vh;
+    width: 100vw;
+    display: grid;
+    grid-template-rows: 50px auto 60px;
+
+} 

@@ -1,0 +1,50 @@
+.form {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    grid-gap: 0px;
+    width: auto;
+
+}
+
+.main-logo {
+    height: 80px;
+    width: 95px;
+    object-fit: contain;
+}
+
+h1 {
+    font-size: 28px;
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+p {
+    font-size: 14px;
+    text-align: center;
+    color: #777;
+    margin-bottom: 22px;
+}
+
+.selected-text {
+    background: -webkit-linear-gradient(45deg, #ff5bff, #3127f7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.back {
+
+    margin-top: 10px;
+    cursor: pointer;
+    color: #ccc;
+
+}
+
+.content {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+}

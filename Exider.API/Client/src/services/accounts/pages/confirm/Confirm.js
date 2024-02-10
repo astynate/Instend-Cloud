@@ -1,8 +1,12 @@
+import Content from "../../widgets/content/Content";
+
 const Confirm = () => {
 
     return (
 
-        <h1>Confirm</h1>
+        <Content title="Confirm Email Address">
+            <h1>!!!!</h1>
+        </Content>
 
     );
 

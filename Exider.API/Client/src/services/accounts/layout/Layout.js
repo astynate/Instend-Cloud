@@ -1,5 +1,7 @@
-import './styles/colors.css'
+import './styles/colors.css';
+import './styles/main.css';
 import Header from "../widgets/header/Header";
+import Footer from "../widgets/footer/Footer";
 
 const Layout = ({ children }) => {
 
@@ -9,6 +11,7 @@ const Layout = ({ children }) => {
 
             <Header />
             {children}
+            <Footer />
 
         </>
 

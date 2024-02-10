@@ -1,0 +1,19 @@
+.button {
+    border: none;
+    background: black;
+    color: white;
+    border-radius: 8px;
+    padding: 10px 35px;
+    font-size: 14px;
+    margin-top: 60px;
+    transition: 0.2s ease;
+}
+
+.button:hover {
+    background: black;
+    transform: scale(102%);
+}
+
+.button:active {
+    transform: scale(97%);
+}
