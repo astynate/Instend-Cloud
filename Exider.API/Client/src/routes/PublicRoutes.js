@@ -5,15 +5,15 @@ import Confirm from '../services/accounts/pages/confirm/Confirm';
 
 const PublicRoutes = [
     {
-        path: '/login',
+        path: '/account/login',
         element: <Login />
     },
     {
-        path: '/create',
+        path: '/account/create',
         element: <Create />
     },
     {
-        path: '/confirm',
+        path: '/account/confirm',
         element: <Confirm />
     }
 ];
