@@ -5,7 +5,7 @@ const Button = (props) => {
 
     return (
 
-        <button class="button" disabled={props.active}>{props.title}</button>
+        <button className="button" disabled={props.active}>{props.title}</button>
 
     );
 

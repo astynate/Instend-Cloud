@@ -1,0 +1,26 @@
+.input {
+    position: relative;
+}
+
+.password-visibility-button {
+    top: 7px;
+    right: 7px;
+    transform: scale(100%);
+    position: absolute;
+    height: 35px;
+    opacity: 0.2;
+    padding: 7px;
+    border-radius: 7px;
+    transition: 0.15s ease;
+    cursor: pointer;
+}
+
+    .password-visibility-button:hover {
+        background: #ccc;
+        transform: scale(105%);
+    }
+
+    .password-visibility-button:active {
+        background: #aaa;
+        transform: scale(90%);
+    }

@@ -1,14 +1,21 @@
 import React from 'react';
-import './main.css';
-import './media.css';
+import './styles/main.css';
+import './styles/media.css';
 
 const InputText = (props) => {
 
     return (
 
-        <div class="input-container">
-            <input type='text' className='input' id="input" maxLength={30} autoFocus={props.autofocus} required />
-            <label for="input">{props.placeholder}</label>
+        <div className="input-container">
+            <input
+                type='text'
+                className='input'
+                maxLength={30}
+                onChange={(event) => { props.onChange(event.target.value); }}
+                autoFocus={props.autofocus}
+                required
+            />
+            <label htmlFor="input">{props.placeholder}</label>
         </div>
 
     );

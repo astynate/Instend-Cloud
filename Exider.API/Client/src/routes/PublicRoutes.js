@@ -1,6 +1,6 @@
 ﻿import Login from '../services/accounts/pages/login/Login';
-import Create from '../services/accounts/pages/create/Create';
 import Confirm from '../services/accounts/pages/confirm/Confirm';
+import { Registration } from '../services/accounts/processes/Registration';
 
 
 const PublicRoutes = [
@@ -9,8 +9,8 @@ const PublicRoutes = [
         element: <Login />
     },
     {
-        path: '/account/create',
-        element: <Create />
+        path: '/account/create/*',
+        element: <Registration />
     },
     {
         path: '/account/confirm',

@@ -44,7 +44,8 @@ const App = () => {
                     })}
                 </Routes>
                 {(isAccessibleRoute === false) ? <Navigate to="/account/login" replace={true} /> : null}
-            </Authorization>)
+            </Authorization>
+        )
     );
 
 };
