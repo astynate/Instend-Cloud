@@ -1,0 +1,22 @@
+﻿.google-oauth {
+
+    padding: 5px;
+    border: 1px solid #eee;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+
+}
+
+.google-logo {
+    image-rendering: -webkit-optimize-contrast;
+    height: 30px;
+}
+
+.google-auth-text {
+
+    margin: 0px 15px 0px 10px;
+
+}

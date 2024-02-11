@@ -1,8 +1,16 @@
+import React, { useContext } from "react";
+import UserContext from "../../processes/Registaration";
+import Content from "../../widgets/content/Content";
+
 const Create = () => {
+
+    const user = useContext(UserContext);
 
     return (
 
-        <h1>Create</h1>
+        <Content>
+            <h1>{user.name}</h1>
+        </Content>
 
     );
 

@@ -24,17 +24,22 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="Client\src\services\accounts\features\slider\**" />
+    <Compile Remove="Client\src\services\accounts\shared\text\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="Client\src\services\accounts\features\slider\**" />
+    <Content Remove="Client\src\services\accounts\shared\text\**" />
+    <EmbeddedResource Remove="Client\src\services\accounts\features\slider\**" />
+    <EmbeddedResource Remove="Client\src\services\accounts\shared\text\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="Client\src\services\accounts\features\slider\**" />
+    <None Remove="Client\src\services\accounts\shared\text\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Client\src\services\accounts\shared\button\" />
-    <Folder Include="Client\src\services\accounts\shared\input\" />
-    <Folder Include="Client\src\services\accounts\shared\text\" />
     <Folder Include="Client\src\services\accounts\shared\password\" />
-    <Folder Include="Client\src\services\accounts\features\slider\" />
     <Folder Include="Client\src\services\accounts\pages\login\" />
     <Folder Include="Client\src\services\accounts\pages\create\" />
     <Folder Include="Client\src\services\accounts\pages\confirm\" />

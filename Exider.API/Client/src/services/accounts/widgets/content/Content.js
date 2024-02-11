@@ -8,7 +8,7 @@ const Content = (props) => {
 
         <div className='content'>
             <div className='form'>
-                <img src={logo} className='main-logo' />
+                <img src={logo} className='main-logo' draggable="false" />
                 {props.children}
             </div>
         </div>

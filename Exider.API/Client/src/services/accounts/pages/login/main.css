@@ -1,0 +1,28 @@
+.line {
+    margin: 20px 0;
+}
+
+.external-links {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: fit-content;
+}
+
+.external-links p {
+
+    margin: 0;
+
+}
+
+    .external-links a {
+        font-size: 14px;
+        text-decoration: underline;
+    }
+
+.external-link {
+    display: flex;
+    font-size: 14px;
+    grid-gap: 5px;
+}

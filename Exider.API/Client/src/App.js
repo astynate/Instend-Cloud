@@ -4,19 +4,20 @@ import Authorization from './services/accounts/layout/Layout';
 import Layout from './services/cloud/layout/Layout';
 import PrivateRoutes from './routes/PrivateRoutes';
 import PublicRoutes from './routes/PublicRoutes';
+import ValidateRoute from './utils/handlers/ValidateRoute'
 
 const App = () => {
 
-    const [isAuthenticated, setAuthificationParameter] = useState(false);
-    const [isAccessibleRoute, setAccessibleRoute] = useState(false);
-    const applicationRoutes = [...PrivateRoutes, ...PublicRoutes];
-
     let location = useLocation();
+
+    const applicationRoutes = [...PrivateRoutes, ...PublicRoutes];
+    const [isAuthenticated, setAuthificationParameter] = useState(false);
+    const [isAccessibleRoute, setAccessibleRoute] = useState(ValidateRoute(PublicRoutes, isAuthenticated, location));
 
     useEffect(() => {
 
-        setAccessibleRoute(!(isAuthenticated === false &&
-            PrivateRoutes.concat(location) === false));
+        setAccessibleRoute(ValidateRoute(PublicRoutes,
+            isAuthenticated, location));
 
     }, [isAuthenticated, location]);
 
@@ -42,7 +43,7 @@ const App = () => {
                         return <Route key={index} {...rest} element={element} />;
                     })}
                 </Routes>
-                {(isAccessibleRoute === false) ? <Navigate to="/login" replace={true} /> : null}
+                {(isAccessibleRoute === false) ? <Navigate to="/account/login" replace={true} /> : null}
             </Authorization>)
     );
 

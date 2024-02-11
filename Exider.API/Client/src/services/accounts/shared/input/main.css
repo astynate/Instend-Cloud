@@ -1,7 +1,7 @@
 .input-container {
     width: 550px;
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
     border-radius: 10px;
     border: 1px solid #999;
   }
@@ -13,13 +13,25 @@
     font-size: 16px;
     padding: 13px;
     border-radius: 10px;
-    color: blakc;
+    color: black;
     background: transparent;
   }
 
   .input-container input:focus {
     outline: none;
     outline: 2px solid #1976D2;
+  }
+
+  .input-container input:focus ~ label,
+  .input-container input:valid ~ label {
+    transform: translateY(-21px);
+    font-size: 13px;
+    background: white;
+    padding: 0px 5px;
+  }
+
+  .input-container input:focus ~ label {
+    color: #1976D2;
   }
 
   .input-container label {
@@ -29,13 +41,4 @@
     pointer-events: none;
     transition: 0.15s;
     color: #777;
-  }
-
-  .input-container input:focus ~ label,
-  .input-container input:valid ~ label {
-    transform: translateY(-27px);
-    font-size: 13px;
-    background: white;
-    color: #1976D2;
-    padding: 5px;
   }
