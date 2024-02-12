@@ -13,13 +13,13 @@
 }
 
     .button:disabled {
-        background: #eee;
+        background: #ddd;
         cursor: not-allowed;
     }
 
         .button:disabled:hover {
             transform: none;
-            background: #eee;
+            background: #ddd;
         }
 
     .button:hover {

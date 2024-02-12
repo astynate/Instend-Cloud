@@ -24,7 +24,6 @@ namespace Exider_Version_2._0._0.ServerApp.Controllers
 
         private readonly IConfirmationRespository _confirmationRespository;
 
-
         public AccountsController(IUsersRepository users, IEmailRepository email, IConfirmationRespository confirmation)
         {
             _usersRepository = users;
@@ -32,10 +31,44 @@ namespace Exider_Version_2._0._0.ServerApp.Controllers
             _confirmationRespository = confirmation;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAccount()
+        [HttpGet("email/{email}")]
+        public async Task<IActionResult> GetAccountByEmail(string email)
         {
-            return Ok("!");
+
+            if (string.IsNullOrEmpty(email))
+            {
+                return BadRequest("Email required");
+            }
+
+            UserModel? userModel = await _usersRepository.GetUserByEmailAsync(email);
+
+            if (userModel is null)
+            {
+                return Conflict("User not found");
+            }
+
+            return Ok(new PublicUserModel(userModel));
+
+        }
+
+        [HttpGet("nickname/{nickname}")]
+        public async Task<IActionResult> GetAccountByNickname(string nickname)
+        {
+
+            if (string.IsNullOrEmpty(nickname))
+            {
+                return BadRequest("Nickname required");
+            }
+
+            UserModel? userModel = await _usersRepository.GetUserByEmailAsync(nickname);
+
+            if (userModel is null)
+            {
+                return Conflict("User not found");
+            }
+
+            return Ok(new PublicUserModel(userModel));
+
         }
 
         [HttpPost]

@@ -6,16 +6,18 @@
     border: 1px solid #999;
   }
 
-  .input-container input {
-    height: 100%;
-    width: 100%;
-    border: none;
-    font-size: 16px;
-    padding: 13px;
-    border-radius: 10px;
-    color: black;
-    background: transparent;
-  }
+    .input-container input {
+        height: 100%;
+        width: 100%;
+        border: none;
+        font-size: 16px;
+        padding: 13px;
+        border-radius: 10px;
+        color: black;
+        outline: 2px solid transparent;
+        background: transparent;
+        transition: 0.1s ease;
+    }
 
   .input-container input:focus {
     outline: none;

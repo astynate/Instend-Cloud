@@ -7,8 +7,8 @@
     right: 10px;
     transform: translateY(-50%);
     position: absolute;
-    height: 25px;
-    width: 25px;
+    height: 29px;
+    width: 29px;
     border: 2px solid #eee;
     opacity: 1;
     padding: 7px;
@@ -21,7 +21,7 @@
 }
 
     .check-state img {
-        height: 15px;
+        height: 11px;
         transform: none;
         transition: 0.25s ease;
     }
@@ -29,6 +29,10 @@
 #none {
     opacity: 0;
 }
+
+    #none img {
+        opacity: 0;
+    }
 
 #loading {
     border: 2px solid #eee;
@@ -38,6 +42,14 @@
 
 #loading img {
     opacity: 0;
+}
+
+#invalid {
+    border: 2px solid red;
+}
+
+#valid {
+    border: 2px solid #4471f6;
 }
 
 #valid img, #invalid img {

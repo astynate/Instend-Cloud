@@ -44,12 +44,18 @@ namespace Exider.Repositories.Repositories
 
         }
 
-        public async Task<UserModel> GetUserAsync(string email)
+        public async Task<UserModel?> GetUserByEmailAsync(string email)
         {
             return await _context.Users.AsNoTracking()
-                .FirstOrDefaultAsync(user => user.Email == email) ??
-                    throw new ArgumentNullException();
+                .FirstOrDefaultAsync(user => user.Email == email);
         }
+
+        public async Task<UserModel?> GetUserByNicknameAsync(string nickname)
+        {
+            return await _context.Users.AsNoTracking()
+                .FirstOrDefaultAsync(user => user.Nickname == nickname);
+        }
+
     }
 
 }

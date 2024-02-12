@@ -1,4 +1,5 @@
 import React from 'react';
+import './main.css';
 import { useNavigate } from 'react-router-dom';
 
 const Back = () => {

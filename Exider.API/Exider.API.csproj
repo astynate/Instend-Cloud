@@ -38,10 +38,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Client\src\services\accounts\api\request\" />
     <Folder Include="Client\src\services\accounts\shared\button\" />
     <Folder Include="Client\src\services\accounts\pages\login\" />
     <Folder Include="Client\src\services\accounts\pages\confirm\" />
-    <Folder Include="Client\src\services\accounts\api\" />
     <Folder Include="Client\src\services\accounts\widgets\footer\" />
     <Folder Include="Client\src\services\cloud\shared\" />
     <Folder Include="Client\src\services\cloud\entities\" />
