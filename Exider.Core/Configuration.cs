@@ -9,7 +9,7 @@
 
         public static readonly string corporatePassword = "svgb zokl oqjy jzup";
 
-        public static readonly string URL = "https://localhost:44441/";
+        public static readonly string URL = "http://localhost:44441/";
 
         public static readonly int confirmationLifetimeInHours = 7;
 

@@ -18,9 +18,10 @@ const InputCheck = (props) => {
 
     useEffect(() => {
 
+        props.SetValue(value);
         props.setFieldState(validationState === 'valid');
 
-    }, [validationState, props]);
+    }, [validationState, props, value]);
 
     useEffect(() => {
 
@@ -31,7 +32,7 @@ const InputCheck = (props) => {
             const timeoutId = setTimeout(async () => {
 
                 setValidationState('loading');
-                setValidationState(await ValidateRequest(props.endpoint, [props.placeholder.toLowerCase(), value]) ? 'valid' : 'invalid');
+                setValidationState(await ValidateRequest(props.endpoint, value) ? 'valid' : 'invalid');
 
             }, 500);
 

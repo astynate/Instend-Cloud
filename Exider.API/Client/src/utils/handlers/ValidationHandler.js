@@ -13,6 +13,13 @@ class ValidationHandler {
 
     }
 
+    static ValidateStrings(fields) {
+
+        return !(fields.some(field => ValidationHandler
+            .ValidateVarchar(field, 31) === false));
+
+    }
+
 }
 
 export default ValidationHandler;

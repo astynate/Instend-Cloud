@@ -30,7 +30,7 @@ const Nickname = () => {
                 SetValue={setNickname}
                 validationFunction={ValidationHandler.ValidateVarchar}
                 setFieldState={setNicknameState}
-                endpoint='/accounts'
+                endpoint='/accounts/nickname'
             />
             <Link to='/account/create/name'>
                 <Button

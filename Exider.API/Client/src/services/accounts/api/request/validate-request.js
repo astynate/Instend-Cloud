@@ -1,12 +1,9 @@
-const ValidateRequest = async (path, data) => {
+const ValidateRequest = async (path, value) => {
 
     try {
 
         const controller = new AbortController();
         const { signal } = controller;
-        const params = new URLSearchParams();
-
-        params.append(data[0], data[1]);
 
         const timeout = setTimeout(() => {
 
@@ -15,11 +12,11 @@ const ValidateRequest = async (path, data) => {
 
         }, 5000);
 
-        const response = await fetch(`${path}?${params}`, { signal });
+        const response = await fetch(`${path}/${value}`, { signal });
 
         clearTimeout(timeout);
 
-        return response.ok;
+        return response.status === 470;
 
     } catch (error) {
 

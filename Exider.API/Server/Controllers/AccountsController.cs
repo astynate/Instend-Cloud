@@ -8,6 +8,7 @@ using Exider.Repositories.Account;
 using Exider.Repositories.Email;
 using Exider_Version_2._0._0.ServerApp.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Transactions;
 
 namespace Exider_Version_2._0._0.ServerApp.Controllers
@@ -44,7 +45,7 @@ namespace Exider_Version_2._0._0.ServerApp.Controllers
 
             if (userModel is null)
             {
-                return Conflict("User not found");
+                return StatusCode(470, "User not found");
             }
 
             return Ok(new PublicUserModel(userModel));
@@ -64,7 +65,7 @@ namespace Exider_Version_2._0._0.ServerApp.Controllers
 
             if (userModel is null)
             {
-                return Conflict("User not found");
+                return StatusCode(470, "User not found");
             }
 
             return Ok(new PublicUserModel(userModel));
@@ -98,16 +99,20 @@ namespace Exider_Version_2._0._0.ServerApp.Controllers
                     UserId = user.Id
                 };
 
-                await _confirmationRespository.AddAsync(confirmation);
+                await _confirmationRespository
+                    .AddAsync(confirmation);
 
-                await emailService.SendEmailConfirmation(user.Email, confirmation.Code,
-                    Configuration.URL + "/accounts/confirmation" + confirmation.Link.ToString());
+                string confirmationLink = Configuration.URL + "account/email/confirmation/" + 
+                    confirmation.Link.ToString();
+
+                await emailService.SendEmailConfirmation(user.Email, 
+                    confirmation.Code, confirmationLink);
 
                 scope.Complete();
 
-            }
+                return Ok(confirmationLink);
 
-            return Ok();
+            }
 
         }
 
