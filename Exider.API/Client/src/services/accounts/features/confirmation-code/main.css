@@ -1,0 +1,25 @@
+.confirmation-code {
+
+    display: flex;
+    grid-gap: 15px;
+
+}
+
+.code-input {
+
+    height: 40px;
+    width: 40px;
+    font-family: 'Open Sans';
+    text-align: center;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    outline: 2px transparent;
+    transition: 0.05s ease;
+
+}
+
+.code-input:focus {
+    outline: 2px solid rgb(64, 64, 255);
+    border: 1px solid transparent;
+}

@@ -3,8 +3,8 @@
 }
 
 .password-visibility-button {
-    top: 7px;
-    right: 7px;
+    top: 5px;
+    right: 5px;
     transform: scale(100%);
     position: absolute;
     height: 35px;

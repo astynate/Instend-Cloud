@@ -1,13 +1,11 @@
-﻿import React, { useState, createContext } from 'react';
-import { Routes, Route } from 'react-router-dom';
+﻿import React, { createContext } from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
 import Email from '../pages/create/Email';
 import Nickname from '../pages/create/Nickname';
 import Name from '../pages/create/Name';
 import Password from '../pages/create/Password';
 import Content from '../widgets/content/Content';
 import Back from '../shared/back/Back';
-import Line from '../shared/line/Line';
-import GoogleOAuth from '../features/google-oauth/GoogleOAuth';
 
 let UserContext = createContext();
 
@@ -34,8 +32,15 @@ const Registration = () => {
                     <Route path="password" element={<Password />} />
                 </Routes>
                 <Back />
-                <Line title="or" />
-                <GoogleOAuth />
+                <div className='external-links'>
+                    <div className='external-link'>
+                        <p>By registering, you agree to the</p>
+                        <Link to="/">Terms of use</Link>
+                    </div>
+                    <div className='external-link'>
+                        <Link to="/account/login">Already have an account?</Link>
+                    </div>
+                </div>
             </Content>
         </UserContext.Provider>
 

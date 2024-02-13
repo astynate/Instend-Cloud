@@ -1,5 +1,8 @@
 ﻿.back {
-
     font-weight: 400;
-
+    margin-top: 5px;
+    cursor: pointer;
+    font-size: 15px;
+    color: #ccc;
+    user-select: none;
 }

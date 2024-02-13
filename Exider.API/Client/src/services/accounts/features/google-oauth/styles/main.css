@@ -12,12 +12,12 @@
 }
 
     .google-oauth:hover {
-        padding: 12px;
+        transform: scale(101%);
     }
 
     .google-oauth:active {
-        padding: 8px;
         transition: 0.3s ease;
+        transform: scale(98%);
     }
 
 .google-logo {

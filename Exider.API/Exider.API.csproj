@@ -39,6 +39,7 @@
 
   <ItemGroup>
     <Folder Include="Client\src\services\accounts\api\request\" />
+    <Folder Include="Client\src\services\accounts\features\Новая папка\" />
     <Folder Include="Client\src\services\accounts\shared\button\" />
     <Folder Include="Client\src\services\accounts\pages\login\" />
     <Folder Include="Client\src\services\accounts\pages\confirm\" />

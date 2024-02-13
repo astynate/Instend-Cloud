@@ -21,7 +21,7 @@ const Login = () => {
             <GoogleOAuth />
             <div className='external-links'>
                 <div className='external-link'>
-                    <p clas>Don't have an account?</p>
+                    <p>Don't have an account?</p>
                     <Link to="/account/create/email">Registration</Link>
                 </div>
                 <Link to="/">Forgot a password?</Link>

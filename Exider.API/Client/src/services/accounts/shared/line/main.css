@@ -1,19 +1,22 @@
 ﻿.line {
     position: relative;
     background: transparent;
+    margin: 30px 0;
     width: 100%;
 }
 
 hr {
     width: 100%;
-    border: 1px solid #aaa;
+    height: 1px;
+    background: #ddd;
+    border: none;
 }
 
 .line-text {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    top: 3px;
+    top: -11px;
     background: #fff;
     padding: 0 10px;
     font-size: 16px;

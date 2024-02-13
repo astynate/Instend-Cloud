@@ -31,7 +31,7 @@ const Email = () => {
                 setFieldState={setEmailState}
                 endpoint='/accounts/email'
             />
-            <Link to='/account/create/nickname'>
+            <Link to='/account/create/nickname' className='next'>
                 <Button title="Next" disabled={!isValidEmail} />
             </Link>
         </>

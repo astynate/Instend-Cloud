@@ -1,10 +1,11 @@
 .input-container {
     width: 550px;
     position: relative;
-    margin-bottom: 12px;
+    margin-bottom: 5px;
     border-radius: 10px;
     border: 1px solid #999;
-  }
+    font-family: 'Open Sans';
+}
 
     .input-container input {
         height: 100%;
@@ -17,6 +18,7 @@
         outline: 2px solid transparent;
         background: transparent;
         transition: 0.1s ease;
+        font-family: 'Open Sans';
     }
 
   .input-container input:focus {
