@@ -13,7 +13,7 @@ const PublicRoutes = [
         element: <Registration />
     },
     {
-        path: '/account/email/confirmation',
+        path: '/account/email/confirmation/:id',
         element: <Confirm />
     }
 ];

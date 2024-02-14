@@ -11,7 +11,7 @@
 
         public static readonly string URL = "http://localhost:44441/";
 
-        public static readonly int confirmationLifetimeInHours = 7;
+        public static readonly int confirmationLifetimeInHours = 3;
 
     }
 

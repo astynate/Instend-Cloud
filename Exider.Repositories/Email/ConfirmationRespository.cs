@@ -1,4 +1,5 @@
-﻿using Exider.Core;
+﻿using CSharpFunctionalExtensions;
+using Exider.Core;
 using Exider.Core.Models.Email;
 using Exider_Version_2._0._0.ServerApp.Services;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,27 @@ namespace Exider.Repositories.Email
         {
             _context = context;
             _validationService = validationService;
+        }
+
+        public async Task<Result<ConfirmationModel>> GetByLinkAsync(string link)
+        {
+
+            ConfirmationModel? confirmation = await _context.Confirmation.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Link == Guid.Parse(link));
+
+            if (confirmation is null)
+            {
+                return Result.Failure<ConfirmationModel>("Confirmation not found");
+            }
+
+            if (DateTime.Now > confirmation.EndTime)
+            {
+                await DeleteAsync(confirmation);
+                return Result.Failure<ConfirmationModel>("Link has expired");
+            }
+
+            return Result.Success(confirmation);
+
         }
 
         public async Task AddAsync(ConfirmationModel confirmation)
@@ -49,6 +71,18 @@ namespace Exider.Repositories.Email
             }
 
             await _context.SaveChangesAsync();
+
+        }
+
+        public async Task<Result> DeleteAsync(ConfirmationModel confirmation)
+        {
+
+            if (confirmation is null) return Result.Failure("Confirmation cannot be null");
+
+            await _context.Confirmation.AsNoTracking().Where(x => x.Link == confirmation.Link).ExecuteDeleteAsync();
+            await _context.SaveChangesAsync();
+
+            return Result.Success();
 
         }
 

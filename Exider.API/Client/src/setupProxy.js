@@ -8,7 +8,8 @@ const target = `http://localhost:7128`;
 
 const context = [
     "/accounts",
-    "/authentication"
+    "/authentication",
+    "/confirmations"
 ];
 
 const onError = (err, req, resp, target) => {

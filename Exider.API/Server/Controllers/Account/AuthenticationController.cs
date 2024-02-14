@@ -1,7 +1,7 @@
 ﻿using Exider.Dependencies.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Exider_Version_2._0._0.ServerApp.Controllers
+namespace Exider_Version_2._0._0.Server.Controllers.Account
 {
 
     [ApiController]

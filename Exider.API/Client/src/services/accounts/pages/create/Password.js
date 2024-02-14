@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { UserContext } from "../../processes/Registration";
 import InputPassword from "../../shared/password/InputPassword";
 import Button from "../../shared/button/Button";
@@ -22,6 +22,7 @@ const ValidateUserData = (user, password, confirm) => {
 const Password = () => {
 
     let user = useContext(UserContext);
+    let navigate = useNavigate();
 
     const [password, setPassword] = useState('');
     const [confirmedPassword, setConfirmedPassword] = useState('');
@@ -39,11 +40,10 @@ const Password = () => {
                 body: JSON.stringify(user)
             })
 
-            if (await response.status === 200) {
+            if (response.status === 200) {
 
-                console.log(response.text);
-
-                return <Navigate to={response.text} replace={true}></Navigate>
+                const responseData = await response.text();
+                navigate('/account/email/confirmation/' + responseData, { replace: true })
 
             }
 

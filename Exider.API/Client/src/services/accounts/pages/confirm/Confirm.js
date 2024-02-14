@@ -1,41 +1,66 @@
-import { Link } from 'react-router-dom';
-import Code from "../../features/confirmation-code/Code";
-import Content from "../../widgets/content/Content";
-import Line from "../../shared/line/Line";
+import { useState, useEffect } from 'react';
+import { useParams} from 'react-router-dom';
+import ValidLink from './ValidLink';
+import InvalidLink from './InvalidLink';
+import Loading from './Loading';
 
 const Confirm = () => {
 
-    const ResendConfirmationMain = async () => {
+    const { id } = useParams();
 
-        const controller = new AbortController();
-        const signal = controller.signal;
+    const [linkValidationState, setLinkState] = useState('loading');
+    const [email, setEmail] = useState('');
 
-        const fetch('/confirmations', { signal })
-            .then(response => response.json())
-            .catch(err => console.error('Îøèáêà:', err));
+    useEffect(() => {
 
-        controller.abort();
+        const fetchData = async () => {
+
+            try {
+
+                const controller = new AbortController();
+                const { signal } = controller;
+
+                const timeoutId = setTimeout(() => controller.abort(), 7000);
+
+                const response = await fetch('/confirmations/link/' + 
+                    id.toString(), { signal });
+
+                if (response.status === 200) {
+
+                    const responseData = await response.text();
+
+                    setLinkState('valid');
+                    setEmail(responseData);
+
+                } else {
+
+                    setLinkState('invalid');
+
+                }
+
+                clearTimeout(timeoutId);
+
+            } catch (error) {
+
+                setLinkState('invalid');
+
+            }
+
+        };
+      
+        fetchData();
+
+    }, [id, email]);
+
+    if (linkValidationState === 'loading') {
+
+        return (<Loading />);
+
+    } else {
+
+        return (linkValidationState === 'valid' ? <ValidLink email={email} /> : <InvalidLink />);
 
     }
-
-    return (
-
-        <Content title="Confirm Email Address">
-            <h1>Confirm your <span className="selected-text">Email</span></h1>
-            <p>We have sent you a confirmation code to sicome.a.s@gmail.com<br /> Please enter the code in the field below</p>
-            <Code />
-            <div className='external-links'>
-                <div className='external-link'>
-                    <p>Didn't receive a confirmation?</p>
-                </div>
-                <div className='external-link'>
-                    <Link onClick={() => ResendConfirmationMain()}>Resend confirmation code</Link>
-                </div>
-            </div>
-            <Line />
-        </Content>
-
-    );
 
 }
 

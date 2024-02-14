@@ -17,27 +17,15 @@ namespace Exider.Repositories.Repositories
 
         public async Task<List<SessionModel>> GetSessionsByUserId(Guid userId)
         {
-
-            List<SessionModel> sessions = await _context.Sessions
+            return await _context.Sessions
                 .Where(x => x.UserId == userId)
                 .ToListAsync();
-
-            if (sessions == null)
-            {
-                throw new ArgumentException(nameof(SessionModel));
-            }
-
-            return sessions;
-
         }
 
-        public async Task<SessionModel> GetSessionByTokenAndUserId(Guid userId, string token)
+        public async Task<SessionModel?> GetSessionByTokenAndUserId(Guid userId, string token)
         {
-
-            return await _context.Sessions
-                .FirstOrDefaultAsync(x => x.UserId == userId && x.RefreshToken == token)
-                    ?? throw new ArgumentException(typeof(SessionModel).ToString());
-
+            return await _context.Sessions.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.UserId == userId && x.RefreshToken == token);
         }
 
         public async Task AddSessionAsync(SessionModel session)
