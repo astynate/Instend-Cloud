@@ -6,6 +6,7 @@ import Name from '../pages/create/Name';
 import Password from '../pages/create/Password';
 import Content from '../widgets/content/Content';
 import Back from '../shared/back/Back';
+import Line from '../shared/line/Line';
 
 let UserContext = createContext();
 
@@ -32,6 +33,7 @@ const Registration = () => {
                     <Route path="password" element={<Password />} />
                 </Routes>
                 <Back />
+                <Line />
                 <div className='external-links'>
                     <div className='external-link'>
                         <p>By registering, you agree to the</p>

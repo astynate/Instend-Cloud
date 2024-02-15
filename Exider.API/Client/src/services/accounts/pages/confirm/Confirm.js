@@ -58,7 +58,7 @@ const Confirm = () => {
 
     } else {
 
-        return (linkValidationState === 'valid' ? <ValidLink email={email} /> : <InvalidLink />);
+        return (linkValidationState === 'valid' ? <ValidLink email={email} link={id} /> : <InvalidLink />);
 
     }
 

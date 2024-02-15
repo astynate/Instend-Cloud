@@ -1,0 +1,30 @@
+.open-link {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    grid-gap: 10px;
+    transition: 0.2s ease;
+}
+
+.open-link:hover {
+    text-decoration: underline;
+}
+
+.open-link:active {
+    transform: scale(90%);
+}
+
+.open-link img {
+
+    height: 10px;
+    filter: invert(0.7);
+    margin-top: 2px;
+    transition: 0.15s ease;
+
+}
+
+.open { 
+
+    transform: rotate(180deg);
+
+}

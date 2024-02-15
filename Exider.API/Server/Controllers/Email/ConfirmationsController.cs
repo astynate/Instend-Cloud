@@ -30,7 +30,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Email
                 return BadRequest(confirmation.Error);
             }
 
-            return Ok(confirmation.Value);
+            return Ok(confirmation.Value.Email);
 
         }
 
@@ -43,7 +43,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Email
             if (confirmation.IsFailure)
                 return BadRequest(confirmation.Error);
 
-            if (confirmation.Value.Code == code)
+            if (confirmation.Value.Code != code)
                 return BadRequest("Incorrect code");
 
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))

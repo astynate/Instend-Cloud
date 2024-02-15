@@ -1,6 +1,6 @@
 ﻿import React from 'react';
-import ExternalLink from '../../shared/link/ExternalLink'
-import logo from './images/link.png';
+import { Link } from 'react-router-dom';
+import OpenLink from '../../features/open-link/OpenLink';
 import './styles/main.css';
 import './styles/media.css';
 
@@ -10,8 +10,9 @@ const Footer = (props) => {
 
         <div className='footer'>
             <div className='footer-links'>
-                <ExternalLink logo={logo} name="Privacy Policy" link="https://google.com" />
-                <ExternalLink logo={logo} name="Contact Us" link="https://google.com" />
+                <Link to="/" className='footer-link'>Privacy Policy</Link>
+                <Link to="/" className='footer-link'>Contact Us</Link>
+                <OpenLink title='Русский' />
             </div>
             <div className='copyright'>
                 <span>© Andreev 2024, Minsk, Belarus</span>

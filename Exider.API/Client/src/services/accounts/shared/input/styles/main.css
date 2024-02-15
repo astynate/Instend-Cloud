@@ -28,7 +28,7 @@
 
   .input-container input:focus ~ label,
   .input-container input:valid ~ label {
-    transform: translateY(-21px);
+    transform: translateY(-22px);
     font-size: 13px;
     background: white;
     padding: 0px 5px;
@@ -40,7 +40,7 @@
 
   .input-container label {
     position: absolute;
-    top: 11px;
+    top: 12px;
     left: 15px;
     pointer-events: none;
     transition: 0.15s;

@@ -1,0 +1,33 @@
+.notification {
+    position: fixed;
+    z-index: 1000;
+    top: 50px;
+    left: 0;
+    height: 40px;
+    background: #FF033E;
+    background: black;
+    background: rgb(26, 116, 243);
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    padding: 0vw 17vw;
+}
+
+.notification-title {
+
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    grid-gap: 10px;
+
+}
+
+.notification-title p {
+
+    color: white;
+    margin-top: auto;
+    margin-bottom: auto;
+    font-size: 12px;
+
+}

@@ -57,9 +57,9 @@ const InputCheck = (props) => {
             <label
                 htmlFor="input">{props.placeholder}
             </label>
-            <div className='check-state' id={validationState ?? 'none'}>
+            {(validationState != 'none' ? <div className='check-state' id={validationState ?? 'none'}>
                 <img src={(validationState === 'valid') ? Valid : Invalid} alt="check-state" />
-            </div>
+            </div> : null)}
         </div>
 
     );

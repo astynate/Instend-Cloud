@@ -1,4 +1,5 @@
-﻿using Exider.Core;
+﻿using CSharpFunctionalExtensions;
+using Exider.Core;
 using Exider.Core.Models.Account;
 using Exider_Version_2._0._0.ServerApp.Services;
 using Microsoft.EntityFrameworkCore;
@@ -18,12 +19,12 @@ namespace Exider.Repositories.Account
             _validationService = validationService;
         }
 
-        public async Task<EmailModel> GetAsync(string email)
+        public async Task<Result<EmailModel>> GetByEmailAsync(string email)
         {
 
             if (_validationService.ValidateEmail(email) == false)
             {
-                throw new ArgumentNullException(nameof(email));
+                return Result.Failure<EmailModel>("Invalid email");
             }
 
             EmailModel? emailModel = await _context.Email.AsNoTracking()
@@ -31,10 +32,10 @@ namespace Exider.Repositories.Account
 
             if (emailModel == null)
             {
-                throw new ArgumentException(nameof(emailModel));
+                return Result.Failure<EmailModel>("Email address not found");
             }
 
-            return emailModel;
+            return Result.Success(emailModel);
 
         }
 
@@ -52,6 +53,19 @@ namespace Exider.Repositories.Account
             }
 
             await _context.Email.AddAsync(emailModel);
+            await _context.SaveChangesAsync();
+
+        }
+
+        public async Task ConfirmEmailAddressAsync(string email)
+        {
+
+            if (email is null)
+            {
+                throw new ArgumentNullException(nameof(email));
+            }
+
+            await _context.Email.ExecuteUpdateAsync(e => e.SetProperty(x => x.IsConfirmed, true));
             await _context.SaveChangesAsync();
 
         }

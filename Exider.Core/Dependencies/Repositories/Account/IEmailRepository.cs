@@ -1,4 +1,5 @@
-﻿using Exider.Core.Models.Account;
+﻿using CSharpFunctionalExtensions;
+using Exider.Core.Models.Account;
 
 namespace Exider.Repositories.Account
 {
@@ -6,6 +7,6 @@ namespace Exider.Repositories.Account
     {
         Task AddAsync(EmailModel emailModel);
         Task ConfirmEmailAddressAsync(string email);
-        Task<EmailModel> GetAsync(string email);
+        Task<Result<EmailModel>> GetByEmailAsync(string email);
     }
 }
