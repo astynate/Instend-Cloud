@@ -1,0 +1,20 @@
+{
+    "account.select_language": "Калі ласка, выберыце вашую мову.",
+    "account.service_name": "Акаўнт",
+    "account.technical_support": "тэхнічная падтрымка",
+    "account.terms_of_use": "Правілы выкарыстання",
+    "account.privacy_policy": "Палітыка канфідэнцыяльнасці",
+    "account.contact_us": "Звяжыцеся з намі",
+    "account.copyright": "© Андрэеў 2024, Мінск, Беларусь",
+    "account.confirm": "Пацвердзіць",
+    "account.login_with": "Увайсці з дапамогай",
+    "account.login_with.message": "Мы прагледзелі, ці існуе ваш акаўнт. Ваш электронны адрас або нікнеім не павінны быць пустымі.",
+    "account.login": "Увайсці",
+    "account.continue_with_google": "Працягнуць з Google",
+    "account.dont_have_account": "Няма ў вас акаўнта?",
+    "account.registration": "Рэгістрацыя",
+    "account.forgot_password": "Забылася пароль?",
+    "account.or": "або",
+    "account.email_or_nickname": "Электронная пошта або нікнейм",
+    "account.password": "Пароль"
+}

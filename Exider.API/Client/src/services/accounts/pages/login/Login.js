@@ -4,29 +4,31 @@ import Button from '../../shared/button/Button';
 import InputText from "../../shared/input/InputText";
 import InputPassword from "../../shared/password/InputPassword";
 import Line from '../../shared/line/Line';
-import Content from "../../widgets/content/Content";
 import './main.css';
+import { useTranslation } from 'react-i18next';
 
 const Login = () => {
 
+    const { t } = useTranslation();
+
     return (
 
-        <Content>
-            <h1>Login with <span className="selected-text">Exider ID</span></h1>
-            <p>We will check if your account exist. Your email or nickname<br /> sholdn't be empthy.</p>
-            <InputText placeholder="Email or nickname" autofocus={true} />
-            <InputPassword placeholder="Password" autofocus={false} />
-            <Button title="Login" active={false} />
-            <Line title="or" />
+        <>
+            <h1>{t('account.login_with')} <span className="selected-text">Exider ID</span></h1>
+            <p>{t('account.login_with.message')}</p>
+            <InputText placeholder={t('account.email_or_nickname')} autofocus={true} />
+            <InputPassword placeholder={t('account.password')} autofocus={false} />
+            <Button title={t('account.login')} active={false} />
+            <Line title={t('account.or')} />
             <GoogleOAuth />
             <div className='external-links'>
                 <div className='external-link'>
-                    <p>Don't have an account?</p>
-                    <Link to="/account/create/email">Registration</Link>
+                    <p>{t('account.dont_have_account')}</p>
+                    <Link to="/account/create/email">{t('account.registration')}</Link>
                 </div>
-                <Link to="/">Forgot a password?</Link>
+                <Link to="/">{t('account.forgot_password')}</Link>
             </div>
-        </Content>
+        </>
 
     );
 

@@ -1,0 +1,20 @@
+{
+    "account.select_language": "Please select your language.",
+    "account.service_name": "Account",
+    "account.technical_support": "Technical support",
+    "account.terms_of_use": "Terms of use",
+    "account.privacy_policy": "Privacy Policy",
+    "account.contact_us": "Countact Us",
+    "account.copyright": "© Andreev 2024, Minsk, Belarus",
+    "account.confirm": "Confirm",
+    "account.login_with": "Login with",
+    "account.login_with.message": "We will check if your account exist. Your email or nickname sholdn't be empthy.",
+    "account.login": "Login",
+    "account.continue_with_google": "Continue with Google",
+    "account.dont_have_account": "Don't have an account?",
+    "account.registration": "Registration",
+    "account.forgot_password": "Forgot a password?",
+    "account.or": "or",
+    "account.email_or_nickname": "Email or nickname",
+    "account.password": "Password"
+}

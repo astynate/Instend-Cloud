@@ -1,7 +1,47 @@
 .select {
+    height: 65%;
+    width: 170px;
+    font-size: 12px;
+}
 
-    height: 50%;
-    width: auto;
-    border: 1px solid white;
+.select-current {
+    height: 100%;
+    color: rgb(0, 0, 0);
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    border: 1px solid rgb(181, 181, 181);
+    background: white;
+    cursor: pointer;
+    user-select: none;
+    padding: 0px 5px;
+}
 
+.select-current[id="open-select"] {
+    border-radius: 5px 5px 0px 0px;
+}
+
+.select-values {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #eee;
+    border-radius: 0px 0px 5px 5px;
+    background: rgba(255, 255, 255, 1);
+}
+
+.select-value {
+    cursor: pointer;
+    user-select: none;
+    padding: 12px 5px;
+    border-radius: 5px;
+    border-bottom: 1px solid #eee;
+    transition: 0.1s ease;
+}
+
+.select-value:hover {
+    background: #eee;
+}
+
+.select-value:active {
+    transform: scale(95%);
 }

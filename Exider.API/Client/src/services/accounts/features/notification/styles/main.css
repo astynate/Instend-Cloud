@@ -1,16 +1,24 @@
 .notification {
-    position: fixed;
+    position: absolute;
     z-index: 1000;
-    top: 50px;
+    top: 0px;
     left: 0;
-    height: 40px;
-    background: #FF033E;
-    background: black;
-    background: rgb(26, 116, 243);
+    height: 0px;
+    background: #eef4f9;
     width: 100vw;
     display: flex;
     align-items: center;
     padding: 0vw 17vw;
+    transition: 0.5s ease;
+    opacity: 0;
+    animation: notification-in 2.7s ease;
+}
+
+.notification[id="open"] {
+
+    height: 50px;
+    opacity: 1;
+
 }
 
 .notification-title {
@@ -25,9 +33,79 @@
 
 .notification-title p {
 
-    color: white;
+    color: rgb(94, 95, 100);
     margin-top: auto;
     margin-bottom: auto;
+    font-size: 14px;
+    animation: notification-title-in 3s ease;
+
+}
+
+.notification-close {
+    
+    width: 32px;
+    margin-left: auto;
+    padding: 10px;
+    cursor: pointer;
+    transition: 0.15s ease;
+    filter: invert(80%)
+
+}
+
+.notification-close:hover {
+
+    transform: scale(105%);
+
+}
+
+.notification-close:active {
+
+    transform: scale(95%);
+
+}
+
+.notification-button {
+
+    background: #2275f3;
+    border: none;
+    outline: none;
+    padding: 7px 15px;
+    color: white;
+    border-radius: 30px;
+    cursor: pointer;
     font-size: 12px;
+
+}
+
+@keyframes notification-title-in {
+
+    0% {
+        color: white;
+    }
+
+    22% {
+        color: white;
+    }
+
+    100% {
+        color: rgb(180, 183, 193);
+    }
+
+}
+
+@keyframes notification-in {
+
+    0% {
+        height: 0px;
+        background: rgb(26, 116, 243);
+    }
+
+    22% {
+        height: 50px;
+    }
+
+    100% {
+        background: #eef4f9;
+    }
 
 }

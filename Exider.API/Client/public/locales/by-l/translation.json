@@ -1,0 +1,20 @@
+{
+    "account.select_language": "Kalі laska, vyberytsʹe vashu movu.",
+    "account.service_name": "Akaŭnt",
+    "account.technical_support": "tėkhnichnaya padtrymka",
+    "account.terms_of_use": "Pravіly vykarystannya",
+    "account.privacy_policy": "Palіtyka kanfіdentsіyalʹnastsi",
+    "account.contact_us": "Zvâžyccie z nami",
+    "account.copyright": "© Andreev 2024, Mіnsk, Belarusʹ",
+    "account.confirm": "Pacverdźіć",
+    "account.login_with": "Uvajscі z dapamohaj",
+    "account.login_with.message": "My praverym, ci іsnae vash akaŭnt. Vash elektronnae adras abo nikneĭm ne pavіnny być pustymi.",
+    "account.login": "Uvajscі",
+    "account.continue_with_google": "Praćahnuć z Google",
+    "account.dont_have_account": "Nema u vas akaŭnta?",
+    "account.registration": "Rehіstracyya",
+    "account.forgot_password": "Zabylosya parolʹ?",
+    "account.or": "abo",
+    "account.email_or_nickname": "Elektronnaja pošta abo nikniejm",
+    "account.password": "Parol"
+}

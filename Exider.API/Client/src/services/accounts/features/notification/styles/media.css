@@ -1,0 +1,17 @@
+@media (max-width: 1138px) {
+
+    .notification {
+        padding-left: 10vw;
+        padding-right: 10vw;
+    }
+
+}
+
+@media (max-width: 652px) {
+
+    .notification {
+        padding-left: 2vw;
+        padding-right: 2vw;
+    }
+
+}
