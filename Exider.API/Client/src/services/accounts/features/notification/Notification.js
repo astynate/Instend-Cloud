@@ -3,11 +3,29 @@ import Close from './images/close.png';
 import './styles/main.css';
 import './styles/media.css';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
 const Notification = (props) => {
 
-    const [isOpen, setOpenState] = useState(true);
-    const { t } = useTranslation();
+    const state = useSelector((state) => state);
+    const [isOpen, setOpenState] = useState(!state.isLanguageSelect);
+    const { t, i18n } = useTranslation();
+
+    const ConfirmLanguage = () => {
+
+        i18n.changeLanguage(state.selectedLanguage);
+        CloseNotification();
+        
+    };
+
+    const CloseNotification = () => {
+
+        setOpenState(false);
+        localStorage.setItem('isLanguageSelected', true);
+
+    };
+
+    console.log(state.isLanguageSelect);
 
     return (
 
@@ -15,9 +33,9 @@ const Notification = (props) => {
             <div className='notification-title'>
                 {props.children}
                 <p>{props.title}</p>
-                <button className='notification-button'>{t('account.confirm')}</button>
+                <button className='notification-button' onClick={() => ConfirmLanguage()}>{t('account.confirm')}</button>
             </div>
-            <img src={Close} className='notification-close' onClick={() => setOpenState(false)} />
+            <img src={Close} className='notification-close' onClick={() => CloseNotification()} />
         </div>
     
     );

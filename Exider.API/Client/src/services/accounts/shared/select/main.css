@@ -1,7 +1,8 @@
 .select {
-    height: 65%;
-    width: 170px;
+    height: 75%;
+    width: 180px;
     font-size: 12px;
+    transition: 0.25s ease;
 }
 
 .select-current {
@@ -9,33 +10,63 @@
     color: rgb(0, 0, 0);
     display: flex;
     align-items: center;
-    border-radius: 5px;
-    border: 1px solid rgb(181, 181, 181);
-    background: white;
+    border-radius: 30px;
+    border: 2px solid rgb(181, 181, 181);
+    /* background: white; */
+    font-weight: 600;
     cursor: pointer;
     user-select: none;
-    padding: 0px 5px;
+    padding: 0px 10px;
+    grid-gap: 5px;
+    transition: 0.25s ease;
 }
 
 .select-current[id="open-select"] {
-    border-radius: 5px 5px 0px 0px;
+    border: 2px solid #2275f3;
+    /* border-bottom: none; */
+    border-radius: 20px 20px 0px 0px;
+    background: white;
 }
 
 .select-values {
     display: flex;
     flex-direction: column;
-    border: 1px solid #eee;
-    border-radius: 0px 0px 5px 5px;
+    border: 2px solid #2275f3;
+    border-top: none;
     background: rgba(255, 255, 255, 1);
+    transition: 0.25s ease;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    opacity: 0;
+    z-index: -500;
+    height: 0;
+    border-radius: 30px;
+}
+
+.select-values::-webkit-scrollbar { 
+
+    width: 2px;
+
+}
+
+.select-values[id="open-select"] {
+
+    height: 200px;
+    z-index: 500;
+    opacity: 1;
+    padding-top: 2px;
+    border-radius: 0px 0px 5px 5px;
+
 }
 
 .select-value {
     cursor: pointer;
     user-select: none;
-    padding: 12px 5px;
-    border-radius: 5px;
+    padding: 12px 8px;
+    margin-left: 2px;
+    font-weight: 500;
     border-bottom: 1px solid #eee;
-    transition: 0.1s ease;
+    transition: 0.15s ease;
 }
 
 .select-value:hover {
@@ -44,4 +75,19 @@
 
 .select-value:active {
     transform: scale(95%);
+}
+
+.translate-image, .open-state {
+    height: 12px;
+}
+
+.open-state[id="open-select"] {
+    transform: rotate(0deg);
+}
+
+.open-state {
+    margin-left: auto;
+    transition: 0.25s ease;
+    transform: rotate(180deg);
+    margin-right: 5px;
 }

@@ -22,7 +22,7 @@
             margin-bottom: 10px;
         }
         h1 {
-            font-size: 26px;
+            font-size: 24px;
             color: black;
         }
         h2 {
@@ -31,6 +31,13 @@
         h3 {
             font-size: 16px;
             color: black;
+        }
+        h4 {
+            font-size: 14px;
+            color: rgb(177, 177, 177);
+            margin-top: 2px;
+            font-weight: 500;
+            margin-bottom: 2px;
         }
         .wrapper {
             height: auto;
@@ -45,13 +52,13 @@
             padding-right: 10px;
         }
         .content-divide {
-            margin-top: 30px;
-            margin-bottom: 30px;
+            margin-top: 15px;
+            margin-bottom: 15px;
             border: 1px solid #eaeaea;
         }
         .logo {
-            height: 70px;
-            width: 70px;
+            height: 65px;
+            width: 65px;
             margin-bottom: 10px;
             object-fit: contain;
             user-select: none;
@@ -181,15 +188,28 @@
                     <img src="https://lh3.googleusercontent.com/u/0/drive-viewer/AEYmBYS-b_pMLiSYlDXWgyda29nFKjnMYUtiWpiwYhqwvDkihZBzsq1RAQGsR9cCBgmo8NOBuyg03EXGrxatGF8bD1mbNB0E0w=w1960-h2358" class="logo" draggable="false" />
                 </a>
             </div>
-            <h1 class="m-b-10">Successfully registered</h1>
-            <p class="m-b">Thank you for choosing to register an account with us. To complete your registration, please <span>follow the link</span> below and enter the <span>confirmation code.</span></p>
-            <div class="button m-b"><a href="LINK" style="color: white; height: 100%; width: 100%; cursor: pointer; padding: 15px 45px;">Confirm email</a></div>
+            <h1 class="m-b-10">Someone has logged into<br /> this account</h1>
             <hr class="content-divide">
-            <p class="m-b">You will be asked to enter <span>this code</span>,<br>
-            Pease <span>do not show</span> it to anyone</p>
-            <div class="code">
-                <h2>CODE</h2>
+            <p class="m-b" style="font-size: 14px;">Someone has gained access to your account. Below is the connection information. If it was you just ignore this letter</p>
+            <div style="display: grid; grid-template-columns: 1fr 1px 1fr;">
+                <div style="text-align: right; margin-right: 15px;">
+                    <h4>Month</h4>
+                    <h4>Day</h4>
+                    <h4>Time</h4>
+                    <h4>Device</h1>
+                    <h4>Browser</h4>
+                </div>
+                <div style="background: rgb(211, 211, 211);"></div>
+                <div style="height: 100%; text-align: left; margin-left: 15px;">
+                    <h4>September</h4>
+                    <h4>14</h4>
+                    <h4>10:30</h4>
+                    <h4>Windows</h4>
+                    <h4>Chrome</h4>
+                </div>
             </div>
+            <hr class="content-divide">
+            <div class="button m-b"><a href="LINK" style="color: white; height: 100%; width: 100%; cursor: pointer; padding: 15px 45px;">Change password</a></div>
         </div>
         <footer>
             <div class="header">
@@ -198,7 +218,7 @@
                         <img src="https://lh3.googleusercontent.com/u/0/drive-viewer/AEYmBYS-b_pMLiSYlDXWgyda29nFKjnMYUtiWpiwYhqwvDkihZBzsq1RAQGsR9cCBgmo8NOBuyg03EXGrxatGF8bD1mbNB0E0w=w1960-h2358" class="footer-logo" draggable="false">
                     </div>
                     <div style="margin-right: auto;">
-                        <div style="margin-bottom: 5px; font-size: 12px; color: #333; margin-top: 5px; font-weight: 600; display: flex; grid-gap: 3px;"><div style="font-weight: 700;">Exider</div> Security</div>
+                        <div style="margin-bottom: 5px; font-size: 12px; color: #444; margin-top: 5px; font-weight: 500; display: flex; grid-gap: 3px;"><div style="font-weight: 700;">Exider</div> Security</div>
                     </div>
                     <div style="display: flex; margin-left: auto; margin-top: 5px;">
                         <a href="#" class="footer-link" style="margin-right: 15px; color :#ababab;">Terms of use</a>
@@ -206,8 +226,6 @@
                     </div>
                 </div>
                 <div style="height: 1px; width: 100%; background: #ddd;" class="footer-first-line"></div>
-                <h3 style="margin-top: 10px; font-size: 12px; color: #999;">Why did you receive this letter?</h3>
-                <p style="margin-top: 5px; font-size: 12px; color: #ccc;">An attempt was made to register an account using your email. If this is not you, then simply ignore this message and without email confirmation, the account will be automatically deleted after 7 days</p>
                 <h3 style="margin-top: 10px; font-size: 12px; color: #999;">About Us</h3>
                 <p style="margin-top: 5px; font-size: 12px; color: #ccc;">Exider helps you automatically sync files across your devices, share them with friends, and edit them using neural networks</p>
                 <div style="margin-top: 10px; height: 1px; width: 100%; background: #ddd;"></div>

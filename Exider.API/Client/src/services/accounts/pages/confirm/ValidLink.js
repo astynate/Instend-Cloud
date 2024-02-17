@@ -50,21 +50,21 @@ const ValidLink = (props) => {
     return (
 
         loading ? (<Loading />) :
-        
-            (<Content title="Confirm Email Address">
-                <h1>Email <span className="selected-text">Confirmation</span></h1>
-                <p>We have sent you a confirmation code to {props.email}<br /> Please enter the code in the field below</p>
-                <Code setCode={setCode} />
-                <div className='external-links'>
-                    <div className='external-link'>
-                        <p>Didn't receive a confirmation?</p>
-                    </div>
-                    <div className='external-link'>
-                        <Link>Resend confirmation code</Link>
-                    </div>
+
+        <>
+            <h1>Email <span className="selected-text">Confirmation</span></h1>
+            <p>We have sent you a confirmation code to {props.email}<br /> Please enter the code in the field below</p>
+            <Code setCode={setCode} />
+            <div className='external-links'>
+                <div className='external-link'>
+                    <p>Didn't receive a confirmation?</p>
                 </div>
-                <Line />
-            </Content>)
+                <div className='external-link'>
+                    <Link>Resend confirmation code</Link>
+                </div>
+            </div>
+            <Line />
+        </>
 
     );
 

@@ -5,7 +5,6 @@ import Layout from './services/cloud/layout/Layout';
 import PrivateRoutes from './routes/PrivateRoutes';
 import PublicRoutes from './routes/PublicRoutes';
 import ValidateRoute from './utils/handlers/ValidateRoute'
-import { useTranslation } from 'react-i18next';
 
 const App = () => {
 

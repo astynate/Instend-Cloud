@@ -1,16 +1,17 @@
 .notification {
-    position: absolute;
+    position: sticky;
     z-index: 1000;
-    top: 0px;
+    top: 50px;
     left: 0;
     height: 0px;
-    background: #eef4f9;
+    background: #dde2e7d3;
     width: 100vw;
     display: flex;
     align-items: center;
     padding: 0vw 17vw;
     transition: 0.5s ease;
     opacity: 0;
+    overflow: hidden;
     animation: notification-in 2.7s ease;
 }
 
@@ -18,6 +19,7 @@
 
     height: 50px;
     opacity: 1;
+    overflow: visible;
 
 }
 
@@ -105,7 +107,7 @@
     }
 
     100% {
-        background: #eef4f9;
+        background: #dde2e7d3;
     }
 
 }

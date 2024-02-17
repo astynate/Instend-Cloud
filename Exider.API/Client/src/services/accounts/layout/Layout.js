@@ -1,40 +1,33 @@
 import './styles/colors.css';
 import './styles/main.css';
-import React, { useEffect, useState } from 'react';
-import { useTranslation, I18nextProvider } from 'react-i18next';
+import React from 'react';
+import { Provider } from 'react-redux';
 import Header from "../widgets/header/Header";
 import Footer from "../widgets/footer/Footer";
-import CustomSelect from "../shared/select/Select";
-import Notification from "../features/notification/Notification";
 import Content from '../widgets/content/Content';
-
-const languages = [
-    { key: 'en', label: 'English' },
-    { key: 'ru', label: 'Русский' },
-    { key: 'by-k', label: 'Беларускi' },
-    { key: 'by-l', label: 'Biełaruski' }
-];
+import Notification from '../features/notification/Notification';
+import CustomSelect from '../shared/select/Select';
+import languageStore from '../../../states/language/Store';
+import { useTranslation } from 'react-i18next';
 
 const Layout = ({ children }) => {
 
-    const { t } = useTranslation();
-    const [isLanguageSelected, setLanguageState] = useState(localStorage.getItem('isLanguageSelected'));
+    const { t } = useTranslation()
 
     return (
-
-        <I18nextProvider t={t}>
-            <Header />
-            <Content>
+        <>
+            <Provider store={languageStore}>
+                <Header />
                 <Notification title={t('account.select_language')}>
-                    <CustomSelect options={languages} />
+                    <CustomSelect />
                 </Notification>
-                {children}
-            </Content>
-            <Footer />
-        </I18nextProvider>
-
+                <Content>
+                    {children}
+                </Content>
+                <Footer />
+            </Provider>
+        </>
     );
-
 }
 
 export default Layout;

@@ -1,8 +1,11 @@
 .footer {
     top: 0;
     left: 0;
-    height: auto;
+    height: 60px;
     width: auto;
+    position: fixed;
+    bottom: 0;
+    left: 0;
     display: flex;
     padding-left: 17vw;
     padding-right: 17vw;
