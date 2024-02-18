@@ -1,4 +1,5 @@
-﻿using Exider.Dependencies.Services;
+﻿using Exider.Core;
+using Exider.Dependencies.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -17,7 +18,6 @@ namespace Exider_Version_2._0._0.ServerApp.Services
 
         public string GenerateAccessToken(string id, int time, string key)
         {
-
             var claims = new List<Claim> { new Claim("sub", id) };
 
             var jwt = new JwtSecurityToken(
@@ -31,21 +31,50 @@ namespace Exider_Version_2._0._0.ServerApp.Services
             );
 
             return new JwtSecurityTokenHandler().WriteToken(jwt);
-
         }
 
         public string GenerateRefreshToken(string id)
         {
-
             Random random = new Random();
 
             string refreshToken = new string(Enumerable.Range(0, 50)
                 .Select(_ => (char)random.Next(48, 123)).Where(char.IsLetterOrDigit).ToArray());
 
             return id + refreshToken;
-
         }
 
+        public string? GetUserIdFromToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            return jsonToken?.Claims.First(claim => claim.Type == "sub").Value;
+        }
+
+        private bool ValidateToken(string token, bool validateLifetime)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Convert.FromBase64String(Configuration.testEncryptionKey);
+
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = validateLifetime,
+                ClockSkew = TimeSpan.Zero
+            }, out SecurityToken validatedToken);
+
+            return true;
+        }
+
+        public bool IsTokenValid(string token) 
+            => ValidateToken(token, false);
+
+        public bool IsTokenAlive(string token) 
+            => ValidateToken(token, true);
+        
     }
 
 }

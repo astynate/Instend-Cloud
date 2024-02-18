@@ -7,7 +7,7 @@ import Footer from "../widgets/footer/Footer";
 import Content from '../widgets/content/Content';
 import Notification from '../features/notification/Notification';
 import CustomSelect from '../shared/select/Select';
-import languageStore from '../../../states/language/Store';
+import languageStore from '../../../state/Store';
 import { useTranslation } from 'react-i18next';
 
 const Layout = ({ children }) => {

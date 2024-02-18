@@ -37,6 +37,41 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
             _emailService = emailService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAuthenticationState(ISessionsRepository sessionsRepository, string accessToken, string refreshToken)
+        {
+
+            if (string.IsNullOrEmpty(accessToken) || string.IsNullOrEmpty(refreshToken))
+            {
+                return Unauthorized();
+            }
+
+            Guid userId = Guid.Parse(_tokenService.GetUserIdFromToken(accessToken));
+
+            if (_tokenService.IsTokenAlive(accessToken) || userId == Guid.Empty)
+            {
+                return Unauthorized();
+            }
+
+            SessionModel? sessionModel = await sessionsRepository
+                .GetSessionByTokenAndUserId(userId, refreshToken);
+
+            if (sessionModel is null || sessionModel.EndTime >= DateTime.Now)
+            {
+                return Unauthorized();
+            }
+
+            Response.Cookies.Append("system_refresh_token", refreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                MaxAge = TimeSpan.FromDays(Configuration.refreshTokenLifeTimeInDays)
+            });
+
+            return Ok(accessToken);
+
+        }
+
         [HttpPost]
         public async Task<IActionResult> Login(IEncryptionService encryptionService, ISessionsRepository sessionsRepository)
         {
@@ -87,6 +122,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
             {
                 HttpOnly = true,
                 Secure = true,
+                MaxAge = TimeSpan.FromDays(Configuration.refreshTokenLifeTimeInDays)
             });
 
             return Ok(accessToken);
