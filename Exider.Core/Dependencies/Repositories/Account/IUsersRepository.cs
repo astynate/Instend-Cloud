@@ -5,6 +5,7 @@ namespace Exider.Core.Dependencies.Repositories.Account
     public interface IUsersRepository
     {
         Task<UserModel?> GetUserByEmailAsync(string email);
+        Task<UserModel?> GetUserByEmailOrNicknameAsync(string username);
         Task<UserModel?> GetUserByNicknameAsync(string nickname);
         Task AddAsync(UserModel user);
     }

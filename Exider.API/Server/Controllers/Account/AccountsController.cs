@@ -60,7 +60,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
                 return BadRequest("Nickname required");
             }
 
-            UserModel? userModel = await _usersRepository.GetUserByEmailAsync(nickname);
+            UserModel? userModel = await _usersRepository.GetUserByNicknameAsync(nickname);
 
             if (userModel is null)
             {
@@ -72,40 +72,62 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAccount([FromBody] UserModel user, IEmailService emailService, IEncryptionService encryptionService)
+        public async Task<IActionResult> CreateAccount([FromBody] UserTransferModel user, IEmailService emailService, IEncryptionService encryptionService)
         {
 
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
 
-                await _usersRepository.AddAsync(user);
+                var userCreationResult = UserModel.Create
+                (
+                    user.name,
+                    user.surname,
+                    user.nickname,
+                    user.email,
+                    user.password
+                );
 
-                EmailModel email = new EmailModel()
+                if (userCreationResult.IsFailure)
                 {
-                    Email = user.Email,
-                    CreationTime = DateTime.Now,
-                    IsConfirmed = false,
-                    UserId = user.Id
-                };
+                    return BadRequest(userCreationResult.Error);
+                }
 
-                await _emailRepository.AddAsync(email);
+                await _usersRepository.AddAsync(userCreationResult.Value);
 
-                ConfirmationModel confirmation = new ConfirmationModel()
+                var emailCreationResult = EmailModel.Create
+                (
+                    userCreationResult.Value.Email,
+                    false,
+                    userCreationResult.Value.Id
+                );
+
+                if (emailCreationResult.IsFailure)
                 {
-                    Email = user.Email,
-                    Code = encryptionService.GenerateSecretCode(6),
-                    EndTime = DateTime.Now.AddHours(Configuration.confirmationLifetimeInHours),
-                    UserId = user.Id
-                };
+                    return BadRequest(emailCreationResult.Error);
+                }
 
-                await _confirmationRespository.AddAsync(confirmation);
+                await _emailRepository.AddAsync(emailCreationResult.Value);
 
-                await emailService.SendEmailConfirmation(user.Email, confirmation.Code,
-                    Configuration.URL + "account/email/confirmation/" + confirmation.Link.ToString());
+                var confirmationCreationResult = ConfirmationModel.Create
+                (
+                    userCreationResult.Value.Email,
+                    encryptionService.GenerateSecretCode(6),
+                    userCreationResult.Value.Id
+                );
+
+                if (confirmationCreationResult.IsFailure)
+                {
+                    return BadRequest(confirmationCreationResult.Error);
+                }
+
+                await _confirmationRespository.AddAsync(confirmationCreationResult.Value);
+
+                await emailService.SendEmailConfirmation(userCreationResult.Value.Email, confirmationCreationResult.Value.Code,
+                    Configuration.URL + "account/email/confirmation/" + confirmationCreationResult.Value.Link.ToString());
 
                 scope.Complete();
 
-                return Ok(confirmation.Link.ToString());
+                return Ok(confirmationCreationResult.Value.Link.ToString());
 
             }
 

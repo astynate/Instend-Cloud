@@ -57,9 +57,9 @@
             border: 1px solid #eaeaea;
         }
         .logo {
-            height: 65px;
-            width: 65px;
-            margin-bottom: 10px;
+            height: 70px;
+            width: 70px;
+            margin-bottom: 5px;
             object-fit: contain;
             user-select: none;
         }
@@ -159,6 +159,23 @@
         .footer-first-line {
             margin-top: 3px;
         }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            text-align: left;
+            padding: 10px;
+            color: #ababab;
+            width: 50%;
+            font-size: 14px;
+        }
+        th {
+            border-left: none;
+        }
+        td {
+            border-right: none;
+        }
         @media (max-width: 470px) {
             .content-wrapper {
                 padding-left: 20px;
@@ -188,26 +205,31 @@
                     <img src="https://lh3.googleusercontent.com/u/0/drive-viewer/AEYmBYS-b_pMLiSYlDXWgyda29nFKjnMYUtiWpiwYhqwvDkihZBzsq1RAQGsR9cCBgmo8NOBuyg03EXGrxatGF8bD1mbNB0E0w=w1960-h2358" class="logo" draggable="false" />
                 </a>
             </div>
-            <h1 class="m-b-10">Someone has logged into<br /> this account</h1>
-            <hr class="content-divide">
+            <h1 class="m-b-10">Logged in to your account</h1>
             <p class="m-b" style="font-size: 14px;">Someone has gained access to your account. Below is the connection information. If it was you just ignore this letter</p>
-            <div style="display: grid; grid-template-columns: 1fr 1px 1fr;">
-                <div style="text-align: right; margin-right: 15px;">
-                    <h4>Month</h4>
-                    <h4>Day</h4>
-                    <h4>Time</h4>
-                    <h4>Device</h1>
-                    <h4>Browser</h4>
-                </div>
-                <div style="background: rgb(211, 211, 211);"></div>
-                <div style="height: 100%; text-align: left; margin-left: 15px;">
-                    <h4>September</h4>
-                    <h4>14</h4>
-                    <h4>10:30</h4>
-                    <h4>Windows</h4>
-                    <h4>Chrome</h4>
-                </div>
-            </div>
+            <hr class="content-divide">
+            <table>
+                <tr>
+                    <th style="text-align: right;">Month:</th>
+                    <td>MONTH</td>
+                </tr>
+                <tr>
+                    <th style="text-align: right;">Day:</th>
+                    <td>DAY</td>
+                </tr>
+                <tr>
+                    <th style="text-align: right;">Time:</th>
+                    <td>TIME</td>
+                </tr>
+                <tr>
+                    <th style="text-align: right;">Device:</th>
+                    <td>DEVICE</td>
+                </tr>
+                <tr>
+                    <th style="text-align: right;">Browser:</th>
+                    <td>BROWSER</td>
+                </tr>
+            </table>
             <hr class="content-divide">
             <div class="button m-b"><a href="LINK" style="color: white; height: 100%; width: 100%; cursor: pointer; padding: 15px 45px;">Change password</a></div>
         </div>
@@ -218,7 +240,7 @@
                         <img src="https://lh3.googleusercontent.com/u/0/drive-viewer/AEYmBYS-b_pMLiSYlDXWgyda29nFKjnMYUtiWpiwYhqwvDkihZBzsq1RAQGsR9cCBgmo8NOBuyg03EXGrxatGF8bD1mbNB0E0w=w1960-h2358" class="footer-logo" draggable="false">
                     </div>
                     <div style="margin-right: auto;">
-                        <div style="margin-bottom: 5px; font-size: 12px; color: #444; margin-top: 5px; font-weight: 500; display: flex; grid-gap: 3px;"><div style="font-weight: 700;">Exider</div> Security</div>
+                        <div style="margin-bottom: 5px; font-size: 12px; color: #444; margin-top: 5px; font-weight: 500; display: flex;"><div style="font-weight: 700;">Exider</div>&nbsp;Security</div>
                     </div>
                     <div style="display: flex; margin-left: auto; margin-top: 5px;">
                         <a href="#" class="footer-link" style="margin-right: 15px; color :#ababab;">Terms of use</a>
@@ -230,7 +252,7 @@
                 <p style="margin-top: 5px; font-size: 12px; color: #ccc;">Exider helps you automatically sync files across your devices, share them with friends, and edit them using neural networks</p>
                 <div style="margin-top: 10px; height: 1px; width: 100%; background: #ddd;"></div>
                 <div style="width: 100%; margin-top: 5px; display: flex;">
-                    <div style="font-size: 12px; margin-top: 7px; color: #999; font-weight: 500;">Copyright © Andreev S, 2024</div>
+                    <div style="font-size: 12px; margin-top: 7px; color: #999; font-weight: 500;">© Andreev 2024. Minsk, Belarus</div>
                     <div style="margin-left: auto;">
                         <a href="https://www.facebook.com/profile.php/?id=61553222136930&paipv=0&eav=AfYg6dkHp8U4FG3lqDfucLJeTJhV-2BSs3BHd1zuu6Jv5qQShEmPZRbBFigDzrt5DA4&_rdr">
                             <img src="https://lh3.googleusercontent.com/u/0/drive-viewer/AEYmBYTfQNqazCHHCbxZmCr0kOxYtWdbh2VnjuwqQxzmZ2HP4w8Y_65PS9sESnI9umZ68bEovOtxf5QaYx5wnQo0HtxQUDdzbw=w2202-h1806" class="social-network" draggable="false">

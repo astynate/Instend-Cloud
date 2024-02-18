@@ -11,7 +11,25 @@
 
         public static readonly string URL = "http://localhost:44441/";
 
-        public static readonly int confirmationLifetimeInHours = 3;
+        public static readonly int confirmationLifeTimeInHours = 3;
+
+        public static readonly int refreshTokenLifeTimeInDays = 30;
+
+        public enum Months
+        {
+            January = 1,
+            February,
+            March,
+            April,
+            May,
+            June,
+            July,
+            August,
+            September,
+            October,
+            November,
+            December
+        }
 
     }
 

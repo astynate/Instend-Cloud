@@ -10,7 +10,7 @@ namespace Exider.Core.TransferModels.Account
         public string? surname { get; set; }
         public string? nickname { get; set; }
         public string? email { get; set; }
-        public double storageSpace { get; set; }
+        public double storageSpace { get; set; } = 1024;
 
         public PublicUserModel(UserModel user)
         {
@@ -18,7 +18,6 @@ namespace Exider.Core.TransferModels.Account
             name = user.Name;
             surname = user.Surname;
             nickname = user.Nickname;
-            storageSpace = user.StorageSpace;
             email = user.Email;
         }
 

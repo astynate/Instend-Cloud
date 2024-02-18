@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import './styles/main.css';
 import './styles/media.css';
 
@@ -12,7 +12,6 @@ const InputText = (props) => {
                 className='input'
                 maxLength={30}
                 onChange={(event) => { props.SetValue(event.target.value); }}
-                onBlur={() => console.log('!')}
                 autoFocus={props.autofocus}
                 defaultValue={props.defaultValue}
                 required

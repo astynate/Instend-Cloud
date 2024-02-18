@@ -25,8 +25,6 @@ const Notification = (props) => {
 
     };
 
-    console.log(state.isLanguageSelect);
-
     return (
 
         <div className='notification' id={isOpen ? 'open' : null}>

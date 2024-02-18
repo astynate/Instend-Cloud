@@ -4,6 +4,7 @@ using Exider.Dependencies.Services;
 using Exider.Repositories.Account;
 using Exider.Repositories.Email;
 using Exider.Repositories.Repositories;
+using Exider.Services.Internal.Handlers;
 using Exider.Services.Middleware;
 using Exider_Version_2._0._0.ServerApp.Services;
 
@@ -22,6 +23,7 @@ builder.Services.AddSingleton<IValidationService, ValidationService>();
 builder.Services.AddSingleton<ITokenService, JwtService>();
 builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 builder.Services.AddSingleton<IEmailService, EmailService>();
+builder.Services.AddSingleton<IUserAgentHandler, UserAgentHandler>();
 
 var app = builder.Build();
 

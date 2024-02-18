@@ -9,14 +9,7 @@ namespace Exider.Tests.Database.Models
     public class TestUserModel
     {
 
-        private static UserModel _user = new UserModel()
-        {
-            Name = "Test",
-            Surname = "Test",
-            Nickname = "Test2",
-            Email = "Test2",
-            Password = "123123123123123"
-        };
+        private static UserModel _user = UserModel.Create("Test", "Test", "Test", "sicome.a.s23123@gmail.com", "asdas").Value;
 
         private static readonly DatabaseContext _context = new DatabaseContext();
 

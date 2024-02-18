@@ -22,22 +22,15 @@ namespace Exider.Repositories.Repositories
             _validationService = validationService;
         }
 
-        public async Task AddAsync(UserModel? user)
+        public async Task AddAsync(UserModel user)
         {
 
             if (user is null)
+            {
                 throw new ArgumentNullException("User cannot be null");
+            }
 
-            if (_validationService.ValidateVarchar(user.Name, user.Surname, user.Nickname) == false)
-                throw new ArgumentNullException("Something went wrong");
-
-            if (_validationService.ValidateEmail(user.Email) == false)
-                throw new ArgumentNullException("Email cannot be null");
-
-            if (_validationService.ValidatePassword(user.Password, 8, 45) == false)
-                throw new ArgumentNullException("Email cannot be null");
-
-            user.Password = _encryptionService.HashUsingSHA256(user.Password);
+            user.HashPassword(_encryptionService);
 
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
@@ -48,6 +41,12 @@ namespace Exider.Repositories.Repositories
         {
             return await _context.Users.AsNoTracking()
                 .FirstOrDefaultAsync(user => user.Email == email);
+        }
+
+        public async Task<UserModel?> GetUserByEmailOrNicknameAsync(string username)
+        {
+            return await _context.Users.AsNoTracking()
+                .FirstOrDefaultAsync(user => user.Email == username || user.Nickname == username);
         }
 
         public async Task<UserModel?> GetUserByNicknameAsync(string nickname)

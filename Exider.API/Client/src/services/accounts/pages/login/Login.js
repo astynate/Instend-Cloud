@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import GoogleOAuth from '../../features/google-oauth/GoogleOAuth';
 import Button from '../../shared/button/Button';
 import InputText from "../../shared/input/InputText";
@@ -22,6 +22,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isValidData, setValidationState] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -33,17 +34,24 @@ const Login = () => {
 
         const userData = new FormData();
 
-        userData.append('email', email);
+        userData.append('username', email);
         userData.append('password', password);
-    
+        
         const response = await fetch('/authentication', {
-          method: 'POST',
-          body: userData,
+            method: 'POST',
+            body: userData
         });
-    
-        const result = await response.json();
+        
+        if (response.status === 200) {
 
-    };
+            const accessToken = await response.text();
+            localStorage.setItem('system_access_token', accessToken);
+
+            navigate('/');
+
+        }
+
+    }
 
     return (
 
