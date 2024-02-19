@@ -10,10 +10,6 @@ const initialState = {
     languages: languages
 };
 
-(async () => {
-  initialState.isAuthenticated = await GetAuthorizationState();
-})();
-
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'SET_LANGUAGE':

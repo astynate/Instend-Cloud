@@ -38,29 +38,9 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
         }
 
         [HttpGet]
-        public IActionResult GetAuthenticationState(string accessToken)
+        public async Task<IActionResult> GetAuthenticationState(ISessionsRepository sessionsRepository, string accessToken)
         {
-            string? refreshToken = Request.Cookies["refreshToken"]?.ToString();
-
-            if (string.IsNullOrEmpty(accessToken) || string.IsNullOrEmpty(refreshToken))
-            {
-                return Unauthorized();
-            }
-
-            Guid userId = Guid.Parse(_tokenService.GetUserIdFromToken(accessToken));
-
-            if (_tokenService.IsTokenAlive(accessToken) == false || userId == Guid.Empty)
-            {
-                return Unauthorized();
-            }
-
-            return Ok(accessToken);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> RefreshTokens(ISessionsRepository sessionsRepository, string accessToken)
-        {
-            string? refreshToken = Request.Cookies["refreshToken"]?.ToString();
+            string? refreshToken = Request.Cookies["system_refresh_token"]?.ToString();
 
             if (string.IsNullOrEmpty(accessToken) || string.IsNullOrEmpty(refreshToken))
             {
@@ -74,22 +54,19 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
                 return Unauthorized();
             }
 
-            SessionModel? sessionModel = await sessionsRepository
-                .GetSessionByTokenAndUserId(userId, refreshToken);
-
-            if (sessionModel is null || sessionModel.EndTime <= DateTime.Now)
+            if (_tokenService.IsTokenAlive(accessToken) == false)
             {
-                return Unauthorized();
+                SessionModel? sessionModel = await sessionsRepository
+                    .GetSessionByTokenAndUserId(userId, refreshToken);
+
+                if (sessionModel is null || sessionModel.EndTime <= DateTime.Now)
+                    return Unauthorized();
+
+                accessToken = _tokenService.GenerateAccessToken(userId.ToString(),
+                    Configuration.accsessTokenLifeTimeInMinutes, Configuration.testEncryptionKey);
             }
 
-            Response.Cookies.Append("system_refresh_token", refreshToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                MaxAge = TimeSpan.FromDays(Configuration.refreshTokenLifeTimeInDays)
-            });
-
-            return Ok(_tokenService.GenerateAccessToken(userId.ToString(), Configuration.accsessTokenLifeTimeInMinutes, Configuration.testEncryptionKey));
+            return Ok(accessToken);
         }
 
         [HttpPost]

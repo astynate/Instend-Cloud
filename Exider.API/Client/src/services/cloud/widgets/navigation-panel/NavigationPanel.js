@@ -1,9 +1,9 @@
 ﻿import { Link, useLocation  } from 'react-router-dom';
 import React from 'react'
-import button_styles from './css/navigation.buttons.css';
-import main_styles from './css/main.css';
-import media_styles from './css/media-queries.css';
-import progress_bar_styles from './css/progress-bar.css';
+import './css/navigation.buttons.css';
+import './css/main.css';
+import './css/media-queries.css';
+import './css/progress-bar.css';
 import logo from './images/logo/main-logo-black.svg';
 import home_passive from './images/buttons/home_passive.svg';
 import home_active from './images/buttons/home_active.svg';
@@ -32,10 +32,10 @@ const NavigationPanel = () => {
 
     return (
         <div className="left-panel">
-            <div className="logo">
+            <div className="left-panel-logo">
                 <img src={logo} alt="logo" draggable="false" />
             </div>
-            <div className="buttons">
+            <div className="navigation-buttons">
                 <Link to="/" className="navigation-button" id={useIsActiveButton('')}>
                     <img src={useIsCurrentRoute('') ? home_active : home_passive} draggable="false" alt="H" />
                     <nav>Home</nav>

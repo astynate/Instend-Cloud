@@ -53,20 +53,27 @@ namespace Exider_Version_2._0._0.ServerApp.Services
 
         private bool ValidateToken(string token, bool validateLifetime)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = _encryptionService.GetSymmetricKey(Configuration.testEncryptionKey);
-
-            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            try
             {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = key,
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ValidateLifetime = validateLifetime,
-                ClockSkew = TimeSpan.Zero
-            }, out SecurityToken validatedToken);
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = _encryptionService.GetSymmetricKey(Configuration.testEncryptionKey);
 
-            return true;
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = key,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = validateLifetime,
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken validatedToken);
+
+                return true;
+            }
+            catch {
+                return false;
+            }
+
         }
 
         public bool IsTokenValid(string token) 

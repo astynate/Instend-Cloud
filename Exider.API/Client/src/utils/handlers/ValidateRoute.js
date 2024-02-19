@@ -5,7 +5,7 @@
 const ValidateRoute = (PublicRoutes, isAuthenticated, location) => {
 
     const isPublicRoute = PublicRoutes
-        .some(route => location.pathname.includes(TransformPath(route)));
+        .some(route => location.includes(TransformPath(route)));
 
     return !(isPublicRoute === false && isAuthenticated === false);
 
