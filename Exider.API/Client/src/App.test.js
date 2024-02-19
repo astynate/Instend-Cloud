@@ -7,8 +7,9 @@ it('renders without crashing', async () => {
   const div = document.createElement('div');
   const root = createRoot(div);
   root.render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>);
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+  );
   await new Promise(resolve => setTimeout(resolve, 1000));
 });

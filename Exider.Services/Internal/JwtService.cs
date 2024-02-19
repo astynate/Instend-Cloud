@@ -25,7 +25,7 @@ namespace Exider_Version_2._0._0.ServerApp.Services
                 issuer: "Exider Company",
                 audience: "User",
                 claims: claims,
-                expires: DateTime.UtcNow.Add(TimeSpan.FromDays(time)),
+                expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(time)),
                 signingCredentials: new SigningCredentials(_encryptionService.GetSymmetricKey(key), SecurityAlgorithms.HmacSha256)
 
             );
@@ -54,12 +54,12 @@ namespace Exider_Version_2._0._0.ServerApp.Services
         private bool ValidateToken(string token, bool validateLifetime)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Convert.FromBase64String(Configuration.testEncryptionKey);
+            var key = _encryptionService.GetSymmetricKey(Configuration.testEncryptionKey);
 
             tokenHandler.ValidateToken(token, new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key),
+                IssuerSigningKey = key,
                 ValidateIssuer = false,
                 ValidateAudience = false,
                 ValidateLifetime = validateLifetime,

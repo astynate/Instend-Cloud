@@ -1,9 +1,9 @@
 ﻿import { Link, useLocation  } from 'react-router-dom';
 import React from 'react'
-import './css/buttons.css';
-import './css/main.css';
-import './css/media-queries.css';
-import './css/progress-bar.css';
+import button_styles from './css/navigation.buttons.css';
+import main_styles from './css/main.css';
+import media_styles from './css/media-queries.css';
+import progress_bar_styles from './css/progress-bar.css';
 import logo from './images/logo/main-logo-black.svg';
 import home_passive from './images/buttons/home_passive.svg';
 import home_active from './images/buttons/home_active.svg';
@@ -36,35 +36,35 @@ const NavigationPanel = () => {
                 <img src={logo} alt="logo" draggable="false" />
             </div>
             <div className="buttons">
-                <Link to="/" className="button" id={useIsActiveButton('')}>
+                <Link to="/" className="navigation-button" id={useIsActiveButton('')}>
                     <img src={useIsCurrentRoute('') ? home_active : home_passive} draggable="false" alt="H" />
                     <nav>Home</nav>
                 </Link>
-                <Link to="/explore" className="button" id={useIsActiveButton('explore')}>
+                <Link to="/explore" className="navigation-button" id={useIsActiveButton('explore')}>
                     <img src={useIsCurrentRoute('explore') ? explore_active : explore_passive} draggable="false" alt="E" />
                     <nav>Explore</nav>
                 </Link>
-                <Link to="/cloud" className="button" id={useIsActiveButton('cloud')}>
+                <Link to="/cloud" className="navigation-button" id={useIsActiveButton('cloud')}>
                     <img src={useIsCurrentRoute('cloud') ? cloud_active : cloud_passive} draggable="false" alt="C" />
                     <nav>Cloud</nav>
                 </Link>
-                <Link to="/gallery" className="button" id={useIsActiveButton('gallery')}>
+                <Link to="/gallery" className="navigation-button" id={useIsActiveButton('gallery')}>
                     <img src={useIsCurrentRoute('gallery') ? gallery_active : gallery_passive} draggable="false" alt="G" />
                     <nav>Gallery</nav>
                 </Link>
-                <Link to="/music" className="button" id={useIsActiveButton('music')}>
+                <Link to="/music" className="navigation-button" id={useIsActiveButton('music')}>
                     <img src={useIsCurrentRoute('music') ? music_active : music_passive} draggable="false" alt="M" />
                     <nav>Music</nav>
                 </Link>
-                <Link to="/friends" className="button" id={useIsActiveButton('friends')}>
+                <Link to="/friends" className="navigation-button" id={useIsActiveButton('friends')}>
                     <img src={useIsCurrentRoute('friends') ? friends_active : friends_passive} draggable="false" alt="F" />
                     <nav>Friends</nav>
                 </Link>
-                <Link to="/messages" className="button" id={useIsActiveButton('messages')}>
+                <Link to="/messages" className="navigation-button" id={useIsActiveButton('messages')}>
                     <img src={useIsCurrentRoute('messages') ? messages_active : messages_passive} draggable="false" alt="M" />
                     <nav>Messages</nav>
                 </Link>
-                <Link to="/profile" className="button" id={useIsActiveButton('profile')}>
+                <Link to="/profile" className="navigation-button" id={useIsActiveButton('profile')}>
                     <img src={useIsCurrentRoute('profile') ? profile_active : profile_passive} draggable="false" alt="P" />
                     <nav>Profile</nav>
                 </Link>

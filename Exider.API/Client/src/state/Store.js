@@ -1,13 +1,18 @@
 import { createStore } from 'redux';
 import languages from './Languages';
-import { GetCurrentLanguage, IsLanguageSelected } from './Operations';
+import { GetCurrentLanguage, IsLanguageSelected, GetAuthorizationState } from './Operations';
 
 const initialState = {
     currentLanguage: GetCurrentLanguage(),
     selectedLanguage: GetCurrentLanguage(),
     isLanguageSelect: IsLanguageSelected(),
+    isAuthenticated: false,
     languages: languages
 };
+
+(async () => {
+  initialState.isAuthenticated = await GetAuthorizationState();
+})();
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -16,11 +21,16 @@ const reducer = (state = initialState, action) => {
         ...state,
         selectedLanguage: action.payload,
       };
+    case 'SET_AUTHORIZE_STATE':
+      return {
+        ...state,
+        isAuthenticated: action.payload,
+      };
     default:
       return state;
   }
 };
 
-const languageStore = createStore(reducer);
+const store = createStore(reducer);
 
-export default languageStore;
+export default store;

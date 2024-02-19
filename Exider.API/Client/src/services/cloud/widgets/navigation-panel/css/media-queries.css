@@ -22,19 +22,19 @@
 
     }
 
-    .button:hover {
+    .navigation-button:hover {
         
         transform: scale(102%);
 
     }
 
-    .button:active {
+    .navigation-button:active {
         
         transform: scale(95%);
 
     }
 
-    .button nav {
+    .navigation-button nav {
 
         display: none;
 

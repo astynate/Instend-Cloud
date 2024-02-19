@@ -1,32 +1,37 @@
 import './styles/colors.css';
 import './styles/main.css';
 import React from 'react';
-import { Provider } from 'react-redux';
 import Header from "../widgets/header/Header";
 import Footer from "../widgets/footer/Footer";
 import Content from '../widgets/content/Content';
 import Notification from '../features/notification/Notification';
 import CustomSelect from '../shared/select/Select';
-import languageStore from '../../../state/Store';
+import PublicRoutes from '../../../routes/PublicRoutes';
+import { Routes, Route } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-const Layout = ({ children }) => {
+const Layout = () => {
 
     const { t } = useTranslation()
 
     return (
+
         <>
-            <Provider store={languageStore}>
-                <Header />
-                <Notification title={t('account.select_language')}>
-                    <CustomSelect />
-                </Notification>
-                <Content>
-                    {children}
-                </Content>
-                <Footer />
-            </Provider>
+            <Header />
+            <Notification title={t('account.select_language')}>
+                <CustomSelect />
+            </Notification>
+            <Content>
+                <Routes>
+                    {PublicRoutes.map((route, index) => {
+                        const { element, ...rest } = route;
+                        return <Route key={index} {...rest} element={element} />;
+                    })}
+                </Routes>
+            </Content>
+            <Footer />
         </>
+        
     );
 }
 

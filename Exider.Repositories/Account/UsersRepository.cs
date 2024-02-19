@@ -13,13 +13,10 @@ namespace Exider.Repositories.Repositories
 
         private readonly IEncryptionService _encryptionService;
 
-        private readonly IValidationService _validationService;
-
-        public UsersRepository(DatabaseContext context, IEncryptionService encryptionService, IValidationService validationService)
+        public UsersRepository(DatabaseContext context, IEncryptionService encryptionService)
         {
             _context = context;
             _encryptionService = encryptionService;
-            _validationService = validationService;
         }
 
         public async Task AddAsync(UserModel user)

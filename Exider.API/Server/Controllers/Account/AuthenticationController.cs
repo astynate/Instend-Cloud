@@ -38,8 +38,9 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAuthenticationState(ISessionsRepository sessionsRepository, string accessToken, string refreshToken)
+        public IActionResult GetAuthenticationState(string accessToken)
         {
+            string? refreshToken = Request.Cookies["refreshToken"]?.ToString();
 
             if (string.IsNullOrEmpty(accessToken) || string.IsNullOrEmpty(refreshToken))
             {
@@ -48,7 +49,27 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
             Guid userId = Guid.Parse(_tokenService.GetUserIdFromToken(accessToken));
 
-            if (_tokenService.IsTokenAlive(accessToken) || userId == Guid.Empty)
+            if (_tokenService.IsTokenAlive(accessToken) == false || userId == Guid.Empty)
+            {
+                return Unauthorized();
+            }
+
+            return Ok(accessToken);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> RefreshTokens(ISessionsRepository sessionsRepository, string accessToken)
+        {
+            string? refreshToken = Request.Cookies["refreshToken"]?.ToString();
+
+            if (string.IsNullOrEmpty(accessToken) || string.IsNullOrEmpty(refreshToken))
+            {
+                return Unauthorized();
+            }
+
+            Guid userId = Guid.Parse(_tokenService.GetUserIdFromToken(accessToken));
+
+            if (_tokenService.IsTokenValid(accessToken) == false || userId == Guid.Empty)
             {
                 return Unauthorized();
             }
@@ -56,7 +77,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
             SessionModel? sessionModel = await sessionsRepository
                 .GetSessionByTokenAndUserId(userId, refreshToken);
 
-            if (sessionModel is null || sessionModel.EndTime >= DateTime.Now)
+            if (sessionModel is null || sessionModel.EndTime <= DateTime.Now)
             {
                 return Unauthorized();
             }
@@ -68,8 +89,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
                 MaxAge = TimeSpan.FromDays(Configuration.refreshTokenLifeTimeInDays)
             });
 
-            return Ok(accessToken);
-
+            return Ok(_tokenService.GenerateAccessToken(userId.ToString(), Configuration.accsessTokenLifeTimeInMinutes, Configuration.testEncryptionKey));
         }
 
         [HttpPost]

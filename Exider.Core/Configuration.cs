@@ -15,6 +15,8 @@
 
         public static readonly int refreshTokenLifeTimeInDays = 30;
 
+        public static readonly int accsessTokenLifeTimeInMinutes = 30;
+
         public enum Months
         {
             January = 1,

@@ -25,7 +25,7 @@ const Registration = () => {
 
         <UserContext.Provider value={user}>
             <Routes>
-                <Route path="email" element={<Email />} />7
+                <Route path="email" element={<Email />} />
                 <Route path="nickname" element={<Nickname />} />
                 <Route path="name" element={<Name />} />
                 <Route path="password" element={<Password />} />

@@ -6,7 +6,7 @@
 
 }
 
-.button {
+.navigation-button {
 
     width: auto;
     height: auto;
@@ -21,7 +21,7 @@
 
 }
 
-.button nav { 
+.navigation-button nav { 
 
     font-size: 15px;
     text-decoration: none;
@@ -29,7 +29,7 @@
 
 }
 
-.button:hover {
+.navigation-button:hover {
 
     cursor: pointer;
     background: var(--main-accent-color);
@@ -38,19 +38,19 @@
 
 }
 
-.button:active {
+.navigation-button:active {
 
     transform: scale(98%);
 
 }
 
-.button[id="active"] nav {
+.navigation-button[id="active"] nav {
 
     font-weight: 800;
 
 }
 
-.button img {
+.navigation-button img {
 
     height: 23px;
     width: 23px;

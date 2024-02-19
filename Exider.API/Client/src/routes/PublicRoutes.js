@@ -5,15 +5,15 @@ import { Registration } from '../services/accounts/processes/Registration';
 
 const PublicRoutes = [
     {
-        path: '/account/login',
+        path: 'login',
         element: <Login />
     },
     {
-        path: '/account/create/*',
+        path: 'create/*',
         element: <Registration />
     },
     {
-        path: '/account/email/confirmation/:id',
+        path: 'email/confirmation/:id',
         element: <Confirm />
     }
 ];
