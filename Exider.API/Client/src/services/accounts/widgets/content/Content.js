@@ -1,6 +1,7 @@
 ﻿import React from 'react';
 import logo from './images/logo.png';
 import './style/main.css';
+import './style/media.css';
 
 const Content = (props) => {
 

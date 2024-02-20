@@ -82,7 +82,7 @@ const ValidLink = (props) => {
 
         <>
             <h1>Email <span className="selected-text">Confirmation</span></h1>
-            <p>We have sent you a confirmation code to {props.email} Please enter the confirmation code</p>
+            <p className='page-description'>We have sent you a confirmation code to {props.email} Please enter the confirmation code</p>
             <Code setCode={setCode} />
             <Line />
             <Button 

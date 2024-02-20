@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Translate from './images/translate.png';
 import Arrow from './images/arrow.png';
 import './main.css';
+import './media.css';
 
 const CustomSelect = (props) => {
 

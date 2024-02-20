@@ -22,7 +22,7 @@ const Nickname = () => {
 
         <>
             <h1>Creation of <span className="selected-text">Exider ID</span></h1>
-            <p>Please enter your nickname. This is a required field. Your nickname<br /> must be unique</p>
+            <p className='page-description'>Please enter your nickname. This is a required field. Your nickname<br /> must be unique</p>
             <InputCheck
                 placeholder='Nickname'
                 autofocus={true}

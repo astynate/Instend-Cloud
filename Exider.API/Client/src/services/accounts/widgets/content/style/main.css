@@ -35,7 +35,7 @@ h1 {
     font-weight: 600;
 }
 
-p {
+.page-description {
     max-width: 450px;
     font-size: 14px;
     text-align: center;

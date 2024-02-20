@@ -1,0 +1,5 @@
+@media (max-width: 490px) {
+    .page-description {
+        max-width: 85vw;
+    }
+}

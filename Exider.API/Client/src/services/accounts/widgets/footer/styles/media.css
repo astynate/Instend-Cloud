@@ -10,8 +10,32 @@
 @media (max-width: 652px) {
 
     .footer {
+        padding-top: 15px;
+        padding-bottom: 15px;
+        height: auto;
         padding-left: 2vw;
         padding-right: 2vw;
+        display: flex;
+        grid-gap: 10px;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .footer-links {
+        justify-content: space-between;
+        grid-gap: 7px;
+    }
+
+    .footer-link {
+        padding-right: 7px;
+    }
+
+    .footer[id="not-necessary"] {
+        display: none;
+    }
+
+    .copyright {
+        margin-left: 0;
     }
 
 }

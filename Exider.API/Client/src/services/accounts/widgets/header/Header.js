@@ -1,4 +1,4 @@
-﻿import React from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import './styles/main.css';
 import './styles/media.css';
 import logo from './images/logo.svg';
@@ -9,26 +9,36 @@ import { useTranslation } from 'react-i18next';
 const Header = () => {
 
     const { t } = useTranslation();
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+    useEffect(() => {
+
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+
+    }, []);
 
     return (
-
-        <>
-
-            <div className="header">
-                <div className="product-logo">
-                    <img src={logo} className="logo" draggable="false" />
-                    <span className="product-name"><span className="company-name">Exider</span>&nbsp;{t('account.service_name')}</span>
-                </div>
+        <div className="header">
+            <div className="product-logo">
+                <img src={logo} className="logo" alt="Logo" draggable="false" />
+                <span className="product-name"><span className="company-name">Exider</span>&nbsp;{t('account.service_name')}</span>
+            </div>
+            {(windowWidth > 550) ? (
                 <div className="links">
                     <ExternalLink logo={link} name={t('account.technical_support')} link="https://google.com" />
                     <ExternalLink logo={link} name={t('account.terms_of_use')} link="https://google.com" />
                 </div>
-            </div>
-
-        </>
-
+            ) : null}
+        </div>
     );
-
 }
 
 export default Header;

@@ -30,7 +30,7 @@ const Notification = (props) => {
         <div className='notification' id={isOpen ? 'open' : null}>
             <div className='notification-title'>
                 {props.children}
-                <p>{props.title}</p>
+                <p className='change-language-title'>{props.title}</p>
                 <button className='notification-button' onClick={() => ConfirmLanguage()}>{t('account.confirm')}</button>
             </div>
             <img src={Close} className='notification-close' onClick={() => CloseNotification()} />

@@ -5,7 +5,7 @@ import './styles/main.css';
 import './styles/media.css';
 import { useTranslation } from 'react-i18next';
 
-const Footer = (props) => {
+const Footer = () => {
 
     const { t } = useTranslation();
 
@@ -14,7 +14,7 @@ const Footer = (props) => {
         <div className='footer'>
             <div className='footer-links'>
                 <Link to="/" className='footer-link'>{t('account.privacy_policy')}</Link>
-                <Link to="/" className='footer-link'>{t('account.contact_us')}</Link>
+                <Link to="/" className='footer-link' id="not-necessary">{t('account.contact_us')}</Link>
                 <OpenLink title='Русский' />
             </div>
             <div className='copyright'>

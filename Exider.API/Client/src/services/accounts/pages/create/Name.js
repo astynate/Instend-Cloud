@@ -31,7 +31,7 @@ const Name = () => {
 
         <>
             <h1>Creation of <span className="selected-text">Exider ID</span></h1>
-            <p>Please enter your name and surname. This is a required fields.</p>
+            <p className='page-description'>Please enter your name and surname. This is a required fields.</p>
             <InputText placeholder="Name" autofocus={true} defaultValue={name} SetValue={setName} />
             <InputText placeholder="Surname" defaultValue={surname} SetValue={setSurname} />
             <Link to='/account/create/password' className='next'>

@@ -72,7 +72,7 @@ const Password = () => {
 
         <>
             <h1>Creation of <span className="selected-text">Exider ID</span></h1>
-            <p>This is a required field. Your password must be at least 8 characters long.</p>
+            <p className='page-description'>This is a required field. Your password must be at least 8 characters long.</p>
             <InputPassword
                 placeholder="Enter your password"
                 autofocus={true} name="password"

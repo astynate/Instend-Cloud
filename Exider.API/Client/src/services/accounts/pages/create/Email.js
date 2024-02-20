@@ -21,7 +21,7 @@ const Email = () => {
 
         <>
             <h1>Creation of <span className="selected-text">Exider ID</span></h1>
-            <p>Please enter your email. This field is required and must look like<br /> example@domain.com</p>
+            <p className='page-description'>Please enter your email. This field is required and must look like<br /> example@domain.com</p>
             <InputCheck
                 placeholder='Email'
                 autofocus={true}

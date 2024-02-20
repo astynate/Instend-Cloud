@@ -11,8 +11,7 @@
     display: flex;
     align-items: center;
     border-radius: 30px;
-    border: 2px solid rgb(181, 181, 181);
-    /* background: white; */
+    border: 2px solid rgb(230, 230, 230);
     font-weight: 600;
     cursor: pointer;
     user-select: none;
@@ -23,7 +22,6 @@
 
 .select-current[id="open-select"] {
     border: 2px solid #2275f3;
-    /* border-bottom: none; */
     border-radius: 20px 20px 0px 0px;
     background: white;
 }

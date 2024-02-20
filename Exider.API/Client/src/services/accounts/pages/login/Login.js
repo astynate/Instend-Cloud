@@ -69,7 +69,7 @@ const Login = () => {
 
         <>
             <h1>{t('account.login_with')} <span className="selected-text">Exider ID</span></h1>
-            <p>{t('account.login_with.message')}</p>
+            <p className='page-description'>{t('account.login_with.message')}</p>
             <InputText placeholder={t('account.email_or_nickname')} SetValue={setEmail} autofocus={true} />
             <InputPassword placeholder={t('account.password')} SetValue={setPassword} autofocus={false} />
             <Button title={t('account.login')} state={formState} onClick={() => {Authorize()}} />
