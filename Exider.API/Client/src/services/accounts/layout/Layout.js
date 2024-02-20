@@ -9,18 +9,20 @@ import CustomSelect from '../shared/select/Select';
 import PublicRoutes from '../../../routes/PublicRoutes';
 import { Routes, Route } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
 const Layout = () => {
 
     const { t } = useTranslation()
+    const isLanguageSelected = useSelector((store) => store.isLanguageSelected);
 
     return (
 
         <>
             <Header />
-            <Notification title={t('account.select_language')}>
+            {isLanguageSelected ? <Notification title={t('account.select_language')}>
                 <CustomSelect />
-            </Notification>
+            </Notification> : null}
             <Content>
                 <Routes>
                     {PublicRoutes.map((route, index) => {

@@ -6,7 +6,9 @@ using Exider.Repositories.Email;
 using Exider.Repositories.Repositories;
 using Exider.Services.Internal.Handlers;
 using Exider.Services.Middleware;
+using Exider_Version_2._0._0.Server.Controllers.Account;
 using Exider_Version_2._0._0.ServerApp.Services;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +38,19 @@ app.UseMiddleware<LoggingMiddleware>();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
+app.Use(async (context, next) =>
+{
+    string? accessToken = context.Request.Headers["Authentification"];
+
+    if (accessToken != null && context.Response.StatusCode == 401)
+    {
+        accessToken = accessToken?.Replace("Bearer ", "");
+        context.Response.Redirect("/authentication?accessToken=" + accessToken);
+    }
+
+    await next(context);
+});
 
 app.MapControllerRoute(
     name: "default",

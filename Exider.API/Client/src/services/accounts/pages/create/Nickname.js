@@ -35,7 +35,7 @@ const Nickname = () => {
             <Link to='/account/create/name' className='next'>
                 <Button
                     title="Next"
-                    disabled={!isValidNickname}
+                    state={isValidNickname ? 'valid' : 'invalid'}
                 />
             </Link>
         </>

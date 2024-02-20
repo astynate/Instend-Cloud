@@ -5,7 +5,7 @@ const Line = (props) => {
 
     return (
 
-        <div className='line'>
+        <div className='divide-line'>
             <hr />
             <span className="line-text">{props.title}</span>
         </div>

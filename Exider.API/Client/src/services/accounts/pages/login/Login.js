@@ -11,7 +11,7 @@ import './main.css';
 
 const ValidateLoginForm = (email, password) => {
 
-    return ValidationHandler.ValidateEmail(email) &&
+    return ValidationHandler.ValidateVarchar(email, 45) &&
         password.length >= 8;
 
 };
@@ -21,12 +21,12 @@ const Login = () => {
     const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [isValidData, setValidationState] = useState(false);
+    const [formState, setFormState] = useState('invalid');
     const navigate = useNavigate();
 
     useEffect(() => {
 
-        setValidationState(ValidateLoginForm(email, password));
+        setFormState(ValidateLoginForm(email, password) === true ? 'valid' : 'invalid');
 
     }, [email, password]);
 
@@ -36,6 +36,8 @@ const Login = () => {
 
         userData.append('username', email);
         userData.append('password', password);
+
+        setFormState('loading');
         
         const response = await fetch('/authentication', {
             method: 'POST',
@@ -47,8 +49,13 @@ const Login = () => {
             const accessToken = await response.text();
             localStorage.setItem('system_access_token', accessToken);
 
+            setFormState('valid');
             navigate('/');
 
+        } else {
+
+            setFormState('invalid');
+            
         }
 
     }
@@ -60,7 +67,7 @@ const Login = () => {
             <p>{t('account.login_with.message')}</p>
             <InputText placeholder={t('account.email_or_nickname')} SetValue={setEmail} autofocus={true} />
             <InputPassword placeholder={t('account.password')} SetValue={setPassword} autofocus={false} />
-            <Button title={t('account.login')} active={false} onClick={() => {Authorize()}} disabled={!isValidData} />
+            <Button title={t('account.login')} state={formState} onClick={() => {Authorize()}} />
             <Line title={t('account.or')} />
             <GoogleOAuth />
             <div className='external-links margin-top-20'>

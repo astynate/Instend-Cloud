@@ -1,4 +1,4 @@
-﻿using Exider.Core.Models.Email;
+﻿using Exider.Dependencies.Services;
 using Exider.Repositories.Account;
 using Exider.Repositories.Email;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +37,6 @@ namespace Exider_Version_2._0._0.Server.Controllers.Email
         [HttpPost]
         public async Task<IActionResult> ConfirmEmailAddress(IEmailRepository emailRepository, string link, string code)
         {
-
             var confirmation = await _confirmationRespository.GetByLinkAsync(link);
 
             if (confirmation.IsFailure)
@@ -55,7 +54,23 @@ namespace Exider_Version_2._0._0.Server.Controllers.Email
             }
 
             return Ok();
+        }
 
+        [HttpPut]
+        public async Task<IActionResult> ResendConfirmation(IEmailService emailService, string link)
+        {
+            if (string.IsNullOrEmpty(link))
+                return BadRequest("Invalid link");
+
+            var confirmationUpdateResult = await _confirmationRespository
+                .UpdateByLinkAsync(link);
+
+            if (confirmationUpdateResult.IsFailure)
+                return Conflict(confirmationUpdateResult.Error);
+
+            await emailService.SendEmailConfirmation();
+
+            return Ok(confirmationUpdateResult.Value);
         }
 
     }

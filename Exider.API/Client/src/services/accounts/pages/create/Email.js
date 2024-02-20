@@ -32,7 +32,7 @@ const Email = () => {
                 endpoint='/accounts/email'
             />
             <Link to='/account/create/nickname' className='next'>
-                <Button title="Next" disabled={!isValidEmail} />
+                <Button title="Next" state={isValidEmail ? 'valid' : 'invalid'} />
             </Link>
         </>
 

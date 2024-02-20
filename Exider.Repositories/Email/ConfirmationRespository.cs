@@ -86,6 +86,28 @@ namespace Exider.Repositories.Email
 
         }
 
+        public async Task<Result<ConfirmationModel>> UpdateByLinkAsync(string link)
+        {
+
+            if (string.IsNullOrEmpty(link) || string.IsNullOrWhiteSpace(link))
+            {
+                return Result.Failure<ConfirmationModel>("Invalid link");
+            }
+
+            ConfirmationModel? confirmationModel = await _context.Confirmation.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Link == Guid.Parse(link) && x.CreationTime.AddMinutes(1) <= DateTime.Now);
+
+            if (confirmationModel is null)
+            {
+                return Result.Failure<ConfirmationModel>("Confirmation not found");
+            }
+
+            confirmationModel.CreationTime = DateTime.Now;
+            confirmationModel.Link = Guid.NewGuid();
+            confirmationModel.Code = 
+
+            return Result.Success(newLink.ToString());
+        }
     }
 
 }

@@ -26,11 +26,13 @@ const Password = () => {
 
     const [password, setPassword] = useState('');
     const [confirmedPassword, setConfirmedPassword] = useState('');
-    const [validationState, setValidationState] = useState(ValidateUserData(user, password, confirmedPassword));
+    const [validationState, setValidationState] = useState(ValidateUserData(user, password, confirmedPassword) ? 'valid' : 'invalid');
 
     const SendRegistrationRequest = async () => {
 
         try {
+
+            setValidationState('loading');
 
             const response = await fetch("/accounts", {
                 method: "POST",
@@ -44,12 +46,16 @@ const Password = () => {
 
                 const responseData = await response.text();
                 navigate('/account/email/confirmation/' + responseData, { replace: true })
+                setValidationState('valid');
 
+            } else {
+                setValidationState('invalid');
             }
 
         } catch (exception) {
 
             console.error(exception);
+            setValidationState('invalid');
 
         }
 
@@ -58,7 +64,7 @@ const Password = () => {
     useEffect(() => {
 
         user.password = password;
-        setValidationState(ValidateUserData(user, password, confirmedPassword));
+        setValidationState(ValidateUserData(user, password, confirmedPassword) ? 'valid' : 'invalid');
 
     }, [user, password, confirmedPassword, setValidationState]);
 
@@ -79,7 +85,7 @@ const Password = () => {
             />
             <Button
                 title="Next"
-                disabled={!validationState}
+                state={validationState}
                 onClick={() => { SendRegistrationRequest() }}
             />
         </>

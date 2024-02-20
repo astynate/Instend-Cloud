@@ -1,5 +1,5 @@
-import React, { useEffect, useLayoutEffect } from 'react';
-import { Routes, Navigate, Route, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Routes, useNavigate, Route, useLocation } from 'react-router-dom';
 import Authorization from './services/accounts/layout/Layout';
 import Cloud from './services/cloud/layout/Layout';
 import userState from './states/user-state';
@@ -7,13 +7,14 @@ import { observer } from 'mobx-react-lite';
 
 const App = observer(() => {
 
+    let navigate = useNavigate();
     let location = useLocation();
 
-    const {isAuthorize, UpdateAuthorizeState, isLoading, isAccessibleRoute} = userState;
+    const {UpdateAuthorizeState, isLoading, isAccessibleRoute} = userState;
 
-    useLayoutEffect(() => {
+    useEffect(() => {
 
-        UpdateAuthorizeState();
+        UpdateAuthorizeState(location.pathname, navigate);
 
     }, []);
 
@@ -21,7 +22,7 @@ const App = observer(() => {
 
         (isLoading ? 
         
-            <h1>Loading...</h1> 
+            <h1>Loading...</h1>
 
         :
 
@@ -31,7 +32,6 @@ const App = observer(() => {
                     <Route path="/*" element={<Cloud />} />
                     <Route path="*" element={<h1>404 - Not Found</h1>} />
                 </Routes>
-                {(isAccessibleRoute === false) ? <Navigate to="/account/login" replace={true} /> : null}
             </>
         )
     );

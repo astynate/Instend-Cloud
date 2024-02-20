@@ -10,7 +10,19 @@
     font-weight: 600;
     transition: 0.15s ease;
     user-select: none;
+    cursor: pointer;
+    position: relative;
 }
+
+    .button:disabled[id="loading"] {
+        background: #000000;
+        cursor: not-allowed;
+        color: transparent;
+    }
+
+    .button:disabled[id="loading"]:hover {
+        background: #000000;
+    }
 
     .button:disabled {
         background: #ddd;
@@ -30,3 +42,99 @@
 .button:active {
     transform: scale(97%);
 }
+
+.button-loader-wrapper {
+    height: auto;
+    width: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-112%) scale(35%);
+    transition: 0.25s ease;
+    opacity: 0;
+}
+
+.button-loader-wrapper[id="loading"] {
+    opacity: 1;
+}
+
+.button-loader {
+    display: inline-block;
+    position: relative;
+    width: 0px;
+    height: 0px;
+    margin: auto;
+  }
+  .button-loader div {
+    transform-origin: 0px 30px;
+    animation: button-loader-animation 1.2s linear infinite;
+  }
+  .button-loader div:after {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 5px;
+    height: 12px;
+    border-radius: 2px;
+    background: white;
+  }
+  .button-loader div:nth-child(1) {
+    transform: rotate(0deg);
+    animation-delay: -1.1s;
+  }
+  .button-loader div:nth-child(2) {
+    transform: rotate(30deg);
+    animation-delay: -1s;
+  }
+  .button-loader div:nth-child(3) {
+    transform: rotate(60deg);
+    animation-delay: -0.9s;
+  }
+  .button-loader div:nth-child(4) {
+    transform: rotate(90deg);
+    animation-delay: -0.8s;
+  }
+  .button-loader div:nth-child(5) {
+    transform: rotate(120deg);
+    animation-delay: -0.7s;
+  }
+  .button-loader div:nth-child(6) {
+    transform: rotate(150deg);
+    animation-delay: -0.6s;
+  }
+  .button-loader div:nth-child(7) {
+    transform: rotate(180deg);
+    animation-delay: -0.5s;
+  }
+  .button-loader div:nth-child(8) {
+    transform: rotate(210deg);
+    animation-delay: -0.4s;
+  }
+  .button-loader div:nth-child(9) {
+    transform: rotate(240deg);
+    animation-delay: -0.3s;
+  }
+  .button-loader div:nth-child(10) {
+    transform: rotate(270deg);
+    animation-delay: -0.2s;
+  }
+  .button-loader div:nth-child(11) {
+    transform: rotate(300deg);
+    animation-delay: -0.1s;
+  }
+  .button-loader div:nth-child(12) {
+    transform: rotate(330deg);
+    animation-delay: 0s;
+  }
+  @keyframes button-loader-animation {
+    0% {
+      opacity: 1;
+    }
+    
+    100% {
+      opacity: 0;
+    }
+  }
+  

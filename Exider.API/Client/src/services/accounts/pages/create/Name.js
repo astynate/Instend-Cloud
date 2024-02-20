@@ -35,7 +35,7 @@ const Name = () => {
             <InputText placeholder="Name" autofocus={true} defaultValue={name} SetValue={setName} />
             <InputText placeholder="Surname" defaultValue={surname} SetValue={setSurname} />
             <Link to='/account/create/password' className='next'>
-                <Button title="Next" disabled={!validationState} />
+                <Button title="Next" state={validationState ? 'valid' : 'invalid'} />
             </Link>
         </>
 

@@ -14,7 +14,9 @@ namespace Exider.Core.Models.Email
 
         [Column("code")] public string Code { get; private set; } = null!;
 
-        [Column("end_time")] public DateTime EndTime { get; private set; }
+        [Column("creation_time")] public DateTime CreationTime { get; set; }
+
+        [Column("end_time")] public DateTime EndTime { get; set; }
 
         [Column("user_id")] public Guid UserId { get; private set; }
 
@@ -42,11 +44,17 @@ namespace Exider.Core.Models.Email
             {
                 Email = email,
                 Code = code,
+                CreationTime = DateTime.Now,
                 EndTime = DateTime.Now.AddHours(Configuration.confirmationLifeTimeInHours),
                 UserId = userId
             };
 
             return Result.Success(confirmationModel);
+
+        }
+
+        public Result Update()
+        {
 
         }
 

@@ -13,7 +13,7 @@ class UserState {
         makeAutoObservable(this);
     }
 
-    UpdateAuthorizeState = async() => {
+    UpdateAuthorizeState = async(location, navigate) => {
 
         try {
 
@@ -24,17 +24,22 @@ class UserState {
                     accessToken: localStorage.getItem('system_access_token')
                 },
             });
-    
+
             this.isAuthorize = response.status === 200;
-            this.isAccessibleRoute = ValidateRoute(PublicRoutes, this.isAuthorize, window.location.href);
             this.isLoading = false;
+
+            if (ValidateRoute(PublicRoutes, this.isAuthorize, location) === false) {
+                navigate('/account/login');
+            }
 
             localStorage.setItem('system_access_token', response.data);
 
         } catch (exception) {
 
-            console.error(exception);
+            this.isAuthorize = false;
             this.isLoading = false;
+
+            navigate('/account/login');
 
         }
 

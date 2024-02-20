@@ -53,8 +53,9 @@ const ValidLink = (props) => {
 
         <>
             <h1>Email <span className="selected-text">Confirmation</span></h1>
-            <p>We have sent you a confirmation code to {props.email}<br /> Please enter the code in the field below</p>
+            <p>We have sent you a confirmation code to {props.email} Please enter the confirmation code</p>
             <Code setCode={setCode} />
+            <Line />
             <div className='external-links'>
                 <div className='external-link'>
                     <p>Didn't receive a confirmation?</p>
@@ -63,7 +64,6 @@ const ValidLink = (props) => {
                     <Link>Resend confirmation code</Link>
                 </div>
             </div>
-            <Line />
         </>
 
     );
