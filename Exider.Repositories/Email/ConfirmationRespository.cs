@@ -13,15 +13,17 @@ namespace Exider.Repositories.Email
 
         private readonly IValidationService _validationService;
 
-        public ConfirmationRespository(DatabaseContext context, IValidationService validationService)
+        private readonly IEncryptionService _encryptionService;
+
+        public ConfirmationRespository(DatabaseContext context, IValidationService validationService, IEncryptionService encryptionService)
         {
             _context = context;
             _validationService = validationService;
+            _encryptionService = encryptionService;
         }
 
         public async Task<Result<ConfirmationModel>> GetByLinkAsync(string link)
         {
-
             ConfirmationModel? confirmation = await _context.Confirmation.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Link == Guid.Parse(link));
 
@@ -37,13 +39,11 @@ namespace Exider.Repositories.Email
             }
 
             return Result.Success(confirmation);
-
         }
 
         public async Task AddAsync(ConfirmationModel confirmation)
         {
-
-            if (confirmation == null)
+            if (confirmation is null)
                 throw new ArgumentNullException(nameof(confirmation));
 
             if (_validationService.ValidateEmail(confirmation.Email) == false)
@@ -52,62 +52,48 @@ namespace Exider.Repositories.Email
             if (_validationService.ValidateVarchar(confirmation.Code, 6) == false)
                 throw new ArgumentException("Invalid Confirmation Code");
 
-            ConfirmationModel? confirmationFromDB = _context.Confirmation
-                .AsNoTracking().FirstOrDefault(c => c.Email == confirmation.Email);
+            await _context.Confirmation.Where(x => x.Email == confirmation.Email)
+                .ExecuteDeleteAsync();
 
-            if (confirmationFromDB == null)
-            {
-                await _context.AddAsync(confirmation);
-            }
-
-            else
-            {
-                await _context.Confirmation.Where(c => c.Email == confirmation.Email)
-                    .ExecuteUpdateAsync(c => c
-                        .SetProperty(p => p.Link, Guid.NewGuid())
-                        .SetProperty(p => p.Code, confirmation.Code)
-                        .SetProperty(p => p.EndTime, confirmation.EndTime)
-                        .SetProperty(p => p.UserId, confirmation.UserId));
-            }
-
+            await _context.Confirmation.AddAsync(confirmation);
             await _context.SaveChangesAsync();
-
         }
 
         public async Task<Result> DeleteAsync(ConfirmationModel confirmation)
         {
-
             if (confirmation is null) return Result.Failure("Confirmation cannot be null");
 
             await _context.Confirmation.AsNoTracking().Where(x => x.Link == confirmation.Link).ExecuteDeleteAsync();
             await _context.SaveChangesAsync();
 
             return Result.Success();
-
         }
 
-        public async Task<Result<ConfirmationModel>> UpdateByLinkAsync(string link)
+        public async Task<Result<ConfirmationModel>> UpdateByLinkAsync(IEncryptionService encryptionService, string link)
         {
-
             if (string.IsNullOrEmpty(link) || string.IsNullOrWhiteSpace(link))
-            {
                 return Result.Failure<ConfirmationModel>("Invalid link");
-            }
 
-            ConfirmationModel? confirmationModel = await _context.Confirmation.AsNoTracking()
+            ConfirmationModel? confirmationModel = await _context.Confirmation
                 .FirstOrDefaultAsync(x => x.Link == Guid.Parse(link) && x.CreationTime.AddMinutes(1) <= DateTime.Now);
 
-            if (confirmationModel is null)
-            {
+            if (confirmationModel == null)
                 return Result.Failure<ConfirmationModel>("Confirmation not found");
+
+            confirmationModel.Update(encryptionService);
+            _context.Entry(confirmationModel).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Result.Success(confirmationModel);
             }
-
-            confirmationModel.CreationTime = DateTime.Now;
-            confirmationModel.Link = Guid.NewGuid();
-            confirmationModel.Code = 
-
-            return Result.Success(newLink.ToString());
+            catch (DbUpdateException ex)
+            {
+                return Result.Failure<ConfirmationModel>($"Failed to update confirmation: {ex.Message}");
+            }
         }
+
     }
 
 }

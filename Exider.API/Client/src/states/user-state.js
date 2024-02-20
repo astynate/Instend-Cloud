@@ -13,38 +13,45 @@ class UserState {
         makeAutoObservable(this);
     }
 
-    UpdateAuthorizeState = async(location, navigate) => {
+    UpdateAuthorizeState = async (location, navigate) => {
 
+        this.isLoading = true;
+    
+        const responsePromise = axios.get('/authentication', {
+            params: {
+                accessToken: localStorage.getItem('system_access_token')
+            },
+        });
+    
+        const timeoutPromise = new Promise((resolve) => {
+            setTimeout(() => resolve({ status: 408 }), 5000);
+        });
+    
         try {
+            
+            const response = await Promise.race([responsePromise, timeoutPromise]);
+    
+            if (response.status === 200) {
 
-            this.isLoading = true;
+                this.isAuthorize = true;
+                localStorage.setItem('system_access_token', response.data);
 
-            const response = await axios.get('/authentication', {
-                params: {
-                    accessToken: localStorage.getItem('system_access_token')
-                },
-            });
-
-            this.isAuthorize = response.status === 200;
-            this.isLoading = false;
-
-            if (ValidateRoute(PublicRoutes, this.isAuthorize, location) === false) {
+            } else {
+                this.isAuthorize = false;
                 navigate('/account/login');
             }
-
-            localStorage.setItem('system_access_token', response.data);
 
         } catch (exception) {
 
             this.isAuthorize = false;
-            this.isLoading = false;
-
             navigate('/account/login');
 
+        } finally {
+            this.isLoading = false;
         }
 
     }
-
+    
 }
 
 export default new UserState();

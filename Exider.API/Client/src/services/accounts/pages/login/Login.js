@@ -52,10 +52,15 @@ const Login = () => {
             setFormState('valid');
             navigate('/');
 
+        } else if (response.status === 470) {
+
+            const confirmationLink = await response.text();
+            navigate('/account/email/confirmation/' + confirmationLink);
+
         } else {
 
             setFormState('invalid');
-            
+
         }
 
     }

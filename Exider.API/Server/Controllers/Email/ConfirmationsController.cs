@@ -1,6 +1,7 @@
 ﻿using Exider.Dependencies.Services;
 using Exider.Repositories.Account;
 using Exider.Repositories.Email;
+using Exider_Version_2._0._0.ServerApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Transactions;
 
@@ -57,20 +58,21 @@ namespace Exider_Version_2._0._0.Server.Controllers.Email
         }
 
         [HttpPut]
-        public async Task<IActionResult> ResendConfirmation(IEmailService emailService, string link)
+        public async Task<IActionResult> ResendConfirmation(IEmailService emailService, IEncryptionService encryptionService, string link)
         {
             if (string.IsNullOrEmpty(link))
                 return BadRequest("Invalid link");
 
             var confirmationUpdateResult = await _confirmationRespository
-                .UpdateByLinkAsync(link);
+                .UpdateByLinkAsync(encryptionService, link);
 
             if (confirmationUpdateResult.IsFailure)
                 return Conflict(confirmationUpdateResult.Error);
 
-            await emailService.SendEmailConfirmation();
+            await emailService.SendEmailConfirmation(confirmationUpdateResult.Value.Email, confirmationUpdateResult.Value.Code,
+                confirmationUpdateResult.Value.Link.ToString());
 
-            return Ok(confirmationUpdateResult.Value);
+            return Ok();
         }
 
     }

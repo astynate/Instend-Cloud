@@ -1,8 +1,10 @@
 ﻿using Exider.Core;
 using Exider.Core.Dependencies.Repositories.Account;
 using Exider.Core.Models.Account;
+using Exider.Core.Models.Email;
 using Exider.Dependencies.Services;
 using Exider.Repositories.Account;
+using Exider.Repositories.Email;
 using Exider.Repositories.Repositories;
 using Exider_Version_2._0._0.ServerApp.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -70,9 +72,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(IEncryptionService encryptionService, ISessionsRepository sessionsRepository)
+        public async Task<IActionResult> Login(IEncryptionService encryptionService, ISessionsRepository sessionsRepository, IConfirmationRespository confirmationRespository)
         {
-
             string? username = Request.Form["username"];
             string? password = Request.Form["password"];
 
@@ -82,15 +83,34 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
             UserModel? user = await _usersRepository.GetUserByEmailOrNicknameAsync(username);
 
             if (user is null)
+            {
                 return BadRequest("User not found");
+            }
 
             var getEmailResult = await _emailRepository.GetByEmailAsync(user.Email);
 
             if (getEmailResult.IsFailure)
+            {
                 return Conflict(getEmailResult.Error);
+            }
 
             if (getEmailResult.Value.IsConfirmed == false)
-                return StatusCode(470, "Email not verified");
+            {
+                var confirmationCreationResult = ConfirmationModel
+                    .Create(getEmailResult.Value.Email, encryptionService.GenerateSecretCode(6), getEmailResult.Value.UserId);
+
+                if (confirmationCreationResult.IsFailure)
+                {
+                    return BadRequest(confirmationCreationResult.Error);
+                }
+
+                await confirmationRespository.AddAsync(confirmationCreationResult.Value);
+
+                await _emailService.SendEmailConfirmation(confirmationCreationResult.Value.Email,
+                    confirmationCreationResult.Value.Code, confirmationCreationResult.Value.Link.ToString());
+
+                return StatusCode(470, confirmationCreationResult.Value.Link.ToString());
+            }
 
             if (user.Password != encryptionService.HashUsingSHA256(password))
                 return StatusCode(StatusCodes.Status401Unauthorized);
@@ -123,7 +143,6 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
             });
 
             return Ok(accessToken);
-
         }
 
     }

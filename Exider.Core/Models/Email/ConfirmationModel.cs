@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using Exider_Version_2._0._0.ServerApp.Services;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
@@ -14,9 +15,9 @@ namespace Exider.Core.Models.Email
 
         [Column("code")] public string Code { get; private set; } = null!;
 
-        [Column("creation_time")] public DateTime CreationTime { get; set; }
+        [Column("creation_time")] public DateTime CreationTime { get; private set; }
 
-        [Column("end_time")] public DateTime EndTime { get; set; }
+        [Column("end_time")] public DateTime EndTime { get; private set; }
 
         [Column("user_id")] public Guid UserId { get; private set; }
 
@@ -53,9 +54,17 @@ namespace Exider.Core.Models.Email
 
         }
 
-        public Result Update()
+        public void Update(IEncryptionService encryptionService)
         {
+            Code = encryptionService.GenerateSecretCode(6);
+            CreationTime = DateTime.Now;
+            EndTime = DateTime.Now.AddHours(Configuration.confirmationLifeTimeInHours);
+        }
 
+        public void UpdateWithLink(IEncryptionService encryptionService)
+        {
+            Link = Guid.NewGuid();
+            Update(encryptionService);
         }
 
     }

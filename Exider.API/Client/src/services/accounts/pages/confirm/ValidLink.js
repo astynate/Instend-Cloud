@@ -1,15 +1,44 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Code from "../../features/confirmation-code/Code";
-import Content from "../../widgets/content/Content";
 import Line from "../../shared/line/Line";
 import Loading from './Loading';
+import Button from '../../shared/button/Button';
 
 const ValidLink = (props) => {
 
     const [code, setCode] = useState('');
     const [loading, setLoading] = useState(false);
+    const [resendingState, setResendingState] = useState('valid');
     const navigate = useNavigate();
+
+    const ResendConfirmation = async () => {
+
+        const controller = new AbortController();
+        const { signal } = controller;
+
+        const timeoutId = setTimeout(() => {
+
+            controller.abort();
+
+        }, 5000);
+
+        setResendingState('loading');
+
+        const response = await fetch(`/confirmations?link=${props.link}`, 
+            {method: 'PUT', signal});
+
+        setResendingState('invalid');
+
+        setTimeout(() => {
+
+            setResendingState('valid');
+
+        }, 60000);
+
+        clearTimeout(timeoutId);
+
+    }
 
     useEffect(() => {
 
@@ -56,14 +85,11 @@ const ValidLink = (props) => {
             <p>We have sent you a confirmation code to {props.email} Please enter the confirmation code</p>
             <Code setCode={setCode} />
             <Line />
-            <div className='external-links'>
-                <div className='external-link'>
-                    <p>Didn't receive a confirmation?</p>
-                </div>
-                <div className='external-link'>
-                    <Link>Resend confirmation code</Link>
-                </div>
-            </div>
+            <Button 
+                state={resendingState} 
+                title='Send again'
+                onClick={() => ResendConfirmation()}
+            />
         </>
 
     );

@@ -14,13 +14,13 @@ import { useSelector } from 'react-redux';
 const Layout = () => {
 
     const { t } = useTranslation()
-    const isLanguageSelected = useSelector((store) => store.isLanguageSelected);
+    const isLanguageSelect = useSelector((store) => store.isLanguageSelect);
 
     return (
 
         <>
             <Header />
-            {isLanguageSelected ? <Notification title={t('account.select_language')}>
+            {isLanguageSelect === false ? <Notification title={t('account.select_language')}>
                 <CustomSelect />
             </Notification> : null}
             <Content>
