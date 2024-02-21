@@ -1,12 +1,13 @@
 .content {
     width: 100%;
-    height: calc(100vh - 110px);
+    height: auto;
+    min-height: calc(100vh - 100px);
     display: flex;
     overflow: visible;
     align-items: center;
     justify-content: center;
-    padding-top: 30px;
-    padding-bottom: 10px;
+    padding-top: 50px;
+    padding-bottom: 50px;
     position: relative;
 }
 
@@ -33,6 +34,7 @@ h1 {
     font-size: 28px;
     margin-top: 10px;
     font-weight: 600;
+    color: var(--main-font-color)
 }
 
 .page-description {
@@ -48,4 +50,10 @@ h1 {
     background-image: linear-gradient(45deg, #ffa7fb, #1430fb, #a5b6fc);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+#root::-webkit-scrollbar-thumb {
+    /* background: var(--main-scrollbar-background-color); */
+    /* filter: invert(100%); */
+    background: red;
 }

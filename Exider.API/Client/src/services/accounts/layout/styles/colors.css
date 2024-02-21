@@ -1,26 +1,16 @@
 ﻿.ligth-color-mode {
     --main-background-color: #ffffffff;
-    --main-border-color: #eee;
     --main-font-color: #000;
-    --main-form-shadow-color: rgba(0, 0, 0, 0.1);
-    --services-border-color: transparent;
-    --submit-button-color: #000;
-    --main-header-name: #000;
     --main-header-link-icon-filter: invert(0%);
     --header-icon-filter: invert(0%);
-    --header-background-color: rgba(221, 221, 221, 0.116);
+    --main-scrollbar-filter: invert(0%);
+    --main-scrollbar-background-color: #eee;
 }
 
 .dark-color-mode {
     --main-background-color: rgb(0, 0, 0);
-    --main-border-color: #ffffff22;
     --main-font-color: #fff;
-    --services-border-color: #171717;
-    --main-form-shadow-color: rgba(0, 0, 0, 0.1);
-    --submit-button-color: #346ef3;
     --main-header-link-icon-filter: invert(50%);
-    --main-header-name: rgb(116, 116, 116);
-    ;
     --header-icon-filter: invert(100%);
-    --header-background-color: rgba(221, 221, 221, 0.116);
+    --main-scrollbar-background-color: #222;
 }

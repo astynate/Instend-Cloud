@@ -1,10 +1,22 @@
-﻿#root {
+﻿body {
+    margin: 0;
+    padding: 0;
     height: 100vh;
     width: 100vw;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+#root {
+    height: 100%;
+    width: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
     font-family: 'Open Sans';
     position: relative;
+    background: var(--main-background-color);
+    /* display: grid; */
+    /* grid-template-rows: auto 50px; */
 }
 
 .next {

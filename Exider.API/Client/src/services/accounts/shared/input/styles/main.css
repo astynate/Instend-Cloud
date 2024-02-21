@@ -3,7 +3,6 @@
     position: relative;
     margin-bottom: 5px;
     border-radius: 10px;
-    border: 1px solid #999;
     font-family: 'Open Sans';
 }
 
@@ -15,7 +14,7 @@
         padding: 13px;
         border-radius: 10px;
         color: black;
-        outline: 2px solid transparent;
+        border: 2px solid #e4e4e4;
         background: transparent;
         transition: 0.1s ease;
         font-family: 'Open Sans';
@@ -23,7 +22,8 @@
 
   .input-container input:focus {
     outline: none;
-    outline: 2px solid #1976D2;
+    border-radius: 10px;
+    border: 2px solid #1976D2;
   }
 
   .input-container input:focus ~ label,
@@ -40,7 +40,7 @@
 
   .input-container label {
     position: absolute;
-    top: 12px;
+    top: 14px;
     left: 15px;
     pointer-events: none;
     transition: 0.15s;

@@ -4,6 +4,7 @@ import './styles/main.css';
 import './styles/media.css';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
+import CustomSelect from '../../shared/select/Select';
 
 const Notification = (props) => {
 
@@ -29,7 +30,7 @@ const Notification = (props) => {
 
         <div className='notification' id={isOpen ? 'open' : null}>
             <div className='notification-title'>
-                {props.children}
+                <CustomSelect />
                 <p className='change-language-title'>{props.title}</p>
                 <button className='notification-button' onClick={() => ConfirmLanguage()}>{t('account.confirm')}</button>
             </div>

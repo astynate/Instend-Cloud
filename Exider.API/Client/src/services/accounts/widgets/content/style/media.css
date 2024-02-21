@@ -1,5 +1,11 @@
 @media (max-width: 490px) {
     .page-description {
-        max-width: 85vw;
+        max-width: 90vw;
+    }
+    .content {
+        height: auto;
+    }
+    h1 {
+        font-size: 26px;
     }
 }

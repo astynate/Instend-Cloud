@@ -1,0 +1,23 @@
+.color-mode {
+    bottom: 30px;
+    right: 30px;
+    position: fixed;
+    height: 60px;
+    z-index: 9999999999999;
+    background: white;
+    border-radius: 100%;
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+.color-mode:hover { 
+    transform: scale(102%);
+}
+
+.color-mode:active { 
+    transform: scale(95%);
+}
+
+.color-mode[id="dark"] {
+    filter: invert(100%);
+}

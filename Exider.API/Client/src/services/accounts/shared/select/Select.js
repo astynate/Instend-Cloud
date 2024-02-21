@@ -6,7 +6,7 @@ import Arrow from './images/arrow.png';
 import './main.css';
 import './media.css';
 
-const CustomSelect = (props) => {
+const CustomSelect = () => {
 
     const state = useSelector((state) => state);
     const [isOpen, setOpenState] = useState(false);
@@ -27,14 +27,14 @@ const CustomSelect = (props) => {
             <div className='select' onMouseLeave={() => setOpenState(false)}>
                 <div className='select-current' id={isOpen ? 'open-select' : null} onMouseEnter={() => setOpenState(true)}>
                     <img src={Translate} className='translate-image' />
-                    <div>{state.languages.find((x) => x.key === state.selectedLanguage).label}</div>
+                    <div>  {state.languages.find((x) => x.key === state.selectedLanguage)?.label || 'English'}</div>
                     <img src={Arrow} className='open-state' id={isOpen ? 'open-select' : null} />
                 </div>
                 <div className='select-values' id={isOpen ? 'open-select' : null}>
                     {state.languages.map((value, index) => {
                         return (value.key != state.selectedLanguage ? <div key={index} className='select-value' onClick={() => ChangeLanguage(value.key)}>{value.label}</div> : null)
                     })}
-                </div>
+                </div> 
             </div>
     
         );

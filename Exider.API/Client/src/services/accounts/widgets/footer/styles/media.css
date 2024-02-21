@@ -12,9 +12,9 @@
     .footer {
         padding-top: 15px;
         padding-bottom: 15px;
-        height: auto;
-        padding-left: 2vw;
-        padding-right: 2vw;
+        height: 60px;
+        padding-left: 0.5vw;
+        padding-right: 0.5vw;
         display: flex;
         grid-gap: 10px;
         align-items: center;

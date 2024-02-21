@@ -1,15 +1,15 @@
 import './styles/colors.css';
 import './styles/main.css';
-import React from 'react';
+import React, { useState } from 'react';
 import Header from "../widgets/header/Header";
 import Footer from "../widgets/footer/Footer";
 import Content from '../widgets/content/Content';
 import Notification from '../features/notification/Notification';
-import CustomSelect from '../shared/select/Select';
 import PublicRoutes from '../../../routes/PublicRoutes';
 import { Routes, Route } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
+import ColorMode from '../features/color-mode/ColorMode';
 
 const Layout = () => {
 
@@ -20,9 +20,7 @@ const Layout = () => {
 
         <>
             <Header />
-            {isLanguageSelect === false ? <Notification title={t('account.select_language')}>
-                <CustomSelect />
-            </Notification> : null}
+            {isLanguageSelect === false ? <Notification title={t('account.select_language')} />: null}
             <Content>
                 <Routes>
                     {PublicRoutes.map((route, index) => {
@@ -31,6 +29,7 @@ const Layout = () => {
                     })}
                 </Routes>
             </Content>
+            <ColorMode />
             <Footer />
         </>
         
