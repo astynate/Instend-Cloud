@@ -32,7 +32,7 @@ const Nickname = () => {
                 setFieldState={setNicknameState}
                 endpoint='/accounts/nickname'
             />
-            <Link to='/account/create/name' className='next'>
+            <Link to='/account/create/name' className='next margin-top-40'>
                 <Button
                     title="Next"
                     state={isValidNickname ? 'valid' : 'invalid'}

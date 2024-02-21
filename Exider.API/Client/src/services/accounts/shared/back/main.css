@@ -3,6 +3,6 @@
     margin-top: 5px;
     cursor: pointer;
     font-size: 15px;
-    color: #ccc;
+    color: var(--paragraph-text-color);
     user-select: none;
 }

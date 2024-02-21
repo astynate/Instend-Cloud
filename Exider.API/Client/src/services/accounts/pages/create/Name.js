@@ -34,7 +34,7 @@ const Name = () => {
             <p className='page-description'>Please enter your name and surname. This is a required fields.</p>
             <InputText placeholder="Name" autofocus={true} defaultValue={name} SetValue={setName} />
             <InputText placeholder="Surname" defaultValue={surname} SetValue={setSurname} />
-            <Link to='/account/create/password' className='next'>
+            <Link to='/account/create/password' className='next margin-top-40'>
                 <Button title="Next" state={validationState ? 'valid' : 'invalid'} />
             </Link>
         </>

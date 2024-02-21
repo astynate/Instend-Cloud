@@ -17,7 +17,7 @@ hr {
     left: 50%;
     transform: translateX(-50%);
     top: -11px;
-    background: var(--main-bakground-color);
+    background: var(--main-background-color);
     padding: 0 10px;
     font-size: 16px;
     color: var(--line-desc-color);

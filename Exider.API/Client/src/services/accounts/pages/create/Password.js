@@ -83,11 +83,13 @@ const Password = () => {
                 name="confirm-password"
                 SetValue={setConfirmedPassword}
             />
-            <Button
-                title="Next"
-                state={validationState}
-                onClick={() => { SendRegistrationRequest() }}
-            />
+            <div className="margin-top-40">
+                <Button
+                    title="Next"
+                    state={validationState}
+                    onClick={() => { SendRegistrationRequest() }}
+                />
+            </div>
         </>
 
     );

@@ -7,8 +7,7 @@
     padding-left: 17vw;
     padding-right: 17vw;
     flex-direction: row;
-    background: #f5f5f7;
-    background: #ebf1f7c2;
+    background: var(--footer-background);
     overflow: hidden;
     position: static;
     z-index: 9999999;

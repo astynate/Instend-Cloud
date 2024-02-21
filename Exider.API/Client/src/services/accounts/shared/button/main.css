@@ -5,12 +5,24 @@
     border-radius: 50px;
     padding: 12px 35px;
     font-size: 15px;
-    margin-top: 40px;
     font-weight: 600;
     transition: 0.15s ease;
     user-select: none;
     cursor: pointer;
+    display: flex;
     position: relative;
+}
+
+.margin-top-40 {
+  margin-top: 40px;
+}
+
+.next {
+  /* top: 0;
+  left: 0;
+  position: absolute; */
+  height: fit-content;
+  width: fit-content;
 }
 
     .button:disabled[id="loading"] {

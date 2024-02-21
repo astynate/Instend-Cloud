@@ -72,7 +72,9 @@ const Login = () => {
             <p className='page-description'>{t('account.login_with.message')}</p>
             <InputText placeholder={t('account.email_or_nickname')} SetValue={setEmail} autofocus={true} />
             <InputPassword placeholder={t('account.password')} SetValue={setPassword} autofocus={false} />
-            <Button title={t('account.login')} state={formState} onClick={() => {Authorize()}} />
+            <div className='margin-top-40'>
+                <Button title={t('account.login')} state={formState} onClick={() => {Authorize()}} />
+            </div>
             <Line title={t('account.or')} />
             <GoogleOAuth />
             <div className='external-links margin-top-20'>

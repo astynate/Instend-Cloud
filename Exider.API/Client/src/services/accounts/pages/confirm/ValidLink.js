@@ -85,11 +85,13 @@ const ValidLink = (props) => {
             <p className='page-description'>We have sent you a confirmation code to {props.email} Please enter the confirmation code</p>
             <Code setCode={setCode} />
             <Line />
-            <Button 
-                state={resendingState} 
-                title='Send again'
-                onClick={() => ResendConfirmation()}
-            />
+            <div className='margin-top-40'>
+                <Button 
+                    state={resendingState} 
+                    title='Send again'
+                    onClick={() => ResendConfirmation()}
+                />
+            </div>
         </>
 
     );

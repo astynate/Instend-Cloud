@@ -12,13 +12,15 @@
     --line-desc-color: #ddd;
     --h1-accent-color: -webkit-linear-gradient(45deg, #ff5bff, #3127f7);
     --h1-accent-color-g: linear-gradient(45deg, #ffa7fb, #1430fb, #a5b6fc);
-    --button-disabled-backgound: #ddd;
+    --button-disabled-backgound: #eee;
     --button-active-backgound: #000000;
     --button-loading-backgound: #000000;
     --button-disabled-text-color: #ffffff;
     --button-active-text-color: #ffffff;
     --button-loading-text-color: #ffffff;
     --button-loader-color: rgb(255, 255, 255);
+    --footer-background: #ebf1f7c2;
+    --select-border: #e4e5f3ce;
     --color-scheme: light;
 }
 
@@ -27,7 +29,6 @@
     --main-font-color: #eee;
     --main-header-link-icon-filter: invert(100%);
     --header-icon-filter: invert(100%);
-    --main-scrollbar-background-color: #222;
     --main-header-color: #1f1f1fc9;
     --main-border-color: #3b3b3b;
     --paragraph-text-color: #a9a9a9;
@@ -42,5 +43,7 @@
     --button-active-text-color: #000000;
     --button-loading-text-color: #000000;
     --button-loader-color: black;
+    --footer-background: #1f1f1fc9;
+    --select-border: #9e9ea5ce;
     --color-scheme: dark;
 }

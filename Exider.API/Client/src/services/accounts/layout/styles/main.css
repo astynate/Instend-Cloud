@@ -16,9 +16,5 @@
     position: relative;
     background: var(--main-background-color);
     color-scheme: var(--color-scheme);
-}
-
-.next {
-    height: fit-content;
-    width: fit-content;
+    transition: 0.25s ease;
 }
