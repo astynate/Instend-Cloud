@@ -41,19 +41,13 @@ h1 {
     max-width: 450px;
     font-size: 14px;
     text-align: center;
-    color: #777;
+    color: var(--paragraph-text-color);
     margin-bottom: 22px;
 }
 
 .selected-text {
-    background: -webkit-linear-gradient(45deg, #ff5bff, #3127f7);
-    background-image: linear-gradient(45deg, #ffa7fb, #1430fb, #a5b6fc);
+    background: var(--h1-accent-color);
+    background-image: var(--h1-accent-color-g);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-}
-
-#root::-webkit-scrollbar-thumb {
-    /* background: var(--main-scrollbar-background-color); */
-    /* filter: invert(100%); */
-    background: red;
 }

@@ -18,6 +18,6 @@
     transform: scale(95%);
 }
 
-.color-mode[id="dark"] {
+.color-mode[id="dark-color-mode"] {
     filter: invert(100%);
 }

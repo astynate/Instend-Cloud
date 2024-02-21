@@ -1,16 +1,46 @@
-﻿.ligth-color-mode {
-    --main-background-color: #ffffffff;
+﻿.light-color-mode {
+    --main-background-color: #fff;
     --main-font-color: #000;
     --main-header-link-icon-filter: invert(0%);
     --header-icon-filter: invert(0%);
     --main-scrollbar-filter: invert(0%);
     --main-scrollbar-background-color: #eee;
+    --main-header-color: #ffffff7f;
+    --main-border-color: #e4e4e4;
+    --paragraph-text-color: #777;
+    --placeholder-color: #ddd;
+    --line-desc-color: #ddd;
+    --h1-accent-color: -webkit-linear-gradient(45deg, #ff5bff, #3127f7);
+    --h1-accent-color-g: linear-gradient(45deg, #ffa7fb, #1430fb, #a5b6fc);
+    --button-disabled-backgound: #ddd;
+    --button-active-backgound: #000000;
+    --button-loading-backgound: #000000;
+    --button-disabled-text-color: #ffffff;
+    --button-active-text-color: #ffffff;
+    --button-loading-text-color: #ffffff;
+    --button-loader-color: rgb(255, 255, 255);
+    --color-scheme: light;
 }
 
 .dark-color-mode {
     --main-background-color: rgb(0, 0, 0);
-    --main-font-color: #fff;
-    --main-header-link-icon-filter: invert(50%);
+    --main-font-color: #eee;
+    --main-header-link-icon-filter: invert(100%);
     --header-icon-filter: invert(100%);
     --main-scrollbar-background-color: #222;
+    --main-header-color: #1f1f1fc9;
+    --main-border-color: #3b3b3b;
+    --paragraph-text-color: #a9a9a9;
+    --placeholder-color: #aaa;
+    --line-desc-color: #656565;
+    --h1-accent-color: -webkit-linear-gradient(45deg, #ffffff, #ffffff);
+    --h1-accent-color-g: linear-gradient(45deg, #ffffff, #ffffff, #ffffff);
+    --button-disabled-backgound: #242424;
+    --button-active-backgound: #ffffff;
+    --button-loading-backgound: #ffffff;
+    --button-disabled-text-color: #404040;
+    --button-active-text-color: #000000;
+    --button-loading-text-color: #000000;
+    --button-loader-color: black;
+    --color-scheme: dark;
 }

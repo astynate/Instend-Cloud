@@ -7,6 +7,7 @@
 
 .external-links p {
 
+    color: var(--main-font-color);
     margin: 0;
 
 }
@@ -14,6 +15,7 @@
     .external-links a {
         font-size: 14px;
         text-decoration: underline;
+        color: #868aff;
     }
 
 .external-link {

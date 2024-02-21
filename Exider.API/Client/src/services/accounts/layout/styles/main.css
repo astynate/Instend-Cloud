@@ -15,8 +15,7 @@
     font-family: 'Open Sans';
     position: relative;
     background: var(--main-background-color);
-    /* display: grid; */
-    /* grid-template-rows: auto 50px; */
+    color-scheme: var(--color-scheme);
 }
 
 .next {

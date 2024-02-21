@@ -1,7 +1,7 @@
 ﻿.google-oauth {
 
     padding: 10px;
-    border: 1px solid #eee;
+    border: 1px solid var(--main-border-color);
     border-radius: 30px;
     display: flex;
     align-items: center;
@@ -17,7 +17,7 @@
 
     .google-oauth:active {
         transition: 0.3s ease;
-        transform: scale(98%);
+        transform: scale(95%);
     }
 
 .google-logo {
@@ -28,6 +28,6 @@
 .google-auth-text {
 
     margin: 0px 10px 0px 10px;
-    color: #ccc;
+    color: var(--paragraph-text-color);
 
 }

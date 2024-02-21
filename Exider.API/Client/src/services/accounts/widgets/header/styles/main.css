@@ -12,8 +12,9 @@
     z-index: 9999999;
     padding-bottom: 5px;
     transition: 0.5s ease;
-    backdrop-filter: blur(25px) saturate(50%);
-    -webkit-backdrop-filter: blur(25px) saturate(50%);
+    background: var(--main-header-color);
+    backdrop-filter: blur(10px) saturate(70%);
+    -webkit-backdrop-filter: blur(10px) saturate(70%);
     align-items: center;
 }
 
@@ -24,7 +25,7 @@
 .header[id="menu-open"] {
     position: fixed;
     overflow: visible;
-    background: white;
+    background: var(--main-header-color);
 }
 
 .product-logo {
@@ -65,6 +66,7 @@
 .account-header-menu-image {
     height: 30px;
     padding: 5px;
+    filter: var(--main-header-link-icon-filter);
 }
 
 .header-menu-items {
@@ -77,6 +79,7 @@
     position: fixed;
     transition: 0.5s ease;
     overflow: hidden;
+    filter: var(--main-header-link-icon-filter);
 }
 
 .header-menu-items[id="open"] {
@@ -86,6 +89,7 @@
 .header-menu-links {
     padding-left: 4vw;
     padding-right: 4vw;
+    filter: var(--main-header-link-icon-filter);
 }
 
 .header-menu-links .link {
@@ -105,5 +109,6 @@
 .header-menu-links .link img {
 
     height: 16px;
+    
 
 }
