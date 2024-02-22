@@ -60,5 +60,16 @@ namespace Exider.Core.Models.Account
         public void HashPassword(IEncryptionService encryptionService) 
             => Password = encryptionService.HashUsingSHA256(Password);
 
+        public Result RecoverPassword(IEncryptionService encryptionService, string password)
+        {
+            if (password.Length < 8 || string.IsNullOrWhiteSpace(password))
+                return Result.Failure("Invalid password");
+
+            Password = password;
+            HashPassword(encryptionService);
+
+            return Result.Success();
+        }
+
     }
 }

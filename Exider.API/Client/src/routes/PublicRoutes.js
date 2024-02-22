@@ -1,6 +1,7 @@
 ﻿import Login from '../services/accounts/pages/login/Login';
 import Confirm from '../services/accounts/pages/confirm/Confirm';
 import { Registration } from '../services/accounts/processes/Registration';
+import { PasswordRecovery } from '../services/accounts/processes/PasswordRecovery';
 
 
 const PublicRoutes = [
@@ -15,6 +16,10 @@ const PublicRoutes = [
     {
         path: 'email/confirmation/:id',
         element: <Confirm />
+    },
+    {
+        path: 'password/recovery/*',
+        element: <PasswordRecovery />
     }
 ];
 

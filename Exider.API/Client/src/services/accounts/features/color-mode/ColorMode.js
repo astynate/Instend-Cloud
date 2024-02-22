@@ -4,11 +4,12 @@ import './main.css';
 
 const ColorMode = () => {
 
-    const [colorMode, setColorMode] = useState('light-color-mode');
+    const [colorMode, setColorMode] = useState(localStorage.getItem('color-mode') || 'light-color-mode');
 
     useLayoutEffect(() => {
 
         document.getElementById('root').className = colorMode;
+        localStorage.setItem('color-mode', colorMode);
 
     }, [colorMode])
 

@@ -6,6 +6,7 @@ import InputPassword from "../../shared/password/InputPassword";
 import Line from '../../shared/line/Line';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import ValidationHandler from '../../../../utils/handlers/ValidationHandler';
 import './main.css';
 
@@ -67,7 +68,7 @@ const Login = () => {
 
     return (
 
-        <>
+        <GoogleOAuthProvider clientId="1099397056156-quc1l3h460li634u6o8eh03feat63s7v.apps.googleusercontent.com">
             <h1>{t('account.login_with')} <span className="selected-text">Exider ID</span></h1>
             <p className='page-description'>{t('account.login_with.message')}</p>
             <InputText placeholder={t('account.email_or_nickname')} SetValue={setEmail} autofocus={true} />
@@ -84,7 +85,7 @@ const Login = () => {
                 </div>
                 <Link to="/">{t('account.forgot_password')}</Link>
             </div>
-        </>
+        </GoogleOAuthProvider>
 
     );
 

@@ -1,8 +1,10 @@
-﻿using Exider.Core;
+﻿using CSharpFunctionalExtensions;
+using Exider.Core;
 using Exider.Core.Dependencies.Repositories.Account;
 using Exider.Core.Models.Account;
 using Exider_Version_2._0._0.ServerApp.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace Exider.Repositories.Repositories
 {
@@ -21,7 +23,6 @@ namespace Exider.Repositories.Repositories
 
         public async Task AddAsync(UserModel user)
         {
-
             if (user is null)
             {
                 throw new ArgumentNullException("User cannot be null");
@@ -31,27 +32,44 @@ namespace Exider.Repositories.Repositories
 
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
-
         }
 
-        public async Task<UserModel?> GetUserByEmailAsync(string email)
+        public async Task<UserModel?> GetUserByEmailAsync(string email) 
+            => await _context.Users.AsNoTracking().FirstOrDefaultAsync(user => user.Email == email);
+
+        public async Task<UserModel?> GetUserByEmailOrNicknameAsync(string username) 
+            => await _context.Users.AsNoTracking().FirstOrDefaultAsync(user => user.Email == username || user.Nickname == username);
+
+        public async Task<UserModel?> GetUserByIdAsync(Guid id) 
+            => await _context.Users.AsNoTracking().FirstOrDefaultAsync(user => user.Id == id);
+
+        public async Task<UserModel?> GetUserByNicknameAsync(string nickname) 
+            => await _context.Users.AsNoTracking().FirstOrDefaultAsync(user => user.Nickname == nickname);
+
+        public async Task<Result> RecoverPassword(Guid userId, string password)
         {
-            return await _context.Users.AsNoTracking()
-                .FirstOrDefaultAsync(user => user.Email == email);
-        }
+            if (userId == Guid.Empty || string.IsNullOrEmpty(password))
+            {
+                return Result.Failure("Ivalid data");
+            }
 
-        public async Task<UserModel?> GetUserByEmailOrNicknameAsync(string username)
-        {
-            return await _context.Users.AsNoTracking()
-                .FirstOrDefaultAsync(user => user.Email == username || user.Nickname == username);
-        }
+            UserModel? user = await GetUserByIdAsync(userId);
 
-        public async Task<UserModel?> GetUserByNicknameAsync(string nickname)
-        {
-            return await _context.Users.AsNoTracking()
-                .FirstOrDefaultAsync(user => user.Nickname == nickname);
-        }
+            if (user is null)
+            {
+                return Result.Failure("User not found");
+            }
 
+            var userRecoverPasswordResult = user.RecoverPassword(_encryptionService, password);
+
+            if (userRecoverPasswordResult.IsFailure)
+            {
+                return Result.Failure(userRecoverPasswordResult.Error);
+            }
+
+            await _context.SaveChangesAsync();
+            return Result.Success();
+        }
     }
 
 }
