@@ -1,9 +1,11 @@
 import Confirm from "../confirm/Confirm";
+import InvalidLink from "../confirm/InvalidLink";
+import ValidLink from "../confirm/ValidLink";
 
 const RecoveryCode = () => {
 
     return (
-        <Confirm />
+        <Confirm valid={ValidLink} invalid={InvalidLink} />
     );
 }
 

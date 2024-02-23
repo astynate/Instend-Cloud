@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { UserContext } from "../../processes/Registration";
 import InputPassword from "../../shared/password/InputPassword";
 import Button from "../../shared/button/Button";
+import Error from "../../shared/error/Error";
 import ValidationHandler from "../../../../utils/handlers/ValidationHandler";
 
 const ValidateUserData = (user, password, confirm) => {
@@ -27,6 +28,7 @@ const Password = () => {
     const [password, setPassword] = useState('');
     const [confirmedPassword, setConfirmedPassword] = useState('');
     const [validationState, setValidationState] = useState(ValidateUserData(user, password, confirmedPassword) ? 'valid' : 'invalid');
+    const [isError, setErrorState] = useState(false);
 
     const SendRegistrationRequest = async () => {
 
@@ -45,16 +47,22 @@ const Password = () => {
             if (response.status === 200) {
 
                 const responseData = await response.text();
-                navigate('/account/email/confirmation/' + responseData, { replace: true })
+                navigate('/account/email/confirmation/' + responseData, { replace: true });
+
                 setValidationState('valid');
 
             } else {
+
+                setErrorState(true);
                 setValidationState('invalid');
+
             }
 
         } catch (exception) {
 
             console.error(exception);
+
+            setErrorState(true);
             setValidationState('invalid');
 
         }
@@ -71,6 +79,7 @@ const Password = () => {
     return (
 
         <>
+            { isError ? <Error message="Something went wrong." state={isError} setState={setErrorState} /> : null }
             <h1>Creation of <span className="selected-text">Exider ID</span></h1>
             <p className='page-description'>This is a required field. Your password must be at least 8 characters long.</p>
             <InputPassword

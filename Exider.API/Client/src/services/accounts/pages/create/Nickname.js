@@ -30,6 +30,7 @@ const Nickname = () => {
                 SetValue={setNickname}
                 validationFunction={ValidationHandler.ValidateVarchar}
                 setFieldState={setNicknameState}
+                statusCode={470}
                 endpoint='/accounts/nickname'
             />
             <Link to='/account/create/name' className='next margin-top-40'>

@@ -4,12 +4,14 @@ import Code from "../../features/confirmation-code/Code";
 import Line from "../../shared/line/Line";
 import Loading from './Loading';
 import Button from '../../shared/button/Button';
+import Error from '../../shared/error/Error';
 
 const ValidLink = (props) => {
 
     const [code, setCode] = useState('');
     const [loading, setLoading] = useState(false);
     const [resendingState, setResendingState] = useState('valid');
+    const [isError, setErrorState] = useState(false);
     const navigate = useNavigate();
 
     const ResendConfirmation = async () => {
@@ -60,6 +62,10 @@ const ValidLink = (props) => {
 
                 navigate('/account/login');
 
+            } else {
+
+                setErrorState(true);
+
             }
 
             setLoading(false);
@@ -81,6 +87,7 @@ const ValidLink = (props) => {
         loading ? (<Loading />) :
 
         <>
+            { isError ? <Error message="Something went wrong." state={isError} setState={setErrorState} /> : null }
             <h1>Email <span className="selected-text">Confirmation</span></h1>
             <p className='page-description'>We have sent you a confirmation code to {props.email} Please enter the confirmation code</p>
             <Code setCode={setCode} />

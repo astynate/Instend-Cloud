@@ -1,4 +1,4 @@
-const ValidateRequest = async (path, value) => {
+const ValidateRequest = async (path, value, statusCode) => {
 
     try {
 
@@ -16,7 +16,7 @@ const ValidateRequest = async (path, value) => {
 
         clearTimeout(timeout);
 
-        return response.status === 470;
+        return response.status === statusCode;
 
     } catch (error) {
 

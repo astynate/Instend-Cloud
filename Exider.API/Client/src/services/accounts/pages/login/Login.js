@@ -4,6 +4,7 @@ import Button from '../../shared/button/Button';
 import InputText from "../../shared/input/InputText";
 import InputPassword from "../../shared/password/InputPassword";
 import Line from '../../shared/line/Line';
+import Error from '../../shared/error/Error'
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -23,6 +24,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [formState, setFormState] = useState('invalid');
+    const [isError, setErrorState] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -37,38 +39,68 @@ const Login = () => {
 
         userData.append('username', email);
         userData.append('password', password);
-
+      
         setFormState('loading');
-        
-        const response = await fetch('/authentication', {
-            method: 'POST',
-            body: userData
-        });
-        
-        if (response.status === 200) {
+      
+        const controller = new AbortController();
+        const signal = controller.signal;
+      
+        const timeoutId = setTimeout(() => {
 
-            const accessToken = await response.text();
-            localStorage.setItem('system_access_token', accessToken);
-
-            setFormState('valid');
-            navigate('/');
-
-        } else if (response.status === 470) {
-
-            const confirmationLink = await response.text();
-            navigate('/account/email/confirmation/' + confirmationLink);
-
-        } else {
-
+            controller.abort();
             setFormState('invalid');
+
+        }, 5000);
+      
+        try {
+
+            const response = await fetch('/authentication', {
+                method: 'POST',
+                body: userData,
+                signal: signal,
+            });
+      
+            clearTimeout(timeoutId);
+        
+            if (response.status === 200) {
+
+                const accessToken = await response.text();
+                localStorage.setItem('system_access_token', accessToken);
+
+                setFormState('valid');
+                navigate('/');
+
+            } 
+            
+            else if (response.status === 470) {
+
+                const confirmationLink = await response.text();
+                navigate('/account/email/confirmation/' + confirmationLink);
+
+            } 
+            
+            else {
+
+                setErrorState(true);
+                setFormState('invalid');
+
+            }
+
+        } catch (error) {
+
+            clearTimeout(timeoutId);
+            setFormState('invalid');
+
+            setErrorState(true);
 
         }
 
-    }
+    };
 
     return (
 
         <GoogleOAuthProvider clientId="1099397056156-quc1l3h460li634u6o8eh03feat63s7v.apps.googleusercontent.com">
+            { isError ? <Error message="Something went wrong." state={isError} setState={setErrorState} /> : null }
             <h1>{t('account.login_with')} <span className="selected-text">Exider ID</span></h1>
             <p className='page-description'>{t('account.login_with.message')}</p>
             <InputText placeholder={t('account.email_or_nickname')} SetValue={setEmail} autofocus={true} />
@@ -83,7 +115,7 @@ const Login = () => {
                     <p>{t('account.dont_have_account')}</p>
                     <Link to="/account/create/email">{t('account.registration')}</Link>
                 </div>
-                <Link to="/">{t('account.forgot_password')}</Link>
+                <Link to="/account/password/recovery/email">{t('account.forgot_password')}</Link>
             </div>
         </GoogleOAuthProvider>
 

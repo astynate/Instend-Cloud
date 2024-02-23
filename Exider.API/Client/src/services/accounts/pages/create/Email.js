@@ -29,6 +29,7 @@ const Email = () => {
                 SetValue={setEmail}
                 validationFunction={ValidationHandler.ValidateEmail}
                 setFieldState={setEmailState}
+                statusCode={470}
                 endpoint='/accounts/email'
             />
             <Link to='/account/create/nickname' className='next margin-top-40'>

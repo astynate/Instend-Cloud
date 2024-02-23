@@ -23,6 +23,7 @@ const Name = () => {
 
         user.name = name;
         user.surname = surname;
+        
         setValidationState(ValidateNameForm(name, surname));
 
     }, [user, name, surname]);

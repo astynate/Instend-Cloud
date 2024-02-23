@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams} from 'react-router-dom';
-import ValidLink from './ValidLink';
-import InvalidLink from './InvalidLink';
 import Loading from './Loading';
 
-const Confirm = () => {
+const Confirm = (props) => {
 
     const { id } = useParams();
 
@@ -58,7 +56,7 @@ const Confirm = () => {
 
     } else {
 
-        return (linkValidationState === 'valid' ? <ValidLink email={email} link={id} /> : <InvalidLink />);
+        return (linkValidationState === 'valid' ? <props.valid email={email} link={id} /> : <props.invalid />);
 
     }
 

@@ -21,6 +21,8 @@
     --button-loader-color: rgb(255, 255, 255);
     --footer-background: #ebf1f7c2;
     --select-border: #e4e5f3ce;
+    --error-alert-background: rgba(0, 0, 0, 0.6);
+    --error-alert-font-color: white;
     --color-scheme: light;
 }
 
@@ -45,5 +47,7 @@
     --button-loader-color: black;
     --footer-background: #1f1f1fc9;
     --select-border: #9e9ea5ce;
+    --error-alert-background: rgba(255, 255, 255, 0.6);
+    --error-alert-font-color: black;
     --color-scheme: dark;
 }

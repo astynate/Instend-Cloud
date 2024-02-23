@@ -32,7 +32,7 @@ const InputCheck = (props) => {
             const timeoutId = setTimeout(async () => {
 
                 setValidationState('loading');
-                setValidationState(await ValidateRequest(props.endpoint, value) ? 'valid' : 'invalid');
+                setValidationState(await ValidateRequest(props.endpoint, value, props.statusCode) ? 'valid' : 'invalid');
 
             }, 500);
 
