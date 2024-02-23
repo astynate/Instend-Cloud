@@ -52,6 +52,12 @@ namespace Exider.Repositories.Email
             if (_validationService.ValidateVarchar(confirmation.Code, 6) == false)
                 throw new ArgumentException("Invalid Confirmation Code");
 
+            ConfirmationModel? confirmationModel = await _context.Confirmation
+                .AsNoTracking().FirstOrDefaultAsync(x => x.Email == confirmation.Email);
+
+            if (confirmationModel != null && confirmationModel.CreationTime.AddMinutes(1) >= DateTime.Now)
+                throw new ArgumentException("Less than a minute has passed since the previous link was created");
+
             await _context.Confirmation.Where(x => x.Email == confirmation.Email)
                 .ExecuteDeleteAsync();
 
@@ -94,6 +100,24 @@ namespace Exider.Repositories.Email
             }
         }
 
+        public async Task<Result<ConfirmationModel>> GetByEmailAsync(string email)
+        {
+            ConfirmationModel? confirmation = await _context.Confirmation.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Email == email);
+
+            if (confirmation is null)
+            {
+                return Result.Failure<ConfirmationModel>("Confirmation not found");
+            }
+
+            if (DateTime.Now > confirmation.EndTime)
+            {
+                await DeleteAsync(confirmation);
+                return Result.Failure<ConfirmationModel>("Link has expired");
+            }
+
+            return Result.Success(confirmation);
+        }
     }
 
 }

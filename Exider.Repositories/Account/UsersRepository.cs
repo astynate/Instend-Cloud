@@ -67,6 +67,9 @@ namespace Exider.Repositories.Repositories
                 return Result.Failure(userRecoverPasswordResult.Error);
             }
 
+            await _context.Users.Where(u => u.Id == userId).ExecuteUpdateAsync(u => u
+                .SetProperty(property => property.Password, user.Password));
+
             await _context.SaveChangesAsync();
             return Result.Success();
         }

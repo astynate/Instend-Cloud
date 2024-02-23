@@ -6,6 +6,6 @@ namespace Exider.Dependencies.Services
     {
         Task SendEmailConfirmation(string email, string code, string link);
         Task SendLoginNotificationEmail(string email, SessionModel model);
-        Task SendPasswordResetEmail(string email, SessionModel model);
+        Task SendPasswordRecoveryEmail(string email, string code, string link);
     }
 }

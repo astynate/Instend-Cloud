@@ -2,11 +2,9 @@
 using Exider.Core.Models.Account;
 using Exider.Core.Models.Email;
 using Exider.Dependencies.Services;
-using Exider.Repositories.Account;
 using Exider.Repositories.Email;
 using Exider_Version_2._0._0.ServerApp.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Transactions;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Email
 {
@@ -34,6 +32,33 @@ namespace Exider_Version_2._0._0.Server.Controllers.Email
             _usersRepository = usersRepository;
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreatePasswordRecovery(IValidationService validationService, IEncryptionService encryptionService, string email)
+        {
+            if (validationService.ValidateEmail(email) == false)
+                return BadRequest("Invalid email");
+
+            UserModel? user = await _usersRepository
+                .GetUserByEmailAsync(email);
+
+            if (user is null)
+                return Conflict("User not found");
+
+            var confirmationCreationResult = ConfirmationModel
+                .Create(email, encryptionService.GenerateSecretCode(6), user.Id);
+
+            if (confirmationCreationResult.IsFailure)
+                return Conflict(confirmationCreationResult.Error);
+
+            await _confirmationRespository
+                .AddAsync(confirmationCreationResult.Value);
+
+            await _emailService.SendPasswordRecoveryEmail(email, confirmationCreationResult.Value.Code, 
+                confirmationCreationResult.Value.Link.ToString());
+
+            return Ok();
+        }
+
         [HttpPut]
         public async Task<IActionResult> RecoverPassword(IValidationService validationService, string link, string code, string password)
         {
@@ -53,9 +78,10 @@ namespace Exider_Version_2._0._0.Server.Controllers.Email
                 .RecoverPassword(searchConfirmationResult.Value.UserId, password);
 
             if (passwordRecoverResult.IsFailure)
-            {
                 return BadRequest(passwordRecoverResult.Error);
-            }
+
+            await _confirmationRespository.
+                DeleteAsync(searchConfirmationResult.Value);
 
             return Ok();
         }
