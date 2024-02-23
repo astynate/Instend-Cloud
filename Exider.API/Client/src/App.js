@@ -4,6 +4,7 @@ import Authorization from './services/accounts/layout/Layout';
 import Cloud from './services/cloud/layout/Layout';
 import userState from './states/user-state';
 import { observer } from 'mobx-react-lite';
+import MainLoader from './components/loader/MainLoader';
 
 const App = observer(() => {
 
@@ -14,7 +15,11 @@ const App = observer(() => {
 
     useEffect(() => {
 
-        UpdateAuthorizeState(location.pathname, navigate);
+        setTimeout(() => {
+
+            UpdateAuthorizeState(location.pathname, navigate);
+
+        }, 1500)
 
     }, []);
 
@@ -22,7 +27,7 @@ const App = observer(() => {
 
         (isLoading ? 
         
-            <h1>Loading...</h1>
+            <MainLoader />
 
         :
 

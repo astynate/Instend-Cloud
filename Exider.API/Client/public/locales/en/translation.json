@@ -16,5 +16,20 @@
     "account.forgot_password": "Forgot a password?",
     "account.or": "or",
     "account.email_or_nickname": "Email or nickname",
-    "account.password": "Password"
+    "account.password": "Password",
+
+    "account.create.creation_of": "Creation of",
+    "account.create.email_desc": "Please enter your email. This field is required and must look like example@domain.com",
+    "account.email": "Email",
+    "account.create.name_desc": "Please enter your name and surname. This is a required fields.",
+    "account.name": "Name",
+    "account.surname": "Surname",
+    "account.nickname": "Nickname",
+    "account.create.nickname_desc": "Please enter your nickname. This is a required field. Your nickname must be unique",
+    "account.enter_password": "Enter your password",
+    "account.enter_confirm_password": "Confirm your password",
+    "account.next": "Next",
+    "account.registration.confirm": "By registering, you agree to the",
+    "account.have_account": "Already have an account?",
+    "account.back": "Back"
 }

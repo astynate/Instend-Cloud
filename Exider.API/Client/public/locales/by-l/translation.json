@@ -16,5 +16,19 @@
     "account.forgot_password": "Zabylosya parolʹ?",
     "account.or": "abo",
     "account.email_or_nickname": "Elektronnaja pošta abo nikniejm",
-    "account.password": "Parol"
+    "account.password": "Parol",
+    "account.create.creation_of": "Stvaryennye",
+    "account.create.email_desc": "Kali laska, uvjadzicie svoy adras elektronnay poshty. Heta abaviazkovaie pole i pavіnna mieć vyhljad example@domain.com",
+    "account.email": "Elektronnaya poshta",
+    "account.create.name_desc": "Kali laska, uvjadzicie svaye imia i prazvishcha. Heta abaviazkovyia palі.",
+    "account.name": "Імя",
+    "account.surname": "Prazvishcha",
+    "account.nickname": "Nikneim",
+    "account.create.nickname_desc": "Kali laska, uvjadzicie svoy nikneim. Heta abaviazkovaie pole. Vash nikneim pavіnen być unіkalny",
+    "account.enter_password": "Uvjadzicie parol",
+    "account.enter_confirm_password": "Pacverdzicie parol",
+    "account.next": "Dalei",
+    "account.registration.confirm": "Rėhistrujucysia, vy zghadzhaecca z",
+    "account.have_account": "Užo jość akkaunt?",
+    "account.back": "Nazad"
 }

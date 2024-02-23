@@ -1,20 +1,25 @@
-﻿body {
+﻿* {
     margin: 0;
     padding: 0;
+    /* min-height: 100%; */
+}
+
+body {
     height: 100vh;
-    width: 100vw;
+    width: 100svw;
     overflow: hidden;
     box-sizing: border-box;
 }
 
 #root {
-    height: 100%;
-    width: 100%;
+    height: 100svh;
+    width: 100svw;
     overflow-y: scroll;
     overflow-x: hidden;
     font-family: 'Open Sans';
     position: relative;
     background: var(--main-background-color);
     color-scheme: var(--color-scheme);
+    -webkit-overflow-scrolling:touch;
     transition: 0.25s ease;
 }

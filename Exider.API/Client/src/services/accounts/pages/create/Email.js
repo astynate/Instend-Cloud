@@ -4,12 +4,14 @@ import { UserContext } from "../../processes/Registration";
 import InputCheck from "../../shared/input-check/InputCheck";
 import Button from "../../shared/button/Button";
 import ValidationHandler from "../../../../utils/handlers/ValidationHandler";
+import { useTranslation } from "react-i18next";
 
 const Email = () => {
 
     const user = useContext(UserContext);
     const [email, setEmail] = useState(user.email);
     const [isValidEmail, setEmailState] = useState(ValidationHandler.ValidateEmail(user.email));
+    const { t } = useTranslation();
 
     useEffect(() => {
 
@@ -20,10 +22,10 @@ const Email = () => {
     return (
 
         <>
-            <h1>Creation of <span className="selected-text">Exider ID</span></h1>
-            <p className='page-description'>Please enter your email. This field is required and must look like example@domain.com</p>
+            <h1>{t('account.create.creation_of')} <span className="selected-text">Exider ID</span></h1>
+            <p className='page-description'>{t('account.create.email_desc')}</p>
             <InputCheck
-                placeholder='Email'
+                placeholder={t('account.email')}
                 autofocus={true}
                 defaultValue={user.email}
                 SetValue={setEmail}
@@ -33,7 +35,7 @@ const Email = () => {
                 endpoint='/accounts/email'
             />
             <Link to='/account/create/nickname' className='next margin-top-40'>
-                <Button title="Next" state={isValidEmail ? 'valid' : 'invalid'} />
+                <Button title={t('account.next')} state={isValidEmail ? 'valid' : 'invalid'} />
             </Link>
         </>
 

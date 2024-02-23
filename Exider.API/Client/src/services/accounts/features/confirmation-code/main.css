@@ -1,12 +1,9 @@
 .confirmation-code {
-
     display: flex;
     grid-gap: 15px;
-
 }
 
 .code-input {
-
     height: 40px;
     width: 40px;
     font-family: 'Open Sans';
@@ -16,7 +13,7 @@
     border-radius: 7px;
     outline: 2px transparent;
     transition: 0.05s ease;
-
+    background: transparent;
 }
 
 .code-input:focus {

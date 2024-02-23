@@ -3,9 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import InputPassword from "../../shared/password/InputPassword";
 import Button from "../../shared/button/Button";
 import Error from "../../shared/error/Error";
-import { PasswordRecoveryContext } from '../../processes/PasswordRecovery'
+import { PasswordRecoveryContext } from '../../processes/PasswordRecovery';
 import { Link } from "react-router-dom";
-import Line from "../../shared/line/Line";
+
+const ValidatePasswordRecovery = (data, password, confirm) => {
+
+    return data.password.length > 8 && password === confirm && data.isCodeValid === true &&
+        data.code.length === 6 && data.link != null;
+
+};
 
 const NewPassword = () => {
 
@@ -14,10 +20,10 @@ const NewPassword = () => {
 
     const [password, setPassword] = useState('');
     const [confirmedPassword, setConfirmedPassword] = useState('');
-    const [validationState, setValidationState] = useState('invalid');
+    const [validationState, setValidationState] = useState(ValidatePasswordRecovery(data, password, confirmedPassword) ? 'valid' : 'invalid');
     const [isError, setErrorState] = useState(false);
 
-    const SendRegistrationRequest = async () => {
+    const SendPasswordRecoveryRequest = async () => {
 
         try {
 
@@ -27,9 +33,7 @@ const NewPassword = () => {
 
             if (response.status === 200) {
 
-                const responseData = await response.text();
-                navigate('/account/email/confirmation/' + responseData, { replace: true });
-
+                navigate('/account/login', { replace: true });
                 setValidationState('valid');
 
             } else {
@@ -54,6 +58,13 @@ const NewPassword = () => {
 
         data.password = password;
 
+        if (validationState !== 'loading') {
+
+            setValidationState(ValidatePasswordRecovery(data, password, 
+                confirmedPassword) ? 'valid' : 'invalid');
+
+        }
+
     }, [data, password, confirmedPassword, setValidationState]);
 
     return (
@@ -76,7 +87,7 @@ const NewPassword = () => {
                 <Button
                     title="Next"
                     state={validationState}
-                    onClick={() => { SendRegistrationRequest() }}
+                    onClick={() => { SendPasswordRecoveryRequest() }}
                 />
             </div>
             <div className='external-links margin-top-40'>

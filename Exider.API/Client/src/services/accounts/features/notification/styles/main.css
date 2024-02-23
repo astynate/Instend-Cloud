@@ -4,7 +4,7 @@
     top: 50px;
     left: 0;
     height: 0px;
-    background: #ebf1f7c2;
+    background: var(--notification-color);
     width: 100vw;
     display: flex;
     align-items: center;
@@ -52,7 +52,7 @@
     padding: 10px;
     cursor: pointer;
     transition: 0.15s ease;
-    filter: invert(80%);
+    filter: var(--close-button-invert);
     animation: notification-content-in 2.7s ease;
 
 }
@@ -117,7 +117,7 @@
     }
 
     100% {
-        background: #ebf1f7c2;
+        background: var(--notification-color);
     }
 
 }

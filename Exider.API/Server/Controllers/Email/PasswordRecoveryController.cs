@@ -86,6 +86,20 @@ namespace Exider_Version_2._0._0.Server.Controllers.Email
             return Ok();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> RecoverConfirmation(string link, string code)
+        {
+            var confirmation = await _confirmationRespository.GetByLinkAsync(link);
+
+            if (confirmation.IsFailure)
+                return BadRequest(confirmation.Error);
+
+            if (confirmation.Value.Code != code)
+                return BadRequest("Incorrect code");
+
+            return Ok();
+        }
+
     }
 
 }

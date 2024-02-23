@@ -12,6 +12,7 @@ const PasswordRecovery = () => {
     let recoveryObject = {
         password: '',
         code: '',
+        link: '',
         isCodeValid: false,
     }
 

@@ -16,5 +16,20 @@
     "account.forgot_password": "Забылася пароль?",
     "account.or": "або",
     "account.email_or_nickname": "Электронная пошта або нікнейм",
-    "account.password": "Пароль"
+    "account.password": "Пароль",
+    "account.create.creation_of": "Стварэнне",
+    "account.create.email_desc": "Калі ласка, увядзіце свой адрас электроннай пошты. Гэта абавязковае поле і павінна мець выгляд example@domain.com",
+    "account.email": "Электронная пошта",
+    "account.create.name_desc": "Калі ласка, увядзіце сваё імя і прозвішча. Гэта абавязковыя палі.",
+    "account.name": "Імя",
+    "account.surname": "Прозвішча",
+    "account.nickname": "Нікнейм",
+    "account.create.nickname_desc": "Калі ласка, увядзіце свой нікнейм. Гэта абавязковае поле. Ваш нікнейм павінен быць унікальны",
+    "account.enter_password": "Увядзіце пароль",
+    "account.enter_confirm_password": "Пацвердзіце пароль",
+    "account.next": "Далей",
+    "account.registration.confirm": "Рэгіструючыся, вы згаджаецеся з",
+    "account.have_account": "Ужо ёсць акаунт?",
+    "account.back": "Назад"
+
 }

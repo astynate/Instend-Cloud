@@ -7,6 +7,7 @@ import './css/fonts.css'
 import './css/colors.css'
 import './css/main.css'
 import PrivateRoutes from '../../../routes/PrivateRoutes';
+import { Helmet } from 'react-helmet';
 
 const Layout = () => {
 
@@ -16,6 +17,9 @@ const Layout = () => {
     return (
         <>
             {isLoading && <Loader />}
+            <Helmet>
+                <title>Exider Cloud</title>
+            </Helmet>
             <NavigationPanel />
             <Routes>
                 {PrivateRoutes.map((route, index) => {

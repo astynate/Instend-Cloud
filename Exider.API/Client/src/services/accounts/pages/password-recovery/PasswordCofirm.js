@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Code from "../../features/confirmation-code/Code";
 import Line from "../../shared/line/Line";
 import Loading from '../confirm/Loading';
 import Error from '../../shared/error/Error';
+import { PasswordRecoveryContext } from '../../processes/PasswordRecovery';
 import { Link } from 'react-router-dom';
 
 const PasswordCofirm = (props) => {
 
     const [code, setCode] = useState('');
     const [loading, setLoading] = useState(false);
-    const [resendingState, setResendingState] = useState('valid');
     const [isError, setErrorState] = useState(false);
     const navigate = useNavigate();
+    let data = useContext(PasswordRecoveryContext);
 
     useEffect(() => {
 
@@ -27,10 +28,14 @@ const PasswordCofirm = (props) => {
 
             }, 5000);
 
-            const response = await fetch(`/confirmations?link=${props.link}&code=${code}`, 
-                {method: 'POST', signal});
+            const response = await fetch(`/password-recovery?link=${props.link}&code=${code}`, 
+                {method: 'GET', signal});
             
             if (response.status === 200) {
+
+                data.code = code;
+                data.link = props.link;
+                data.isCodeValid = true;
 
                 navigate('/account/password/recovery/new-password');
 

@@ -23,6 +23,12 @@
     --select-border: #e4e5f3ce;
     --error-alert-background: rgba(0, 0, 0, 0.6);
     --error-alert-font-color: white;
+    --notification-color: #edf3f7;
+    --close-button-invert: invert(80%);
+    --password-visibility: invert(0%);
+    --main-footer-color: #ddd;
+    --main-footer-font-color: #b2b4be;
+    --back-button-font-color: #ddd;
     --color-scheme: light;
 }
 
@@ -49,5 +55,11 @@
     --select-border: #9e9ea5ce;
     --error-alert-background: rgba(255, 255, 255, 0.6);
     --error-alert-font-color: black;
+    --notification-color: #b5b9bb;
+    --close-button-invert: invert(50%);
+    --password-visibility: invert(100%);
+    --main-footer-color: #ddd;
+    --main-footer-font-color: #7c7c7c;
+    --back-button-font-color: #3b3b3b;
     --color-scheme: dark;
 }

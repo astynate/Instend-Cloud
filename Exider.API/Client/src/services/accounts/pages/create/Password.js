@@ -5,6 +5,7 @@ import InputPassword from "../../shared/password/InputPassword";
 import Button from "../../shared/button/Button";
 import Error from "../../shared/error/Error";
 import ValidationHandler from "../../../../utils/handlers/ValidationHandler";
+import { useTranslation } from "react-i18next";
 
 const ValidateUserData = (user, password, confirm) => {
 
@@ -29,6 +30,7 @@ const Password = () => {
     const [confirmedPassword, setConfirmedPassword] = useState('');
     const [validationState, setValidationState] = useState(ValidateUserData(user, password, confirmedPassword) ? 'valid' : 'invalid');
     const [isError, setErrorState] = useState(false);
+    const { t } = useTranslation();
 
     const SendRegistrationRequest = async () => {
 
@@ -80,21 +82,21 @@ const Password = () => {
 
         <>
             { isError ? <Error message="Something went wrong." state={isError} setState={setErrorState} /> : null }
-            <h1>Creation of <span className="selected-text">Exider ID</span></h1>
+            <h1>{t('account.create.creation_of')} <span className="selected-text">Exider ID</span></h1>
             <p className='page-description'>This is a required field. Your password must be at least 8 characters long.</p>
             <InputPassword
-                placeholder="Enter your password"
+                placeholder={t('account.enter_password')}
                 autofocus={true} name="password"
                 SetValue={setPassword}
             />
             <InputPassword
-                placeholder="Confirm your password"
+                placeholder={t('account.enter_confirm_password')}
                 name="confirm-password"
                 SetValue={setConfirmedPassword}
             />
             <div className="margin-top-40">
                 <Button
-                    title="Next"
+                    title={t('account.next')}
                     state={validationState}
                     onClick={() => { SendRegistrationRequest() }}
                 />

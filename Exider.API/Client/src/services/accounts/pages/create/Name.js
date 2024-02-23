@@ -4,6 +4,7 @@ import { UserContext } from "../../processes/Registration";
 import InputText from "../../shared/input/InputText";
 import Button from "../../shared/button/Button";
 import ValidationHandler from "../../../../utils/handlers/ValidationHandler";
+import { useTranslation } from "react-i18next";
 
 const ValidateNameForm = (name, surname) => {
 
@@ -18,6 +19,7 @@ const Name = () => {
     const [name, setName] = useState(user.name);
     const [surname, setSurname] = useState(user.surname);
     const [validationState, setValidationState] = useState(ValidateNameForm(name, surname));
+    const { t } = useTranslation();
 
     useEffect(() => {
 
@@ -31,12 +33,12 @@ const Name = () => {
     return (
 
         <>
-            <h1>Creation of <span className="selected-text">Exider ID</span></h1>
-            <p className='page-description'>Please enter your name and surname. This is a required fields.</p>
-            <InputText placeholder="Name" autofocus={true} defaultValue={name} SetValue={setName} />
-            <InputText placeholder="Surname" defaultValue={surname} SetValue={setSurname} />
+            <h1>{t('account.create.creation_of')} <span className="selected-text">Exider ID</span></h1>
+            <p className='page-description'>{t('account.create.name_desc')}</p>
+            <InputText placeholder={t('account.name')} autofocus={true} defaultValue={name} SetValue={setName} />
+            <InputText placeholder={t('account.surname')} defaultValue={surname} SetValue={setSurname} />
             <Link to='/account/create/password' className='next margin-top-40'>
-                <Button title="Next" state={validationState ? 'valid' : 'invalid'} />
+                <Button title={t('account.next')} state={validationState ? 'valid' : 'invalid'} />
             </Link>
         </>
 

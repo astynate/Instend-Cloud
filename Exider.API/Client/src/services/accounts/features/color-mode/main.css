@@ -1,8 +1,8 @@
 .color-mode {
-    bottom: 30px;
+    bottom: 20px;
     right: 30px;
     position: fixed;
-    height: 60px;
+    height: 65px;
     z-index: 9999999999999;
     background: white;
     border-radius: 100%;

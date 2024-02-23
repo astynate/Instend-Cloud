@@ -6,10 +6,13 @@ import Name from '../pages/create/Name';
 import Password from '../pages/create/Password';
 import Back from '../shared/back/Back';
 import Line from '../shared/line/Line';
+import { useTranslation } from 'react-i18next';
 
 let UserContext = createContext();
 
 const Registration = () => {
+
+    const { t } = useTranslation();
 
     let user = {
 
@@ -34,11 +37,11 @@ const Registration = () => {
             <Line />
             <div className='external-links'>
                 <div className='external-link'>
-                    <p>By registering, you agree to the</p>
-                    <Link to="/">Terms of use</Link>
+                    <p>{t('account.registration.confirm')}</p>
+                    <Link to="/">{t('account.terms_of_use')}</Link>
                 </div>
                 <div className='external-link'>
-                    <Link to="/account/login">Already have an account?</Link>
+                    <Link to="/account/login">{t('account.have_account')}</Link>
                 </div>
             </div>
         </UserContext.Provider>

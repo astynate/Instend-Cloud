@@ -16,5 +16,20 @@
     "account.forgot_password": "Забыли пароль?",
     "account.or": "или",
     "account.email_or_nickname": "Электронная почта или псевдоним",
-    "account.password": "Пароль"  
+    "account.password": "Пароль",
+
+    "account.create.creation_of": "Создание",
+    "account.create.email_desc": "Пожалуйста, введите свой адрес электронной почты. Это обязательное поле и должно иметь формат example@domain.com",
+    "account.email": "Электронная почта",
+    "account.create.name_desc": "Пожалуйста, введите своё имя и фамилию. Это обязательные поля.",
+    "account.name": "Имя",
+    "account.surname": "Фамилия",
+    "account.nickname": "Никнейм",
+    "account.create.nickname_desc": "Пожалуйста, введите свой никнейм. Это обязательное поле. Ваш никнейм должен быть уникальным",
+    "account.enter_password": "Введите пароль",
+    "account.enter_confirm_password": "Подтвердите пароль",
+    "account.next": "Далее",
+    "account.registration.confirm": "Регистрируясь, вы соглашаетесь с",
+    "account.have_account": "Уже есть аккаунт?",
+    "account.back": "Назад"
 }

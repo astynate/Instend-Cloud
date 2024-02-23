@@ -5,4 +5,5 @@
     font-size: 15px;
     color: var(--paragraph-text-color);
     user-select: none;
+    color: var(--back-button-font-color);
 }
