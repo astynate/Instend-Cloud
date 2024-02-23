@@ -56,7 +56,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Email
             await _emailService.SendPasswordRecoveryEmail(email, confirmationCreationResult.Value.Code, 
                 confirmationCreationResult.Value.Link.ToString());
 
-            return Ok();
+            return Ok(confirmationCreationResult.Value.Link.ToString());
         }
 
         [HttpPut]

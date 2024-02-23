@@ -10,7 +10,7 @@ const App = observer(() => {
     let navigate = useNavigate();
     let location = useLocation();
 
-    const {UpdateAuthorizeState, isLoading, isAccessibleRoute} = userState;
+    const {UpdateAuthorizeState, isLoading} = userState;
 
     useEffect(() => {
 

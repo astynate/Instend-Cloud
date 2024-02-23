@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import InputCheck from "../../shared/input-check/InputCheck";
 import Button from "../../shared/button/Button";
+import { useNavigate } from "react-router-dom";
 import ValidationHandler from "../../../../utils/handlers/ValidationHandler";
 import { PasswordRecoveryContext } from "../../processes/PasswordRecovery";
 import Error from '../../shared/error/Error';
@@ -15,11 +16,17 @@ const EnterEmail = () => {
     const [isError, setErrorState] = useState(false);
     const [isValidEmail, setEmailState] = useState(ValidationHandler.ValidateEmail(data.email));
     const [buttonState, setButtonState] = useState(isValidEmail ? 'valid' : 'invalid');
+    const navigate = useNavigate();
 
     useEffect(() => {
 
         data.email = email;
-        setButtonState(isValidEmail ? 'valid' : 'invalid');
+
+        if (buttonState !== 'loading') {
+            
+            setButtonState(isValidEmail ? 'valid' : 'invalid');
+
+        }
 
     }, [data, email, buttonState, isValidEmail]);
 
@@ -27,36 +34,35 @@ const EnterEmail = () => {
 
         const controller = new AbortController();
         const { signal } = controller;
-
+    
         setButtonState('loading');
-
+    
         const timeoutId = setTimeout(() => {
-
             controller.abort();
-
-        }, 3000);
-
-        const response = await fetch(`/password-recovery?email=${email}`, { signal });
-        const data = await response.text();
-
+        }, 5000);
+    
+        const response = await fetch(`/password-recovery?email=${email}`, { signal, method: 'POST' });
+        const confirmationLink = await response.text();
+    
         if (response.status === 200) {
 
+            navigate(`/account/password/recovery/${confirmationLink}`);
             setButtonState('valid');
 
         } else {
 
+            setErrorState(true);
             setButtonState('invalid');
 
         }
-
+    
         clearTimeout(timeoutId);
-
-    };
+    };    
 
     return (
 
         <>
-            { isError ? <Error message="Something went wrong" state={isError} setState={setErrorState} /> : null }
+            { isError ? <Error message="Number of requests exceeded." state={isError} setState={setErrorState} /> : null }
             <h1>Password <span className="selected-text">Recovery</span></h1>
             <p className='page-description'>To recover your password, please enter your email. We will send you a verification code.</p>
             <InputCheck

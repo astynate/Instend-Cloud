@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import RecoveryCode from '../pages/password-recovery/RecoveryCode';
 import NewPassword from '../pages/password-recovery/NewPassword';
 import EnterEmail from '../pages/password-recovery/EnterEmail';
+import { Link } from 'react-router-dom';
 
 let PasswordRecoveryContext = createContext();
 
@@ -19,8 +20,8 @@ const PasswordRecovery = () => {
         <PasswordRecoveryContext.Provider value={recoveryObject}>
             <Routes>
                 <Route path="/email" element={<EnterEmail />} />
-                <Route path=":id" element={<RecoveryCode />} />
-                <Route path="/new-value" element={<NewPassword />} />
+                <Route path="/:id" element={<RecoveryCode />} />
+                <Route path="/new-password" element={<NewPassword />} />
             </Routes>
         </PasswordRecoveryContext.Provider>
 

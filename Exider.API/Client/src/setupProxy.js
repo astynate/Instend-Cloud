@@ -9,7 +9,8 @@ const target = `http://localhost:7128`;
 const context = [
     "/accounts",
     "/authentication",
-    "/confirmations"
+    "/confirmations",
+    "/password-recovery"
 ];
 
 const onError = (err, req, resp, target) => {
