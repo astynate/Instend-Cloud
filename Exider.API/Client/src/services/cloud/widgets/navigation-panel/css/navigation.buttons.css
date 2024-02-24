@@ -1,59 +1,44 @@
 .navigation-buttons {
-
     display: flex;
     flex-direction: column;
     grid-gap: 5px;
-
 }
 
 .navigation-button {
-
     width: auto;
     height: auto;
     padding: 15px 16px;
-    margin: 0px 12px;
+    margin: 0px 9px;
     display: flex;
     align-items: center;
     grid-gap: 17px;
     border-radius: 10px;
     font-weight: 400;
     transition: 0.05s ease;
-
 }
 
 .navigation-button nav { 
-
     font-size: 15px;
     text-decoration: none;
     color: var(--main-font-color);
-
 }
 
 .navigation-button:hover {
-
     cursor: pointer;
     background: var(--main-accent-color);
-    transform: scale(100.5%);
     user-select: none;
-
 }
 
 .navigation-button:active {
-
-    transform: scale(98%);
-
+    transform: scale(96%);
 }
 
 .navigation-button[id="active"] nav {
-
     font-weight: 800;
-
 }
 
 .navigation-button img {
-
-    height: 23px;
-    width: 23px;
+    height: 21px;
+    width: 21px;
     object-fit: contain;
-
 }

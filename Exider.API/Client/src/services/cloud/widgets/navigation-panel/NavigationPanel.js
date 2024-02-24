@@ -2,8 +2,8 @@
 import React from 'react'
 import './css/navigation.buttons.css';
 import './css/main.css';
-import './css/media-queries.css';
 import './css/progress-bar.css';
+import './css/media-queries.css';
 import logo from './images/logo/main-logo-black.svg';
 import home_passive from './images/buttons/home_passive.svg';
 import home_active from './images/buttons/home_active.svg';

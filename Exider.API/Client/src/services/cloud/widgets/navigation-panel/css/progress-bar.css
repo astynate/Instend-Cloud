@@ -1,14 +1,12 @@
 .progress-bar-wrapper {
-
     height: 100%;
     width: 100%;
     display: flex;
     justify-content: center;
-
 }
 
 .progress-bar {
-
+    --space-occupied: 30%;
     width: 100%;
     height: 4px;
     background: var(--main-accent-color);
@@ -17,20 +15,11 @@
     margin: 20% 28px;
     border-radius: 30px;
     overflow: hidden;
-
 }
 
 .line {
-
-    --space-occupied: 30%;
-
-}
-
-.line {
-
     height: 100%;
     width: var(--space-occupied);
     background: black;
     border-radius: 30px;
-
 }
