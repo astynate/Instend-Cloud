@@ -30,3 +30,26 @@
     }
 
 }
+
+@media (max-width: 500px) {
+
+    #root {
+        overflow: hidden;
+    }
+
+    .cloud-wrapper {
+        display: grid;
+        grid-template-rows: 50px auto 50px;
+    }
+
+    .navigation-button {
+        height: 100%;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+}

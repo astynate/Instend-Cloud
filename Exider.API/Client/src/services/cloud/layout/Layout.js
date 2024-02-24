@@ -12,7 +12,7 @@ import Mobile from './Mobile';
 
 const Layout = () => {
 
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const handleLoading = () => setIsLoading(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -39,27 +39,23 @@ const Layout = () => {
             {windowWidth > 500 ? 
             
                     <Desktop>
-                        <div className='cloud-content-wrapper'>
-                            <Routes>
-                                {PrivateRoutes.map((route, index) => {
-                                    const { element, ...rest } = route;
-                                    return <Route key={index} {...rest} element={element} />;
-                                })}
-                            </Routes>
-                        </div>
+                        <Routes>
+                            {PrivateRoutes.map((route, index) => {
+                                const { element, ...rest } = route;
+                                return <Route key={index} {...rest} element={element} />;
+                            })}
+                        </Routes>
                     </Desktop>
 
                 :
 
                     <Mobile>
-                        <div className='cloud-content-wrapper'>
-                            <Routes>
-                                {PrivateRoutes.map((route, index) => {
-                                    const { element, ...rest } = route;
-                                    return <Route key={index} {...rest} element={element} />;
-                                })}
-                            </Routes>
-                        </div>
+                        <Routes>
+                            {PrivateRoutes.map((route, index) => {
+                                const { element, ...rest } = route;
+                                return <Route key={index} {...rest} element={element} />;
+                            })}
+                        </Routes>
                     </Mobile>
 
             }
