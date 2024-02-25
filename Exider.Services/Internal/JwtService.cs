@@ -56,7 +56,7 @@ namespace Exider_Version_2._0._0.ServerApp.Services
             try
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var key = _encryptionService.GetSymmetricKey(Configuration.testEncryptionKey);
+                var key = _encryptionService.GetSymmetricKey(Configuration.TestEncryptionKey);
 
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {

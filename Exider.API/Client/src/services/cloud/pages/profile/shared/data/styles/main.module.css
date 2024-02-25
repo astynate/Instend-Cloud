@@ -1,0 +1,21 @@
+.data {
+    display: flex;
+    grid-gap: 35px;
+    margin-top: 15px;
+    margin-bottom: 18px;
+}
+
+.counter {
+    display: flex;
+    grid-gap: 5px;
+}
+
+.counter h2 {
+    font-size: 14px;
+}
+
+.counter span {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--main-paragraph-color);
+}

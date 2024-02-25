@@ -65,7 +65,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
                     return Unauthorized();
 
                 accessToken = _tokenService.GenerateAccessToken(userId.ToString(),
-                    Configuration.accsessTokenLifeTimeInMinutes, Configuration.testEncryptionKey);
+                    Configuration.accsessTokenLifeTimeInMinutes, Configuration.TestEncryptionKey);
             }
 
             return Ok(accessToken);
@@ -116,7 +116,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
                 return StatusCode(StatusCodes.Status401Unauthorized);
 
             string accessToken = _tokenService
-                .GenerateAccessToken(user.Id.ToString(), 30, Configuration.testEncryptionKey);
+                .GenerateAccessToken(user.Id.ToString(), 30, Configuration.TestEncryptionKey);
 
             string refreshToken = _tokenService
                 .GenerateRefreshToken(user.Id.ToString());

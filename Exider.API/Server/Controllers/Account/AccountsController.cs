@@ -7,6 +7,7 @@ using Exider.Dependencies.Services;
 using Exider.Repositories.Account;
 using Exider.Repositories.Email;
 using Exider_Version_2._0._0.ServerApp.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Transactions;
 
@@ -24,11 +25,23 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
         private readonly IConfirmationRespository _confirmationRespository;
 
-        public AccountsController(IUsersRepository users, IEmailRepository email, IConfirmationRespository confirmation)
+        private readonly IUserDataRepository _userDataRepository;
+
+        public AccountsController(IUsersRepository users, IEmailRepository email, IConfirmationRespository confirmation, IUserDataRepository userDataRepository)
         {
             _usersRepository = users;
             _emailRepository = email;
             _confirmationRespository = confirmation;
+            _userDataRepository = userDataRepository;
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetAccountByEmail()
+        {
+            
+
+            return Ok();
         }
 
         [HttpGet("email/{email}")]
@@ -121,6 +134,15 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
                 }
 
                 await _confirmationRespository.AddAsync(confirmationCreationResult.Value);
+
+                var userDataCreationResult = UserDataModel.Create(userCreationResult.Value.Id);
+
+                if (userDataCreationResult.IsFailure)
+                {
+                    return BadRequest(userDataCreationResult.Error);
+                }
+
+                await _userDataRepository.AddAsync(userDataCreationResult.Value);
 
                 await emailService.SendEmailConfirmation(userCreationResult.Value.Email, confirmationCreationResult.Value.Code,
                     Configuration.URL + "account/email/confirmation/" + confirmationCreationResult.Value.Link.ToString());

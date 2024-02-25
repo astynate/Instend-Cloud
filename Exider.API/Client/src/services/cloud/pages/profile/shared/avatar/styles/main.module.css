@@ -1,0 +1,25 @@
+.avatar {
+    height: 150px;
+    width: 150px;
+    border-radius: 100%;
+    background: var(--main-accent-color);
+    position: relative;
+}
+
+.avatar-image {
+    height: 100%;
+    width: 100%;
+    border-radius: 100%;
+    object-fit: cover;
+}
+
+.status {
+    height: 32px;
+    width: 32px;
+    background: var(--main-accent-color);
+    border: 3px solid var(--main-background-color);
+    position: absolute;
+    right: 3px;
+    bottom: 3px;
+    border-radius: 100%;
+}

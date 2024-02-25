@@ -46,9 +46,9 @@
     <Folder Include="Client\src\services\accounts\pages\confirm\" />
     <Folder Include="Client\src\services\accounts\widgets\footer\" />
     <Folder Include="Client\src\services\cloud\features\Новая папка\" />
-    <Folder Include="Client\src\services\cloud\shared\" />
     <Folder Include="Client\src\services\cloud\entities\" />
     <Folder Include="Client\src\services\cloud\api\" />
+    <Folder Include="Client\src\services\cloud\shared\Новая папка\" />
   </ItemGroup>
 
   <ItemGroup>

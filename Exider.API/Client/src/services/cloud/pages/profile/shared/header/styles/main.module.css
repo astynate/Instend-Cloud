@@ -1,0 +1,14 @@
+.header {
+    width: auto;
+    height: 230px;
+    background: var(--main-accent-color);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.header img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    image-rendering: crisp-edges;
+}

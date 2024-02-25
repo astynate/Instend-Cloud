@@ -6,9 +6,7 @@ using Exider.Repositories.Email;
 using Exider.Repositories.Repositories;
 using Exider.Services.Internal.Handlers;
 using Exider.Services.Middleware;
-using Exider_Version_2._0._0.Server.Controllers.Account;
 using Exider_Version_2._0._0.ServerApp.Services;
-using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,12 +18,14 @@ builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 builder.Services.AddScoped<ISessionsRepository, SessionsRepository>();
 builder.Services.AddScoped<IConfirmationRespository, ConfirmationRespository>();
+builder.Services.AddScoped<IUserDataRepository, UserDataRepository>();
 
 builder.Services.AddSingleton<IValidationService, ValidationService>();
 builder.Services.AddSingleton<ITokenService, JwtService>();
 builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 builder.Services.AddSingleton<IEmailService, EmailService>();
 builder.Services.AddSingleton<IUserAgentHandler, UserAgentHandler>();
+builder.Services.AddSingleton<IRequestHandler, RequestHandler>();
 
 var app = builder.Build();
 

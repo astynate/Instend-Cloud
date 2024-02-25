@@ -1,0 +1,15 @@
+.header {
+    height: 55px;
+    position: sticky;
+    width: 100%;
+    top: 0;
+    left: 0;
+    border-bottom: 1px solid var(--main-border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header span {
+    font-weight: 600;
+}

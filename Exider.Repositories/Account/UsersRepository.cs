@@ -4,7 +4,6 @@ using Exider.Core.Dependencies.Repositories.Account;
 using Exider.Core.Models.Account;
 using Exider_Version_2._0._0.ServerApp.Services;
 using Microsoft.EntityFrameworkCore;
-using System.Globalization;
 
 namespace Exider.Repositories.Repositories
 {

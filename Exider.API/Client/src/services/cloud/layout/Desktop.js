@@ -3,7 +3,7 @@ import NavigationPanel from '../widgets/navigation-panel/NavigationPanel';
 import Header from '../widgets/header/Header';
 
 const Desktop = ({ children }) => {
-
+    
     return (
 
         <>
