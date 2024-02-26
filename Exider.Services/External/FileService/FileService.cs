@@ -2,7 +2,7 @@
 
 namespace Exider.Services.External.FileService
 {
-    public class FileService
+    public class FileService : IFileService
     {
 
         private static SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);

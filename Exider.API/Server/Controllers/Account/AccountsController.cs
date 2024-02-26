@@ -6,6 +6,7 @@ using Exider.Core.TransferModels.Account;
 using Exider.Dependencies.Services;
 using Exider.Repositories.Account;
 using Exider.Repositories.Email;
+using Exider.Services.Internal.Handlers;
 using Exider_Version_2._0._0.ServerApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,17 +38,28 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetAccountByEmail()
+        public async Task<IActionResult> GetUserDataAsync(IRequestHandler requestHandler)
         {
-            
+            var getUserId = requestHandler.GetUserId(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
 
-            return Ok();
+            if (getUserId.IsFailure)
+            {
+                return Unauthorized("Invalid token");
+            }
+
+            var getUserResult = await _userDataRepository.GetUserAsync(Guid.Parse(getUserId.Value));
+
+            if (getUserResult.IsFailure)
+            {
+                return Unauthorized("User not found");
+            }
+
+            return Ok(getUserResult.Value);
         }
 
         [HttpGet("email/{email}")]
         public async Task<IActionResult> GetAccountByEmail(string email)
         {
-
             if (string.IsNullOrEmpty(email))
             {
                 return BadRequest("Email required");
@@ -60,14 +72,12 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
                 return StatusCode(470, "User not found");
             }
 
-            return Ok(new PublicUserModel(userModel));
-
+            return Ok();
         }
 
         [HttpGet("nickname/{nickname}")]
         public async Task<IActionResult> GetAccountByNickname(string nickname)
         {
-
             if (string.IsNullOrEmpty(nickname))
             {
                 return BadRequest("Nickname required");
@@ -80,8 +90,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
                 return StatusCode(470, "User not found");
             }
 
-            return Ok(new PublicUserModel(userModel));
-
+            return Ok();
         }
 
         [HttpPost]

@@ -1,7 +1,27 @@
-﻿namespace Exider.Core
+﻿using CSharpFunctionalExtensions;
+using Microsoft.IdentityModel.Tokens;
+using System.IO;
+using System.Text;
+
+namespace Exider.Core
 {
     public static class Configuration
     {
+        static Configuration()
+        {
+            try
+            {
+                DefaultAvatar = File.ReadAllText(DefaultAvatarPath);
+            }
+            catch (Exception exception) 
+            {
+                Console.WriteLine(exception);
+            }
+        }
+
+        public const string Issuer = "Exider Company";
+
+        public const string Audience = "User";
 
         public static readonly string TestEncryptionKey = "bbosbfsn-fsd6fds-f8sd6fs-d6f87s6f-8sd6f8s6f-8s6f";
 
@@ -9,7 +29,7 @@
 
         public static readonly string CorporatePassword = "svgb zokl oqjy jzup";
 
-        public static readonly string DefaultAvatar = "D:/Exider-System/default-avatar.png";
+        public static readonly string DefaultAvatarPath = "D:/Exider-System/default-avatar.png";
 
         public static readonly string URL = "http://localhost:44441/";
 
@@ -18,6 +38,8 @@
         public static readonly int refreshTokenLifeTimeInDays = 30;
 
         public static readonly int accsessTokenLifeTimeInMinutes = 30;
+
+        public static readonly string? DefaultAvatar;
 
         public enum Months
         {
@@ -34,6 +56,9 @@
             November,
             December
         }
+
+        public static SymmetricSecurityKey GetSecurityKey()
+            => new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TestEncryptionKey));
 
     }
 

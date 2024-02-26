@@ -14,8 +14,7 @@ body {
 #root {
     height: 100svh;
     width: 100svw;
-    overflow-y: scroll;
-    overflow-x: hidden;
+    overflow: hidden;
     font-family: 'Open Sans';
     position: relative;
     background: var(--main-background-color);

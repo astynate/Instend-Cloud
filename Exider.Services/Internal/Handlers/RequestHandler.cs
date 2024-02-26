@@ -1,5 +1,6 @@
-﻿using Exider.Dependencies.Services;
-using Microsoft.AspNetCore.Http;
+﻿using CSharpFunctionalExtensions;
+using Exider.Dependencies.Services;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Exider.Services.Internal.Handlers
 {
@@ -12,11 +13,21 @@ namespace Exider.Services.Internal.Handlers
             _tokenService = tokenService;
         }
 
-        public string GetUserId(HttpContext httpContext)
+        public Result<string> GetUserId(string? authorizationHeader)
         {
-            string? token = httpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            if (string.IsNullOrEmpty(authorizationHeader)) 
+            {
+                return Result.Failure<string>("Token cannot empthy");
+            }
 
-            return _tokenService.GetUserIdFromToken(token);
+            string token = authorizationHeader.Split(" ").Last();
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return Result.Failure<string>("Invalid token");
+            }
+
+            return _tokenService.GetUserIdFromToken(token) ?? Result.Failure<string>("Invalid token");
         }
     }
 }

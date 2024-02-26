@@ -1,13 +1,12 @@
 import axios from "axios";
 import { makeAutoObservable } from "mobx";
-import ValidateRoute from "../utils/handlers/ValidateRoute";
-import PublicRoutes from "../routes/PublicRoutes";
 
 class UserState {
 
     isAccessibleRoute = false;
     isAuthorize = false;
     isLoading = true;
+    userModel = {};
 
     constructor() {
         makeAutoObservable(this);
