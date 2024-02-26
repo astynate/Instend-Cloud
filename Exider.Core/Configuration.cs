@@ -11,7 +11,7 @@ namespace Exider.Core
         {
             try
             {
-                DefaultAvatar = File.ReadAllText(DefaultAvatarPath);
+                DefaultAvatar = Convert.ToBase64String(File.ReadAllBytes(DefaultAvatarPath));
             }
             catch (Exception exception) 
             {

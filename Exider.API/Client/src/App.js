@@ -25,11 +25,7 @@ const App = observer(() => {
 
     return (
 
-        (isLoading ? 
-        
-            <MainLoader />
-
-        :
+        (isLoading ?  <MainLoader /> :
 
             <>
                 <Routes>

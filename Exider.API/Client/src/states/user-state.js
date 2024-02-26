@@ -1,4 +1,4 @@
-import axios from "axios";
+import { instance } from '../state/Interceptors';
 import { makeAutoObservable } from "mobx";
 
 class UserState {
@@ -6,7 +6,7 @@ class UserState {
     isAccessibleRoute = false;
     isAuthorize = false;
     isLoading = true;
-    userModel = {};
+    user = null;
 
     constructor() {
         makeAutoObservable(this);
@@ -16,11 +16,7 @@ class UserState {
 
         this.isLoading = true;
     
-        const responsePromise = axios.get('/authentication', {
-            params: {
-                accessToken: localStorage.getItem('system_access_token')
-            },
-        });
+        const responsePromise = instance.get('/accounts');
     
         const timeoutPromise = new Promise((resolve) => {
             setTimeout(() => resolve({ status: 408 }), 5000);
@@ -32,8 +28,10 @@ class UserState {
     
             if (response.status === 200) {
 
+                this.user = await response.data;
                 this.isAuthorize = true;
-                localStorage.setItem('system_access_token', response.data);
+
+                console.log(this.user);
 
             } else {
                 this.isAuthorize = false;

@@ -48,10 +48,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = Configuration.Issuer,
             ValidAudience = Configuration.Audience,
-            LifetimeValidator = (before, expires, token, param) =>
-            {
-                return expires > DateTime.Now;
-            },
+            LifetimeValidator = (before, expires, token, param) => expires > DateTime.UtcNow,
             IssuerSigningKey = Configuration.GetSecurityKey(),
         };
     });
@@ -65,25 +62,17 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<LoggingMiddleware>();
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseRouting();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
-
-app.MapFallbackToFile("index.html");
-
-app.UseStatusCodePages(async (context) =>
+app.Use(async (context, next) =>
 {
-    string? accessToken = context.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-    string? refreshToken = context.HttpContext.Request.Cookies["system_refresh_token"];
+    string? accessToken = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+    string? refreshToken = context.Request.Cookies["system_refresh_token"];
 
-    if (!string.IsNullOrEmpty(accessToken) && !string.IsNullOrEmpty(refreshToken) && context.HttpContext.Response.StatusCode == 401)
+    ITokenService tokenService = context.RequestServices.GetRequiredService<ITokenService>();
+
+    if (!string.IsNullOrEmpty(accessToken) && !string.IsNullOrEmpty(refreshToken) && tokenService.IsTokenAlive(accessToken) == false)
     {
-        ITokenService tokenService = context.HttpContext.RequestServices.GetRequiredService<ITokenService>();
-        ISessionsRepository sessionsRepository = context.HttpContext.RequestServices.GetRequiredService<ISessionsRepository>();
+        ISessionsRepository sessionsRepository = context.RequestServices.GetRequiredService<ISessionsRepository>();
 
         string userId = tokenService.GetUserIdFromToken(accessToken);
 
@@ -97,29 +86,27 @@ app.UseStatusCodePages(async (context) =>
                 accessToken = tokenService.GenerateAccessToken(userId, Configuration.accsessTokenLifeTimeInMinutes,
                     Configuration.TestEncryptionKey);
 
-                await Console.Out.WriteLineAsync(context.HttpContext.Request.PathBase);
-                await Console.Out.WriteLineAsync(context.HttpContext.Request.Path);
+                context.Request.Headers["Authorization"] = "Bearer " + accessToken;
+                context.Response.Headers["Refresh"] = accessToken;
 
-                var client = new HttpClient();
-                var request = new HttpRequestMessage(new HttpMethod(context.HttpContext.Request.Method), context.HttpContext.Request.PathBase);
-
-                request.Headers.Add("Authorization", "Bearer " + accessToken);
-
-                using (var stream = new MemoryStream())
-                {
-                    await context.HttpContext.Request.Body.CopyToAsync(stream);
-
-                    stream.Seek(0, SeekOrigin.Begin);
-                    request.Content = new StreamContent(stream);
-                }
-
-                var response = await client.SendAsync(request);
-                response.Headers.Add("Refresh", "Bearer " + accessToken);
+                await Console.Out.WriteLineAsync("Bearer " + accessToken);
 
             }
         }
     }
+
+    await next(context);
 });
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller}/{action=Index}/{id?}");
+
+app.MapFallbackToFile("index.html");
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -3,11 +3,14 @@ import styles from './styles/main.module.css';
 import search from './images/search.png';
 import notifications from './images/notifications.png';
 import add from './images/add.png';
+import { observer } from 'mobx-react-lite';
+import userState from '../../../../states/user-state';
 import ProfileModal from '../../features/modal/profile/ProfileModal';
 
-const Header = () => {
+const Header = observer(() => {
     
     const [profilePopUpState, setProfilePopUpState] = useState(false);
+    const { user } = userState;
     const profileRef = useRef();
 
     return (
@@ -27,7 +30,7 @@ const Header = () => {
                         <img src={notifications} className={styles.buttonImage} draggable='false' />
                     </div>
                     <div ref={profileRef} className={styles.button} onClick={() => setProfilePopUpState(prev => !prev)}>
-                        <img src='https://e0.pxfuel.com/wallpapers/413/586/desktop-wallpaper-mathilda.jpg' draggable='false' className={styles.avatar} />
+                        <img src={`data:image/png;base64,${user.avatar}`} draggable='false' className={styles.avatar} />
                     </div>
                 </div>
             </div>
@@ -35,6 +38,6 @@ const Header = () => {
         
     );
 
-};
+});
 
 export default Header;

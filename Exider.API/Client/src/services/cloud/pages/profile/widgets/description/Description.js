@@ -4,18 +4,22 @@ import Avatar from '../../shared/avatar/Avatar';
 import Username from '../../shared/username/Username';
 import Data from '../../shared/data/Data';
 import Navigation from '../navigation/Navigation';
+import { observer } from 'mobx-react-lite';
+import userState from '../../../../../../states/user-state';
 
-const Description = () => {
+const Description = observer(() => {
+
+  const { user } = userState;
 
   return (
 
     <>
       <div className={styles.description}>
-        <Avatar />
+        <Avatar src={`data:image/png;base64,${user.avatar}`} />
         <div className={styles.profileDescription}>
-          <Username />
-          <Data coins={0} friends={0} space={1} />
-          <div><h3 className={styles.name}>Name Surname</h3></div>
+          <Username username={user.nickname} />
+          <Data coins={user.balance} friends={user.friendCount} space={user.storageSpace / 1024} />
+          <div><h3 className={styles.name}>{user.name} {user.surname}</h3></div>
         </div>
         <div className={styles.editProfile}>
           <div>
@@ -35,6 +39,6 @@ const Description = () => {
 
   )
 
-};
+});
 
 export default Description;
