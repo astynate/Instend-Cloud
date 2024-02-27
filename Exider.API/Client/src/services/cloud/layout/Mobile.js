@@ -1,9 +1,11 @@
 import React from 'react'
 import MobileNavigation from '../widgets/navigation-panel/MobileNavigation';
 import logo from '../widgets/navigation-panel/images/logo/main-logo-black.svg';
+import PrivateRoutes from '../../../routes/PrivateRoutes';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import './css/main.css';
 
-const Mobile = ({ children }) => {
+const Mobile = ({ }) => {
 
     return (
 
@@ -16,7 +18,12 @@ const Mobile = ({ children }) => {
                 </div>
             </div>
             <div className='cloud-content-wrapper'>
-                {children}
+                <Routes>
+                    {PrivateRoutes.map((route, index) => {
+                        const { element, ...rest } = route;
+                        return <Route key={index} {...rest} element={element} />;
+                    })}
+                </Routes>
             </div>
             <MobileNavigation />
         </>

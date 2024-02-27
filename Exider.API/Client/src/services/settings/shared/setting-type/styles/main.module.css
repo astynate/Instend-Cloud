@@ -1,0 +1,23 @@
+.settingType {
+    height: auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    grid-gap: 25px;
+}
+
+.description {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.settingType h1 {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.settingType p {
+    font-size: 12px;
+    color: var(--main-paragraph-color)
+}

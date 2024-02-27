@@ -1,11 +1,10 @@
 ﻿import React from 'react'
 import { useState, useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
 import Loader from '../widgets/loader/Loader';
 import './css/fonts.css';
 import './css/colors.css';
 import './css/main.css';
-import PrivateRoutes from '../../../routes/PrivateRoutes';
+
 import { Helmet } from 'react-helmet';
 import Desktop from './Desktop';
 import Mobile from './Mobile';
@@ -37,29 +36,7 @@ const Layout = () => {
             <Helmet>
                 <title>Exider Cloud</title>
             </Helmet>
-            {windowWidth > 500 ?
-            
-                    <Desktop>
-                        <Routes>
-                            {PrivateRoutes.map((route, index) => {
-                                const { element, ...rest } = route;
-                                return <Route key={index} {...rest} element={element} />;
-                            })}
-                        </Routes>
-                    </Desktop>
-
-                :
-
-                    <Mobile>
-                        <Routes>
-                            {PrivateRoutes.map((route, index) => {
-                                const { element, ...rest } = route;
-                                return <Route key={index} {...rest} element={element} />;
-                            })}
-                        </Routes>
-                    </Mobile>
-
-            }
+            {windowWidth > 500 ? <Desktop /> : <Mobile /> }
         </div>
     );
 

@@ -31,7 +31,6 @@
 
 .editProfileButton {
     margin-top: 45px;
-    padding: 10px 25px;
     border: none;
     outline: none;
     border-radius: 10px;
@@ -40,7 +39,13 @@
     background: var(--main-accent-color);
     transform: scale(100%);
     transition: 0.15s ease;
+    padding: 10px 25px;
     cursor: pointer;
+    color: var(--main-font-color);
+}
+
+.navButton {
+    margin-top: 45px;
 }
 
 .editProfileButton:hover {

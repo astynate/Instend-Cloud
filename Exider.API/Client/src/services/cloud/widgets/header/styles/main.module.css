@@ -18,13 +18,13 @@
     margin-left: auto;
     display: flex;
     align-items: center;
-    padding-right: 10px;
-    grid-gap: 10px;
+    padding-right: 15px;
+    grid-gap: 15px;
 }
 
 .button {
-    height: 45px;
-    width: 45px;
+    height: 40px;
+    width: 40px;
     background: var(--main-accent-color);
     border-radius: 100%;
     transition: 0.2s ease;
@@ -47,7 +47,7 @@
 }
 
 .buttonImage {
-    height: 23px;
+    height: 20px;
 }
 
 .avatar {

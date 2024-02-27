@@ -5,10 +5,9 @@
 }
 
 .settings {
-    width: 400px;
-    border-right: 1px solid var(--main-border-color);
-    overflow-y: scroll;
-    overflow-x: hidden;
+    width: 350px;
+    overflow: hidden;
+    padding: 0px 10px;
 }
 
 .content {
@@ -16,4 +15,29 @@
     width: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
+}
+
+.line {
+    height: 1px;
+    width: 100%;
+    background: var(--main-border-color);
+}
+
+.headerLine {
+    height: 1px;
+    width: auto;
+    margin: 0 5vw;
+    background: var(--main-border-color);
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.settingWrapper {
+    padding: 20px 10vw;
 }

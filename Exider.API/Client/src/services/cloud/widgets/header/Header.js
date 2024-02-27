@@ -16,8 +16,8 @@ const Header = observer((props) => {
 
         <>
             <ProfileModal caller={profileRef} state={profilePopUpState} setState={setProfilePopUpState} />
-            {props.children}
             <div className={styles.header}>
+                {props.children}
                 <div className={styles.buttons}>
                     <div className={styles.button}>
                         <img src={add} className={styles.buttonImage} draggable='false' />

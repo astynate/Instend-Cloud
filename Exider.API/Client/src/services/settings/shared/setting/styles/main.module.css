@@ -1,0 +1,25 @@
+.setting {
+    height: 50px;
+    width: 100%;
+    background: var(--main-accent-color);
+    border-radius: 4px;
+    transition: 0.25s ease;
+    cursor: pointer;
+}
+
+.setting:hover {
+    filter: brightness(95%);
+}
+
+.setting:active {
+    filter: brightness(90%);
+    transform: scale(97%);
+}
+
+.setting[id="first"] {
+    border-radius: 15px 15px 4px 4px;
+}
+
+.setting[id="last"] {
+    border-radius: 4px 4px 15px 15px;
+}

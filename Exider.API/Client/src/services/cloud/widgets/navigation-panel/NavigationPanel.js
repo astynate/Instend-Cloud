@@ -28,10 +28,10 @@ const useIsActiveButton = (name) =>
 const useIsCurrentRoute = (name) => 
     useLocation()['pathname'] === '/' + name;
 
-const NavigationPanel = () => {
+const NavigationPanel = (props) => {
 
     return (
-        <div className="left-panel">
+        <div className="left-panel" id={props.isPanelRolledUp ? 'rolled-up' : null}>
             <div className="left-panel-logo">
                 <img src={logo} alt="logo" draggable="false" />
             </div>

@@ -6,6 +6,7 @@ import Data from '../../shared/data/Data';
 import Navigation from '../navigation/Navigation';
 import { observer } from 'mobx-react-lite';
 import userState from '../../../../../../states/user-state';
+import { NavLink } from 'react-router-dom';
 
 const Description = observer(() => {
 
@@ -23,14 +24,18 @@ const Description = observer(() => {
         </div>
         <div className={styles.editProfile}>
           <div>
-            <button className={styles.editProfileButton}>
-              Edit profile
-            </button>
+            <div className={styles.navButton}>
+              <NavLink to='/settings/profile' className={styles.editProfileButton}>
+                Edit profile
+              </NavLink>
+            </div>
           </div>
           <div>
-            <button className={styles.editProfileButton}>
-              Settings
-            </button>
+            <div className={styles.navButton}>
+              <NavLink to='/settings' className={styles.editProfileButton}>
+                Settings
+              </NavLink>
+            </div>
           </div>
         </div>
       </div>

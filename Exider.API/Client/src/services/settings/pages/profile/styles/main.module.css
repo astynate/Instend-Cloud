@@ -1,0 +1,29 @@
+.settingBar {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    grid-gap: 4px;
+}
+
+.avatar {
+    height: 100px;
+    width: 100px;
+    border-radius: 100%;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+.header {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.headerWrapper {
+    height: 100px;
+    width: 200px;
+    background: var(--main-accent-color);
+    border-radius: 10px;
+    overflow: hidden;
+}
