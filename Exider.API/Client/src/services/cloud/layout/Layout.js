@@ -12,8 +12,9 @@ import Mobile from './Mobile';
 
 const Layout = () => {
 
-    const [isLoading, setIsLoading] = useState(false);
     const handleLoading = () => setIsLoading(false);
+
+    const [isLoading, setIsLoading] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
     useEffect(() => {
@@ -36,7 +37,7 @@ const Layout = () => {
             <Helmet>
                 <title>Exider Cloud</title>
             </Helmet>
-            {windowWidth > 500 ? 
+            {windowWidth > 500 ?
             
                     <Desktop>
                         <Routes>

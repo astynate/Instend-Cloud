@@ -6,6 +6,7 @@ import Home from '../services/cloud/pages/home/Home';
 import Messages from '../services/cloud/pages/messages/Messages';
 import Music from '../services/cloud/pages/music/Music';
 import Profile from '../services/cloud/pages/profile/layout/Profile';
+import Settings from '../services/settings/layout/Settings';
 
 const PrivateRoutes = [
     {
@@ -39,6 +40,10 @@ const PrivateRoutes = [
     {
         path: '/profile',
         element: <Profile />
+    },
+    {
+        path: '/settings/*',
+        element: <Settings />
     },
 ];
 

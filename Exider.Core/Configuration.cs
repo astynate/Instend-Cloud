@@ -1,6 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-using Microsoft.IdentityModel.Tokens;
-using System.IO;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 namespace Exider.Core

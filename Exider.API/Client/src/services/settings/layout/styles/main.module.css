@@ -1,0 +1,19 @@
+.wrapper {
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
+
+.settings {
+    width: 400px;
+    border-right: 1px solid var(--main-border-color);
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.content {
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}

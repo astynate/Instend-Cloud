@@ -1,13 +1,12 @@
 import React, { useState, useRef } from 'react';
 import styles from './styles/main.module.css';
-import search from './images/search.png';
 import notifications from './images/notifications.png';
 import add from './images/add.png';
 import { observer } from 'mobx-react-lite';
 import userState from '../../../../states/user-state';
 import ProfileModal from '../../features/modal/profile/ProfileModal';
 
-const Header = observer(() => {
+const Header = observer((props) => {
     
     const [profilePopUpState, setProfilePopUpState] = useState(false);
     const { user } = userState;
@@ -17,10 +16,7 @@ const Header = observer(() => {
 
         <>
             <ProfileModal caller={profileRef} state={profilePopUpState} setState={setProfilePopUpState} />
-            <div className={styles.search}>
-                <img src={search} draggable={false} />
-                <input placeholder='Search' />
-            </div>
+            {props.children}
             <div className={styles.header}>
                 <div className={styles.buttons}>
                     <div className={styles.button}>
