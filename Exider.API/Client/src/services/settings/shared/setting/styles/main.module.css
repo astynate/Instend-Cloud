@@ -1,10 +1,35 @@
 .setting {
-    height: 50px;
+    height: 65px;
     width: 100%;
     background: var(--main-accent-color);
     border-radius: 4px;
     transition: 0.25s ease;
     cursor: pointer;
+    display: flex;
+    padding-left: 20px;
+    align-items: center;
+    grid-gap: 15px;
+}
+
+.description {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.setting h1 {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.setting p {
+    font-size: 12px;
+    color: var(--main-paragraph-color)
+}
+
+.setting img {
+    width: 20px;
+    object-fit: cover;
 }
 
 .setting:hover {
@@ -13,7 +38,7 @@
 
 .setting:active {
     filter: brightness(90%);
-    transform: scale(97%);
+    transform: scale(98%);
 }
 
 .setting[id="first"] {

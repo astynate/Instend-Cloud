@@ -31,8 +31,6 @@ class UserState {
                 this.user = await response.data;
                 this.isAuthorize = true;
 
-                console.log(this.user);
-
             } else {
                 this.isAuthorize = false;
                 navigate('/account/login');

@@ -5,7 +5,11 @@
     --main-font-color: #000;
     --main-header-font-color: #c2c2c2;
     --main-header-background-color: #ffffffce;
-    --main-paragraph-color: #555;
+    --main-blue-color: rgb(63, 88, 255);
+    --main-accent-font-color: white;
+    --main-paragraph-color: #777;
+    --main-button-background-color: black;
+    --main-button-font-color: white;
     --main-pop-up-color: #fff;
     --main-pop-up-effect: 0px 0px 50px rgba(0, 0, 0, 0.07);
 }

@@ -4,6 +4,7 @@
     display: flex;
     flex-direction: column;
     grid-gap: 4px;
+    user-select: none;
 }
 
 .avatar {
@@ -26,4 +27,10 @@
     background: var(--main-accent-color);
     border-radius: 10px;
     overflow: hidden;
+}
+
+.divideLine {
+    height: 1px;
+    width: 100%;
+    background: var(--main-border-color);
 }

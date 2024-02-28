@@ -10,7 +10,7 @@ const Button = (props) => {
 
         if (location.pathname === props.path) {
 
-            props.setCurrentSetting(props.title);
+            props.setCurrentSetting(props.title + " " + "settings");
 
         }
 

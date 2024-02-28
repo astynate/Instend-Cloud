@@ -1,0 +1,83 @@
+.wrapper {
+    height: 100%;
+    width: 100%;
+    border: 7px solid var(--main-accent-color);
+    outline: 2px dashed var(--main-blue-color);
+    outline-offset: -7px;
+    border-radius: 20px;
+    display: grid;
+    grid-template-rows: 0.8fr 0.2fr;
+    padding-top: 50px;
+    padding-bottom: 0px;
+    user-select: none;
+}
+
+.wrapper[id="file"] {
+    outline: 2px solid var(--main-blue-color);
+}
+
+.wrapper img {
+    height: 80px;
+    width: 80px;
+    object-fit: contain;
+    margin-bottom: 5px;
+}
+
+.button {
+    border: none;
+    outline: none;
+    background: var(--main-blue-color);
+    color: var(--main-accent-font-color);
+    padding: 10px 25px;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    position: relative;
+}
+
+.button input[type="file"] {
+
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    cursor: pointer;
+    opacity: 0;
+
+}
+
+.content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    grid-gap: 2px;
+}
+
+.content h1 {
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.content p {
+    font-size: 12px;
+}
+
+.line {
+    height: 1px;
+    width: 60%;
+    background: var(--main-border-color);
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.navigation {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    grid-gap: 10px;
+    padding: 50px 30px 20px 00px;
+}

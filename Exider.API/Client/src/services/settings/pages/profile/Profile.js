@@ -1,27 +1,92 @@
-import React from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import styles from './styles/main.module.css';
 import SettingType from '../../shared/setting-type/SettingType';
 import { observer } from 'mobx-react-lite';
 import userState from '../../../../states/user-state';
 import Setting from '../../shared/setting/Setting';
+import edit from './images/edit.png';
+import fromDrive from './images/from-drive.png';
+import upload from './images/upload.png';
+import trash from './images/trash.png';
+import UploadAvatar from './operations/AvatarOperations';
+
+const defaultProfileSettings = {
+
+    avatar: {
+
+        image: "",
+        coordinates: {
+
+            topLeft: {
+                x: "",
+                y: ""
+            },
+    
+            rightBottom: {
+                x: "",
+                y: ""
+            }
+            
+        }
+    
+    },
+
+    header: {
+        
+        image: "",
+        coordinates: {
+
+            topLeft: {
+                x: "",
+                y: ""
+            },
+    
+            rightBottom: {
+                x: "",
+                y: ""
+            }
+            
+        }
+    
+    },
+
+    name: "",
+    surname: "",
+    nickname: "",
+
+};
+
+const ProfileSettingsContext = createContext();
 
 const Profile = observer(() => {
 
     const { user } = userState;
+    const [profileSettings, setProfileSettings] = useState(defaultProfileSettings);
+    const [uploadAvatar,  setUploadAvatar] = useState(false);
 
     return (
 
-        <>
+        <ProfileSettingsContext.Provider value={[profileSettings, setProfileSettings]}>
+            { uploadAvatar ? <UploadAvatar isOpen={uploadAvatar} setOpenState={setUploadAvatar} /> : null }
             <SettingType 
                 image={<img src={`data:image/png;base64,${user.avatar}`} className={styles.avatar} />} 
                 title="Avatar" 
                 description="Please note that your profile photo will be visible to everyone." 
             />
             <div className={styles.settingBar}>
-                <Setting type="first" />
-                <Setting />
-                <Setting />
-                <Setting type="last" />
+                <Setting  
+                    image={upload}
+                    title="Upload from device" 
+                    type="first"
+                    description="The old one will be deleted"
+                    openFunction={setUploadAvatar}
+                />
+                <Setting  
+                    image={trash}
+                    type="last"
+                    title="Delete avatar" 
+                    description="Setting the avatar to it is default state" 
+                />
             </div>
             <SettingType 
                 image={
@@ -32,18 +97,14 @@ const Profile = observer(() => {
                             /> : null}
                     </div>} 
                 title="Header" 
-                description="Please note that your profile photo will be visible to everyone." 
+                description="It is best to choose photos in a ratio of 21 to 9" 
             />
-            <div className={styles.settingBar}>
-                <Setting type="first" />
-                <Setting />
-                <Setting />
-                <Setting type="last" />
-            </div>
-        </>
+            <div className={styles.settingBar}></div>
+        </ProfileSettingsContext.Provider>
         
     );
 
 });
 
 export default Profile;
+export { ProfileSettingsContext };

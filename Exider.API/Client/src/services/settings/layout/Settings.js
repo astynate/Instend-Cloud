@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import styles from './styles/main.module.css';
-import LayoutHeader from '../../cloud/widgets/header/Header'
 import { Route, Routes } from 'react-router-dom';
 import Profile from '../pages/profile/Profile';
 import Interface from '../pages/interface/Interface';
@@ -8,7 +7,7 @@ import Language from '../pages/language/Language';
 import Security from '../pages/security/Security';
 import MiniProfile from '../widgets/mini-profile/MiniProfile';
 import Button from '../shared/button/Button';
-import SettingName from '../widgets/header/SettingName';
+import Header from '../widgets/header/Header';
 
 const Settings = (props) => {
 
@@ -50,9 +49,7 @@ const Settings = (props) => {
                 </div>
             </div>
             <div className={styles.content}>
-                <LayoutHeader>
-                    <SettingName title={currentSetting} />
-                </LayoutHeader>
+                <Header title={currentSetting} />
                 <div className={styles.settingWrapper}>
                     <Routes>
                         <Route path='profile' element={<Profile />} />
