@@ -5,7 +5,13 @@ const Next = (props) => {
 
     return (
     
-        <button className={styles.next} disabled={props.disabled}>Next</button>
+        <button 
+            className={styles.next} 
+            onClick={props.onClick} 
+            disabled={props.disabled}
+        >
+            Next
+        </button>
 
     );
 
@@ -15,7 +21,12 @@ const Back = (props) => {
 
     return (
     
-        <button className={styles.back} onClick={props.onClick}>Back</button>
+        <button 
+            className={styles.back} 
+            onClick={props.onClick}
+        >
+            Back
+        </button>
         
     );
 

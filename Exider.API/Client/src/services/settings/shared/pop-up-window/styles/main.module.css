@@ -11,11 +11,13 @@
     align-items: center;
     justify-content: center;
     transition: 0.25s ease;
+    /* overflow: hidden; */
 }
 
 .window {
     height: auto;
-    width: 700px;
+    width: auto;
     border-radius: 20px;
     background: var(--main-background-color);
+    /* overflow: hidden; */
 }

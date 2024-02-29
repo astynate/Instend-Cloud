@@ -1,13 +1,13 @@
 .wrapper {
     height: 100%;
-    width: 100%;
+    width: 700px;
     border: 7px solid var(--main-accent-color);
     outline: 2px dashed var(--main-blue-color);
     outline-offset: -7px;
     border-radius: 20px;
     display: grid;
     grid-template-rows: 0.8fr 0.2fr;
-    padding-top: 50px;
+    padding-top: 55px;
     padding-bottom: 0px;
     user-select: none;
 }
@@ -20,7 +20,7 @@
     height: 80px;
     width: 80px;
     object-fit: contain;
-    margin-bottom: 5px;
+    margin-bottom: 15px;
 }
 
 .button {

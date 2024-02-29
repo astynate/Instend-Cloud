@@ -1,0 +1,105 @@
+.imageWrapper {
+    height: 400px;
+    width: 100%;
+    position: relative;
+    border-bottom: 1px solid var(--main-border-color);
+    background: black;
+    display: flex;
+}
+
+.image {
+    height: 400px;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.buttons {
+    width: 100%;
+    display: flex;
+    grid-gap: 20px;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 10px;
+}
+
+.navigation {
+    display: flex;
+    grid-gap: 10px;
+}
+
+.crop {
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    display: grid;
+    grid-template-rows: auto 400px auto;
+}
+.middle {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 400px auto;
+}
+
+.top, .left, .bottom, .right {
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(5px);
+}
+
+.workspace {
+    height: 400px;
+    width: 400px;
+    position: relative;
+    cursor: grab;
+}
+
+.dragAndDropPoint {
+    height: 25px;
+    width: 25px;
+    background: rgba(255, 255, 255, 0.376);
+    position: absolute;
+    border: 4px solid var(--main-blue-color);
+    z-index: 9999999999999999;
+}
+
+.dragAndDropPoint:nth-child(1) {
+    top: 0;
+    left: 0;
+    transform: translateX(50px);
+    cursor: nwse-resize;
+}
+
+
+.dragAndDropPoint:nth-child(2) {
+    top: 0;
+    right: 0;
+    cursor: nesw-resize;
+}
+
+
+.dragAndDropPoint:nth-child(3) {
+    bottom: 0;
+    left: 0;
+    cursor: nesw-resize;
+}
+
+
+.dragAndDropPoint:nth-child(4) {
+    bottom: 0;
+    right: 0;
+    cursor: nwse-resize;
+}
+
+.circle {
+    border-radius: 100%;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    border: 4px solid var(--main-blue-color);
+    opacity: 0;
+}

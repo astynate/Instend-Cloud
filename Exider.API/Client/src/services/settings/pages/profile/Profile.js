@@ -8,7 +8,8 @@ import edit from './images/edit.png';
 import fromDrive from './images/from-drive.png';
 import upload from './images/upload.png';
 import trash from './images/trash.png';
-import UploadAvatar from './operations/AvatarOperations';
+import UploadAvatar from './operations/UploadAvatar/UploadAvatar';
+import UploadAvatarProcess from './processes/upload-avatar/UploadAvatarProcess';
 
 const defaultProfileSettings = {
 
@@ -67,7 +68,7 @@ const Profile = observer(() => {
     return (
 
         <ProfileSettingsContext.Provider value={[profileSettings, setProfileSettings]}>
-            { uploadAvatar ? <UploadAvatar isOpen={uploadAvatar} setOpenState={setUploadAvatar} /> : null }
+            { uploadAvatar ? <UploadAvatarProcess isOpen={uploadAvatar} setOpenState={setUploadAvatar} /> : null }
             <SettingType 
                 image={<img src={`data:image/png;base64,${user.avatar}`} className={styles.avatar} />} 
                 title="Avatar" 

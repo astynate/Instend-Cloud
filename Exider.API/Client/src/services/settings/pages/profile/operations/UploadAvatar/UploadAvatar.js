@@ -1,21 +1,9 @@
-import React, { useContext, useEffect, useState, useLayoutEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from './styles/main.module.css';
-import PopUpWinwow from '../../../shared/pop-up-window/PopUpWindow';
+import PopUpWindow from '../../../../shared/pop-up-window/PopUpWindow';
 import image from './images/avatar.png';
-import { Back, Next } from "../../../shared/navigate/Navigate";
-import { ProfileSettingsContext } from '../Profile';
-
-const types = ['image/png'];
-
-const ValidateImage = (image) => {
-
-    try {
-        return image !== null && types.includes(image.type) && image.size > 0;
-    } catch {
-        return false;
-    }
-
-};
+import { Back, Next } from "../../../../shared/navigate/Navigate";
+import { ProfileSettingsContext } from '../../Profile';
 
 const UpdateAvatar = (avatar, setAvatar) => {
 
@@ -32,22 +20,13 @@ const UpdateAvatar = (avatar, setAvatar) => {
 const UploadAvatar = (props) => {
 
     const [context, setContext] = useContext(ProfileSettingsContext);
+    const [isFileEnter, setFileEnterState] = useState(false);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
 
         UpdateAvatar(null, setContext);
 
     }, []);
-
-    const [isFileEnter, setFileEnterState] = useState(false);
-    const [isValid, setValidationState] = useState(ValidateImage(context.avatar.image));
-
-    useEffect(() => {
-
-        setValidationState(ValidateImage(context.avatar.image));
-        setFileEnterState(isValid);
-
-    }, [context]);
 
     const onDragOver = (event) => {
 
@@ -78,10 +57,10 @@ const UploadAvatar = (props) => {
 
     return (
 
-        <PopUpWinwow isOpen={props.isOpen} setOpenState={props.setOpenState}>
+        <PopUpWindow isOpen={props.isOpen} setOpenState={props.setOpenState}>
             <div 
                 className={styles.wrapper} 
-                id={isFileEnter ? 'file' : null} 
+                id={isFileEnter === true ? 'file' : ''} 
                 onDragLeave={(event) => onDragLeave(event)} 
                 onDragOver={(event) => onDragOver(event)}
                 onDrop={(event) => onDrag(event)}
@@ -98,10 +77,10 @@ const UploadAvatar = (props) => {
                 </div>
                 <div className={styles.navigation}>
                     <Back onClick={() => props.setOpenState(false)} />
-                    <Next disabled={!isValid} />
+                    <Next disabled={!props.isUpload} onClick={() => props.setNextOperation(true)} />
                 </div>
             </div>
-        </PopUpWinwow>
+        </PopUpWindow>
         
     );
 
