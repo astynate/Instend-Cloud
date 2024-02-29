@@ -5,11 +5,18 @@
     --main-font-color: #000;
     --main-header-font-color: #c2c2c2;
     --main-header-background-color: #ffffffce;
-    --main-blue-color: rgb(63, 88, 255);
+    --main-blue-color: rgb(40, 108, 255);
     --main-accent-font-color: white;
     --main-paragraph-color: #777;
     --main-button-background-color: black;
     --main-button-font-color: white;
     --main-pop-up-color: #fff;
     --main-pop-up-effect: 0px 0px 50px rgba(0, 0, 0, 0.07);
+    --button-disabled-backgound: #eee;
+    --button-active-backgound: #000000;
+    --button-loading-backgound: #000000;
+    --button-disabled-text-color: #ffffff;
+    --button-active-text-color: #ffffff;
+    --button-loading-text-color: #ffffff;
+    --button-loader-color: rgb(255, 255, 255);
 }

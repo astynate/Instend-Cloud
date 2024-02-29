@@ -76,7 +76,7 @@ const UploadAvatar = (props) => {
                     </div>
                 </div>
                 <div className={styles.navigation}>
-                    <Back onClick={() => props.setOpenState(false)} />
+                    {/* <Back onClick={() => props.setOpenState(false)} /> */}
                     <Next disabled={!props.isUpload} onClick={() => props.setNextOperation(true)} />
                 </div>
             </div>

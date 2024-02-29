@@ -52,20 +52,19 @@
     cursor: pointer;
 }
 
-.button {
-    padding: 7px 14px;
-    outline: none;
-    border: none;
-    background: var(--main-button-background-color);
-    color: var(--main-button-font-color);
-    border-radius: 100px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-}
+  @keyframes button-loader-animation {
+    0% {
+      opacity: 1;
+    }
+    
+    100% {
+      opacity: 0;
+    }
+  }
 
 @media (max-width: 1000px) {
     .header {
-        margin: 0 2vw;
+        width: auto;
+        padding: 0px 2vw;
     }
 }

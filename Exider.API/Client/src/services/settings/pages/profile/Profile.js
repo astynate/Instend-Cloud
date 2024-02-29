@@ -64,13 +64,25 @@ const Profile = observer(() => {
     const { user } = userState;
     const [profileSettings, setProfileSettings] = useState(defaultProfileSettings);
     const [uploadAvatar,  setUploadAvatar] = useState(false);
+    const [avatar, setAvatar] = useState(`data:image/png;base64,${user.avatar}`);
 
     return (
 
         <ProfileSettingsContext.Provider value={[profileSettings, setProfileSettings]}>
-            { uploadAvatar ? <UploadAvatarProcess isOpen={uploadAvatar} setOpenState={setUploadAvatar} /> : null }
+            { 
+                uploadAvatar ? 
+
+                    <UploadAvatarProcess 
+                        isOpen={uploadAvatar} 
+                        setOpenState={setUploadAvatar}
+                        setAvatar={setAvatar}
+                    /> 
+                : 
+                
+                    null 
+            }
             <SettingType 
-                image={<img src={`data:image/png;base64,${user.avatar}`} className={styles.avatar} />} 
+                image={<img src={avatar} className={styles.avatar} draggable="false" />} 
                 title="Avatar" 
                 description="Please note that your profile photo will be visible to everyone." 
             />

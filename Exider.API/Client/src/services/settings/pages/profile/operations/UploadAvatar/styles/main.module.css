@@ -77,7 +77,7 @@
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
     grid-gap: 10px;
-    padding: 50px 30px 20px 00px;
+    padding: 30px;
 }

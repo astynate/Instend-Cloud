@@ -6,8 +6,8 @@
 
 .settings {
     width: 350px;
-    overflow-y: scroll;
-    overflow-x: hidden;
+    /* overflow-y: scroll;
+    overflow-x: hidden; */
     padding: 0px 10px;
 }
 

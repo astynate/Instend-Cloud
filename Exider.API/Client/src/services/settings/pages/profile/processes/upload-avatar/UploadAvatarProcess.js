@@ -34,7 +34,8 @@ const UploadAvatarProcess = (props) => {
             <>
                 <Crop
                     isOpen={isCropOperation}
-                    setOpenState={props.setOpenState} 
+                    setOpenState={props.setOpenState}
+                    setAvatar={props.setAvatar}
                 />
             </>
     

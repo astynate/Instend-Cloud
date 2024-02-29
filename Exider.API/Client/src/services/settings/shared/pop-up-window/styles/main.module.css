@@ -11,7 +11,7 @@
     align-items: center;
     justify-content: center;
     transition: 0.25s ease;
-    /* overflow: hidden; */
+    overflow: hidden;
 }
 
 .window {
@@ -19,5 +19,5 @@
     width: auto;
     border-radius: 20px;
     background: var(--main-background-color);
-    /* overflow: hidden; */
+    overflow: hidden;
 }
