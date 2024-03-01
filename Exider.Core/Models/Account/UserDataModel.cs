@@ -9,7 +9,7 @@ namespace Exider.Core.Models.Account
     {
 
         [Column("user_id")][Key] public Guid UserId { get; private set; }
-        [Column("avatar")] public string Avatar { get; private set; } = Configuration.DefaultAvatar;
+        [Column("avatar")] public string? Avatar { get; private set; } = Configuration.DefaultAvatarPath;
         [Column("header")] public string Header { get; private set; } = string.Empty;
         [Column("description")] public string Description { get; private set; } = string.Empty;
         [Column("storage_space")] public double StorageSpace { get; private set; } = 1024;

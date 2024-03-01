@@ -9,6 +9,8 @@
     justify-content: center;
     user-select: none;
     border-radius: 20px;
+    overflow-y: scroll;
+    overflow-x: hidden;
     padding: 10px;
     --height: 300px;
     --width: 300px;
@@ -21,7 +23,6 @@
     display: grid;
     user-select: none;
     border-radius: 10px;
-    /* overflow: hidden; */
 }
 
 .imageShape[id="height"] .image {

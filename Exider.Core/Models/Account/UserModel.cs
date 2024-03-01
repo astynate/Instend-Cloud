@@ -71,5 +71,23 @@ namespace Exider.Core.Models.Account
             return Result.Success();
         }
 
+        public Result UpdateData(string name, string surname, string nickname)
+        {
+            if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
+                return Result.Failure("Name required");
+
+            if (string.IsNullOrEmpty(surname) || string.IsNullOrWhiteSpace(surname))
+                return Result.Failure("Surname required");
+
+            if (string.IsNullOrEmpty(nickname) || string.IsNullOrWhiteSpace(nickname))
+                return Result.Failure("Nickname required");
+
+            Name = name;
+            Surname = surname;
+            Nickname = nickname;
+
+            return Result.Success();
+        }
+
     }
 }

@@ -9,11 +9,14 @@ instance.interceptors.request.use(
   (config) => {
     config.headers.Authorization = `Bearer ${localStorage.getItem("system_access_token")}`
     return config
-  },
+  }
+);
+
+instance.interceptors.response.use(
   (response) => {
-    if (response.response && response.response.headers && response.response.headers.Refresh) {
-      localStorage.setItem("system_access_token", response.response.headers.refresh);
+    if (response.headers && response.headers.refresh) {
+      localStorage.setItem("system_access_token", response.headers.refresh);
     }
-    return Promise.reject(response);
+    return response;
   }
 );

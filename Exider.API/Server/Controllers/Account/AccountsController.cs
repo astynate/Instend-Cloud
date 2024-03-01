@@ -6,7 +6,9 @@ using Exider.Core.TransferModels.Account;
 using Exider.Dependencies.Services;
 using Exider.Repositories.Account;
 using Exider.Repositories.Email;
+using Exider.Services.External.FileService;
 using Exider.Services.Internal.Handlers;
+using Exider_Version_2._0._0.Server.TransferModels.Account;
 using Exider_Version_2._0._0.ServerApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,12 +30,22 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
         private readonly IUserDataRepository _userDataRepository;
 
-        public AccountsController(IUsersRepository users, IEmailRepository email, IConfirmationRespository confirmation, IUserDataRepository userDataRepository)
+        private readonly IImageService _imageService;
+
+        public AccountsController
+        (
+            IUsersRepository users,
+            IEmailRepository email,
+            IConfirmationRespository confirmation,
+            IUserDataRepository userDataRepository,
+            IImageService imageService
+        )
         {
             _usersRepository = users;
             _emailRepository = email;
             _confirmationRespository = confirmation;
             _userDataRepository = userDataRepository;
+            _imageService = imageService;
         }
 
         [HttpGet]
@@ -162,6 +174,40 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
             }
 
+        }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> Update([FromBody] UpdateUserDTO userDTO, IValidationService validationService, IRequestHandler requestHandler)
+        {
+            if (userDTO is null)
+            {
+                return BadRequest("Invalid user data");
+            }
+
+            if (validationService.ValidateVarchar(userDTO.name, userDTO.surname, userDTO.nickname) == false)
+            {
+                return BadRequest("First name, last name and nickname are required fields.");
+            }
+
+            var userId = requestHandler.GetUserId(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
+
+            if (userId.IsFailure)
+            {
+                return Unauthorized("Invalid token");
+            }
+
+            await _usersRepository.Update(Guid.Parse(userId.Value), userDTO.name, userDTO.surname, userDTO.nickname);
+
+            if (string.IsNullOrEmpty(userDTO.avatar) == false && string.IsNullOrWhiteSpace(userDTO.avatar) == false)
+            {
+                string path = Configuration.SystemDrive + "__avatars__/" + userId;
+
+                await _userDataRepository.UpdateAvatarAsync(Guid.Parse(userId.Value), path);
+                await _imageService.UpdateAvatar(path, userDTO.avatar);
+            }
+
+            return Ok();
         }
 
     }

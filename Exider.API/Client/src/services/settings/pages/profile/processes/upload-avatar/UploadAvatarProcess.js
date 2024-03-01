@@ -3,7 +3,7 @@ import Crop from "../../operations/Crop/Crop";
 import UploadAvatar from "../../operations/UploadAvatar/UploadAvatar";
 import { ProfileSettingsContext } from '../../Profile';
 
-const types = ['image/png', 'image/jpg', 'image/jpeg'];
+export const types = ['image/png', 'image/jpg', 'image/jpeg'];
 
 const ValidateImage = (image) => {
 

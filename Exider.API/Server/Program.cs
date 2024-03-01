@@ -10,10 +10,7 @@ using Exider.Services.Internal.Handlers;
 using Exider.Services.Middleware;
 using Exider_Version_2._0._0.ServerApp.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.IdentityModel.Tokens;
-using System.Net;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +31,7 @@ builder.Services.AddSingleton<IEmailService, EmailService>();
 builder.Services.AddSingleton<IUserAgentHandler, UserAgentHandler>();
 builder.Services.AddSingleton<IRequestHandler, RequestHandler>();
 builder.Services.AddSingleton<IFileService, FileService>();
+builder.Services.AddSingleton<IImageService, ImageService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

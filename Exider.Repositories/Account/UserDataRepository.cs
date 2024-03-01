@@ -3,6 +3,7 @@ using Exider.Core;
 using Exider.Core.Models.Account;
 using Exider.Core.TransferModels.Account;
 using Exider.Services.External.FileService;
+using Microsoft.EntityFrameworkCore;
 
 namespace Exider.Repositories.Account
 {
@@ -85,6 +86,15 @@ namespace Exider.Repositories.Account
             }
 
             return Result.Success(userModel);
+        }
+        public async Task UpdateAvatarAsync(Guid userId, string avatarPath)
+        {
+            await _context.UserData.AsNoTracking()
+                .Where(u => u.UserId == userId)
+                    .ExecuteUpdateAsync(user => user
+                        .SetProperty(p => p.Avatar, avatarPath));
+
+            await _context.SaveChangesAsync();
         }
     }
 }

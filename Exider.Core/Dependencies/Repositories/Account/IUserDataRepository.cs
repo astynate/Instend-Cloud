@@ -8,5 +8,6 @@ namespace Exider.Repositories.Account
     {
         Task AddAsync(UserDataModel userData);
         Task<Result<UserPublic>> GetUserAsync(Guid id);
+        Task UpdateAvatarAsync(Guid userId, string avatarPath);
     }
 }

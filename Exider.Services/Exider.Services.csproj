@@ -13,17 +13,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSharpFunctionalExtensions" Version="2.40.3" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.3.0" />
-    <PackageReference Include="System.Threading" Version="4.3.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Exider.Core\Exider.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="External\EmailService\Emails\images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="8.0.2" />
   </ItemGroup>
 
 </Project>

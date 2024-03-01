@@ -4,51 +4,20 @@ import SettingType from '../../shared/setting-type/SettingType';
 import { observer } from 'mobx-react-lite';
 import userState from '../../../../states/user-state';
 import Setting from '../../shared/setting/Setting';
-import edit from './images/edit.png';
-import fromDrive from './images/from-drive.png';
 import upload from './images/upload.png';
 import trash from './images/trash.png';
-import UploadAvatar from './operations/UploadAvatar/UploadAvatar';
 import UploadAvatarProcess from './processes/upload-avatar/UploadAvatarProcess';
 
 const defaultProfileSettings = {
 
     avatar: {
-
         image: "",
-        coordinates: {
-
-            topLeft: {
-                x: "",
-                y: ""
-            },
-    
-            rightBottom: {
-                x: "",
-                y: ""
-            }
-            
-        }
-    
+        cropedImage: "",
     },
 
     header: {
-        
         image: "",
-        coordinates: {
-
-            topLeft: {
-                x: "",
-                y: ""
-            },
-    
-            rightBottom: {
-                x: "",
-                y: ""
-            }
-            
-        }
-    
+        cropedImage: "",
     },
 
     name: "",
@@ -101,7 +70,7 @@ const Profile = observer(() => {
                     description="Setting the avatar to it is default state" 
                 />
             </div>
-            <SettingType 
+            {/* <SettingType 
                 image={
                     <div className={styles.headerWrapper}>
                         {user.header ? <img 
@@ -112,7 +81,7 @@ const Profile = observer(() => {
                 title="Header" 
                 description="It is best to choose photos in a ratio of 21 to 9" 
             />
-            <div className={styles.settingBar}></div>
+            <div className={styles.settingBar}></div> */}
         </ProfileSettingsContext.Provider>
         
     );

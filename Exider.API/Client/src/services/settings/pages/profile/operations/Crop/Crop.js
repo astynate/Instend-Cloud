@@ -3,6 +3,19 @@ import styles from './styles/main.module.css';
 import PopUpWindow from "../../../../shared/pop-up-window/PopUpWindow";
 import { ProfileSettingsContext } from "../../Profile";
 import { Back, Next } from "../../../../shared/navigate/Navigate";
+import CropImage from './Operations';
+
+const UpdateCroppedImage = (avatar, setAvatar) => {
+
+    setAvatar(prevSettings => ({
+        ...prevSettings,
+        avatar: {
+          ...prevSettings.avatar,
+          croppedImage: avatar
+        }
+    }));
+
+}
 
 const Crop = (props) => {
 
@@ -20,6 +33,8 @@ const Crop = (props) => {
     const [objectFit, setObjectFit] = useState('width');
     const [currentOffestX, setCurrentOffsetX] = useState(0);
     const [currentOffestY, setCurrentOffsetY] = useState(0);
+    const [croppedAvatar, setCroppedAvatar] = useState(image);
+    const [cropState, setCropState] = useState(false);
 
     useEffect(() => {
 
@@ -48,11 +63,11 @@ const Crop = (props) => {
 
                 setImageSize([height, width]);
 
-                if (height >= width) {
+                if (height + 300 >= width) {
 
                     const aspectRatio = 450 / height;
 
-                    setAreaHeight(width * aspectRatio);
+                    setAreaHeight(height * aspectRatio);
                     setAreaWidth(width * aspectRatio);
                     setObjectFit('height');
 
@@ -71,6 +86,7 @@ const Crop = (props) => {
             if (event.target.result) {
                 setImage(event.target.result);
             }
+
         };
     
         if (file) {
@@ -196,16 +212,19 @@ const Crop = (props) => {
 
     };
 
-    const Submit = () => {
-
-        props.setOpenState(false);
-        props.setAvatar(image);
-
-    }
-
     return (
 
         <PopUpWindow isOpen={props.isOpen} setOpenState={props.setOpenState}>
+            <CropImage 
+                image={image} 
+                x={objectFit === 'width' ? imageSize[1] / 600 * offsetLeft : imageSize[0] / 450 * offsetLeft}
+                y={objectFit === 'height' ? imageSize[0] / 450 * offsetTop : imageSize[1] / 600 * offsetTop}
+                size={objectFit === 'width' ? imageSize[1] / 600 * areaHeight : imageSize[0] / 450 * areaHeight}
+                setCroppedImage={setCroppedAvatar}
+                cropState={cropState}
+                setOpenState={props.setOpenState}
+                setAvatar={props.setAvatar}
+            />
             <div 
                 className={styles.imageWrapper}
                 ref={wrapperRef}
@@ -263,7 +282,7 @@ const Crop = (props) => {
             <div className={styles.buttons}>
                 <div className={styles.navigation}>
                     <Back />
-                    <Next onClick={() => Submit()}/>
+                    <Next onClick={() => setCropState(true)}/>
                 </div>
             </div>
         </PopUpWindow>

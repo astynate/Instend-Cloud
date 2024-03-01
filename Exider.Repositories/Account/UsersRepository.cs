@@ -48,16 +48,12 @@ namespace Exider.Repositories.Repositories
         public async Task<Result> RecoverPassword(Guid userId, string password)
         {
             if (userId == Guid.Empty || string.IsNullOrEmpty(password))
-            {
-                return Result.Failure("Ivalid data");
-            }
+            return Result.Failure("Ivalid data");
 
             UserModel? user = await GetUserByIdAsync(userId);
 
             if (user is null)
-            {
-                return Result.Failure("User not found");
-            }
+            return Result.Failure("User not found");
 
             var userRecoverPasswordResult = user.RecoverPassword(_encryptionService, password);
 
@@ -71,6 +67,18 @@ namespace Exider.Repositories.Repositories
 
             await _context.SaveChangesAsync();
             return Result.Success();
+        }
+
+        public async Task Update(Guid userId, string name, string surname, string nickname)
+        {
+            await _context.Users.AsNoTracking()
+                .Where(u => u.Id == userId)
+                    .ExecuteUpdateAsync(user => user
+                        .SetProperty(p => p.Name, name)
+                        .SetProperty(p => p.Surname, surname)
+                        .SetProperty(p => p.Nickname, nickname));
+
+            await _context.SaveChangesAsync();
         }
     }
 

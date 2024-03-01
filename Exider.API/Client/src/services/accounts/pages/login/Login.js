@@ -50,7 +50,7 @@ const Login = () => {
             controller.abort();
             setFormState('invalid');
 
-        }, 5000);
+        }, 10000);
       
         try {
 
