@@ -2,10 +2,8 @@
 {
     public record UpdateUserDTO 
     (
-        string name,
-        string surname,
-        string nickname,
-        string avatar,
-        string header
+        string? name,
+        string? surname,
+        string? nickname
     );
 }

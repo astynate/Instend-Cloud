@@ -11,6 +11,7 @@ const Button = (props) => {
         if (location.pathname === props.path) {
 
             props.setCurrentSetting(props.title + " " + "settings");
+            props.setCurrentRoute(props.path);
 
         }
 

@@ -12,10 +12,8 @@ class UserState {
         makeAutoObservable(this);
     }
 
-    UpdateAuthorizeState = async (location, navigate) => {
+    UpdateUserData = async (location, navigate) => {
 
-        this.isLoading = true;
-    
         const responsePromise = instance.get('/accounts');
     
         const timeoutPromise = new Promise((resolve) => {
@@ -41,9 +39,17 @@ class UserState {
             this.isAuthorize = false;
             navigate('/account/login');
 
-        } finally {
-            this.isLoading = false;
         }
+
+    }
+
+    UpdateAuthorizeState = async (location, navigate) => {
+
+        this.isLoading = true;
+
+        await this.UpdateUserData(location, navigate);
+    
+        this.isLoading = false;
 
     }
     

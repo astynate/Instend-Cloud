@@ -23,7 +23,7 @@ const UploadAvatarProcess = (props) => {
 
     useEffect(() => {
 
-        setUploadState(ValidateImage(context.avatar.image));
+        setUploadState(ValidateImage(context.avatar));
 
     }, [context]);
 
@@ -36,6 +36,7 @@ const UploadAvatarProcess = (props) => {
                     isOpen={isCropOperation}
                     setOpenState={props.setOpenState}
                     setAvatar={props.setAvatar}
+                    setPrevOperation={setCropOperation}
                 />
             </>
     

@@ -5,14 +5,11 @@ import image from './images/avatar.png';
 import { Back, Next } from "../../../../shared/navigate/Navigate";
 import { ProfileSettingsContext } from '../../Profile';
 
-const UpdateAvatar = (avatar, setAvatar) => {
+const UpdateAvatar = async (image, setAvatar) => {
 
-    setAvatar(prevSettings => ({
+    await setAvatar(prevSettings => ({
         ...prevSettings,
-        avatar: {
-          ...prevSettings.avatar,
-          image: avatar
-        }
+        avatar: image
     }));
 
 }
@@ -45,6 +42,7 @@ const UploadAvatar = (props) => {
 
         event.preventDefault();
         UpdateAvatar([...event.dataTransfer.files][0], setContext);
+        props.setNextOperation(true)
 
     };
 
@@ -52,6 +50,7 @@ const UploadAvatar = (props) => {
 
         event.preventDefault();
         UpdateAvatar(event.target.files[0], setContext);
+        props.setNextOperation(true)
 
     };
 
@@ -74,10 +73,6 @@ const UploadAvatar = (props) => {
                         Select from device
                         <input type="file" onChange={(event) => setFile(event)} />
                     </div>
-                </div>
-                <div className={styles.navigation}>
-                    {/* <Back onClick={() => props.setOpenState(false)} /> */}
-                    <Next disabled={!props.isUpload} onClick={() => props.setNextOperation(true)} />
                 </div>
             </div>
         </PopUpWindow>

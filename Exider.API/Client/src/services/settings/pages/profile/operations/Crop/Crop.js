@@ -5,18 +5,6 @@ import { ProfileSettingsContext } from "../../Profile";
 import { Back, Next } from "../../../../shared/navigate/Navigate";
 import CropImage from './Operations';
 
-const UpdateCroppedImage = (avatar, setAvatar) => {
-
-    setAvatar(prevSettings => ({
-        ...prevSettings,
-        avatar: {
-          ...prevSettings.avatar,
-          croppedImage: avatar
-        }
-    }));
-
-}
-
 const Crop = (props) => {
 
     const wrapperRef = useRef();
@@ -48,7 +36,7 @@ const Crop = (props) => {
 
     useEffect(() => {
 
-        const file = context.avatar.image;
+        const file = context.avatar;
         const reader = new FileReader();
     
         reader.onload = (event) => {
@@ -281,7 +269,7 @@ const Crop = (props) => {
             </div>
             <div className={styles.buttons}>
                 <div className={styles.navigation}>
-                    <Back />
+                    <Back onClick={() => props.setPrevOperation(false)} />
                     <Next onClick={() => setCropState(true)}/>
                 </div>
             </div>

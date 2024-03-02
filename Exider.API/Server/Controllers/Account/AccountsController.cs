@@ -178,7 +178,14 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
         [HttpPut]
         [Authorize]
-        public async Task<IActionResult> Update([FromBody] UpdateUserDTO userDTO, IValidationService validationService, IRequestHandler requestHandler)
+        public async Task<IActionResult> Update
+        (
+            [FromForm] UpdateUserDTO userDTO,
+            [FromForm] IFormFile? avatar,
+            [FromForm] IFormFile? header,
+            IValidationService validationService, 
+            IRequestHandler requestHandler
+        )
         {
             if (userDTO is null)
             {
@@ -199,12 +206,25 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
             await _usersRepository.Update(Guid.Parse(userId.Value), userDTO.name, userDTO.surname, userDTO.nickname);
 
-            if (string.IsNullOrEmpty(userDTO.avatar) == false && string.IsNullOrWhiteSpace(userDTO.avatar) == false)
+            if (avatar != null && avatar.Length > 0)
             {
-                string path = Configuration.SystemDrive + "__avatars__/" + userId;
+                using (var memoryStream = new MemoryStream())
+                {
+                    avatar.CopyTo(memoryStream);
 
-                await _userDataRepository.UpdateAvatarAsync(Guid.Parse(userId.Value), path);
-                await _imageService.UpdateAvatar(path, userDTO.avatar);
+                    byte[] avatarAsByteArray = memoryStream.ToArray();
+                    string path = Configuration.SystemDrive + "__avatars__/" + userId.Value;
+
+                    var imageCreationResult = await _imageService.UpdateAvatar(path, avatarAsByteArray);
+
+                    if (imageCreationResult.IsFailure)
+                    {
+                        return BadRequest(imageCreationResult.Error);
+                    }
+
+                    await _userDataRepository.UpdateAvatarAsync(Guid.Parse(userId.Value), path);
+                }
+
             }
 
             return Ok();

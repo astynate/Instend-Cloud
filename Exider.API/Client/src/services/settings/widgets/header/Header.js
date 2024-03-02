@@ -1,21 +1,8 @@
 import React, { useState } from "react";
 import styles from './styles/main.module.css';
 import LoaderButton from "../../shared/loader-button/LoaderButton";
-import { instance } from "../../../../state/Interceptors";
 
 const Header = (props) => {
-
-    const [formState, setFormState] = useState('valid');
-
-    const SaveChanges = async () => {
-
-        setFormState('loading');
-
-        await instance.get('/users');
-
-        setFormState('valid');
-
-    };
 
     return (
 
@@ -28,8 +15,8 @@ const Header = (props) => {
                     <span>Cancel</span>
                     <LoaderButton 
                         title='Save' 
-                        state={formState}
-                        onClick={() => SaveChanges()} />
+                        state={props.state}
+                        onClick={() => props.onClick()} />
                 </div>
             </div>
         </div>

@@ -8,8 +8,8 @@
 }
 
 .avatar {
-    height: 100px;
-    width: 100px;
+    height: 65px;
+    width: 65px;
     border-radius: 100%;
     overflow: hidden;
     object-fit: cover;
@@ -22,8 +22,8 @@
 }
 
 .headerWrapper {
-    height: 100px;
-    width: 200px;
+    height: 65px;
+    width: 120px;
     background: var(--main-accent-color);
     border-radius: 10px;
     overflow: hidden;

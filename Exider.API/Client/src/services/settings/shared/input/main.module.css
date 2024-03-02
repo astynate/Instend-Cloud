@@ -1,0 +1,15 @@
+.input {
+    font-size: 16px;
+    outline: none;
+    border: none;
+    border-radius: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+    border-bottom: 1px solid var(--main-border-color);
+}
+
+.placeholder {
+    color: var(--main-paragraph-color);
+    font-size: 16px;
+}

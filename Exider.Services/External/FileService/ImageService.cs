@@ -11,12 +11,11 @@ namespace Exider.Services.External.FileService
         {
             ImageFormat.Png.Guid,
             ImageFormat.Jpeg.Guid,
-            ImageFormat.Jpeg.Guid,
         };
 
-        public async Task<Result> UpdateAvatar(string path, string avatar)
+        public async Task<Result> UpdateAvatar(string path, byte[] avatar)
         {
-            if (avatar == null || avatar == "Default")
+            if (avatar == null)
             {
                 return Result.Failure("Invalid avatar");
             }
@@ -26,29 +25,22 @@ namespace Exider.Services.External.FileService
                 return Result.Failure("Invalid avatar size");
             }
 
-            await File.WriteAllTextAsync(path, ResizeImageToBase64(avatar, 128));
+            await File.WriteAllBytesAsync(path, avatar);
             return Result.Success();
         }
 
-        private bool ValidateImage(string base64String)
+        private bool ValidateImage(byte[] inputImage)
         {
             try
             {
-                byte[] bytes = Convert.FromBase64String(base64String);
-
-                using (MemoryStream ms = new MemoryStream(bytes))
+                using (MemoryStream ms = new MemoryStream(inputImage))
                 {
                     Image image = Image.FromStream(ms);
 
-                    if (!supportedTypes.Contains(image.RawFormat.Guid) == false)
-                    {
-                        return false;
-                    }
-
-                    if (image.Width <= 64 || image.Height <= 64 || image.Width >= 4000 || image.Height >= 4000)
-                    {
-                        return false;
-                    }
+                    //if (image.Width <= 32 || image.Height <= 32 || image.Width >= 4000 || image.Height >= 4000)
+                    //{
+                    //    return false;
+                    //}
                 }
                 return true;
             }

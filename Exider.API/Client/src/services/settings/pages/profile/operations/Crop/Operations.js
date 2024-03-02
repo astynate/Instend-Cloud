@@ -14,10 +14,13 @@ const CropImage = (props) => {
 
       image.src = props.image;
 
-      image.onload = function () {
+      image.onload = async () => {
   
         canvas.width = props.size;
         canvas.height = props.size;
+
+        ctx.fillStyle = '#eee';
+        ctx.fillRect(0, 0, props.size, props.size);
 
         ctx.drawImage(
           image,
@@ -31,9 +34,9 @@ const CropImage = (props) => {
           props.size
         )
 
-        props.setCroppedImage(canvas.toDataURL());
-        props.setAvatar(canvas.toDataURL());
-        props.setOpenState(false);
+        await props.setCroppedImage(canvas.toDataURL());
+        await props.setAvatar(canvas.toDataURL());
+        await props.setOpenState(false);
         
       };
 

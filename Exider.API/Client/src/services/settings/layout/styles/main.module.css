@@ -2,13 +2,15 @@
     height: 100%;
     width: 100%;
     display: flex;
+    background: #f8f8fa;
 }
 
 .settings {
     width: 350px;
-    /* overflow-y: scroll;
-    overflow-x: hidden; */
+    overflow-y: scroll;
+    overflow-x: hidden;
     padding: 0px 10px;
+    background: var(--main-background-color);
 }
 
 .content {

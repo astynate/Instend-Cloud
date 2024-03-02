@@ -1,8 +1,8 @@
 .setting {
     height: 65px;
     width: 100%;
-    background: var(--main-accent-color);
-    border-radius: 4px;
+    background: var(--main-background-color);
+    border-radius: 7px;
     transition: 0.25s ease;
     cursor: pointer;
     display: flex;
@@ -28,23 +28,23 @@
 }
 
 .setting img {
-    width: 20px;
+    width: 27px;
     object-fit: cover;
 }
 
 .setting:hover {
-    filter: brightness(95%);
+    filter: brightness(98%);
 }
 
 .setting:active {
-    filter: brightness(90%);
+    filter: brightness(95%);
     transform: scale(98%);
 }
 
 .setting[id="first"] {
-    border-radius: 15px 15px 4px 4px;
+    border-radius: 20px 20px 7px 7px;
 }
 
 .setting[id="last"] {
-    border-radius: 4px 4px 15px 15px;
+    border-radius: 7px 7px 20px 20px;
 }
