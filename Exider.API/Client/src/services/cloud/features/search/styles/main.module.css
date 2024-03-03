@@ -27,11 +27,10 @@
 }
 
 .search img {
-
     height: 14px;
     opacity: 0.25;
     user-select: none;
-
+    filter: var(--main-filter);
 }
 
 .search input::placeholder {

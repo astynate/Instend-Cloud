@@ -9,9 +9,13 @@
     --main-accent-font-color: white;
     --main-paragraph-color: #777;
     --main-button-background-color: black;
+    --main-filter: invert(0%);
     --main-button-font-color: white;
     --main-pop-up-color: #fff;
-    --main-pop-up-effect: 0px 0px 50px rgba(0, 0, 0, 0.07);
+    --main-header-font-color: #888;
+    --sub-background-color: #eee;
+    --sub-accent-background: #fff;
+    --sub-accent-color: black;
     --button-disabled-backgound: #eee;
     --button-active-backgound: #000000;
     --button-loading-backgound: #000000;
@@ -19,4 +23,33 @@
     --button-active-text-color: #ffffff;
     --button-loading-text-color: #ffffff;
     --button-loader-color: rgb(255, 255, 255);
+    --color-scheme: light;
+}
+
+.dark-mode {
+    --main-background-color: rgb(0, 0, 0);
+    --main-border-color: rgba(255, 255, 255, 0.15);
+    --main-accent-color: #161616;
+    --main-font-color: #ffffff;
+    --main-header-font-color: #161616;
+    --main-header-background-color: #000000ce;
+    --main-blue-color: rgb(40, 108, 255);
+    --main-accent-font-color: white;
+    --main-paragraph-color: #aaa;
+    --main-button-background-color: rgb(255, 255, 255);
+    --main-filter: invert(100%);
+    --main-button-font-color: rgb(0, 0, 0);
+    --main-pop-up-color: #fff;
+    --main-header-font-color: #555;
+    --sub-background-color: #000000;
+    --sub-accent-color: rgb(255, 255, 255);
+    --sub-accent-background: #161616;
+    --button-disabled-backgound: #eee;
+    --button-active-backgound: #000000;
+    --button-loading-backgound: #000000;
+    --button-disabled-text-color: #ffffff;
+    --button-active-text-color: #ffffff;
+    --button-loading-text-color: #ffffff;
+    --button-loader-color: rgb(255, 255, 255);
+    --color-scheme: dark;
 }

@@ -12,6 +12,7 @@
 
 .counter h2 {
     font-size: 14px;
+    color: var(--main-font-color);
 }
 
 .counter span {

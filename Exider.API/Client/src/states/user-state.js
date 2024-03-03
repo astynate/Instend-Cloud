@@ -17,7 +17,7 @@ class UserState {
         const responsePromise = instance.get('/accounts');
     
         const timeoutPromise = new Promise((resolve) => {
-            setTimeout(() => resolve({ status: 408 }), 5000);
+            setTimeout(() => resolve({ status: 408 }), 20000);
         });
     
         try {

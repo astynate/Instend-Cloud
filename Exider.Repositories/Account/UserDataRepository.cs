@@ -27,7 +27,8 @@ namespace Exider.Repositories.Account
 
         public async Task<Result<UserPublic>> GetUserAsync(Guid id)
         {
-            UserPublic? userModel = _context.Users
+            UserPublic? userModel = await _context.Users
+                .Where(user => user.Id == id)
                 .Join(
                     _context.UserData,
                     user => user.Id,
@@ -46,7 +47,7 @@ namespace Exider.Repositories.Account
                         FriendCount = data.FriendCount
                     }
                 )
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
             if (userModel is null)
             {

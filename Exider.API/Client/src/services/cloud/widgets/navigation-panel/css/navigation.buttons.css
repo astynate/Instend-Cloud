@@ -41,4 +41,5 @@
     height: 21px;
     width: 21px;
     object-fit: contain;
+    filter: var(--main-filter);
 }

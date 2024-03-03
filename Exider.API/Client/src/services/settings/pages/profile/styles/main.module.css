@@ -7,11 +7,17 @@
     user-select: none;
 }
 
+.avatarWrapper {
+    height: 65px;
+    width: 65px;
+    background: var(--main-accent-color);
+    border-radius: 100%;
+}
+
 .avatar {
     height: 65px;
     width: 65px;
     border-radius: 100%;
-    overflow: hidden;
     object-fit: cover;
 }
 

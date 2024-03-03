@@ -8,7 +8,10 @@ import Error from '../../shared/error/Error'
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import userState from '../../../../states/user-state';
+import { useLocation } from 'react-router-dom';
 import ValidationHandler from '../../../../utils/handlers/ValidationHandler';
+import { observer } from 'mobx-react-lite';
 import './main.css';
 
 const ValidateLoginForm = (email, password) => {
@@ -18,14 +21,16 @@ const ValidateLoginForm = (email, password) => {
 
 };
 
-const Login = () => {
+const Login = observer(() => {
 
     const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [formState, setFormState] = useState('invalid');
     const [isError, setErrorState] = useState(false);
+    const { UpdateAuthorizeState } = userState;
     const navigate = useNavigate();
+    let location = useLocation();
 
     useEffect(() => {
 
@@ -66,6 +71,8 @@ const Login = () => {
 
                 const accessToken = await response.text();
                 localStorage.setItem('system_access_token', accessToken);
+
+                UpdateAuthorizeState(location.pathname, navigate);
 
                 setFormState('valid');
                 navigate('/');
@@ -121,6 +128,6 @@ const Login = () => {
 
     );
 
-}
+});
 
 export default Login;

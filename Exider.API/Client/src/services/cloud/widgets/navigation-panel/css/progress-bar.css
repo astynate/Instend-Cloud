@@ -20,6 +20,6 @@
 .line {
     height: 100%;
     width: var(--space-occupied);
-    background: black;
+    background: var(--sub-accent-color);
     border-radius: 30px;
 }

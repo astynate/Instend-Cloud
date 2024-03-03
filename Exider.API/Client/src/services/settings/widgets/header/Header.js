@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from './styles/main.module.css';
 import LoaderButton from "../../shared/loader-button/LoaderButton";
 

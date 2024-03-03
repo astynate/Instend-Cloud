@@ -27,6 +27,7 @@
 .name {
     font-size: 14px;
     font-weight: 700;
+    color: var(--main-font-color);
 }
 
 .editProfileButton {

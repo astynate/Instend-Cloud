@@ -16,7 +16,7 @@
 }
 
 .button[id="active"] {
-    background: var(--main-accent-color);
+    filter: brightness(90%);
 }
 
 .button[id="active"] a {
@@ -25,5 +25,5 @@
 }
 
 .button:hover {
-    background: var(--main-accent-color);
+    filter: brightness(90%);
 }

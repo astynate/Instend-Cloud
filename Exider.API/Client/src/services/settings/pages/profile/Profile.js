@@ -41,6 +41,14 @@ const Profile = observer((props) => {
 
     useEffect(() => {
 
+        if (user.avatar != null) {
+            setAvatar(`data:image/png;base64,${user.avatar}`);
+        }
+
+    }, [user.avatar]);
+
+    useEffect(() => {
+
         props.setData(profileSettings);
 
     }, [profileSettings]);
@@ -70,6 +78,20 @@ const Profile = observer((props) => {
         }
 
     }, [props.cancel]);
+
+    const DeleteAvatar = async () => {
+
+        await UpdateAvatar("delete", setProfileSettings);
+        setAvatar("");
+
+    };
+
+    const DeleteHeader = async () => {
+
+        await UpdateHeader("delete", setProfileSettings);
+        setHeader("");
+
+    };
 
     return (
 
@@ -106,7 +128,15 @@ const Profile = observer((props) => {
                     null
             }
             <SettingType 
-                image={<img src={avatar} className={styles.avatar} draggable="false" />} 
+                image={
+                    <div className={styles.avatarWrapper}>
+                        {avatar.replace('data:image/png;base64,', '') ? 
+                            <img 
+                                src={avatar} 
+                                className={styles.avatar} 
+                            /> 
+                        : null}
+                    </div>} 
                 title="Avatar" 
                 description="Please note that your profile photo will be visible to everyone." 
             />
@@ -123,15 +153,18 @@ const Profile = observer((props) => {
                     type="last"
                     title="Delete avatar" 
                     description="Setting the avatar to it is default state" 
+                    onClick={() => DeleteAvatar()}
                 />
             </div>
             <SettingType 
                 image={
                     <div className={styles.headerWrapper}>
-                        {header.replace('data:image/png;base64,', '') ? <img 
-                            src={header} 
-                            className={styles.header} 
-                            /> : null}
+                        {header.replace('data:image/png;base64,', '') ? 
+                            <img 
+                                src={header} 
+                                className={styles.header} 
+                            /> 
+                        : null}
                     </div>} 
                 title="Header" 
                 description="It is best to choose photos in a ratio of 21 to 9." 
@@ -147,8 +180,9 @@ const Profile = observer((props) => {
                 <Setting  
                     image={trash}
                     type="last"
-                    title="Delete header" 
-                    description="The header will be completely removed from your profile" 
+                    title="Delete header"
+                    description="The header will be completely removed from your profile"
+                    onClick={() => DeleteHeader()}
                 />
             </div>
             <SettingType 

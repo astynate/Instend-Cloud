@@ -1,12 +1,10 @@
 .left-panel {
-
     height: 100vh;
     width: 270px;
     user-select: none;
     border-right: 1px solid var(--main-border-color);
     display: flex;
     flex-direction: column;
-
 }
 
 .left-panel[id="rolled-up"] {
@@ -45,10 +43,9 @@
 }
 
 .left-panel-logo img {
-
     height: 70px;
     width: 70px;
-
+    filter: var(--main-filter);
 }
 
 .mobile-navigation-panel {

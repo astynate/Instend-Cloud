@@ -48,6 +48,7 @@
 
 .buttonImage {
     height: 20px;
+    filter: var(--main-filter);
 }
 
 .avatar {

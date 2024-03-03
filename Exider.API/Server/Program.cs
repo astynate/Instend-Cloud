@@ -86,9 +86,6 @@ app.Use(async (context, next) =>
 
                 context.Request.Headers["Authorization"] = "Bearer " + accessToken;
                 context.Response.Headers["Refresh"] = accessToken;
-
-                await Console.Out.WriteLineAsync("Bearer " + accessToken);
-
             }
         }
     }

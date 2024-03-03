@@ -1,0 +1,34 @@
+.settingBar {
+    margin-top: 20px;
+    user-select: none;
+}
+
+.switch {
+    height: 25px;
+    width: 45px;
+    background: var(--main-accent-color);
+    border-radius: 30px;
+    transition: 0.25s ease-in-out;
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+.switch[id="active"] {
+    background: var(--main-blue-color);
+}
+
+.circle {
+    height: 25px;
+    width: 25px;
+    border: 2px solid var(--main-accent-color);
+    background: var(--main-background-color);
+    border-radius: 100%;
+    margin-left: 0;
+    transition: 0.15s ease-in-out;
+}
+
+.switch[id="active"] .circle {
+    justify-self: flex-end;
+    border: 2px solid var(--main-blue-color);
+    margin-left: 20px;
+}

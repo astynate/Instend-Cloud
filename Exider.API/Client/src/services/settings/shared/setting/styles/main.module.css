@@ -9,6 +9,7 @@
     padding-left: 20px;
     align-items: center;
     grid-gap: 15px;
+    background: var(--sub-accent-background);
 }
 
 .description {
@@ -43,6 +44,10 @@
 
 .setting[id="first"] {
     border-radius: 20px 20px 7px 7px;
+}
+
+.setting[id="single"] {
+    border-radius: 20px;
 }
 
 .setting[id="last"] {
