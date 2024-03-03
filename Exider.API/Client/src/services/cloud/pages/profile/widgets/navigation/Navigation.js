@@ -10,10 +10,7 @@ const Navigation = () => {
             <NavLink className="" to="/profile" id="active">
                 Home
             </NavLink>
-            <NavLink className="" to="/profile/store">
-                Subscription
-            </NavLink>
-            <NavLink className="" to="/profile/tariff">
+            <NavLink className="" to="/profile/inventory">
                 Inventory
             </NavLink>
         </div>

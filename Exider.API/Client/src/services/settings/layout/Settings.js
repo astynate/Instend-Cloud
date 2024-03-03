@@ -23,13 +23,15 @@ const Endpoints = {
 
 const Settings = observer((props) => {
 
+    let navigate = useNavigate();
+    let location = useLocation();
+
     const [currentSetting, setCurrentSetting] = useState('Settings');
     const [currentRoute, setCurrentRoute] = useState('/');
     const [headerState, setHeaderState] = useState('valid');
     const [data, setData] = useState();
-    const navigate = useNavigate();
-    let location = useLocation();
     const { UpdateUserData } = userState;
+    const [cancel, setCancelState] = useState(false);
 
     const Save = async () => {
 
@@ -153,23 +155,25 @@ const Settings = observer((props) => {
                     title={currentSetting} 
                     onClick={Save}
                     state={headerState}
+                    setCancelState={setCancelState}
                 />
                 <div className={styles.settingWrapper}>
                     <Routes>
                         <Route 
                             path='profile' 
-                            element={<Profile setData={setData} />} 
+                            element={<Profile setData={setData} cancel={cancel} setCancelState={setCancelState} />} 
                         />
                         <Route 
                             path='interface' 
-                            element={<Interface />} />
+                            element={<Interface setData={setData} cancel={cancel} setCancelState={setCancelState} />} 
+                        />
                         <Route 
                             path='language' 
-                            element={<Language />} 
+                            element={<Language setData={setData} cancel={cancel} setCancelState={setCancelState} />} 
                         />
                         <Route 
                             path='security' 
-                            element={<Security />} 
+                            element={<Security setData={setData} cancel={cancel} setCancelState={setCancelState} />} 
                         />
                     </Routes>
                 </div>

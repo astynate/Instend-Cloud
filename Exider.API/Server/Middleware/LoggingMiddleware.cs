@@ -25,7 +25,7 @@ namespace Exider.Services.Middleware
                 _logger.LogError(exception, "Something went wrong");
 
                 context.Response.Clear();
-                context.Response.Headers.Add("Error", "Something went wrong");
+                context.Response.Headers.Append("Error", "Something went wrong");
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
             }

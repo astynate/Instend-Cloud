@@ -58,7 +58,7 @@ namespace Exider.Core
         }
 
         public static SymmetricSecurityKey GetSecurityKey()
-            => new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TestEncryptionKey));
+            => new(Encoding.UTF8.GetBytes(TestEncryptionKey));
 
     }
 

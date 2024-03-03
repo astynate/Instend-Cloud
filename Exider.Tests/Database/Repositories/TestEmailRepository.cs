@@ -17,7 +17,7 @@ namespace Exider.Tests.Database.Repositories
             new EmailRepository(_context, new ValidationService());
 
         [TestMethod]
-        public async Task EmailCreationWithCorrectConditions()
+        public void EmailCreationWithCorrectConditions()
         {
 
             //using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))

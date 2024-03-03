@@ -68,10 +68,6 @@ namespace Exider.Repositories.Account
 
                 userModel.Avatar = Convert.ToBase64String(avatarReadingResult.Value);
             }
-            else
-            {
-                return Result.Failure<UserPublic>("Cannon read avatar");
-            }
 
             if (string.IsNullOrEmpty(userModel.Header) == false)
             {
@@ -82,17 +78,28 @@ namespace Exider.Repositories.Account
                     return Result.Failure<UserPublic>("Cannon read header");
                 }
 
-                userModel.Avatar = Convert.ToBase64String(headerReadingResult.Value);
+                userModel.Header = Convert.ToBase64String(headerReadingResult.Value);
             }
 
             return Result.Success(userModel);
         }
+
         public async Task UpdateAvatarAsync(Guid userId, string avatarPath)
         {
             await _context.UserData.AsNoTracking()
                 .Where(u => u.UserId == userId)
                     .ExecuteUpdateAsync(user => user
                         .SetProperty(p => p.Avatar, avatarPath));
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateHeaderAsync(Guid userId, string headerPath)
+        {
+            await _context.UserData.AsNoTracking()
+                .Where(u => u.UserId == userId)
+                    .ExecuteUpdateAsync(user => user
+                        .SetProperty(p => p.Header, headerPath));
 
             await _context.SaveChangesAsync();
         }

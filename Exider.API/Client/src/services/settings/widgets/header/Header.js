@@ -12,7 +12,12 @@ const Header = (props) => {
                     <h1>{props.title}</h1>
                 </div>
                 <div className={styles.rightButtons}>
-                    <span>Cancel</span>
+                    <span 
+                        style={{userSelect: "none"}}
+                        onClick={() => props.setCancelState(true)}
+                    >
+                        Cancel
+                    </span>
                     <LoaderButton 
                         title='Save' 
                         state={props.state}

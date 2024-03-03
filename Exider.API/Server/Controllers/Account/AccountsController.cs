@@ -178,21 +178,14 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
         [HttpPut]
         [Authorize]
-        public async Task<IActionResult> Update
-        (
-            [FromForm] UpdateUserDTO userDTO,
-            [FromForm] IFormFile? avatar,
-            [FromForm] IFormFile? header,
-            IValidationService validationService, 
-            IRequestHandler requestHandler
-        )
+        public async Task<IActionResult> Update([FromForm] UpdateUserDTO userDTO, IRequestHandler requestHandler)
         {
             if (userDTO is null)
             {
                 return BadRequest("Invalid user data");
             }
 
-            if (validationService.ValidateVarchar(userDTO.name, userDTO.surname, userDTO.nickname) == false)
+            if (string.IsNullOrEmpty(userDTO.name) || string.IsNullOrEmpty(userDTO.surname) || string.IsNullOrEmpty(userDTO.nickname))
             {
                 return BadRequest("First name, last name and nickname are required fields.");
             }
@@ -206,25 +199,44 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
             await _usersRepository.Update(Guid.Parse(userId.Value), userDTO.name, userDTO.surname, userDTO.nickname);
 
-            if (avatar != null && avatar.Length > 0)
+            if (userDTO.avatar == "delete")
             {
-                using (var memoryStream = new MemoryStream())
+                var deleteResult = await _imageService.DeleteAvatar(_userDataRepository, Guid.Parse(userId.Value), Configuration.DefaultAvatarPath);
+
+                if (deleteResult.IsFailure)
                 {
-                    avatar.CopyTo(memoryStream);
-
-                    byte[] avatarAsByteArray = memoryStream.ToArray();
-                    string path = Configuration.SystemDrive + "__avatars__/" + userId.Value;
-
-                    var imageCreationResult = await _imageService.UpdateAvatar(path, avatarAsByteArray);
-
-                    if (imageCreationResult.IsFailure)
-                    {
-                        return BadRequest(imageCreationResult.Error);
-                    }
-
-                    await _userDataRepository.UpdateAvatarAsync(Guid.Parse(userId.Value), path);
+                    return Conflict(deleteResult.Error);
                 }
+            }
 
+            else if (userDTO.avatar != null && userDTO.avatar.Length > 0)
+            {
+                var updateResult = await _imageService.UpdateAvatar(_userDataRepository, Guid.Parse(userId.Value), Configuration.SystemDrive + "__avatars__/" + userId.Value, userDTO.avatar);
+
+                if (updateResult.IsFailure)
+                {
+                    return Conflict(updateResult.Error);
+                }
+            }
+
+            if (userDTO.header == "delete")
+            {
+                var deleteResult = await _imageService.DeleteHeader(_userDataRepository, Guid.Parse(userId.Value), Configuration.SystemDrive + "__headers__/" + userId.Value);
+
+                if (deleteResult.IsFailure)
+                {
+                    return Conflict(deleteResult.Error);
+                }
+            }
+
+            else if (userDTO.header != null && userDTO.header.Length > 0)
+            {
+                var updateResult = await _imageService.UpdateHeader(_userDataRepository, Guid.Parse(userId.Value), Configuration.SystemDrive + "__headers__/" + userId.Value, userDTO.header);
+
+                if (updateResult.IsFailure)
+                {
+                    return Conflict(updateResult.Error);
+                }
             }
 
             return Ok();

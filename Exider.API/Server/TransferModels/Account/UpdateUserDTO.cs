@@ -4,6 +4,8 @@
     (
         string? name,
         string? surname,
-        string? nickname
+        string? nickname,
+        string? avatar,
+        string? header
     );
 }

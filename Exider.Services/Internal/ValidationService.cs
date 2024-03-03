@@ -5,7 +5,7 @@ namespace Exider_Version_2._0._0.ServerApp.Services
     public class ValidationService : IValidationService
     {
 
-        private string _emailRegularExpression = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
+        private readonly string _emailRegularExpression = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
 
         public bool ValidateVarchar(string field, int maxLength)
         {
@@ -63,7 +63,7 @@ namespace Exider_Version_2._0._0.ServerApp.Services
             if (args.Length == 0) 
                 return false;
 
-            foreach (string argument in args)
+            foreach (string? argument in args)
             {
                 if (ValidateVarchar(argument, 45) == false)
                 {

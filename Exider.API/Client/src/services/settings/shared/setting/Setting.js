@@ -5,7 +5,7 @@ const Setting = (props) => {
 
     return (
 
-        <div className={styles.setting} id={props.type || null} onClick={props.openFunction ? () =>  props.openFunction(true) : null}>
+        <div className={styles.setting} id={props.type || null} onClick={props.onClick}>
             <img src={props.image} />
             <div className={styles.description}>
                 <h1 >{props.title}</h1>

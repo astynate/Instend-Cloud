@@ -1,18 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import styles from './styles/main.module.css';
 import PopUpWindow from '../../../../shared/pop-up-window/PopUpWindow';
-import image from './images/avatar.png';
 import { Back, Next } from "../../../../shared/navigate/Navigate";
 import { ProfileSettingsContext } from '../../Profile';
-
-const UpdateAvatar = async (image, setAvatar) => {
-
-    await setAvatar(prevSettings => ({
-        ...prevSettings,
-        avatar: image
-    }));
-
-}
 
 const UploadAvatar = (props) => {
 
@@ -21,7 +11,7 @@ const UploadAvatar = (props) => {
 
     useEffect(() => {
 
-        UpdateAvatar(null, setContext);
+        props.Update(null, setContext);
 
     }, []);
 
@@ -41,7 +31,7 @@ const UploadAvatar = (props) => {
     const onDrag = (event) => {
 
         event.preventDefault();
-        UpdateAvatar([...event.dataTransfer.files][0], setContext);
+        props.Update([...event.dataTransfer.files][0], setContext);
         props.setNextOperation(true)
 
     };
@@ -49,7 +39,7 @@ const UploadAvatar = (props) => {
     const setFile = (event) => {
 
         event.preventDefault();
-        UpdateAvatar(event.target.files[0], setContext);
+        props.Update(event.target.files[0], setContext);
         props.setNextOperation(true)
 
     };
@@ -65,7 +55,7 @@ const UploadAvatar = (props) => {
                 onDrop={(event) => onDrag(event)}
             >
                 <div className={styles.content}>
-                    <img src={image} draggable="false" />
+                    <img src={props.img} draggable="false" />
                     <h1>Drop or select from galery</h1>
                     <p>Please note that after downloading you will need to confirm the</p>
                     <div className={styles.line}></div>

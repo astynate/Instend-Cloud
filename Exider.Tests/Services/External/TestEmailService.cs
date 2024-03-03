@@ -22,7 +22,7 @@ namespace Exider.Tests.Services.External
         }
 
         [TestMethod]
-        public async Task TestSendLoginNotification()
+        public void TestSendLoginNotification()
         {
 
             EmailService emailService = new EmailService(new ValidationService());

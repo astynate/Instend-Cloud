@@ -3,18 +3,17 @@ import styles from './styles/main.module.css';
 
 const Header = (props) => {
 
-  return (
+  if (props.src) {
 
-    <>
-      {props.src ?
-        <div className={styles.header}>
-          <img  src={props.src}  draggable={false} /> 
-        </div> 
-      : 
-        null}
-    </>
+    return (
 
-  );
+      <div className={styles.header}>
+        <img src={`data:image/png;base64,${props.src}`}  draggable={false} /> 
+      </div>
+  
+    );
+
+  }
 
 };
 
