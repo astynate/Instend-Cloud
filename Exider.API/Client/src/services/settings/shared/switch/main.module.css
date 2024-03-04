@@ -10,7 +10,6 @@
     border-radius: 30px;
     transition: 0.25s ease-in-out;
     margin-left: auto;
-    margin-right: 20px;
 }
 
 .switch[id="active"] {
@@ -21,9 +20,10 @@
     height: 25px;
     width: 25px;
     border: 2px solid var(--main-accent-color);
-    background: var(--main-background-color);
+    background: white;
     border-radius: 100%;
     margin-left: 0;
+    margin-right: 20px;
     transition: 0.15s ease-in-out;
 }
 
@@ -31,4 +31,5 @@
     justify-self: flex-end;
     border: 2px solid var(--main-blue-color);
     margin-left: 20px;
+    margin-right: 0px;
 }

@@ -1,7 +1,10 @@
 import React from "react";
 import styles from './main.module.css';
+import { useTranslation } from "react-i18next";
 
 const Next = (props) => {
+
+    const { t } = useTranslation();
 
     return (
     
@@ -10,7 +13,7 @@ const Next = (props) => {
             onClick={props.onClick} 
             disabled={props.disabled}
         >
-            Next
+            {t('cloud.settings.profile.next')}
         </button>
 
     );
@@ -19,13 +22,15 @@ const Next = (props) => {
 
 const Back = (props) => {
 
+    const { t } = useTranslation();
+
     return (
     
         <button 
             className={styles.back} 
             onClick={props.onClick}
         >
-            Back
+           {t('cloud.settings.profile.back')}
         </button>
         
     );

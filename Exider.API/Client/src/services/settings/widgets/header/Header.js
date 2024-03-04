@@ -1,8 +1,11 @@
 import React from "react";
 import styles from './styles/main.module.css';
 import LoaderButton from "../../shared/loader-button/LoaderButton";
+import { useTranslation } from "react-i18next";
 
 const Header = (props) => {
+
+    const { t } = useTranslation();
 
     return (
 
@@ -16,10 +19,10 @@ const Header = (props) => {
                         style={{userSelect: "none"}}
                         onClick={() => props.setCancelState(true)}
                     >
-                        Cancel
+                        {t('global.cancel')}
                     </span>
                     <LoaderButton 
-                        title='Save' 
+                        title={t('global.save')}
                         state={props.state}
                         onClick={() => props.onClick()} />
                 </div>

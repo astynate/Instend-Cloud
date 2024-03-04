@@ -8,7 +8,7 @@
     background: var(--main-accent-color);
     border-radius: 50px;
     padding-left: 15px;
-    height: 45px;
+    height: 40px;
     width: 35vw;
     z-index: 999999999;
 }
@@ -22,13 +22,13 @@
     background: transparent;
     font-size: 16px;
     margin-left: 7px;
-    margin-top: 1px;
+    font-family: 'Open Sans', sans-serif;
     color: var(--main-header-font-color);
 }
 
 .search img {
     height: 14px;
-    opacity: 0.25;
+    opacity: 0.4;
     user-select: none;
     filter: var(--main-filter);
 }

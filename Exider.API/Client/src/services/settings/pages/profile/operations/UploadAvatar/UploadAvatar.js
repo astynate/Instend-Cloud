@@ -3,11 +3,13 @@ import styles from './styles/main.module.css';
 import PopUpWindow from '../../../../shared/pop-up-window/PopUpWindow';
 import { Back, Next } from "../../../../shared/navigate/Navigate";
 import { ProfileSettingsContext } from '../../Profile';
+import { useTranslation } from "react-i18next";
 
 const UploadAvatar = (props) => {
 
     const [context, setContext] = useContext(ProfileSettingsContext);
     const [isFileEnter, setFileEnterState] = useState(false);
+    const { t } = useTranslation();
 
     useEffect(() => {
 
@@ -56,11 +58,11 @@ const UploadAvatar = (props) => {
             >
                 <div className={styles.content}>
                     <img src={props.img} draggable="false" />
-                    <h1>Drop or select from galery</h1>
-                    <p>Please note that after downloading you will need to confirm the</p>
+                    <h1>{t('cloud.settings.profile.drop')}</h1>
+                    <p>{t('cloud.settings.profile.drop.desc')}</p>
                     <div className={styles.line}></div>
                     <div className={styles.button}>
-                        Select from device
+                        {t('cloud.settings.profile.select')}
                         <input type="file" onChange={(event) => setFile(event)} />
                     </div>
                 </div>

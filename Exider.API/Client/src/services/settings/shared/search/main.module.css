@@ -1,0 +1,29 @@
+.settingInput {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: none;
+    outline: none;
+    padding-left: 42px;
+    color: var(--main-font-color);
+    font-size: 16px;
+    background: transparent;
+    opacity: 0.35;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.settingInput::placeholder {
+
+    color: var(--main-font-color);
+    font-weight: 300;
+
+}
+
+.settingImage {
+    height: 15px;
+    width: 15px;
+    filter: var(--main-filter);
+    opacity: 0.25;
+}

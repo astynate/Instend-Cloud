@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import styles from './styles/main.module.css';
 import SettingType from '../../shared/setting-type/SettingType'
-import colorMode from './images/color-mode.png';
+import colorModeIcon from './images/color-mode.png';
 import nightMode from './images/night-mode.png';
 import Switch from '../../shared/switch/Switch.js';
+import { useTranslation } from 'react-i18next';
 
 const Interface = () => {
 
-    const [colorMode, setColorMode] = useState(localStorage.getItem('color-mode') ?? 'light-mode');
+    const [colorMode, setColorMode] = useState(localStorage.getItem('color-mode') || 'light-mode');
+    const { t } = useTranslation();
 
     useEffect(() => {
 
@@ -20,16 +22,16 @@ const Interface = () => {
 
         <>
             <SettingType 
-                image={<img src={colorMode} className={styles.descImage} draggable="false" />}
-                title="Color Mode" 
-                description="Please note that your profile photo will be visible to everyone." 
+                image={<img src={colorModeIcon} className={styles.descImage} draggable="false" />}
+                title={t('cloud.settings.color_mode')}
+                description={t('cloud.settings.color_mode.desc')}
             />
             <Switch 
                 img={nightMode}
-                title="Night mode"
-                description="Changes the color scheme to a darker one, reducing eye strain in low light"
-                active={colorMode}
-                onClick={() => setColorMode(prev => !prev)}
+                title={t('cloud.settings.night_mode')}
+                description={t('cloud.settings.night_mode.desc')}
+                active={colorMode === 'dark-mode'}
+                onClick={() => setColorMode(prev => prev === 'dark-mode' ? 'light-mode' : 'dark-mode')}
             />
         </>
         

@@ -10,12 +10,12 @@ const Button = (props) => {
 
         if (location.pathname === props.path) {
 
-            props.setCurrentSetting(props.title + " " + "settings");
+            props.setCurrentSetting(props.name);
             props.setCurrentRoute(props.path);
 
         }
 
-    }, [location]);
+    }, [props.name, props.title, location]);
 
     return (
 

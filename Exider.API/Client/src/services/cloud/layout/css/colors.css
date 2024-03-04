@@ -13,9 +13,10 @@
     --main-button-font-color: white;
     --main-pop-up-color: #fff;
     --main-header-font-color: #888;
-    --sub-background-color: #eee;
+    --sub-background-color: #f5f5f7;
     --sub-accent-background: #fff;
     --sub-accent-color: black;
+    --sub-filter: invert(100%);
     --button-disabled-backgound: #eee;
     --button-active-backgound: #000000;
     --button-loading-backgound: #000000;
@@ -44,8 +45,9 @@
     --sub-background-color: #000000;
     --sub-accent-color: rgb(255, 255, 255);
     --sub-accent-background: #161616;
-    --button-disabled-backgound: #eee;
-    --button-active-backgound: #000000;
+    --sub-filter: invert(0%);
+    --button-disabled-backgound: #161616;
+    --button-active-backgound: #ccc;
     --button-loading-backgound: #000000;
     --button-disabled-text-color: #ffffff;
     --button-active-text-color: #ffffff;

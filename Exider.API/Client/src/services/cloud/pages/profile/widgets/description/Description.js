@@ -7,10 +7,12 @@ import Navigation from '../navigation/Navigation';
 import { observer } from 'mobx-react-lite';
 import userState from '../../../../../../states/user-state';
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const Description = observer(() => {
 
   const { user } = userState;
+  const { t } = useTranslation();
 
   return (
 
@@ -26,14 +28,7 @@ const Description = observer(() => {
           <div>
             <div className={styles.navButton}>
               <NavLink to='/settings/profile' className={styles.editProfileButton}>
-                Edit profile
-              </NavLink>
-            </div>
-          </div>
-          <div>
-            <div className={styles.navButton}>
-              <NavLink to='/settings' className={styles.editProfileButton}>
-                Settings
+                {t('cloud.profile.edit_profile')}
               </NavLink>
             </div>
           </div>

@@ -8,7 +8,7 @@ const Switch = (props) => {
         
         <div className={styles.settingBar}>
             <div className={external_styles.setting} id="single" onClick={props.onClick}>
-                <img src={props.img} />
+                <img src={props.img} className={external_styles.descImage} />
                 <div>
                     <h1>{props.title}</h1>
                     <p>{props.description}</p>

@@ -8,91 +8,22 @@ import Security from '../pages/security/Security';
 import MiniProfile from '../widgets/mini-profile/MiniProfile';
 import Button from '../shared/button/Button';
 import Header from '../widgets/header/Header';
-import { instance } from '../../../state/Interceptors';
 import { observer } from 'mobx-react-lite';
-import userState from '../../../states/user-state';
-import { CancelToken } from 'axios';
-import { useNavigate, useLocation} from 'react-router-dom';
-
-const Endpoints = {
-    "/settings/profile": "/accounts",
-    "/settings/interface": "/settings/interface",
-    "/settings/language": "/settings/language",
-    "/settings/notifications": "/settings/notifications",
-}
+import { useTranslation } from 'react-i18next';
 
 const Settings = observer((props) => {
 
-    let navigate = useNavigate();
-    let location = useLocation();
-
     const [currentSetting, setCurrentSetting] = useState('Settings');
     const [currentRoute, setCurrentRoute] = useState('/');
-    const [headerState, setHeaderState] = useState('valid');
-    const [data, setData] = useState();
-    const { UpdateUserData } = userState;
     const [cancel, setCancelState] = useState(false);
-
-    const Save = async () => {
-
-        const source = CancelToken.source();
-
-        const timeoutId = setTimeout(() => {
-
-            source.cancel("Request timeout");
-            setHeaderState('valid');
-
-        }, 7000);
-
-        let form = new FormData();
-        
-        form.append("avatar", data.avatar);
-
-        setHeaderState('loading');
-
-        try {
-
-            const response = await instance({
-                method: 'put',
-                url: Endpoints[currentRoute],
-                data: data,
-                headers: { 'Content-Type': 'multipart/form-data' },
-                cancelToken: source.token
-            });
-
-            clearTimeout(timeoutId);
-
-            if (response.status === 200) {
-
-                UpdateUserData(location, navigate);
-                setHeaderState('valid');
-
-            } else {
-
-                UpdateUserData(location, navigate);
-                setHeaderState('invalid');
-
-            }
-
-        } catch {
-            setHeaderState('invalid');
-        }
-
-    };
+    const [isSaving, setSavingState] = useState(false);
+    const { t } = useTranslation();
 
     useEffect(() => {
 
         if (props.setPanelState) {
             props.setPanelState(true);
         }
-
-        return () => {
-
-            if (props.setPanelState) {
-                props.setPanelState(false);
-            }
-
-        };
 
     }, [props.setPanelState]);
 
@@ -104,25 +35,29 @@ const Settings = observer((props) => {
                 <div className={styles.line}></div>
                 <div className={styles.buttons}>
                     <Button 
-                        title='Profile' 
+                        title={t('cloud.settings.profile.title')}
+                        name={t('cloud.settings.profile.name')}
                         path='/settings/profile' 
                         setCurrentSetting={setCurrentSetting} 
                         setCurrentRoute={setCurrentRoute} 
                     />
                     <Button 
-                        title='Interface' 
+                        title={t('cloud.settings.interface.title')}
+                        name={t('cloud.settings.interface.name')}
                         path='/settings/interface' 
                         setCurrentSetting={setCurrentSetting} 
                         setCurrentRoute={setCurrentRoute} 
                     />
                     <Button 
-                        title='Language' 
+                        title={t('cloud.settings.language.title')}
+                        name={t('cloud.settings.language.name')}
                         path='/settings/language' 
                         setCurrentSetting={setCurrentSetting}  
                         setCurrentRoute={setCurrentRoute} 
                     />
                     <Button 
-                        title='Notifications' 
+                        title={t('cloud.settings.notifications.title')}
+                        name={t('cloud.settings.notifications.name')}
                         path='/settings/notifications' 
                         setCurrentSetting={setCurrentSetting}
                         setCurrentRoute={setCurrentRoute}
@@ -131,19 +66,22 @@ const Settings = observer((props) => {
                 <div className={styles.line}></div>
                 <div className={styles.buttons}>
                     <Button 
-                        title='Password recovery' 
+                        title={t('cloud.settings.password_recovery.title')}
+                        name={t('cloud.settings.password_recovery.name')}
                         path='/settings/password-recovery' 
                         setCurrentSetting={setCurrentSetting}
                         setCurrentRoute={setCurrentRoute}
                     />
                     <Button 
-                        title='Blocked users' 
+                        title={t('cloud.settings.blocked_users.title')}
+                        name={t('cloud.settings.blocked_users.name')}
                         path='/settings/blocked-users' 
                         setCurrentSetting={setCurrentSetting}
                         setCurrentRoute={setCurrentRoute}
                     />
                     <Button 
-                        title='Account privacy' 
+                        title={t('cloud.settings.account_privacy.title')}
+                        name={t('cloud.settings.account_privacy.name')}
                         path='/settings/account-privacy' 
                         setCurrentSetting={setCurrentSetting} 
                         setCurrentRoute={setCurrentRoute}
@@ -153,27 +91,58 @@ const Settings = observer((props) => {
             <div className={styles.content}>
                 <Header 
                     title={currentSetting} 
-                    onClick={Save}
-                    state={headerState}
+                    onClick={() => setSavingState(true)}
+                    state={isSaving ? 'loading' : 'valid'}
                     setCancelState={setCancelState}
                 />
                 <div className={styles.settingWrapper}>
                     <Routes>
                         <Route 
                             path='profile' 
-                            element={<Profile setData={setData} cancel={cancel} setCancelState={setCancelState} />} 
+                            element=
+                            {
+                                <Profile 
+                                    cancel={cancel}
+                                    setCancelState={setCancelState} 
+                                    isSaving={isSaving}
+                                    setSavingState={setSavingState}
+                                />
+                            } 
                         />
                         <Route 
                             path='interface' 
-                            element={<Interface setData={setData} cancel={cancel} setCancelState={setCancelState} />} 
+                            element=
+                            {
+                                <Interface 
+                                    cancel={cancel} 
+                                    setCancelState={setCancelState}
+                                    isSaving={isSaving}
+                                    setSavingState={setSavingState}
+                                />
+                            } 
                         />
                         <Route 
                             path='language' 
-                            element={<Language setData={setData} cancel={cancel} setCancelState={setCancelState} />} 
+                            element=
+                            {
+                                <Language 
+                                    cancel={cancel} 
+                                    setCancelState={setCancelState}
+                                    isSaving={isSaving}
+                                    setSavingState={setSavingState}
+                                />
+                            } 
                         />
                         <Route 
                             path='security' 
-                            element={<Security setData={setData} cancel={cancel} setCancelState={setCancelState} />} 
+                            element=
+                            {
+                                <Security 
+                                    cancel={cancel} 
+                                    setCancelState={setCancelState}
+                                    isSaving={isSaving}
+                                />
+                            } 
                         />
                     </Routes>
                 </div>

@@ -7,8 +7,10 @@
     cursor: pointer;
     display: flex;
     padding-left: 20px;
+    padding-right: 20px;
     align-items: center;
     grid-gap: 15px;
+    position: relative;
     background: var(--sub-accent-background);
 }
 
@@ -28,7 +30,7 @@
     color: var(--main-paragraph-color)
 }
 
-.setting img {
+.descImage {
     width: 27px;
     object-fit: cover;
 }

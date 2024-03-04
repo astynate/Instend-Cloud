@@ -12,7 +12,7 @@
     overflow-x: hidden;
     padding: 0px 10px;
     background: var(--main-background-color);
-    border-right: 1px solid var(--main-border-color)
+    border-right: 1px solid var(--main-border-color);
 }
 
 .content {

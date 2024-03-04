@@ -10,3 +10,13 @@
     margin-left: auto;
     margin-right: auto;
 }
+
+@media (max-width: 1150px) {
+ 
+    .wrapper {
+        width: auto;
+        margin-left: 3vw;
+        margin-right: 3vw;
+    }
+
+}

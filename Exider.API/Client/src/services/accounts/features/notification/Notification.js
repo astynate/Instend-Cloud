@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Close from './images/close.png';
 import './styles/main.css';
 import './styles/media.css';
