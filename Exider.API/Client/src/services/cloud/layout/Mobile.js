@@ -5,7 +5,7 @@ import PrivateRoutes from '../../../routes/PrivateRoutes';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import './css/main.css';
 
-const Mobile = ({ }) => {
+const Mobile = () => {
 
     return (
 
@@ -21,7 +21,13 @@ const Mobile = ({ }) => {
                 <Routes>
                     {PrivateRoutes.map((route, index) => {
                         const { element, ...rest } = route;
-                        return <Route key={index} {...rest} element={element} />;
+                        return <Route 
+                            key={index} 
+                            {...rest} 
+                            element={React.cloneElement(element, { 
+                                isMobile: true
+                            })}
+                        />;
                     })}
                 </Routes>
             </div>

@@ -57,5 +57,7 @@
 .mobile-header {
     height: 100%;
     width: 100%;
-    border-bottom: 1px solid var(--main-border-color);
+    display: flex;
+    padding: 0px 2vw;
+    align-items: center;
 }

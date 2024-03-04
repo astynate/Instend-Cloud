@@ -35,7 +35,10 @@ const Desktop = observer(({ }) => {
                         <Route
                             key={index}
                             {...rest}
-                            element={React.cloneElement(element, { setPanelState: setPanelState })}
+                            element={React.cloneElement(element, { 
+                                setPanelState: setPanelState,
+                                isMobile: false
+                            })}
                         />
                         );
                     })}

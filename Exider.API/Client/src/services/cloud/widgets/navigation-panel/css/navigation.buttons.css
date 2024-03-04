@@ -23,10 +23,19 @@
     color: var(--main-font-color);
 }
 
-.navigation-button:hover {
-    cursor: pointer;
-    background: var(--main-accent-color);
-    user-select: none;
+@media (hover: hover) {
+    .navigation-button:hover {
+        cursor: pointer;
+        background: var(--main-accent-color);
+        user-select: none;
+    }
+}
+
+@media (hover: none) {
+    .navigation-button {
+        background: transparent;
+        user-select: none;
+    }
 }
 
 .navigation-button:active {

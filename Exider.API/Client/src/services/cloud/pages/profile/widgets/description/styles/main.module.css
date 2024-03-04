@@ -7,7 +7,7 @@
 }
 
 .profileDescription {
-    height: 100%;
+    height: fit-content;
     width: auto;
     display: flex;
     align-self: center;
@@ -46,7 +46,9 @@
 }
 
 .navButton {
-    margin-top: 45px;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
 }
 
 .editProfileButton:hover {
@@ -55,4 +57,36 @@
 
 .editProfileButton:active {
     transform: scale(98%);
+}
+
+@media (max-width: 600px) {
+    .description {
+        height: 200px;
+        padding: 0px 1vw;
+    }
+
+    .profileDescription {
+        margin-left: 5vw;
+    }
+
+    .editProfileButton {
+        padding: 10px 18px;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .profileDescription {
+        margin-left: 7vw;
+    }
+
+    .editProfileButton {
+        margin-top: 15px;
+    }
+
+    .editProfile {
+        justify-content: flex-start;
+        text-align: center;
+    }
 }

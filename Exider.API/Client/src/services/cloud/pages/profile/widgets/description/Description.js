@@ -9,7 +9,7 @@ import userState from '../../../../../../states/user-state';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-const Description = observer(() => {
+const Description = observer((props) => {
 
   const { user } = userState;
   const { t } = useTranslation();
@@ -23,16 +23,34 @@ const Description = observer(() => {
           <Username username={user.nickname} />
           <Data coins={user.balance} friends={user.friendCount} space={user.storageSpace / 1024} />
           <div><h3 className={styles.name}>{user.name} {user.surname}</h3></div>
-        </div>
-        <div className={styles.editProfile}>
-          <div>
-            <div className={styles.navButton}>
-              <NavLink to='/settings/profile' className={styles.editProfileButton}>
-                {t('cloud.profile.edit_profile')}
-              </NavLink>
+          {props.isMobile ? 
+
+            <div className={styles.editProfile}>
+              <div className={styles.navButton}>
+                <NavLink to='/settings/profile' className={styles.editProfileButton}>
+                  {t('cloud.profile.edit_profile')}
+                </NavLink>
+              </div>
             </div>
-          </div>
+            :
+            null
+          }
         </div>
+        
+          {
+            props.isMobile ? null :
+
+            <div className={styles.editProfile}>
+              <div>
+                <div className={styles.navButton}>
+                  <NavLink to='/settings/profile' className={styles.editProfileButton}>
+                    {t('cloud.profile.edit_profile')}
+                  </NavLink>
+                </div>
+              </div>
+            </div>
+
+          }
       </div>
       <Navigation />
     </>

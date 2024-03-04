@@ -5,8 +5,9 @@ const Username = (props) => {
 
   return (
 
-    <div>
+    <div className={styles.wrapper}>
       <h1 className={styles.username}>{props.username}</h1>
+      {props.children}
     </div>
 
   )

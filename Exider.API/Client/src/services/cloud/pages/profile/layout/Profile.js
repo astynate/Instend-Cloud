@@ -19,19 +19,35 @@ const Profile = observer((props) => {
 
   }, [props.setPanelState]);
 
-  return (
+  if (props.isMobile) {
 
-    <div className={styles.content}>
-      <LayoutHeader>
-        <Search />
-      </LayoutHeader>
-      <div className={styles.wrapper}>
-        <Header src={user.header} />
-        <Description />
+    return (
+
+      <div className={styles.content}>
+        <div className={styles.wrapper}>
+          <Header src={user.header} />
+          <Description isMobile={props.isMobile} />
+        </div>
       </div>
-    </div>
+  
+    )
 
-  )
+  } else {
+
+    return (
+
+      <div className={styles.content}>
+        <Search />
+        <LayoutHeader />
+        <div className={styles.wrapper}>
+          <Header src={user.header} />
+          <Description />
+        </div>
+      </div>
+  
+    )
+
+  }
 
 });
 

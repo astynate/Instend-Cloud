@@ -12,3 +12,11 @@
     object-fit: cover;
     image-rendering: crisp-edges;
 }
+
+@media (max-width: 600px) {
+
+    .header {
+        height: 150px;
+    }
+    
+}

@@ -36,7 +36,7 @@ const Layout = () => {
             <Helmet>
                 <title>Exider Cloud</title>
             </Helmet>
-            {windowWidth > 500 ? <Desktop /> : <Mobile /> }
+            {windowWidth > 700 ? <Desktop /> : <Mobile /> }
         </div>
     );
 
