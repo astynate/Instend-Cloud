@@ -1,11 +1,22 @@
 .headerWrapper {
     height: 60px;
     width: auto;
+    position: -webkit-sticky;
     position: sticky;
     top: 0;
     left: 0;
     backdrop-filter: blur(10px) saturate(50%);
     z-index: 99999;
+}
+
+.back {
+  height: 20px;
+  width: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+  object-fit: contain;
+  filter: var(--main-filter);
+  margin-right: 10px;
 }
 
 .header {
@@ -62,7 +73,7 @@
     }
   }
 
-@media (max-width: 1000px) {
+@media (max-width: 1300px) {
     .header {
         width: auto;
         padding: 0px 2vw;

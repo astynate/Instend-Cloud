@@ -16,6 +16,7 @@
     --width: 300px;
     --top: 20px;
     --left: 20px;
+    z-index: 99999999999999;
 }
 
 .imageShape {
@@ -136,4 +137,16 @@
     left: 20px;
     opacity: 1;
     cursor: grab;
+}
+
+@media (max-width: 700px) {
+    .imageWrapper {
+        height: calc(100dvh - 100px);
+        width: 95vw;
+    }
+
+    .imageShape {
+        transform: scale(70%);
+    }
+
 }

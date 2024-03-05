@@ -10,6 +10,7 @@
     padding-top: 55px;
     padding-bottom: 0px;
     user-select: none;
+    text-align: center;
 }
 
 .wrapper[id="file"] {
@@ -58,11 +59,13 @@
 .content h1 {
     font-size: 21px;
     font-weight: 700;
+    color: var(--sub-font-color);
+    filter: invert(100%);
 }
 
 .content p {
     font-size: 12px;
-    color: var(--main-paragraph-color)
+    color: var(--main-paragraph-color);
 }
 
 .line {
@@ -81,4 +84,20 @@
     justify-content: center;
     grid-gap: 10px;
     padding: 30px;
+}
+
+@media (max-width: 700px) {
+    .wrapper {
+        /* height: 100vh; */
+        width: auto;
+        border-radius: 0px;
+        background: none;
+        border: none;
+        outline: none;
+    }
+
+    .wrapper[id="file"] {
+        outline: 0px solid var(--main-blue-color);
+    }
+    
 }

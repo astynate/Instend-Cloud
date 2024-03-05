@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import styles from './styles/main.module.css';
 import PopUpWindow from '../../../../shared/pop-up-window/PopUpWindow';
-import { Back, Next } from "../../../../shared/navigate/Navigate";
 import { ProfileSettingsContext } from '../../Profile';
 import { useTranslation } from "react-i18next";
 

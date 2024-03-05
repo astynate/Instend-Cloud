@@ -14,16 +14,18 @@ class UserState {
 
     UpdateUserData = async (location, navigate) => {
 
-        const responsePromise = instance.get('/accounts');
+        // const responsePromise = instance.get('/accounts');
     
-        const timeoutPromise = new Promise((resolve) => {
-            setTimeout(() => resolve({ status: 408 }), 30000);
-        });
+        // const timeoutPromise = new Promise((resolve) => {
+        //     setTimeout(() => resolve({ status: 408 }), 30000);
+        // });
     
         try {
             
-            const response = await Promise.race([responsePromise, timeoutPromise]);
+            // const response = await Promise.race([responsePromise, timeoutPromise]);
     
+            const response = await instance.get('/accounts');
+
             if (response.status === 200) {
 
                 this.user = await response.data;

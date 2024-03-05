@@ -10,14 +10,24 @@ import Button from '../shared/button/Button';
 import Header from '../widgets/header/Header';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 
 const Settings = observer((props) => {
+
+    let location = useLocation();
 
     const [currentSetting, setCurrentSetting] = useState('Settings');
     const [currentRoute, setCurrentRoute] = useState('/');
     const [cancel, setCancelState] = useState(false);
     const [isSaving, setSavingState] = useState(false);
+    const [isOpen, setOpenState] = useState(location.pathname != '/settings');
     const { t } = useTranslation();
+    
+    useEffect(() => {
+
+        setOpenState(location.pathname != '/settings');
+
+    }, [location]);
 
     useEffect(() => {
 
@@ -30,7 +40,10 @@ const Settings = observer((props) => {
     return (
 
         <div className={styles.wrapper}>
-            <div className={styles.settings}>
+
+            {isOpen === false || props.isMobile === false ? 
+
+            <div className={styles.settings} id={props.isMobile ? "mobile" : "desktop"}>
                 <MiniProfile />
                 <div className={styles.line}></div>
                 <div className={styles.buttons}>
@@ -87,17 +100,20 @@ const Settings = observer((props) => {
                         setCurrentRoute={setCurrentRoute}
                     />
                 </div>
-            </div>
-            <div className={styles.content}>
+            </div> : null}
+
+            {isOpen || props.isMobile === false ?
+                <div className={styles.content} id={props.isMobile ? "mobile" : "desktop"}>
                 <Header 
                     title={currentSetting} 
                     onClick={() => setSavingState(true)}
                     state={isSaving ? 'loading' : 'valid'}
                     setCancelState={setCancelState}
+                    isMobile={props.isMobile}
                 />
                 <div className={styles.settingWrapper}>
                     <Routes>
-                        <Route 
+                        <Route
                             path='profile' 
                             element=
                             {
@@ -146,7 +162,8 @@ const Settings = observer((props) => {
                         />
                     </Routes>
                 </div>
-            </div>
+            </div> : null}
+        
         </div>
 
     );

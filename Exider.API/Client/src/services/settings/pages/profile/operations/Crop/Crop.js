@@ -86,10 +86,10 @@ const Crop = (props) => {
     }, [props.image]);
     
 
-    const setClientOffset = (event) => {
+    const setClientOffset = (x, y) => {
 
-        setClientX(event.clientX);
-        setClientY(event.clientY);
+        setClientX(x);
+        setClientY(y);
         setMouseDown(true);
 
     };
@@ -104,12 +104,12 @@ const Crop = (props) => {
 
     };
 
-    const MoveArea = (event) => {
+    const MoveArea = (x, y) => {
 
         if (isMouseDown) {
 
-            const offsetY = event.clientY - clientY + parseInt(currentOffestY);
-            const offsetX = event.clientX - clientX + parseInt(currentOffestX);
+            const offsetY = y - clientY + parseInt(currentOffestY);
+            const offsetX = x - clientX + parseInt(currentOffestX);
 
             if (objectFit === 'height') {
 
@@ -137,11 +137,11 @@ const Crop = (props) => {
 
     };
 
-    const TransformScale = (event, type) => {
+    const TransformScale = (x, type) => {
 
         if (isMouseDown) {
 
-            const offset = event.clientX - clientX;
+            const offset = x - clientX;
 
             if (type === 0) {
 
@@ -239,30 +239,40 @@ const Crop = (props) => {
                             <div className={styles.workspace}>
                                 <div 
                                     className={styles.dragAndDropPoint} 
-                                    onMouseDown={(event) => setClientOffset(event)}
-                                    onMouseMove={(event) => TransformScale(event, 0)}
+                                    onMouseDown={(event) => setClientOffset(event.clientX, event.clientX)}
+                                    onMouseMove={(event) => TransformScale(event.clientX, 0)}
+                                    onTouchStart={(event) => setClientOffset(event.touches[0].clientX, event.touches[0].clientY)}
+                                    onTouchMove={(event) => TransformScale(event.touches[0].clientX, 0)}
                                 ></div>
                                 <div 
                                     className={styles.dragAndDropPoint} 
-                                    onMouseDown={(event) => setClientOffset(event)}
-                                    onMouseMove={(event) => TransformScale(event, 1)}
+                                    onMouseDown={(event) => setClientOffset(event.clientX, event.clientX)}
+                                    onMouseMove={(event) => TransformScale(event.clientX, 1)}
+                                    onTouchStart={(event) => setClientOffset(event.touches[0].clientX, event.touches[0].clientY)}
+                                    onTouchMove={(event) => TransformScale(event.touches[0].clientX, 1)}
                                 ></div>
                                 <div 
                                     className={styles.dragAndDropPoint}
-                                    onMouseDown={(event) => setClientOffset(event)}
-                                    onMouseMove={(event) => TransformScale(event, 0)}
+                                    onMouseDown={(event) => setClientOffset(event.clientX, event.clientX)}
+                                    onMouseMove={(event) => TransformScale(event.clientX, 0)}
+                                    onTouchStart={(event) => setClientOffset(event.touches[0].clientX, event.touches[0].clientY)}
+                                    onTouchMove={(event) => TransformScale(event.touches[0].clientX, 0)}
                                 ></div>
                                 <div 
                                     className={styles.dragAndDropPoint}
-                                    onMouseDown={(event) => setClientOffset(event)}
-                                    onMouseMove={(event) => TransformScale(event, 1)}
+                                    onMouseDown={(event) => setClientOffset(event.clientX, event.clientX)}
+                                    onMouseMove={(event) => TransformScale(event.clientX, 1)}
+                                    onTouchStart={(event) => setClientOffset(event.touches[0].clientX, event.touches[0].clientY)}
+                                    onTouchMove={(event) => TransformScale(event.touches[0].clientX, 1)}
                                 ></div>
                                 <div 
                                     className={styles.circle}
                                     onMouseUp={() => clientOffsetRecovery()}
                                     onMouseLeave={() => clientOffsetRecovery()}
-                                    onMouseDown={(event) => setClientOffset(event)}
-                                    onMouseMove={(event) => MoveArea(event)}
+                                    onMouseDown={(event) => setClientOffset(event.clientX, event.clientY)}
+                                    onMouseMove={(event) => MoveArea(event.clientX, event.clientY)}
+                                    onTouchStart={(event) => setClientOffset(event.touches[0].clientX, event.touches[0].clientY)}
+                                    onTouchMove={(event) => MoveArea(event.touches[0].clientX, event.touches[0].clientY)}
                                 ></div>
                             </div>
                             <div className={styles.right}></div>

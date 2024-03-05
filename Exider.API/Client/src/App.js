@@ -16,12 +16,7 @@ const App = observer(() => {
     useEffect(() => {
 
         document.querySelector('#root').className = localStorage.getItem('color-mode');
-
-        setTimeout(() => {
-
-            UpdateAuthorizeState(location.pathname, navigate);
-
-        }, 1500)
+        UpdateAuthorizeState(location.pathname, navigate);
 
     }, []);
 

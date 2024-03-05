@@ -30,3 +30,28 @@
     font-size: 12px;
     color: var(--main-paragraph-color);
 }
+
+@media (max-width: 700px) {
+    .avatar {
+        height: 120px;
+        width: 120px;
+    }
+
+    .miniProfile {
+        padding: 25px 0px;
+        grid-gap: 25px;
+    }
+
+    .miniProfile h1 {
+        margin: 0;
+        padding: 0;
+        font-size: 21px;
+        color: var(--main-font-color);
+        font-weight: 700;
+    }
+
+    .miniProfile span {
+        font-size: 14px;
+    }
+
+}

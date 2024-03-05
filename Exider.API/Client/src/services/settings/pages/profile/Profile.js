@@ -30,8 +30,8 @@ const Profile = observer((props) => {
 
     const [uploadAvatar,  setUploadAvatar] = useState(false);
     const [uploadHeader,  setUploadHeader] = useState(false);
-    const [avatar, setAvatar] = useState(`data:image/png;base64,${user.avatar}`);
-    const [header, setHeader] = useState(`data:image/png;base64,${user.header}`);
+    const [avatar, setAvatar] = useState(`data:image/png;base64,${user.avatar || ""}`);
+    const [header, setHeader] = useState(`data:image/png;base64,${user.header || ""}`);
     const { UpdateUserData } = userState;
 
     let navigate = useNavigate();
@@ -50,7 +50,7 @@ const Profile = observer((props) => {
     useEffect(() => {
 
         if (user.avatar != null) {
-            setAvatar(`data:image/png;base64,${user.avatar}`);
+            setAvatar(`data:image/png;base64,${user.avatar || ""}`);
         }
 
     }, [user.avatar]);
@@ -106,8 +106,8 @@ const Profile = observer((props) => {
 
         const SetDefault = async () => {
 
-            setAvatar(`data:image/png;base64,${user.avatar}`);
-            setHeader(`data:image/png;base64,${user.header}`);
+            setAvatar(`data:image/png;base64,${user.avatar || ""}`);
+            setHeader(`data:image/png;base64,${user.header || ""}`);
             setProfileSettings(defaultProfileSettings);
             setName(user.name, setProfileSettings);
             setSurname(user.surname, setProfileSettings);

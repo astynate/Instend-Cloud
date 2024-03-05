@@ -14,15 +14,28 @@
     color: var(--main-paragraph-color);
 }
 
-.button[id="active"] {
-    background: var(--main-accent-color);
+@media(hover: hover) {
+    .button:hover {
+        background: var(--main-accent-color);
+    }
 }
 
-.button[id="active"] a {
-    color: var(--main-font-color);
-    font-weight: 700;
+@media(hover: none) {
+    .button[id="active"] {
+        background: var(--main-accent-color);
+    }
+    
+    .button[id="active"] a {
+        color: var(--main-font-color);
+        font-weight: 700;
+    }
 }
 
-.button:hover {
-    background: var(--main-accent-color);
+@media (max-width: 700px) {
+    .button {
+        font-size: 16px;
+    }
+    .button a {
+        padding: 15px 15px;
+    }
 }
