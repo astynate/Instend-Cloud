@@ -1,0 +1,38 @@
+.message {
+    display: flex;
+    grid-gap: 10px;
+    image-rendering: pixelated;
+}
+
+.avatarPlaceholder {
+    height: 45px;
+    width: 45px;
+    background: var(--main-accent-color);
+    border-radius: 100%;
+}
+
+.myAvatar {
+    height: 45px;
+    width: 45px;
+    object-fit: cover;
+    border-radius: 100%;
+    background: var(--main-accent-color);
+}
+
+.avatar {
+    height: 45px;
+    width: 45px;
+    object-fit: contain;
+}
+
+.name {
+    font-size: 16px;
+    color: var(--main-font-color);
+    margin-top: 0px;
+}
+
+.text {
+    font-size: 16px;
+    color: var(--main-paragraph-color);
+    margin-top: 3px;
+}

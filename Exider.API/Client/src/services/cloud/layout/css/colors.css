@@ -24,12 +24,13 @@
     --button-active-text-color: #ffffff;
     --button-loading-text-color: #ffffff;
     --button-loader-color: rgb(255, 255, 255);
+    --main-blur-effect: blur(10px) saturate(50%);
     --color-scheme: light;
 }
 
 .dark-mode {
     --main-background-color: rgb(0, 0, 0);
-    --main-border-color: rgba(255, 255, 255, 0.15);
+    --main-border-color: rgba(255, 255, 255, 0.2);
     --main-accent-color: #161616;
     --main-font-color: #ffffff;
     --main-header-font-color: #161616;
@@ -53,5 +54,6 @@
     --button-active-text-color: #ffffff;
     --button-loading-text-color: #ffffff;
     --button-loader-color: rgb(255, 255, 255);
+    --main-blur-effect: blur(10px) saturate(50%);
     --color-scheme: dark;
 }

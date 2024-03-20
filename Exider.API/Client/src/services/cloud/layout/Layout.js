@@ -4,10 +4,12 @@ import Loader from '../widgets/loader/Loader';
 import './css/fonts.css';
 import './css/colors.css';
 import './css/main.css';
-
 import { Helmet } from 'react-helmet';
 import Desktop from './Desktop';
 import Mobile from './Mobile';
+import { createSignalRContext } from "react-signalr/signalr";
+
+export const SignalRContext = createSignalRContext();
 
 const Layout = () => {
 
@@ -31,13 +33,15 @@ const Layout = () => {
     }, []);
 
     return (
-        <div className='cloud-wrapper'>
-            {isLoading && <Loader />}
-            <Helmet>
-                <title>Exider Cloud</title>
-            </Helmet>
-            {windowWidth > 700 ? <Desktop /> : <Mobile /> }
-        </div>
+        <SignalRContext.Provider url={"http://localhost:7128/message-hub"}>
+            <div className='cloud-wrapper'>
+                {isLoading && <Loader />}
+                <Helmet>
+                    <title>Exider Cloud</title>
+                </Helmet>
+                {windowWidth > 700 ? <Desktop /> : <Mobile /> }
+            </div>
+        </SignalRContext.Provider>
     );
 
 };

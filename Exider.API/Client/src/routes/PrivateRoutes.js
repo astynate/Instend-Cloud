@@ -3,7 +3,7 @@ import Explore from '../services/cloud/pages/explore/Explore';
 // import Friends from '../services/cloud/pages/friends/Friends';
 import Gallery from '../services/cloud/pages/gallery/Gallery';
 import Home from '../services/cloud/pages/home/Home';
-import Messages from '../services/cloud/pages/messages/Messages';
+import Messages from '../services/cloud/pages/messages/layout/Messages';
 import Music from '../services/cloud/pages/music/Music';
 import Profile from '../services/cloud/pages/profile/layout/Profile';
 import Settings from '../services/settings/layout/Settings';

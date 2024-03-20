@@ -8,14 +8,25 @@ using Exider.Repositories.Repositories;
 using Exider.Services.External.FileService;
 using Exider.Services.Internal.Handlers;
 using Exider.Services.Middleware;
+using Exider_Version_2._0._0.Server.Hubs;
 using Exider_Version_2._0._0.ServerApp.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy",
+        builder => builder.WithOrigins("http://localhost:44441")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials());
+});
+
 builder.Services.AddTransient<LoggingMiddleware>();
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<DatabaseContext>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
@@ -59,6 +70,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseCors("CorsPolicy");
 app.UseMiddleware<LoggingMiddleware>();
 
 app.Use(async (context, next) =>
@@ -106,4 +118,5 @@ app.MapFallbackToFile("index.html");
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapHub<MessageHub>("/message-hub");
 app.Run();

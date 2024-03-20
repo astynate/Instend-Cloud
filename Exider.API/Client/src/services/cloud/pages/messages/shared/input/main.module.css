@@ -1,0 +1,81 @@
+.wrapper {
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    background: var(--main-header-background-color);
+    backdrop-filter: var(--main-blur-effect);
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+.inputWrapper {
+    border-radius: 27px;
+    border: 1px solid var(--main-border-color);
+    height: auto;
+    width: 50vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 5px;
+    transition: 0.25s ease;
+}
+
+.wrapper textarea {
+    width: 50vw;
+    outline: none;
+    border: none;
+    padding-left: 17px;
+    background: transparent;
+    font-size: 16px;
+    font-family: 'Open sans', sans-serif;
+    color: var(--main-paragraph-color);
+    resize: none;
+    margin-top: 0px;
+    overflow-y: scroll;
+    padding-top: 15px;
+    border-radius: 27px;
+    padding-bottom: 15px;
+    max-height: 300px;
+    transition: 0.25s ease;
+    border: 1px solid transparent;
+}
+
+.inputWrapper:active {
+    filter: blur(2px);
+    transform: scale(99%);
+}
+
+.wrapper textarea:focus {
+    border: 1px solid var(--main-blue-color);
+}
+
+.wrapper span {
+    font-size: 12px;
+    text-align: center;
+    color: var(--main-paragraph-color);
+}
+
+.wrapper textarea::-webkit-scrollbar {
+    width: 0px;
+  }
+  
+  .wrapper textarea::-webkit-scrollbar-track {
+    background: transparent;
+  }
+   
+  .wrapper textarea::-webkit-scrollbar-thumb {
+    background: var(--main-accent-color);
+    border-radius: 30px;
+  }
+  
+  .wrapper textarea::-webkit-scrollbar-thumb:hover {
+    filter: brightness(70%); 
+  }
