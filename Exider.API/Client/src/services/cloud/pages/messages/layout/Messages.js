@@ -24,7 +24,7 @@ const Messages = (props) => {
     (message) => {
       setMessages(prevMessages => [...prevMessages,  { 
         name: "✦ Сyra",
-        text: `Ты лох и собака!`,
+        text: `Ты лох и собака`,
         isMyMessage: false,
         avatar: cyraAvatar
       }]);
