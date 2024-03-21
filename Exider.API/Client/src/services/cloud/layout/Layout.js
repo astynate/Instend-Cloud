@@ -33,7 +33,7 @@ const Layout = () => {
     }, []);
 
     return (
-        <SignalRContext.Provider url={"http://localhost:7128/message-hub"}>
+        <SignalRContext.Provider url={"http://localhost:5000/message-hub"}>
             <div className='cloud-wrapper'>
                 {isLoading && <Loader />}
                 <Helmet>

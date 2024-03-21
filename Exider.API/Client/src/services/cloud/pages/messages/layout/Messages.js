@@ -19,32 +19,65 @@ const Messages = (props) => {
   const [isSendingMessage, setSendingMessageState] = useState(false);
   const [isSendingPossible, setSendningPossibility] = useState(true);
 
+  const SendMessage = async() => {
+    setMessages(prevMessages => [...prevMessages,  { 
+      name: user.nickname,
+      text: message,
+      isMyMessage: true,
+      avatar: `data:image/png;base64,${user.avatar}`
+    }]);
+
+    setMessage('');
+
+    setMessages(prevMessages => [...prevMessages,  { 
+      name: "✦ Сyra",
+      text: '⏳',
+      isMyMessage: false,
+      avatar: cyraAvatar
+    }]);
+
+    setSendningPossibility(false);
+
+    await SignalRContext.connection.invoke('SendMessage', message);
+  }
+
+  SignalRContext.connection.onclose(() =>{
+
+    setSendningPossibility(true);
+
+  });
+
   SignalRContext.useSignalREffect(
     "ReceiveMessage",
     (message) => {
-      setMessages(prevMessages => [...prevMessages,  { 
-        name: "✦ Сyra",
-        text: `Ты лох и собака`,
-        isMyMessage: false,
-        avatar: cyraAvatar
-      }]);
+      setMessages(prevMessages => {
+        const updatedMessages = [...prevMessages];
+        const lastMessageIndex = updatedMessages.length - 1;
+
+        if (lastMessageIndex >= 0) {
+          const lastMessage = updatedMessages[lastMessageIndex];
+
+          lastMessage.text = lastMessage.text.replace('⏳', '')
+          lastMessage.text = lastMessage.text += message[0];
+
+          if (message[1] === "True") {
+            setSendningPossibility(true);
+          }
+
+        }
+
+        return updatedMessages;
+      });
     },
   );
 
   useEffect(()=> {
 
-    if (isSendingMessage === true && message.trim().length > 0) {
+    if (isSendingMessage === true && 
+        message.trim().length > 0 && 
+        isSendingPossible === true) {
       
-      setMessages(prevMessages => [...prevMessages,  { 
-        name: user.nickname,
-        text: message,
-        isMyMessage: true,
-        avatar: `data:image/png;base64,${user.avatar}`
-      }]);
-
-      setMessage('');
-
-      SignalRContext.connection.invoke('SendMessage', message);
+      SendMessage();
 
     }
 
@@ -83,8 +116,9 @@ const Messages = (props) => {
         </Chat>
         <Input 
           message={[message, setMessage]} 
-          isSendingPossible={isSendingPossible}
+          isSendingPossible={[isSendingPossible, setSendningPossibility]}
           isSendingMessage={[isSendingMessage, setSendingMessageState]}
+          cancel={() => SignalRContext.connection.stop()}
         />
       </Content>
     </div>

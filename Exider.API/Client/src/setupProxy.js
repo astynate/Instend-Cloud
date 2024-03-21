@@ -4,7 +4,7 @@ const { env } = require('process');
 // const target = env.ASPNETCORE_HTTPS_PORT ? `http://localhost:${env.ASPNETCORE_HTTPS_PORT}` :
 //  env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'http://localhost:54040';
 
-const target = `http://localhost:7128`;
+const target = `http://localhost:5000`;
 
 const context = [
     "/accounts",

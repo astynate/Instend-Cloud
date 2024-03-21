@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './main.module.css';
+import StopGeneration from '../stop-generation/StopGeneration';
 
 const Input = (props) => {
 
@@ -34,6 +35,12 @@ const Input = (props) => {
     return (
 
         <div className={styles.wrapper}>
+            {props.isSendingPossible[0] === false ? 
+                <StopGeneration 
+                    isStop={props.isSendingPossible} 
+                    onClick={props.cancel}
+                /> : null
+            }
             <div className={styles.inputWrapper}>
                 <textarea 
                     placeholder='Ask your question to Cyra' 
