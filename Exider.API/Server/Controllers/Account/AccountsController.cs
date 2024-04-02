@@ -16,12 +16,10 @@ using System.Transactions;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Account
 {
-
     [ApiController]
     [Route("[controller]")]
     public class AccountsController : ControllerBase
     {
-
         private readonly IUsersRepository _usersRepository;
 
         private readonly IEmailRepository _emailRepository;
@@ -241,7 +239,5 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
             return Ok();
         }
-
     }
-
 }

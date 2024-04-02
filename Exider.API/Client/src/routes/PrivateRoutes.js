@@ -1,4 +1,4 @@
-import Cloud from '../services/cloud/pages/cloud/Cloud';
+import Cloud from '../services/cloud/pages/cloud/layout/Cloud';
 import Explore from '../services/cloud/pages/explore/Explore';
 // import Friends from '../services/cloud/pages/friends/Friends';
 import Gallery from '../services/cloud/pages/gallery/Gallery';

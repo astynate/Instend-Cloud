@@ -1,0 +1,17 @@
+.button {
+    display: flex;
+    align-items: center;
+    grid-gap: 7px;
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.button img {
+    height: 16px;
+    filter: invert(100%);
+}
+
+.button span {
+    font-size: 14px;
+    color: var(--main-font-color);
+}

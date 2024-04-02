@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Exider.Services.External.FileService;
+using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 namespace Exider.Core
@@ -39,7 +40,13 @@ namespace Exider.Core
 
         public static readonly string? DefaultAvatar;
 
-        public static readonly string? SystemDrive = "D:/Exider-System/";
+        public static readonly string SystemDrive = "D:/Exider-System/";
+
+        public static readonly string[] imageTypes = {"png", "jpg", "jpeg", "gif"};
+
+        public static readonly string[] documentTypes = {"doc", "docx"};
+
+        public delegate Task HandleFileCover(IFileService fileService);
 
         public enum Months
         {
@@ -59,7 +66,5 @@ namespace Exider.Core
 
         public static SymmetricSecurityKey GetSecurityKey()
             => new(Encoding.UTF8.GetBytes(TestEncryptionKey));
-
     }
-
 }

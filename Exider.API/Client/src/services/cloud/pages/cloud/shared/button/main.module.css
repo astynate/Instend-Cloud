@@ -1,0 +1,29 @@
+.button {
+    font-size: 14px;
+    color: var(--main-font-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    grid-gap: 7px;
+    opacity: 0.8;
+    user-select: none;
+    transition: 0.25s ease;
+    width: fit-content;
+    height: fit-content;
+    border-radius: 5px;
+}
+
+.button:hover {
+    cursor: pointer;
+    transform: scale(102%);
+}
+
+.button:active {
+    cursor: pointer;
+    transform: scale(98%);
+}
+
+.button img {
+    width: 20px;
+    filter: var(--main-filter);
+}

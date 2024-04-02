@@ -12,7 +12,6 @@ namespace Exider_Version_2._0._0.Server.Controllers.Email
     [Route("[controller]")]
     public class ConfirmationsController : ControllerBase
     {
-
         private readonly IConfirmationRespository _confirmationRespository;
 
         public ConfirmationsController(IConfirmationRespository confirmationRespository)
@@ -74,7 +73,5 @@ namespace Exider_Version_2._0._0.Server.Controllers.Email
 
             return Ok();
         }
-
     }
-
 }

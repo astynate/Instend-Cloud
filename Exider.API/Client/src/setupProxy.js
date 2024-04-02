@@ -10,7 +10,9 @@ const context = [
     "/accounts",
     "/authentication",
     "/confirmations",
-    "/password-recovery"
+    "/password-recovery",
+    "/storage",
+    "/file"
 ];
 
 const onError = (err, req, resp, target) => {

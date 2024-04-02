@@ -1,0 +1,26 @@
+.header {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 18px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.title {
+    font-size: 24px;
+    color: var(--main-font-color);
+}
+
+.path {
+    font-size: 16px;
+    color: var(--main-paragraph-color);
+}
+
+.buttonBlock {
+    display: flex;
+    grid-gap: 15px;
+    position: relative;
+}

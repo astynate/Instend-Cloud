@@ -21,6 +21,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aspose.Words" Version="24.3.0" />
+    <PackageReference Include="Ghostscript.NET" Version="1.2.3.1" />
+    <PackageReference Include="Microsoft.Office.Interop.Word" Version="15.0.4797.1004" />
+    <PackageReference Include="Spire.Doc" Version="12.3.12" />
+    <PackageReference Include="Spire.PDF" Version="10.3.16" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.2" />
   </ItemGroup>
 

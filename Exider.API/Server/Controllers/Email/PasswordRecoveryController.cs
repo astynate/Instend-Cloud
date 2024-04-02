@@ -8,12 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Email
 {
-
     [ApiController]
     [Route("/password-recovery")]
     public class PasswordRecoveryController : ControllerBase
     {
-
         private readonly IEmailService _emailService;
 
         private readonly IConfirmationRespository _confirmationRespository;
@@ -99,7 +97,5 @@ namespace Exider_Version_2._0._0.Server.Controllers.Email
 
             return Ok();
         }
-
     }
-
 }

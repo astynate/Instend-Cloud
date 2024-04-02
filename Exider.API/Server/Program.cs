@@ -5,6 +5,7 @@ using Exider.Dependencies.Services;
 using Exider.Repositories.Account;
 using Exider.Repositories.Email;
 using Exider.Repositories.Repositories;
+using Exider.Repositories.Storage;
 using Exider.Services.External.FileService;
 using Exider.Services.Internal.Handlers;
 using Exider.Services.Middleware;
@@ -34,6 +35,8 @@ builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 builder.Services.AddScoped<ISessionsRepository, SessionsRepository>();
 builder.Services.AddScoped<IConfirmationRespository, ConfirmationRespository>();
 builder.Services.AddScoped<IUserDataRepository, UserDataRepository>();
+builder.Services.AddScoped<IFolderRepository, FolderRepository>();
+builder.Services.AddScoped<IFileRespository, FileRespository>();
 
 builder.Services.AddSingleton<IValidationService, ValidationService>();
 builder.Services.AddSingleton<ITokenService, JwtService>();

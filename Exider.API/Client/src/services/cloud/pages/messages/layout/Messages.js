@@ -42,9 +42,7 @@ const Messages = (props) => {
   }
 
   SignalRContext.connection.onclose(() =>{
-
     setSendningPossibility(true);
-
   });
 
   SignalRContext.useSignalREffect(

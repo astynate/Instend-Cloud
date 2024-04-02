@@ -8,7 +8,6 @@ namespace Exider.Repositories.Account
 {
     public class EmailRepository : IEmailRepository
     {
-
         private readonly DatabaseContext _context = null!;
 
         private readonly IValidationService _validationService;
@@ -21,7 +20,6 @@ namespace Exider.Repositories.Account
 
         public async Task<Result<EmailModel>> GetByEmailAsync(string email)
         {
-
             if (_validationService.ValidateEmail(email) == false)
             {
                 return Result.Failure<EmailModel>("Invalid email");
@@ -36,12 +34,10 @@ namespace Exider.Repositories.Account
             }
 
             return Result.Success(emailModel);
-
         }
 
         public async Task AddAsync(EmailModel emailModel)
         {
-
             if (emailModel == null)
             {
                 throw new ArgumentNullException("Somthing went wrong");
@@ -54,12 +50,10 @@ namespace Exider.Repositories.Account
 
             await _context.Email.AddAsync(emailModel);
             await _context.SaveChangesAsync();
-
         }
 
         public async Task ConfirmEmailAddressAsync(string email)
         {
-
             if (email is null)
             {
                 throw new ArgumentNullException(nameof(email));
@@ -67,7 +61,6 @@ namespace Exider.Repositories.Account
 
             await _context.Email.ExecuteUpdateAsync(e => e.SetProperty(x => x.IsConfirmed, true));
             await _context.SaveChangesAsync();
-
         }
 
     }

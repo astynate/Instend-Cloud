@@ -1,0 +1,92 @@
+.wrapper {
+    height: 100svh;
+    width: 100vw;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 999999999;
+    top: 0;
+    left: 0;
+    position: fixed;
+    overflow-y: scroll;
+    backdrop-filter: var(--main-blur-effect);
+}
+
+.preview {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.loader {
+    height: 50px;
+    width: 50px;
+    /* border: 4px solid white;
+    border-left: 4px solid transparent; */
+    border-radius: 100%;
+    position: fixed;
+    top: calc(50% - 25px);
+    left: calc(50% - 25px);
+    animation: loader 2s linear infinite;
+}
+
+.aaa {
+    height: 1000px;
+    width: 500px;
+    background: rgb(255, 255, 255);
+}
+
+@keyframes loader {
+    0% {
+        transform: rotate(0deg);
+        opacity: 0.5;
+        border-top: 4px solid white;
+        border-bottom: 4px solid transparent;
+        border-left: 4px solid transparent;
+        border-right: 4px solid white;
+        filter: blur(1px);
+    }
+    16% {
+        opacity: 0.7;
+        border-top: 4px solid transparent;
+        border-bottom: 4px solid white;
+        border-left: 4px solid white;
+        border-right: 4px solid transparent;
+    }
+    32% {
+        opacity: 0.7;
+        border-top: 4px solid white;
+        border-bottom: 4px solid transparent;
+        border-left: 4px solid transparent;
+        border-right: 4px solid white;
+    }
+    50% {
+        opacity: 0.7;
+        border-top: 4px solid white;
+        border-bottom: 4px solid white;
+        border-left: 4px solid white;
+        border-right: 4px solid white;
+    }
+    66% {
+        transform: rotate(0deg);
+        opacity: 0.5;
+        border-top: 4px solid white;
+        border-bottom: 4px solid transparent;
+        border-left: 4px solid transparent;
+        border-right: 4px solid white;
+    }
+    82% {
+        opacity: 0.7;
+        border-bottom: 4px solid white;
+        border-left: 4px solid white;
+        border-right: 4px solid transparent;
+    }
+    100% {
+        transform: rotate(360deg);
+        opacity: 0.7;
+        border-top: 4px solid white;
+        border-bottom: 4px solid transparent;
+        border-left: 4px solid transparent;
+        border-right: 4px solid white;
+    }
+}

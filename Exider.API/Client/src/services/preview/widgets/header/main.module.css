@@ -1,0 +1,47 @@
+.header {
+    height: 60px;
+    /* border-bottom: 1px solid var(--main-border-color); */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding-left: 10px;
+    padding-right: 10px;
+    position: sticky;
+    top: 0;
+    left: 0;
+    backdrop-filter: var(--main-blur-effect);
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.name {
+    font-size: 14px;
+    color: var(--main-font-color);
+    font-weight: 500;
+    max-width: 18ch;
+    text-align: center;
+    overflow: hidden;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+}
+
+.time {
+    font-size: 12px;
+    color: var(--main-font-color);
+    opacity: 0.6;
+}
+
+.buttons {
+    display: flex;
+    align-items: center;
+    grid-gap: 10px;
+}
+
+.buttons:nth-child(3) {
+    justify-content: flex-end;
+}
+
+.center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
