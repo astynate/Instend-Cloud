@@ -64,5 +64,24 @@ namespace Exider.Repositories.Storage
             await _context.SaveChangesAsync();
             return Result.Success();
         }
+
+        public async Task<Result> Delete(Guid id)
+        {
+            FileModel? file = await _context.Files.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (file == null)
+            {
+                return Result.Failure("File not found");
+            }
+
+            string path = file.Path;
+            await _context.Files.Where(x => x.Id == id).ExecuteDeleteAsync();
+
+            File.Delete(path);
+
+            await _context.SaveChangesAsync();
+            return Result.Success();
+        }
     }
 }

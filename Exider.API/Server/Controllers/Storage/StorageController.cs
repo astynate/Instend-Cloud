@@ -1,5 +1,4 @@
-﻿using Exider.Core;
-using Exider.Core.Models.Storage;
+﻿using Exider.Core.Models.Storage;
 using Exider.Dependencies.Services;
 using Exider.Repositories.Storage;
 using Exider.Services.External.FileService;
@@ -48,11 +47,11 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest("File not found");
             }
 
-            var file = await fileService.ReadFileAsync(fileModel.Value.Path);
+            var file = fileService.GetFileAsHTMLBase64String(fileModel.Value);
 
             if (file.IsFailure)
             {
-                return BadRequest("Cannot read file");
+                return BadRequest(file.Error);
             }
 
             return Ok(file.Value);
@@ -105,6 +104,20 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         public async Task<IActionResult> UpdateName(Guid id, string name)
         {
             var result = await _fileRespository.UpdateName(id, name);
+
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var result = await _fileRespository.Delete(id);
 
             if (result.IsFailure)
             {

@@ -19,6 +19,7 @@ import { OpenCallback, PropertiesCallback } from './FileFunctions';
 import { ShareCallback, DeleteCallback } from './FileFunctions';
 import PopUpField from '../../../shared/pop-up-filed/PopUpField';
 import Preview from '../../../../preview/layout/Preview';
+import RightPanel from '../widgets/right-panel/RightPanel';
 
 const Cloud = observer((props) => {
 
@@ -77,46 +78,51 @@ const Cloud = observer((props) => {
   }, [props.setPanelState]);
 
   return (
-    <div className={styles.wrapper}>
-      <Search />
-      <Header />
-      {isPreview ? 
-        <Preview 
-          close={() => setPreviewState(false)} 
-          file={selectedFiles[0]}
-        />
-      : null}
-      <div className={styles.contentWrapper}>
-        {isRenameOpen === true ?
-          <PopUpField 
-            title={'Rename'}
-            text={'This field is require'}
-            field={[fileName, setFilename]}
-            close={() => setRenameState(false)}
-            callback={() => 
-              instance.put(`/storage?id=${selectedFiles[0].id}&name=${fileName}`)
-            }
-        /> : null}
-        {isContextMenuOpen === true ?
-          <ContextMenu 
-            items={[
-              [Open, "Open", () => setPreviewState(true)],
-              [Rename, "Rename", () => setRenameState(true)],
-              [Properties, "Properties", PropertiesCallback()],
-              [Share, "Share", ShareCallback()],
-              [Delete, "Delete", DeleteCallback()]
-            ]} 
-            close={() => 
-              setContextMenuState(false)
-            }
-            position={contextMenuPosition}
-        /> : null}
-        <CloudHeader name={user.nickname}/>
-        <div className={styles.content}>
-          {files.map(el => el)}
+    <>
+        <Search />
+        <Header />
+        <div className={styles.wrapper}>
+      <div>
+        {isPreview ? 
+          <Preview 
+            close={() => setPreviewState(false)} 
+            file={selectedFiles[0]}
+          />
+        : null}
+        <div className={styles.contentWrapper}>
+          {isRenameOpen === true ?
+            <PopUpField 
+              title={'Rename'}
+              text={'This field is require'}
+              field={[fileName, setFilename]}
+              close={() => setRenameState(false)}
+              callback={() => 
+                instance.put(`/storage?id=${selectedFiles[0].id}&name=${fileName}`)
+              }
+          /> : null}
+          {isContextMenuOpen === true ?
+            <ContextMenu 
+              items={[
+                [Open, "Open", () => setPreviewState(true)],
+                [Rename, "Rename", () => setRenameState(true)],
+                [Properties, "Properties", PropertiesCallback()],
+                [Share, "Share", ShareCallback()],
+                [Delete, "Delete", () => instance.delete(`/storage?id=${selectedFiles[0].id}`)]
+              ]} 
+              close={() => 
+                setContextMenuState(false)
+              }
+              position={contextMenuPosition}
+          /> : null}
+          <CloudHeader name={user.nickname}/>
+          <div className={styles.content}>
+            {files.map(el => el)}
+          </div>
         </div>
       </div>
+      <RightPanel />
     </div>
+    </>
   )
 });
 

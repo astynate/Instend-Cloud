@@ -13,7 +13,8 @@ const Preview = (props) => {
 
         const GetFile = async () => {
             const response = await instance
-                .get(`/file?id=${props.file.id}`);
+                .get(`/file?id=${props.file.id}`)
+                .catch(() => props.close());
                 
             if (response.status === 200){
                 setFile(response.data);
@@ -38,7 +39,8 @@ const Preview = (props) => {
                 <div className={styles.loader}></div>
             :   
                 <div className={styles.preview}>
-                    <div className={styles.aaa}></div>
+                    <div className={styles.file} dangerouslySetInnerHTML={{ __html: file }}>
+                    </div>
                 </div>}
         </div>
     );

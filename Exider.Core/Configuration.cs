@@ -48,6 +48,8 @@ namespace Exider.Core
 
         public delegate Task HandleFileCover(IFileService fileService);
 
+        public delegate string ConvertToHtml(string path);
+
         public enum Months
         {
             January = 1,

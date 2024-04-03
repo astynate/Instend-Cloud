@@ -1,0 +1,87 @@
+.rightPanel {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    padding: 10px;
+}
+
+.resize {
+    height: 100%;
+    width: 5px;
+    background: transparent;
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: col-resize;
+    transition: 0.25s ease;
+    border-radius: 30px;
+}
+
+.resize:hover {
+    background: var(--main-blue-color);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.filename {
+    display: flex;
+    align-items: center;
+    grid-gap: 7px;
+}
+
+.name, .type, .time {
+    font-size: 16px;
+    color: var(--main-font-color);
+}
+
+.time {
+    font-size: 13px;
+    opacity: 0.5;
+}
+
+.type {
+    padding: 3px 10px;
+    border-radius: 50px;
+    font-size: 10px;
+    font-weight: 400;
+    opacity: 0.7;
+    border: 1px solid var(--main-font-color);
+    user-select: none;
+}
+
+.button {
+    height: 21px;
+    cursor: pointer;
+    filter: invert(100%);
+    opacity: 0.7;
+}
+
+.content {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loader {
+    height: 40px;
+    width: 40px;
+    border: 4px solid var(--main-background-color);
+    border-left: 4px solid transparent;
+    filter: invert(100%);
+    animation: loader 0.6s linear infinite;
+    border-radius: 100%;
+}
+
+@keyframes loader {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

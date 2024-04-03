@@ -3,7 +3,14 @@ using Spire.Doc;
 using System.Drawing.Imaging;
 using Spire.Doc.Documents;
 using System.Drawing;
-using Spire.Pdf;
+using System.Xml.Linq;
+using DocumentFormat.OpenXml.Packaging;
+using OpenXmlPowerTools;
+using Exider.Core;
+using Exider.Core.Models.Storage;
+using iTextSharp.text.pdf.parser;
+using iTextSharp.text.pdf;
+using System.Text;
 
 namespace Exider.Services.External.FileService
 {
@@ -68,7 +75,7 @@ namespace Exider.Services.External.FileService
         {
             try
             {
-                PdfDocument pdfDocument = new PdfDocument();
+                Spire.Pdf.PdfDocument pdfDocument = new Spire.Pdf.PdfDocument();
 
                 pdfDocument.LoadFromFile(path);
 
@@ -88,6 +95,75 @@ namespace Exider.Services.External.FileService
             {
                 return new byte[0];
             }
+        }
+
+        public Result<string> GetFileAsHTMLBase64String(FileModel fileModel)
+        {
+            Dictionary<string[], Configuration.ConvertToHtml> actions = new Dictionary<string[], Configuration.ConvertToHtml>
+            {
+                { Configuration.documentTypes, WordToHTML },
+                { Configuration.imageTypes, ImageToHtml },
+                { new string[] {"pdf"}, PdfToHtml }
+            };
+
+            KeyValuePair<string[], Configuration.ConvertToHtml> handler = 
+                actions.FirstOrDefault(pair => pair.Key.Contains(fileModel.Type));
+
+            if (handler.Value == null)
+            {
+                return Result.Failure<string>("Can't handle this file type");
+            }
+
+            return Result.Success(handler.Value(fileModel.Path));
+        }
+
+        public string WordToHTML(string path)
+        {
+            byte[] byteArray = File.ReadAllBytes(path);
+
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                memoryStream.Write(byteArray, 0, byteArray.Length);
+
+                using (WordprocessingDocument doc = WordprocessingDocument.Open(memoryStream, true))
+                {
+                    HtmlConverterSettings settings = new HtmlConverterSettings()
+                    {
+                        PageTitle = "None"
+                    };
+                    XElement html = OpenXmlPowerTools.HtmlConverter.ConvertToHtml(doc, settings);
+
+                    return html.ToStringNewLineOnAttributes();
+                }
+            }
+        }
+
+        private string ImageToHtml(string path)
+            => $"<img src=\"data:image/png;base64,{Convert.ToBase64String(File.ReadAllBytes(path))}\">";
+
+        private string PdfToHtml(string path)
+        {
+            PdfReader reader = new PdfReader(path);
+            StringWriter output = new StringWriter();
+
+            for (int i = 1; i <= reader.NumberOfPages; i++)
+            {
+                iTextSharp.text.pdf.parser.LocationTextExtractionStrategy strategy = new LocationTextExtractionStrategy();
+                string currentText = PdfTextExtractor.GetTextFromPage(reader, i, strategy);
+
+                currentText = Encoding.UTF8.GetString(Encoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(currentText)));
+                output.WriteLine(currentText);
+            }
+
+            reader.Close();
+
+            //byte[] plainTextBytes = Encoding.UTF8.GetBytes();
+            return output.ToString();
+
+            //SelectPdf.PdfDocument pdf = new SelectPdf.PdfDocument(path);
+            //SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+            //string html = converter.ConvertToString(pdf);
+            //return html;
         }
     }
 }
