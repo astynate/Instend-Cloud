@@ -1,10 +1,11 @@
-﻿using Exider.Core.Models.Storage;
-using Exider.Dependencies.Services;
+﻿using Exider.Core;
+using Exider.Core.Models.Storage;
 using Exider.Repositories.Storage;
 using Exider.Services.External.FileService;
 using Exider.Services.Internal.Handlers;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Storage
 {
@@ -12,7 +13,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
     [Route("[controller]")]
     public class StorageController : ControllerBase
     {
-        private readonly ITokenService _tokenService;
+        private readonly DatabaseContext _context;
 
         private readonly IFileRespository _fileRespository;
 
@@ -20,12 +21,12 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         public StorageController
         (
-            ITokenService tokenService,
+            DatabaseContext context,
             IFileRespository fileRespository,
             IFolderRepository folderRepository
         )
         {
-            _tokenService = tokenService;
+            _context = context;
             _fileRespository = fileRespository;
             _folderRepository = folderRepository;
         }
@@ -59,7 +60,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult> GetFiles(IRequestHandler requestHandler, string? id)
+        public async Task<ActionResult> GetFiles(IFileService fileService, IRequestHandler requestHandler, string? id)
         {
             var idGettingResult = requestHandler.GetUserId(Request.Headers["Authorization"]);
 
@@ -67,14 +68,15 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             Guid folderId = id == null ? Guid.Empty : Guid.Parse(id);
 
             FileModel[] files = await _fileRespository.GetByFolderId(userId, folderId);
-            FolderModel[] folders = await _folderRepository.GetByFolderId(userId, folderId);
+            FolderModel[] folders = await _folderRepository.GetFoldersByFolderId(fileService, userId, folderId);
+            FolderModel[] path = await _folderRepository.GetShortPath(folderId);
 
-            return Ok(new object[] { folders, files });
+            return Ok(new object[] { folders, files, path });
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> UploadFiles([FromForm] IFormFile file, string? folderId, IRequestHandler requestHandler)
+        public async Task<IActionResult> UploadFiles([FromForm] IFormFile file, [FromForm] string? folderId, IRequestHandler requestHandler)
         {
             var idResult = requestHandler.GetUserId(Request.Headers["Authorization"]);
             Guid userId = idResult.Value == null ? Guid.Empty : Guid.Parse(idResult.Value);
@@ -83,17 +85,31 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             string name = nameSplit[0] ?? "Not set";
             string? type = nameSplit.Length >= 2 ? nameSplit[nameSplit.Length - 1] : null;
 
-            var fileModel = await _fileRespository.AddAsync(name, type, userId,
-                folderId == null ? Guid.Empty : Guid.Parse(folderId));
-
-            if (file.Length <= 0 || fileModel.IsFailure)
+            try
             {
-                return BadRequest("Uploaded files should not be empty.");
+                await _context.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
+                {
+                    using (var transaction = _context.Database.BeginTransaction())
+                    {
+                        var fileModel = await _fileRespository.AddAsync(name, type, userId,
+                            folderId == null ? Guid.Empty : Guid.Parse(folderId));
+
+                        if (file.Length > 0 && fileModel.IsFailure == false)
+                        {
+                            using (var fileStream = new FileStream(fileModel.Value.Path, FileMode.Create))
+                            {
+                                await file.CopyToAsync(fileStream);
+                            }
+                        }
+
+                        transaction.Commit();
+                    }
+                });
             }
-
-            using (var fileStream = new FileStream(fileModel.Value.Path, FileMode.Create))
+            catch (Exception exception)
             {
-                await file.CopyToAsync(fileStream);
+                await Console.Out.WriteLineAsync(exception.Message);
+                return StatusCode(500);
             }
 
             return Ok("Files uploaded successfully.");

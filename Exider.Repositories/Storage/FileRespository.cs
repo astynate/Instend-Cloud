@@ -21,7 +21,7 @@ namespace Exider.Repositories.Storage
         public async Task<Result<FileModel>> GetByIdAsync(Guid id) => await _context.Files.AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id) ?? Result.Failure<FileModel>("Not found");
 
-        public async Task<Result<FileModel>> AddAsync(string name, string type, Guid ownerId, Guid folderId)
+        public async Task<Result<FileModel>> AddAsync(string name, string? type, Guid ownerId, Guid folderId)
         {
             var fileCreationResult = FileModel.Create(name, type, ownerId, folderId);
 
@@ -38,8 +38,18 @@ namespace Exider.Repositories.Storage
 
         public async Task<FileModel[]> GetByFolderId(Guid userId, Guid folderId)
         {
-            FileModel[] files = await _context.Files.AsNoTracking()
-                .Where(x => x.FolderId == folderId && x.OwnerId == userId).ToArrayAsync();
+            FileModel[] files;
+
+            if (folderId == Guid.Empty)
+            {
+                files = await _context.Files.AsNoTracking()
+                    .Where(x => x.FolderId == folderId && x.OwnerId == userId).ToArrayAsync();
+            }
+            else
+            {
+                files = await _context.Files.AsNoTracking()
+                    .Where(x => x.FolderId == folderId).ToArrayAsync();
+            }
 
             Array.ForEach(files, async
                 x => await x.SetPreview(_fileService));

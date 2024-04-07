@@ -39,8 +39,7 @@ const Preview = (props) => {
                 <div className={styles.loader}></div>
             :   
                 <div className={styles.preview}>
-                    <div className={styles.file} dangerouslySetInnerHTML={{ __html: file }}>
-                    </div>
+                    <div className={styles.file} dangerouslySetInnerHTML={{ __html: file }}></div>
                 </div>}
         </div>
     );

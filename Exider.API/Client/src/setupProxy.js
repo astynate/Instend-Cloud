@@ -12,7 +12,8 @@ const context = [
     "/confirmations",
     "/password-recovery",
     "/storage",
-    "/file"
+    "/file",
+    "/folders"
 ];
 
 const onError = (err, req, resp, target) => {

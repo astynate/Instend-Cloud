@@ -11,6 +11,7 @@ using Exider.Core.Models.Storage;
 using iTextSharp.text.pdf.parser;
 using iTextSharp.text.pdf;
 using System.Text;
+using Exider.Repositories.Storage;
 
 namespace Exider.Services.External.FileService
 {
@@ -156,14 +157,43 @@ namespace Exider.Services.External.FileService
             }
 
             reader.Close();
-
-            //byte[] plainTextBytes = Encoding.UTF8.GetBytes();
             return output.ToString();
+        }
 
-            //SelectPdf.PdfDocument pdf = new SelectPdf.PdfDocument(path);
-            //SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
-            //string html = converter.ConvertToString(pdf);
-            //return html;
+        private async Task DeleteFolderContent
+        (
+            IFolderRepository folderRepository,
+            IFileRespository fileRespository,
+            Guid id
+        )
+        {
+            FileModel[] files = await fileRespository
+                .GetByFolderId(Guid.Empty, id);
+
+            foreach (FileModel file in files)
+            {
+                await fileRespository.Delete(file.Id);
+            }
+
+            await folderRepository.Delete(id);
+        }
+
+        public async Task DeleteFolderById
+        (
+            IFileRespository fileRespository,
+            IFolderRepository folderRepository,
+            Guid id
+        )
+        {
+            await DeleteFolderContent(folderRepository, fileRespository, id);
+
+            FolderModel[] folders = await folderRepository
+                .GetFoldersByFolderId(this, Guid.Empty, id);
+
+            foreach (FolderModel folder in folders)
+            {
+                await DeleteFolderById(fileRespository, folderRepository, folder.Id);
+            }
         }
     }
 }

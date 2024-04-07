@@ -13,7 +13,6 @@ const PopUpField = (props) => {
           setIsOpen(false);
         }
       }
-
       setIsOpen(true);
     };
 
@@ -32,12 +31,17 @@ const PopUpField = (props) => {
       <input 
         defaultValue={props.field[0]}
         onInput={(event) => props.field[1](event.target.value)}
+        placeholder={props.placeholder}
         maxLength={50} 
         minLength={1}
       />
       <button onClick={() => {
-        props.callback();
-        props.close();
+        if (props.field[0] === '' || props.field[0] === null){
+          alert('This field must not be empthy');
+        } else {
+          props.callback();
+          props.close();
+        }
       }}>Next</button>
     </div>
   );

@@ -14,7 +14,7 @@ const PrivateRoutes = [
         element: <Home />
     },
     {
-        path: '/cloud',
+        path: '/cloud/:id?',
         element: <Cloud />
     },
     {

@@ -13,7 +13,7 @@ const FileLoader = (props) => {
     <>
       <div className={styles.wrapper}>
         <div className={styles.loader}></div>
-        <span>{props.count} Files left...</span>
+        <span>{props.total - props.count} Files left...</span>
         <img src={close} className={styles.close} alt="Close" />
       </div>
       <div className={styles.progressBar}>

@@ -2,7 +2,22 @@
     height: 100%;
     width: 100%;
     position: relative;
-    padding: 10px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 15px;
+    padding-top: 0;
+}
+
+.rightPanel::-webkit-scrollbar {
+    width: 2px;
+}
+
+.rightPanel::-webkit-scrollbar-track {
+    background: transparent; 
+}
+
+.rightPanel::-webkit-scrollbar-thumb {
+    background: #777;
 }
 
 .resize {
@@ -23,7 +38,14 @@
 
 .header {
     display: flex;
+    width: 100%;
     justify-content: space-between;
+    top: 0;
+    left: 0;
+    position: sticky;
+    /* background: var(--main-background-color); */
+    backdrop-filter: blur(10px);
+    padding-bottom: 10px;
 }
 
 .filename {
@@ -50,6 +72,7 @@
     opacity: 0.7;
     border: 1px solid var(--main-font-color);
     user-select: none;
+    text-transform: uppercase;
 }
 
 .button {
@@ -60,7 +83,7 @@
 }
 
 .content {
-    height: 100%;
+    height: calc(100% - 120px);
     width: 100%;
     display: flex;
     align-items: center;
@@ -75,6 +98,20 @@
     filter: invert(100%);
     animation: loader 0.6s linear infinite;
     border-radius: 100%;
+}
+
+.file {
+    height: 85%;
+    width: 85%;
+    display: flex;
+    color: var(--main-font-color);
+    border-color: var(--main-font-color);
+}
+
+.file img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
 }
 
 @keyframes loader {

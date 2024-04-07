@@ -1,8 +1,7 @@
 .left-panel {
     height: 100vh;
-    width: 270px;
+    width: 260px;
     user-select: none;
-    /* border-right: 1px solid var(--main-border-color); */
     display: flex;
     flex-direction: column;
 }

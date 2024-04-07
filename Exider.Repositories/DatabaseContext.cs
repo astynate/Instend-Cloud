@@ -22,7 +22,8 @@ namespace Exider.Core
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseMySql("server=localhost;user=root;password=47188475;database=async_storage",
-                new MySqlServerVersion(new Version(8, 3, 0)), (options) => options.EnableRetryOnFailure());
+                new MySqlServerVersion(new Version(8, 3, 0)),
+                mySqlOptions => mySqlOptions.EnableRetryOnFailure());
         }
     }
 }

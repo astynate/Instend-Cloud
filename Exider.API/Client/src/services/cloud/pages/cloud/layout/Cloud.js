@@ -1,47 +1,75 @@
 import React, { useState } from 'react';
+import { instance } from '../../../../../state/Interceptors';
+import { ConvertDate } from '../../../../../utils/DateHandler';
+import { ShareCallback } from './FileFunctions';
+import { observer } from 'mobx-react-lite';
+import { useEffect } from 'react';
 import Search from '../../../features/search/Search';
 import Header from '../../../widgets/header/Header';
 import userState from '../../../../../states/user-state';
-import { observer } from 'mobx-react-lite';
-import { useEffect } from 'react';
 import styles from './main.module.css';
 import CloudHeader from '../widgets/header/Header';
 import File from '../shared/file/File';
-import { instance } from '../../../../../state/Interceptors';
-import { ConvertDate } from '../../../../../utils/DateHandler';
 import ContextMenu from '../../../shared/context-menu/ContextMenu';
 import Open from './images/open.png';
 import Rename from './images/rename.png';
 import Properties from './images/properties.png';
 import Share from './images/share.png';
 import Delete from './images/delete.png';
-import { OpenCallback, PropertiesCallback } from './FileFunctions';
-import { ShareCallback, DeleteCallback } from './FileFunctions';
 import PopUpField from '../../../shared/pop-up-filed/PopUpField';
 import Preview from '../../../../preview/layout/Preview';
 import RightPanel from '../widgets/right-panel/RightPanel';
+import Folder from '../shared/folder/Folder';
+import { useNavigate, useParams } from 'react-router-dom';
+import PropertiesWindow from '../widgets/properties/Properties';
+import PopUp from '../../../shared/pop-up/PopUp';
 
 const Cloud = observer((props) => {
+  const params = useParams();
+  const navigate = useNavigate();
 
   const { user } = userState;
-
-  const [files, setFiles] = useState(Array.from({ length: 10 }).map((_, index) => (
-    <File key={index} isPlaceholder={true} />)));
-
+  const [isFolderProperties, setFolderProperties] = useState(true);
+  const [files, setFiles] = useState([]);
+  const [folders, setFolders] = useState([]);
   const [fileName, setFilename] = useState('');
   const [isRenameOpen, setRenameState] = useState(false);
   const [isContextMenuOpen, setContextMenuState] = useState(false);
   const [contextMenuPosition, setContextMenuPosition] = useState([0, 0]);
-  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
   const [isPreview, setPreviewState] = useState(false);
+  const [isRightPanelOpen, setRightPanelState] = useState(false);
+  const [path, setPath] = useState([]);
 
   useEffect(() => {
-
     const GetFiles = async () => {
-      const response = await instance.get("/storage");
+      const response = await instance.get(`/storage?id=${params.id ? params.id : ""}`);
 
-      if (response.data[1] && response.data[1].length > 0) {
-        setFiles(response.data[1].map(element => 
+      setFolders(response.data[0] ? response.data[0].map(element => {
+        element.type = "folder";
+
+        return (
+          <Folder 
+            key={element.id} 
+            id={element.id}
+            folder={element}
+            name={element.name} 
+            time={ConvertDate(element.creationTime)}
+            onContextMenu={(event) => {
+              event.preventDefault();
+              setContextMenuState(true);
+              setContextMenuPosition([event.clientX, event.clientY]);
+              setFilename(element.name);
+              setSelectedItems([element]);
+            }}
+          />
+        )
+      }) : []);
+
+      setFiles(response.data[1] ? response.data[1].map(element => {
+        element.type = "file";
+
+        return (
           <File 
             key={element.id} 
             name={element.name} 
@@ -53,43 +81,47 @@ const Cloud = observer((props) => {
               setContextMenuState(true);
               setContextMenuPosition([event.clientX, event.clientY]);
               setFilename(element.name);
-              setSelectedFiles([element]);
+              setSelectedItems([element]);
             }}
           />
-        ));
-      }
+        )
+      }) : []);
 
-      if (response.data[1].length <= 0 && response.data[0].length <= 0){
-        setFiles([]);
-      }
-
+      setPath(response.data[2] ? 
+        response.data[2] : []);
     };
+
+    setFiles(Array.from({ length: 4 }).map((_, index) => (
+      <File key={index} isPlaceholder={true} />)));
 
     GetFiles();
 
-  }, []);
+  }, [params.id]);
 
   useEffect(() => {
 
     if (props.setPanelState) {
-        props.setPanelState(false);
+      props.setPanelState(false);
     }
 
   }, [props.setPanelState]);
 
   return (
     <>
-        <Search />
-        <Header />
-        <div className={styles.wrapper}>
-      <div>
-        {isPreview ? 
-          <Preview 
+      <Search />
+      <Header />
+      {isPreview ? 
+          <Preview
             close={() => setPreviewState(false)} 
-            file={selectedFiles[0]}
+            file={selectedItems[0]}
           />
         : null}
+      <div className={styles.wrapper}>
         <div className={styles.contentWrapper}>
+          <CloudHeader 
+            name={user.nickname} 
+            path={path} 
+          />
           {isRenameOpen === true ?
             <PopUpField 
               title={'Rename'}
@@ -97,31 +129,68 @@ const Cloud = observer((props) => {
               field={[fileName, setFilename]}
               close={() => setRenameState(false)}
               callback={() => 
-                instance.put(`/storage?id=${selectedFiles[0].id}&name=${fileName}`)
+                instance.put(`/${selectedItems[0].type === "file" ? 
+                  "storage" : "folders"}?id=${selectedItems[0].id}&name=${fileName}`)
               }
           /> : null}
           {isContextMenuOpen === true ?
             <ContextMenu 
               items={[
-                [Open, "Open", () => setPreviewState(true)],
+                [Open, "Open", () => {
+                  if (selectedItems[0].type === "file") {
+                    setPreviewState(true);
+                  } else {
+                    navigate(`/cloud/${selectedItems[0].id}`)
+                  }
+                }],
                 [Rename, "Rename", () => setRenameState(true)],
-                [Properties, "Properties", PropertiesCallback()],
+                [Properties, "Properties", () => { 
+                  if (selectedItems[0].type === "file") {
+                    setRightPanelState(true);
+                  } else {
+                    setFolderProperties(true);
+                  }
+                }],
                 [Share, "Share", ShareCallback()],
-                [Delete, "Delete", () => instance.delete(`/storage?id=${selectedFiles[0].id}`)]
+                [Delete, "Delete", () => {
+                    instance.delete(`/${selectedItems[0].type === "file" ? 
+                      "storage" : "folders"}?id=${selectedItems[0].id}`)
+                  }
+                ]
               ]} 
               close={() => 
                 setContextMenuState(false)
               }
               position={contextMenuPosition}
           /> : null}
-          <CloudHeader name={user.nickname}/>
           <div className={styles.content}>
+            {folders.map(el => el)}
             {files.map(el => el)}
           </div>
         </div>
+        {isRightPanelOpen === true ? 
+          <RightPanel 
+            file={selectedItems[0]} 
+            close={() => setRightPanelState(false)} 
+          /> 
+        : null}
+        {isFolderProperties === true ? 
+          <PropertiesWindow 
+            file={selectedItems[0]}
+            close={() => setFolderProperties(false)} 
+            items={[
+              // {
+              //   "key": "Key",
+              //   "value": "value"
+              // },
+              // {
+              //   "key": "Key",
+              //   "value": "value"
+              // }
+            ]}
+          />
+        : null}
       </div>
-      <RightPanel />
-    </div>
     </>
   )
 });

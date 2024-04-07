@@ -2,6 +2,13 @@
     display: flex;
     flex-direction: column;
     grid-gap: 18px;
+    top: 0;
+    left: 0;
+    position: sticky;
+    z-index: 1;
+    background: var(--main-background-color);
+    padding-bottom: 15px;
+    /* backdrop-filter: var(--main-blur-effect); */
 }
 
 .buttons {
@@ -10,17 +17,39 @@
 }
 
 .title {
-    font-size: 24px;
+    font-size: 22px;
     color: var(--main-font-color);
+    font-weight: 500;
+}
+
+.pathWrapper {
+    display: flex;
+    grid-gap: 5px;
+}
+
+.pathWrapper img {
+    height: 12px;
+    width: 12px;
+    filter: var(--main-filter);
+    opacity: 0.7;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .path {
-    font-size: 16px;
+    font-size: 14px;
     color: var(--main-paragraph-color);
+}
+
+.folder {
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    grid-gap: 5px;
 }
 
 .buttonBlock {
     display: flex;
-    grid-gap: 15px;
+    grid-gap: 14px;
     position: relative;
 }

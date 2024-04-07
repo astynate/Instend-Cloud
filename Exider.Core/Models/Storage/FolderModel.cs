@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using Exider.Services.External.FileService;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,6 +13,7 @@ namespace Exider.Core.Models.Storage
         [Column("creation_time")] public DateTime CreationTime { get; private set; }
         [Column("owner_id")] public Guid OwnerId { get; private set; }
         [Column("folder_id")] public Guid FolderId { get; private set; }
+        [NotMapped] public List<FileModel> Preview { get; private set; } = new();
 
         private FolderModel() { }
 
@@ -34,6 +36,16 @@ namespace Exider.Core.Models.Storage
                 CreationTime = DateTime.Now,
                 FolderId = folderId
             });
+        }
+
+        public async Task SetPreviewAsync (IFileService fileService, List<FileModel> preview)
+        {
+            foreach (var item in preview)
+            {
+                await item.SetPreview(fileService);
+            }
+
+            Preview = preview;
         }
     }
 }
