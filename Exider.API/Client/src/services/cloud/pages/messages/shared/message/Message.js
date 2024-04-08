@@ -1,7 +1,6 @@
 import styles from './main.module.css';
 
 const Message = (props) => {
-
     return(
 
         <div className={styles.message}>
@@ -20,7 +19,6 @@ const Message = (props) => {
         </div>
 
     );
-
 };
 
 export default Message;

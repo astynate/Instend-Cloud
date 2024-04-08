@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { instance } from '../../../../../state/Interceptors';
 import { ConvertDate } from '../../../../../utils/DateHandler';
-import { ShareCallback } from './FileFunctions';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import Search from '../../../features/search/Search';
@@ -22,7 +21,7 @@ import RightPanel from '../widgets/right-panel/RightPanel';
 import Folder from '../shared/folder/Folder';
 import { useNavigate, useParams } from 'react-router-dom';
 import PropertiesWindow from '../widgets/properties/Properties';
-import PopUp from '../../../shared/pop-up/PopUp';
+import { storageWSContext } from '../../../layout/Layout';
 
 const Cloud = observer((props) => {
   const params = useParams();
@@ -40,6 +39,58 @@ const Cloud = observer((props) => {
   const [isPreview, setPreviewState] = useState(false);
   const [isRightPanelOpen, setRightPanelState] = useState(false);
   const [path, setPath] = useState([]);
+
+  storageWSContext.useSignalREffect(
+    "CreateFolder",
+    (folder) => {
+      setFolders(prev => [
+        ...prev,
+        <Folder 
+          key={folder.id} 
+          id={folder.id}
+          folder={folder}
+          name={folder.name} 
+          time={ConvertDate(folder.creationTime)}
+          onContextMenu={(event) => {
+            event.preventDefault();
+            setContextMenuState(true);
+            setContextMenuPosition([event.clientX, event.clientY]);
+            setFilename(folder.name);
+            setSelectedItems([folder]);
+          }}
+        />
+      ]);
+    },
+  );
+
+  storageWSContext.useSignalREffect(
+    "RenameFile",
+    (file) => {
+      setFiles(prev => {
+        const updatedFiles = prev.map(prevFile => {
+          if (prevFile.key === file.id) {
+            return {
+              ...prevFile,
+              name: file.newName
+            };
+          }
+          return prevFile;
+        });
+        return updatedFiles;
+      });
+    },
+  );
+  
+  useEffect(() => {
+    const Connect = async () => {
+        if (storageWSContext.connection.state === "Connected") {
+          await storageWSContext.connection.invoke("Join", 
+            localStorage.getItem("system_access_token")); 
+        }       
+    }
+
+    Connect();
+  }, [storageWSContext.connection.state]);
 
   useEffect(() => {
     const GetFiles = async () => {
@@ -151,7 +202,7 @@ const Cloud = observer((props) => {
                     setFolderProperties(true);
                   }
                 }],
-                [Share, "Share", ShareCallback()],
+                [Share, "Share", () => alert('!')],
                 [Delete, "Delete", () => {
                     instance.delete(`/${selectedItems[0].type === "file" ? 
                       "storage" : "folders"}?id=${selectedItems[0].id}`)

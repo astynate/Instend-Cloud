@@ -18,19 +18,19 @@ namespace Exider.Repositories.Storage
         public async Task<FolderModel> GetByIdAsync(Guid id) => await _context.Folders.AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id) ?? throw new Exception("Not found");
 
-        public async Task<Result> AddAsync(string name, Guid ownerId, Guid folderId)
+        public async Task<Result<FolderModel>> AddAsync(string name, Guid ownerId, Guid folderId)
         {
             var folderCreationResult = FolderModel.Create(name, ownerId, folderId);
 
             if (folderCreationResult.IsFailure)
             {
-                return Result.Failure(folderCreationResult.Error);
+                return Result.Failure<FolderModel>(folderCreationResult.Error);
             }
 
             await _context.Folders.AddAsync(folderCreationResult.Value);
             await _context.SaveChangesAsync();
 
-            return Result.Success();
+            return Result.Success(folderCreationResult.Value);
         }
 
         public async Task<FolderModel[]> GetFoldersByFolderId(IFileService fileService, Guid userId, Guid folderId)
@@ -90,6 +90,12 @@ namespace Exider.Repositories.Storage
         {
             await _context.Folders.Where(x => x.Id == id)
                 .ExecuteUpdateAsync(property => property.SetProperty(x => x.Name, name));
+        }
+
+        public async Task<FolderModel[]> GetFoldersByUserId(Guid userId)
+        {
+            return await _context.Folders.AsNoTracking()
+                .Where(x => x.OwnerId == userId).ToArrayAsync();
         }
     }
 }

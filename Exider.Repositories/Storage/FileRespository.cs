@@ -57,13 +57,13 @@ namespace Exider.Repositories.Storage
             return files;
         }
 
-        public async Task<Result> UpdateName(Guid id, string name)
+        public async Task<Result<FileModel>> UpdateName(Guid id, string name)
         {
             var getFileOperation = await GetByIdAsync(id);
 
             if (getFileOperation.IsFailure)
             {
-                return Result.Failure(getFileOperation.Error);
+                return Result.Failure<FileModel>(getFileOperation.Error);
             }
 
             FileModel fileModel = getFileOperation.Value;
@@ -72,7 +72,7 @@ namespace Exider.Repositories.Storage
             _context.Files.Update(fileModel);
 
             await _context.SaveChangesAsync();
-            return Result.Success();
+            return Result.Success(fileModel);
         }
 
         public async Task<Result> Delete(Guid id)

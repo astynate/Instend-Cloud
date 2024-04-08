@@ -31,6 +31,7 @@ namespace Exider.Core.Models.Storage
 
             return Result.Success(new FolderModel()
             {
+                Id = Guid.NewGuid(),
                 Name = name,
                 OwnerId = ownerId,
                 CreationTime = DateTime.Now,

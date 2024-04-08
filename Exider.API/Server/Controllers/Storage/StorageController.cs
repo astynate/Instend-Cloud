@@ -3,9 +3,11 @@ using Exider.Core.Models.Storage;
 using Exider.Repositories.Storage;
 using Exider.Services.External.FileService;
 using Exider.Services.Internal.Handlers;
-using Microsoft.AspNet.SignalR;
+using Exider_Version_2._0._0.Server.Hubs;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Storage
 {
@@ -19,16 +21,20 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IFolderRepository _folderRepository;
 
+        private readonly IHubContext<StorageHub> _storageHub;
+
         public StorageController
         (
             DatabaseContext context,
             IFileRespository fileRespository,
-            IFolderRepository folderRepository
+            IFolderRepository folderRepository,
+            IHubContext<StorageHub> storageHub
         )
         {
             _context = context;
             _fileRespository = fileRespository;
             _folderRepository = folderRepository;
+            _storageHub = storageHub;
         }
 
         [HttpGet]
@@ -126,6 +132,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest(result.Error);
             }
 
+            await _storageHub.Clients.Group(result.Value.FolderId.ToString()).SendAsync("RenameFile", result.Value);
             return Ok();
         }
 

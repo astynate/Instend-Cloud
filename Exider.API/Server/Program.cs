@@ -37,6 +37,7 @@ builder.Services.AddScoped<IConfirmationRespository, ConfirmationRespository>();
 builder.Services.AddScoped<IUserDataRepository, UserDataRepository>();
 builder.Services.AddScoped<IFolderRepository, FolderRepository>();
 builder.Services.AddScoped<IFileRespository, FileRespository>();
+//builder.Services.AddScoped<, StorageHub>();
 
 builder.Services.AddSingleton<IValidationService, ValidationService>();
 builder.Services.AddSingleton<ITokenService, JwtService>();
@@ -122,4 +123,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapHub<MessageHub>("/message-hub");
+app.MapHub<StorageHub>("/storage-hub");
 app.Run();

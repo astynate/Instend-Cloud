@@ -1,8 +1,9 @@
 ﻿using Exider.Repositories.Storage;
 using Exider.Services.External.FileService;
 using Exider.Services.Internal.Handlers;
-using Microsoft.AspNetCore.Authorization;
+using Exider_Version_2._0._0.Server.Hubs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Storage
 {
@@ -14,10 +15,13 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IFolderRepository _folderRepository;
 
-        public FoldersController(IFolderRepository folderRepository, IRequestHandler requestHandler)
+        private readonly IHubContext<StorageHub> _storageHub;
+
+        public FoldersController(IHubContext<StorageHub> storageHub, IFolderRepository folderRepository, IRequestHandler requestHandler)
         {
             _requestHandler = requestHandler;
             _folderRepository = folderRepository;
+            _storageHub = storageHub;
         }
 
         [HttpPost]
@@ -44,11 +48,16 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest("Failed to create folder");
             }
 
+            folderId = string.IsNullOrEmpty(folderId) ? userId.Value : folderId;
+
+            await _storageHub.Clients.Group(folderId)
+                .SendAsync("CreateFolder", result.Value);
+
             return Ok();
         }
 
         [HttpPut]
-        [Authorize]
+        [Microsoft.AspNetCore.Authorization.Authorize]
         public async Task<IActionResult> UpdateName(Guid id, string name)
         {
             if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
@@ -61,7 +70,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         }
 
         [HttpDelete]
-        [Authorize]
+        [Microsoft.AspNetCore.Authorization.Authorize]
         public async Task<IActionResult> Delete
         (
             IFileService fileService, 

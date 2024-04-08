@@ -9,7 +9,7 @@ import styles from './main.module.css';
 import cyraAvatar from './images/cyra.png';
 import userState from '../../../../../states/user-state';
 import { observer } from 'mobx-react-lite';
-import { SignalRContext } from '../../../layout/Layout';
+import { messageWSContext } from '../../../layout/Layout';
 
 const Messages = (props) => {
 
@@ -38,14 +38,14 @@ const Messages = (props) => {
 
     setSendningPossibility(false);
 
-    await SignalRContext.connection.invoke('SendMessage', message);
+    await messageWSContext.connection.invoke('SendMessage', message);
   }
 
-  SignalRContext.connection.onclose(() =>{
+  messageWSContext.connection.onclose(() =>{
     setSendningPossibility(true);
   });
 
-  SignalRContext.useSignalREffect(
+  messageWSContext.useSignalREffect(
     "ReceiveMessage",
     (message) => {
       setMessages(prevMessages => {
@@ -70,7 +70,6 @@ const Messages = (props) => {
   );
 
   useEffect(()=> {
-
     if (isSendingMessage === true && 
         message.trim().length > 0 && 
         isSendingPossible === true) {
@@ -78,7 +77,7 @@ const Messages = (props) => {
       SendMessage();
 
     }
-
+    
     setSendingMessageState(false);
 
   }, [isSendingMessage]);
@@ -116,7 +115,7 @@ const Messages = (props) => {
           message={[message, setMessage]} 
           isSendingPossible={[isSendingPossible, setSendningPossibility]}
           isSendingMessage={[isSendingMessage, setSendingMessageState]}
-          cancel={() => SignalRContext.connection.stop()}
+          cancel={() => messageWSContext.connection.stop()}
         />
       </Content>
     </div>
