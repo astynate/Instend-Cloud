@@ -23,18 +23,22 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IHubContext<StorageHub> _storageHub;
 
+        private readonly IFileService _fileService;
+
         public StorageController
         (
             DatabaseContext context,
             IFileRespository fileRespository,
             IFolderRepository folderRepository,
-            IHubContext<StorageHub> storageHub
+            IHubContext<StorageHub> storageHub,
+            IFileService fileService
         )
         {
             _context = context;
             _fileRespository = fileRespository;
             _folderRepository = folderRepository;
             _storageHub = storageHub;
+            _fileService = fileService;
         }
 
         [HttpGet]
@@ -106,6 +110,11 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                             {
                                 await file.CopyToAsync(fileStream);
                             }
+
+                            await fileModel.Value.SetPreview(_fileService);
+
+                            await _storageHub.Clients.Group(fileModel.Value.FolderId == Guid.Empty ? fileModel.Value.OwnerId.ToString() :
+                                fileModel.Value.FolderId.ToString()).SendAsync("UploadFile", fileModel.Value);
                         }
 
                         transaction.Commit();
@@ -132,13 +141,15 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest(result.Error);
             }
 
-            await _storageHub.Clients.Group(result.Value.FolderId.ToString()).SendAsync("RenameFile", result.Value);
+            await _storageHub.Clients.Group(result.Value.FolderId == Guid.Empty ? result.Value.OwnerId.ToString() : 
+                result.Value.FolderId.ToString()).SendAsync("RenameFile", result.Value);
+
             return Ok();
         }
 
         [HttpDelete]
         [Authorize]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id, Guid folderId)
         {
             var result = await _fileRespository.Delete(id);
 
@@ -146,6 +157,9 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             {
                 return BadRequest(result.Error);
             }
+
+            await _storageHub.Clients.Group(folderId.ToString())
+                .SendAsync("DeleteFile", id);
 
             return Ok();
         }

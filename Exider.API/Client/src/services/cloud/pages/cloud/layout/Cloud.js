@@ -23,12 +23,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import PropertiesWindow from '../widgets/properties/Properties';
 import { storageWSContext } from '../../../layout/Layout';
 
+const GuidEmpthy = '00000000-0000-0000-0000-000000000000';
+
 const Cloud = observer((props) => {
   const params = useParams();
   const navigate = useNavigate();
 
   const { user } = userState;
-  const [isFolderProperties, setFolderProperties] = useState(true);
+  const [isFolderProperties, setFolderProperties] = useState(false);
   const [files, setFiles] = useState([]);
   const [folders, setFolders] = useState([]);
   const [fileName, setFilename] = useState('');
@@ -64,22 +66,83 @@ const Cloud = observer((props) => {
   );
 
   storageWSContext.useSignalREffect(
+    "UploadFile",
+    (file) => {
+      file.strategy = "file";
+      
+      setFiles(prev => [
+        ...prev,
+          <File 
+          key={file.id} 
+          name={file.name} 
+          time={ConvertDate(file.lastEditTime)}
+          image={file.fileAsBytes == "" ? null : file.fileAsBytes}
+          type={file.type}
+          onContextMenu={(event) => {
+            event.preventDefault();
+            setContextMenuState(true);
+            setContextMenuPosition([event.clientX, event.clientY]);
+            setFilename(file.name);
+            setSelectedItems([file]);
+          }}
+        />
+      ]);
+    },
+  );
+
+  storageWSContext.useSignalREffect(
+    "DeleteFolder",
+    (data) => {
+      setFolders(prev => {
+        return prev.filter(folder => folder.key !== data);
+      });
+    }
+  );
+
+  storageWSContext.useSignalREffect(
+    "DeleteFile",
+    (data) => {
+      setFiles(prev => {
+        return prev.filter(file => file.key !== data);
+      });
+    }
+  );
+
+  storageWSContext.useSignalREffect(
     "RenameFile",
     (file) => {
       setFiles(prev => {
-        const updatedFiles = prev.map(prevFile => {
-          if (prevFile.key === file.id) {
-            return {
-              ...prevFile,
-              name: file.newName
-            };
-          }
-          return prevFile;
-        });
-        return updatedFiles;
-      });
+        const index = prev.findIndex(folder => folder.key === file.id);
+  
+        if (index !== -1) {
+          const newFile = [...prev];
+          const updatedFolder = { ...newFile[index], props: { ...newFile[index].props, name: file.name } };
+          newFile[index] = updatedFolder;
+          return newFile;
+        }
+  
+        return prev;
+      })
     },
   );
+
+  storageWSContext.useSignalREffect(
+    "RenameFolder",
+    (data) => {
+      setFolders(prevFolders => {
+        const index = prevFolders.findIndex(folder => folder.key === data[0]);
+  
+        if (index !== -1) {
+          const newFolders = [...prevFolders];
+          const updatedFolder = { ...newFolders[index], props: { ...newFolders[index].props, name: data[1] } };
+          newFolders[index] = updatedFolder;
+          return newFolders;
+        }
+  
+        return prevFolders;
+      });
+    },
+  );  
   
   useEffect(() => {
     const Connect = async () => {
@@ -97,7 +160,7 @@ const Cloud = observer((props) => {
       const response = await instance.get(`/storage?id=${params.id ? params.id : ""}`);
 
       setFolders(response.data[0] ? response.data[0].map(element => {
-        element.type = "folder";
+        element.strategy = "folder";
 
         return (
           <Folder 
@@ -118,7 +181,7 @@ const Cloud = observer((props) => {
       }) : []);
 
       setFiles(response.data[1] ? response.data[1].map(element => {
-        element.type = "file";
+        element.strategy = "file";
 
         return (
           <File 
@@ -180,15 +243,16 @@ const Cloud = observer((props) => {
               field={[fileName, setFilename]}
               close={() => setRenameState(false)}
               callback={() => 
-                instance.put(`/${selectedItems[0].type === "file" ? 
-                  "storage" : "folders"}?id=${selectedItems[0].id}&name=${fileName}`)
+                instance.put(`/${selectedItems[0].strategy === "file" ? 
+                  "storage" : "folders"}?id=${selectedItems[0].id}&folderId=${selectedItems[0].folderId === GuidEmpthy ?
+                    selectedItems[0].ownerId : selectedItems[0].folderId}&name=${fileName}`)
               }
           /> : null}
           {isContextMenuOpen === true ?
             <ContextMenu 
               items={[
                 [Open, "Open", () => {
-                  if (selectedItems[0].type === "file") {
+                  if (selectedItems[0].strategy === "file") {
                     setPreviewState(true);
                   } else {
                     navigate(`/cloud/${selectedItems[0].id}`)
@@ -196,7 +260,7 @@ const Cloud = observer((props) => {
                 }],
                 [Rename, "Rename", () => setRenameState(true)],
                 [Properties, "Properties", () => { 
-                  if (selectedItems[0].type === "file") {
+                  if (selectedItems[0].strategy === "file") {
                     setRightPanelState(true);
                   } else {
                     setFolderProperties(true);
@@ -204,8 +268,9 @@ const Cloud = observer((props) => {
                 }],
                 [Share, "Share", () => alert('!')],
                 [Delete, "Delete", () => {
-                    instance.delete(`/${selectedItems[0].type === "file" ? 
-                      "storage" : "folders"}?id=${selectedItems[0].id}`)
+                    instance.delete(`/${selectedItems[0].strategy === "file" ? 
+                      "storage" : "folders"}?id=${selectedItems[0].id}&folderId=${selectedItems[0].folderId === GuidEmpthy ?
+                        selectedItems[0].ownerId : selectedItems[0].folderId}`);
                   }
                 ]
               ]} 
@@ -215,8 +280,8 @@ const Cloud = observer((props) => {
               position={contextMenuPosition}
           /> : null}
           <div className={styles.content}>
-            {folders.map(el => el)}
-            {files.map(el => el)}
+            {folders}
+            {files}
           </div>
         </div>
         {isRightPanelOpen === true ? 

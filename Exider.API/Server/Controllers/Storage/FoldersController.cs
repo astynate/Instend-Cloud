@@ -1,4 +1,5 @@
-﻿using Exider.Repositories.Storage;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using Exider.Repositories.Storage;
 using Exider.Services.External.FileService;
 using Exider.Services.Internal.Handlers;
 using Exider_Version_2._0._0.Server.Hubs;
@@ -58,7 +59,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         [HttpPut]
         [Microsoft.AspNetCore.Authorization.Authorize]
-        public async Task<IActionResult> UpdateName(Guid id, string name)
+        public async Task<IActionResult> UpdateName(Guid id, Guid folderId, string name)
         {
             if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
             {
@@ -66,6 +67,10 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             }
 
             await _folderRepository.UpdateName(id, name);
+
+            await _storageHub.Clients.Group(folderId.ToString())
+                .SendAsync("RenameFolder", new object[] { id, name });
+
             return Ok();
         }
 
@@ -76,11 +81,15 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             IFileService fileService, 
             IFileRespository fileRespository,
             IFolderRepository folderRepository,
+            Guid folderId,
             Guid id
         )
         {
             await fileService.DeleteFolderById
                 (fileRespository, folderRepository, id);
+
+            await _storageHub.Clients.Group(folderId.ToString())
+                .SendAsync("DeleteFolder", id);
 
             return Ok();
         }
