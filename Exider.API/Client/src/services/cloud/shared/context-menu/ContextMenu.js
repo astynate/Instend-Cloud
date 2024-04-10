@@ -1,11 +1,19 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css'
 
 const ContextMenu = (props) => {
-    const wrapper = useRef();
+    const wrapper = useRef(null);
+    const [isContextMenu, setContextMenuState] = useState(props.isContextMenu);
+
+    const handleClickOutside = () => {
+        if (isContextMenu) {
+            props.close();
+        }
+        
+        setContextMenuState(true);
+    };
 
     useEffect(() => {
-
         if (wrapper.current) {
             let x = props.position[0];
             let y = props.position[1];
@@ -28,17 +36,11 @@ const ContextMenu = (props) => {
             wrapper.current.style.top = `${y}px`;
         }        
 
-        const handleClickOutside = () => {
-            props.close();
-        };
-
         document.addEventListener('click', handleClickOutside);
-        // document.addEventListener('contextmenu', handleClickOutside);
-
+      
         return () => {
             document.removeEventListener('click', handleClickOutside);
-            // document.removeEventListener('contextmenu', handleClickOutside);
-        };   
+        }
 
     }, []);
 

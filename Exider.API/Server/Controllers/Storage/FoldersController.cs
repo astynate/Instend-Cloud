@@ -1,10 +1,11 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
+﻿using Exider.Core.Models.Storage;
 using Exider.Repositories.Storage;
 using Exider.Services.External.FileService;
 using Exider.Services.Internal.Handlers;
 using Exider_Version_2._0._0.Server.Hubs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using System.IO.Compression;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Storage
 {
@@ -25,7 +26,35 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             _storageHub = storageHub;
         }
 
+        [HttpGet]
+        [Microsoft.AspNetCore.Authorization.Authorize]
+        public async Task<ActionResult> Download(string? id, IFileRespository fileRespository, IFileService fileService)
+        {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+            {
+                return BadRequest("Invalid user id");
+            }
+
+            FileModel[] files = await fileRespository.GetByFolderId(Guid.Parse(userId.Value), 
+                id == null ? Guid.Empty : Guid.Parse(id));
+
+            FolderModel? folder = null;
+
+            if (id != null)
+            {
+                folder = await _folderRepository.GetByIdAsync(Guid.Parse(id));
+            }
+
+            string zipName = folder == null ? "Yexider Cloud.zip" : folder.Name + ".zip";
+
+            byte[] zipArchive = fileService.CreateZipFromFiles(files);
+            return File(zipArchive, System.Net.Mime.MediaTypeNames.Application.Zip, zipName);
+        }
+
         [HttpPost]
+        [Microsoft.AspNetCore.Authorization.Authorize]
         public async Task<ActionResult> CreateFolder([FromForm] string? folderId, [FromForm] string name)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);

@@ -12,6 +12,7 @@ using iTextSharp.text.pdf.parser;
 using iTextSharp.text.pdf;
 using System.Text;
 using Exider.Repositories.Storage;
+using System.IO.Compression;
 
 namespace Exider.Services.External.FileService
 {
@@ -39,7 +40,7 @@ namespace Exider.Services.External.FileService
             }
             catch (Exception)
             {
-                return Result.Failure<byte[]>("Cannot read file");
+                return Result.Failure<byte[]>("Cannot read fileToWrite");
             }
             finally
             {
@@ -112,7 +113,7 @@ namespace Exider.Services.External.FileService
 
             if (handler.Value == null)
             {
-                return Result.Failure<string>("Can't handle this file type");
+                return Result.Failure<string>("Can't handle this fileToWrite type");
             }
 
             return Result.Success(handler.Value(fileModel.Path));
@@ -195,5 +196,30 @@ namespace Exider.Services.External.FileService
                 await DeleteFolderById(fileRespository, folderRepository, folder.Id);
             }
         }
+
+        public byte[] CreateZipFromFiles(FileModel[] files)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                {
+                    using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                    {
+                        foreach (var file in files)
+                        {
+                            ZipArchiveEntry fileToWrite = archive.CreateEntry($"{file.Name}.{file.Type}");
+
+                            using (var entryStream = fileToWrite.Open())
+                            {
+                                byte[] fileBytes = File.ReadAllBytes(file.Path);
+                                entryStream.Write(fileBytes, 0, fileBytes.Length);
+                            }
+                        }
+                    }
+
+                    return memoryStream.ToArray();
+                }
+            }
+        }
+
     }
 }

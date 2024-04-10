@@ -234,7 +234,9 @@ const Cloud = observer((props) => {
         <div className={styles.contentWrapper}>
           <CloudHeader 
             name={user.nickname} 
-            path={path} 
+            path={path}
+            files={[files, setFiles]}
+            folders={[folders, setFolders]}
           />
           {isRenameOpen === true ?
             <PopUpField 
@@ -277,6 +279,7 @@ const Cloud = observer((props) => {
               close={() => 
                 setContextMenuState(false)
               }
+              isContextMenu={true}
               position={contextMenuPosition}
           /> : null}
           <div className={styles.content}>
