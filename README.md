@@ -5,7 +5,8 @@ Welcome to Exider Cloud - first cloud storage with neural newtworks! It is a uni
 [![Preview of Exider][preview_image]][preview_image_url]
 [![login][login]][preview_image_url]
 [![cyra][cyra]][cyra_url]
-[![profile][profile]][profile_url]
+[![cloud][cloud]][profile_url]
+[![profile][profile]][cloud_url]
 
 © Andreev 2024. Minsk, Belarus
 
@@ -18,3 +19,5 @@ Welcome to Exider Cloud - first cloud storage with neural newtworks! It is a uni
 [profile_url]: https://github.com/astynate/Exider-Server-Application/blob/master/tech-doc/images/image_2024-03-04_21-39-52.png
 [cyra]: https://github.com/astynate/Exider-Server-Application/blob/master/tech-doc/images/Cyra-Chat-1.png
 [cyra_url]: https://github.com/astynate/Exider-Server-Application/blob/master/tech-doc/images/Cyra-Chat-1.png
+[cloud]: https://github.com/astynate/Exider-Server-Application/blob/master/tech-doc/images/image_2024-04-09_23-18-19.png
+[cloud_url]: https://github.com/astynate/Exider-Server-Application/blob/master/tech-doc/images/image_2024-04-09_23-18-19.png
