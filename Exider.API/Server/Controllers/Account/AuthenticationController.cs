@@ -144,6 +144,5 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
             return Ok(accessToken);
         }
-
     }
 }

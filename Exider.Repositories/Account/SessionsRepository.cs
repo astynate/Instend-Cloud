@@ -1,13 +1,11 @@
 ﻿using Exider.Core;
 using Exider.Core.Models.Account;
 using Microsoft.EntityFrameworkCore;
-using System.Transactions;
 
 namespace Exider.Repositories.Repositories
 {
     public class SessionsRepository : ISessionsRepository
     {
-
         private readonly DatabaseContext _context = null!;
 
         public SessionsRepository(DatabaseContext context)
@@ -30,32 +28,34 @@ namespace Exider.Repositories.Repositories
 
         public async Task AddSessionAsync(SessionModel session)
         {
-
-            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            try
             {
-
-                if (session == null)
+                await _context.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
                 {
-                    throw new ArgumentNullException(nameof(session));
-                }
+                    using (var transaction = await _context.Database.BeginTransactionAsync())
+                    {
 
-                List<SessionModel> userSessions = await GetSessionsByUserId(session.UserId);
+                        if (session == null)
+                        {
+                            throw new ArgumentNullException(nameof(session));
+                        }
 
-                if (userSessions != null && userSessions.Count >= 5)
-                {
-                    _context.Sessions.RemoveRange(userSessions[0]);
-                    await _context.SaveChangesAsync();
-                }
+                        List<SessionModel> userSessions = await GetSessionsByUserId(session.UserId);
 
-                await _context.Sessions.AddAsync(session);
-                await _context.SaveChangesAsync();
+                        if (userSessions != null && userSessions.Count >= 5)
+                        {
+                            _context.Sessions.RemoveRange(userSessions[0]);
+                            await _context.SaveChangesAsync();
+                        }
 
-                scope.Complete();
+                        await _context.Sessions.AddAsync(session);
+                        await _context.SaveChangesAsync();
 
-            }
+                        transaction.Commit();
+                    }
+                });
 
+            } catch { }
         }
-
     }
-
 }

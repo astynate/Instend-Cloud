@@ -12,6 +12,7 @@ using Exider_Version_2._0._0.Server.TransferModels.Account;
 using Exider_Version_2._0._0.ServerApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Transactions;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Account
@@ -30,13 +31,16 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
         private readonly IImageService _imageService;
 
+        private readonly DatabaseContext _context;
+
         public AccountsController
         (
             IUsersRepository users,
             IEmailRepository email,
             IConfirmationRespository confirmation,
             IUserDataRepository userDataRepository,
-            IImageService imageService
+            IImageService imageService,
+            DatabaseContext context
         )
         {
             _usersRepository = users;
@@ -44,6 +48,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
             _confirmationRespository = confirmation;
             _userDataRepository = userDataRepository;
             _imageService = imageService;
+            _context = context;
         }
 
         [HttpGet]
@@ -106,72 +111,79 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
         [HttpPost]
         public async Task<IActionResult> CreateAccount([FromBody] UserTransferModel user, IEmailService emailService, IEncryptionService encryptionService)
         {
-
-            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            try
             {
-
-                var userCreationResult = UserModel.Create
-                (
-                    user.name,
-                    user.surname,
-                    user.nickname,
-                    user.email,
-                    user.password
-                );
-
-                if (userCreationResult.IsFailure)
+                return await _context.Database.CreateExecutionStrategy().ExecuteAsync(async Task<IActionResult> () =>
                 {
-                    return BadRequest(userCreationResult.Error);
-                }
+                    using (var transaction = _context.Database.BeginTransaction())
+                    {
+                        var userCreationResult = UserModel.Create
+                        (
+                            user.name,
+                            user.surname,
+                            user.nickname,
+                            user.email,
+                            user.password
+                        );
 
-                await _usersRepository.AddAsync(userCreationResult.Value);
+                        if (userCreationResult.IsFailure)
+                        {
+                            return BadRequest(userCreationResult.Error);
+                        }
 
-                var emailCreationResult = EmailModel.Create
-                (
-                    userCreationResult.Value.Email,
-                    false,
-                    userCreationResult.Value.Id
-                );
+                        await _usersRepository.AddAsync(userCreationResult.Value);
 
-                if (emailCreationResult.IsFailure)
-                {
-                    return BadRequest(emailCreationResult.Error);
-                }
+                        var emailCreationResult = EmailModel.Create
+                        (
+                            userCreationResult.Value.Email,
+                            false,
+                            userCreationResult.Value.Id
+                        );
 
-                await _emailRepository.AddAsync(emailCreationResult.Value);
+                        if (emailCreationResult.IsFailure)
+                        {
+                            return BadRequest(emailCreationResult.Error);
+                        }
 
-                var confirmationCreationResult = ConfirmationModel.Create
-                (
-                    userCreationResult.Value.Email,
-                    encryptionService.GenerateSecretCode(6),
-                    userCreationResult.Value.Id
-                );
+                        await _emailRepository.AddAsync(emailCreationResult.Value);
 
-                if (confirmationCreationResult.IsFailure)
-                {
-                    return BadRequest(confirmationCreationResult.Error);
-                }
+                        var confirmationCreationResult = ConfirmationModel.Create
+                        (
+                            userCreationResult.Value.Email,
+                            encryptionService.GenerateSecretCode(6),
+                            userCreationResult.Value.Id
+                        );
 
-                await _confirmationRespository.AddAsync(confirmationCreationResult.Value);
+                        if (confirmationCreationResult.IsFailure)
+                        {
+                            return BadRequest(confirmationCreationResult.Error);
+                        }
 
-                var userDataCreationResult = UserDataModel.Create(userCreationResult.Value.Id);
+                        await _confirmationRespository.AddAsync(confirmationCreationResult.Value);
 
-                if (userDataCreationResult.IsFailure)
-                {
-                    return BadRequest(userDataCreationResult.Error);
-                }
+                        var userDataCreationResult = UserDataModel.Create(userCreationResult.Value.Id);
 
-                await _userDataRepository.AddAsync(userDataCreationResult.Value);
+                        if (userDataCreationResult.IsFailure)
+                        {
+                            return BadRequest(userDataCreationResult.Error);
+                        }
 
-                await emailService.SendEmailConfirmation(userCreationResult.Value.Email, confirmationCreationResult.Value.Code,
-                    Configuration.URL + "account/email/confirmation/" + confirmationCreationResult.Value.Link.ToString());
+                        await _userDataRepository.AddAsync(userDataCreationResult.Value);
 
-                scope.Complete();
+                        await emailService.SendEmailConfirmation(userCreationResult.Value.Email, confirmationCreationResult.Value.Code,
+                            Configuration.URL + "account/email/confirmation/" + confirmationCreationResult.Value.Link.ToString());
 
-                return Ok(confirmationCreationResult.Value.Link.ToString());
+                        transaction.Commit();
 
+                        return Ok(confirmationCreationResult.Value.Link.ToString());
+                    }
+                });
+
+            } 
+            catch 
+            {
+                return BadRequest();
             }
-
         }
 
         [HttpPut]

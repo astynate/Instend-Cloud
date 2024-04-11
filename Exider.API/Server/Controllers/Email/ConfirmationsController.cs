@@ -1,9 +1,10 @@
-﻿using Exider.Dependencies.Services;
+﻿using Exider.Core;
+using Exider.Dependencies.Services;
 using Exider.Repositories.Account;
 using Exider.Repositories.Email;
 using Exider_Version_2._0._0.ServerApp.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Transactions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Email
 {
@@ -14,9 +15,12 @@ namespace Exider_Version_2._0._0.Server.Controllers.Email
     {
         private readonly IConfirmationRespository _confirmationRespository;
 
-        public ConfirmationsController(IConfirmationRespository confirmationRespository)
+        private readonly DatabaseContext _context;
+
+        public ConfirmationsController(DatabaseContext context, IConfirmationRespository confirmationRespository)
         {
             _confirmationRespository = confirmationRespository;
+            _context = context;
         }
 
         [HttpGet("link/{link}")]
@@ -45,12 +49,22 @@ namespace Exider_Version_2._0._0.Server.Controllers.Email
             if (confirmation.Value.Code != code)
                 return BadRequest("Incorrect code");
 
-            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            try
             {
-                await _confirmationRespository.DeleteAsync(confirmation.Value);
-                await emailRepository.ConfirmEmailAddressAsync(confirmation.Value.Email);
+                await _context.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
+                {
+                    using (var transaction = await _context.Database.BeginTransactionAsync())
+                    {
+                        await _confirmationRespository.DeleteAsync(confirmation.Value);
+                        await emailRepository.ConfirmEmailAddressAsync(confirmation.Value.Email);
 
-                scope.Complete();
+                        transaction.Commit();
+                    }
+                });
+            }
+            catch
+            {
+                return BadRequest();
             }
 
             return Ok();
