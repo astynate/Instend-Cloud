@@ -26,12 +26,13 @@
     --button-loader-color: rgb(255, 255, 255);
     --main-blur-effect: blur(10px) saturate(50%);
     --color-scheme: light;
+    --pop-up-accent-color: rgba(0, 0, 0, 0.1);
 }
 
 .dark-mode {
     --main-background-color: rgb(0, 0, 0);
     --main-border-color: rgba(255, 255, 255, 0.2);
-    --main-accent-color: #18181b;
+    --main-accent-color: #212125;
     --main-font-color: #ffffff;
     --main-header-font-color: #161616;
     --main-header-background-color: #000000ce;
@@ -56,4 +57,5 @@
     --button-loader-color: rgb(255, 255, 255);
     --main-blur-effect: blur(10px) saturate(50%);
     --color-scheme: dark;
+    --pop-up-accent-color: #313134;
 }

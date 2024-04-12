@@ -20,7 +20,7 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    grid-gap: 3px;
+    grid-gap: 2px;
     align-items: center;
     justify-content: center;
     transition: 0.15s ease;
@@ -70,7 +70,7 @@
     width: 100%;
     background: var(--main-accent-color);
     color: var(--main-blue-color);
-    border-radius: 5px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;

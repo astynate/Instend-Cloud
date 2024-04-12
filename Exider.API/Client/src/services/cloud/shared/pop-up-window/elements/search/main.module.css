@@ -1,0 +1,30 @@
+.search {
+    display: flex;
+    background: var(--pop-up-accent-color);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    align-items: center;
+    border-radius: 17px;
+    overflow: hidden;
+    grid-gap: 5px;
+    padding-top: 11px;
+    padding-bottom: 11px;
+}
+
+.search img {
+    height: 15px;
+    width: 15px;
+    filter: var(--main-filter);
+    opacity: 0.4;
+    margin-left: 10px;
+}
+
+.search input {
+    /* height: 40px; */
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-weight: 400;
+    font-family: 'Open Sans', sans-serif;
+    background: none;
+}

@@ -10,6 +10,7 @@ import Create from "../../../../shared/create/Create";
 import Next from './images/arrow.png';
 import { instance } from "../../../../../../state/Interceptors";
 import ContextMenu from "../../../../shared/context-menu/ContextMenu";
+import OpenAccessWindow from "../open-access/OpenAccess";
 
 const Header = (props) => {
     const params = useParams();
@@ -17,6 +18,7 @@ const Header = (props) => {
     const [isCreateOpen, setCreationWindowState] = useState(false);
     const [isSortMenuOpen, setSortMenuState] = useState(false);
     const [sortMenuPosition, setSortMenuPosition] = useState([0, 60]);
+    const [isOpenAccessWindow, setOpenAccessWindowState] = useState(false);
 
     const SortByNameAsending = () => {
         props.folders[1]((prev) => {
@@ -70,9 +72,18 @@ const Header = (props) => {
 
     return (
       <div className={styles.header}>
+        <OpenAccessWindow
+            open={isOpenAccessWindow} 
+            close={() => setOpenAccessWindowState(false)}
+            back={() => alert('!')}
+        />
         <div className={styles.buttons}>
             <div className={styles.buttonBlock}>
-                <Button img={OpenAccess} title="Open access" />
+                <Button 
+                    img={OpenAccess} 
+                    title="Open access" 
+                    onClick={() => setOpenAccessWindowState(true)}
+                />
             </div>
             <div className={styles.buttonBlock}>
                 <Button 

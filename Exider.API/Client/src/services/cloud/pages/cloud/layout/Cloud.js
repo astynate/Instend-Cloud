@@ -22,6 +22,7 @@ import Folder from '../shared/folder/Folder';
 import { useNavigate, useParams } from 'react-router-dom';
 import PropertiesWindow from '../widgets/properties/Properties';
 import { storageWSContext } from '../../../layout/Layout';
+import PopUpWindow from '../../../shared/pop-up-window/PopUpWindow';
 
 const GuidEmpthy = '00000000-0000-0000-0000-000000000000';
 
