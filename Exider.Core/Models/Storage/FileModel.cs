@@ -15,6 +15,7 @@ namespace Exider.Core.Models.Storage
         [Column("type")] public string? Type { get; private set; } = null;
         [Column("owner_id")] public Guid OwnerId { get; private set; }
         [Column("folder_id")] public Guid FolderId { get; private set; }
+        [Column("access")] public string Access { get; private set; } = "private";
 
         [NotMapped] public byte[] FileAsBytes { get; private set; } = new byte[0];
 

@@ -11,6 +11,7 @@ import Next from './images/arrow.png';
 import { instance } from "../../../../../../state/Interceptors";
 import ContextMenu from "../../../../shared/context-menu/ContextMenu";
 import OpenAccessWindow from "../open-access/OpenAccess";
+import OpenAccessProcess from "../../processes/OpenAccessProcess";
 
 const Header = (props) => {
     const params = useParams();
@@ -72,11 +73,9 @@ const Header = (props) => {
 
     return (
       <div className={styles.header}>
-        <OpenAccessWindow
-            open={isOpenAccessWindow} 
+        {isOpenAccessWindow === true ? <OpenAccessProcess
             close={() => setOpenAccessWindowState(false)}
-            back={() => alert('!')}
-        />
+        /> : null}
         <div className={styles.buttons}>
             <div className={styles.buttonBlock}>
                 <Button 

@@ -14,6 +14,7 @@ namespace Exider.Core.Models.Storage
         [Column("owner_id")] public Guid OwnerId { get; private set; }
         [Column("folder_id")] public Guid FolderId { get; private set; }
         [NotMapped] public List<FileModel> Preview { get; private set; } = new();
+        [Column("access")] public string Access { get; private set; } = "private";
 
         private FolderModel() { }
 

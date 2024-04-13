@@ -8,8 +8,6 @@ import { Helmet } from 'react-helmet';
 import Desktop from './Desktop';
 import Mobile from './Mobile';
 import { createSignalRContext } from "react-signalr/signalr";
-// import { HubConnectionBuilder, HubConnectionState } from "@microsoft/signalr";
-// import { HubConnectionBuilder } from '@aspnet/signalr'; 
 
 export const messageWSContext = createSignalRContext();
 export const storageWSContext = createSignalRContext();
