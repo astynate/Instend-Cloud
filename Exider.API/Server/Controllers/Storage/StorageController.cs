@@ -21,6 +21,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IFolderRepository _folderRepository;
 
+        private readonly IAccessHandler _accessHandler;
+
         private readonly IHubContext<StorageHub> _storageHub;
 
         private readonly IFileService _fileService;
@@ -31,7 +33,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             IFileRespository fileRespository,
             IFolderRepository folderRepository,
             IHubContext<StorageHub> storageHub,
-            IFileService fileService
+            IFileService fileService,
+            IAccessHandler accessHandler
         )
         {
             _context = context;
@@ -39,6 +42,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             _folderRepository = folderRepository;
             _storageHub = storageHub;
             _fileService = fileService;
+            _accessHandler = accessHandler;
         }
 
         [HttpGet]
@@ -56,6 +60,14 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             if (fileModel.IsFailure)
             {
                 return BadRequest("File not found");
+            }
+
+            bool isAvailable = await _accessHandler.GetAccessStateAsync(fileModel.Value, 
+                Request.Headers["Authorization"]);
+
+            if (isAvailable == false)
+            {
+                return BadRequest("Access denied");
             }
 
             var file = fileService.GetFileAsHTMLBase64String(fileModel.Value);
@@ -77,6 +89,24 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             Guid userId = Guid.Parse(idGettingResult.Value);
             Guid folderId = id == null ? Guid.Empty : Guid.Parse(id);
 
+            if (folderId != Guid.Empty)
+            {
+                FolderModel? folderModel = await _folderRepository.GetByIdAsync(folderId);
+
+                if (folderModel == null)
+                {
+                    return BadRequest("Folder not found");
+                }
+
+                bool isAvailable = await _accessHandler.GetAccessStateAsync(folderModel, 
+                    Request.Headers["Authorization"]);
+
+                if (isAvailable == false)
+                {
+                    return BadRequest("Access denied");
+                }
+            }
+
             FileModel[] files = await _fileRespository.GetByFolderId(userId, folderId);
             FolderModel[] folders = await _folderRepository.GetFoldersByFolderId(fileService, userId, folderId);
             FolderModel[] path = await _folderRepository.GetShortPath(folderId);
@@ -91,7 +121,26 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             var idResult = requestHandler.GetUserId(Request.Headers["Authorization"]);
             Guid userId = idResult.Value == null ? Guid.Empty : Guid.Parse(idResult.Value);
 
+            if (folderId != null)
+            {
+                FolderModel? folderModel = await _folderRepository.GetByIdAsync(Guid.Parse(folderId));
+
+                if (folderModel == null)
+                {
+                    return BadRequest("Folder not found");
+                }
+
+                bool isAvailable = await _accessHandler.GetAccessStateAsync(folderModel, 
+                    Request.Headers["Authorization"]);
+
+                if (isAvailable == false)
+                {
+                    return BadRequest("Access denied");
+                }
+            }
+
             string[] nameSplit = file.FileName.Split(".");
+            
             string name = nameSplit[0] ?? "Not set";
             string? type = nameSplit.Length >= 2 ? nameSplit[nameSplit.Length - 1] : null;
 
@@ -134,6 +183,26 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         [Authorize]
         public async Task<IActionResult> UpdateName(Guid id, string name)
         {
+            if (id == Guid.Empty)
+            {
+                return BadRequest("File not found");
+            }
+
+            var fileModel = await _fileRespository.GetByIdAsync(id);
+
+            if (fileModel.IsFailure)
+            {
+                return BadRequest("File not found");
+            }
+
+            bool isAvailable = await _accessHandler.GetAccessStateAsync(fileModel.Value, 
+                Request.Headers["Authorization"]);
+
+            if (isAvailable == false)
+            {
+                return BadRequest("Access denied");
+            }
+
             var result = await _fileRespository.UpdateName(id, name);
 
             if (result.IsFailure)
@@ -151,6 +220,26 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         [Authorize]
         public async Task<IActionResult> Delete(Guid id, Guid folderId)
         {
+            if (id == Guid.Empty)
+            {
+                return BadRequest("File not found");
+            }
+
+            var fileModel = await _fileRespository.GetByIdAsync(id);
+
+            if (fileModel.IsFailure)
+            {
+                return BadRequest("File not found");
+            }
+
+            bool isAvailable = await _accessHandler.GetAccessStateAsync(fileModel.Value,
+                Request.Headers["Authorization"]);
+
+            if (isAvailable == false)
+            {
+                return BadRequest("Access denied");
+            }
+
             var result = await _fileRespository.Delete(id);
 
             if (result.IsFailure)

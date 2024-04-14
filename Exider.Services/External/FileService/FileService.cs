@@ -48,7 +48,7 @@ namespace Exider.Services.External.FileService
             }
         }
 
-        public async Task<byte[]> GetWordDocumentPreviewImage(string path)
+        public byte[] GetWordDocumentPreviewImage(string path)
         {
             try
             {
@@ -67,13 +67,13 @@ namespace Exider.Services.External.FileService
 
                 return byteArray;
             }
-            catch 
+            catch
             {
                 return new byte[0];
             }
         }
 
-        public async Task<byte[]> GetPdfPreviewImage(string path)
+        public byte[] GetPdfPreviewImage(string path)
         {
             try
             {

@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core;
 using Exider.Core.Models.Account;
+using Exider.Core.Models.Storage;
 using Exider.Core.TransferModels.Account;
 using Exider.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
@@ -83,6 +84,54 @@ namespace Exider.Repositories.Account
             }
 
             return Result.Success(userModel);
+        }
+
+        public async Task<UserPublic[]> GetUsersbyPrefixAsync(string prefix)
+        {
+            UserPublic[] users = await _context.Users
+                .Where(user => user.Nickname.Contains(prefix) ||
+                               user.Name.Contains(prefix) ||
+                               user.Surname.Contains(prefix))
+                .Join(
+                    _context.UserData,
+                    user => user.Id,
+                    data => data.UserId,
+                    (user, data) => new UserPublic
+                    {
+                        Id = user.Id,
+                        Name = user.Name,
+                        Surname = user.Surname,
+                        Nickname = user.Nickname,
+                        Email = user.Email,
+                        Avatar = data.Avatar,
+                        Header = data.Header,
+                        Description = data.Description,
+                        StorageSpace = data.StorageSpace,
+                        Balance = data.Balance,
+                        FriendCount = data.FriendCount
+                    }
+                ).ToArrayAsync();
+
+            foreach (var user in users)
+            {
+                if (user.Avatar == Configuration.DefaultAvatarPath)
+                {
+                    user.Avatar = Configuration.DefaultAvatar;
+                }
+                else if (string.IsNullOrEmpty(user.Avatar) == false)
+                {
+                    var avatarReadingResult = await _fileService.ReadFileAsync(user.Avatar);
+
+                    if (avatarReadingResult.IsFailure)
+                    {
+                        return new UserPublic[0];
+                    }
+
+                    user.Avatar = Convert.ToBase64String(avatarReadingResult.Value);
+                }
+            }
+
+            return users;
         }
 
         public async Task UpdateAvatarAsync(Guid userId, string avatarPath)

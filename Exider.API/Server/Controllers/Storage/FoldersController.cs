@@ -5,7 +5,6 @@ using Exider.Services.Internal.Handlers;
 using Exider_Version_2._0._0.Server.Hubs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using System.IO.Compression;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Storage
 {
@@ -17,13 +16,22 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IFolderRepository _folderRepository;
 
+        private readonly IAccessHandler _accessHandler;
+
         private readonly IHubContext<StorageHub> _storageHub;
 
-        public FoldersController(IHubContext<StorageHub> storageHub, IFolderRepository folderRepository, IRequestHandler requestHandler)
+        public FoldersController
+        (
+            IHubContext<StorageHub> storageHub, 
+            IFolderRepository folderRepository, 
+            IRequestHandler requestHandler,
+            IAccessHandler accessHandler
+        )
         {
             _requestHandler = requestHandler;
             _folderRepository = folderRepository;
             _storageHub = storageHub;
+            _accessHandler = accessHandler;
         }
 
         [HttpGet]
@@ -47,9 +55,20 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 folder = await _folderRepository.GetByIdAsync(Guid.Parse(id));
             }
 
+            if (folder != null)
+            {
+                bool isAvailable = await _accessHandler.GetAccessStateAsync(folder, Request.Headers["Authorization"]);
+
+                if (isAvailable == false) 
+                {
+                    return BadRequest("Access denied");
+                }
+            }
+
             string zipName = folder == null ? "Yexider Cloud.zip" : folder.Name + ".zip";
 
             byte[] zipArchive = fileService.CreateZipFromFiles(files);
+            
             return File(zipArchive, System.Net.Mime.MediaTypeNames.Application.Zip, zipName);
         }
 
@@ -69,6 +88,23 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             if (string.IsNullOrEmpty(folderId) == false && string.IsNullOrWhiteSpace(folderId) == false)
             {
                 folder = Guid.Parse(folderId);
+            }
+
+            if (folder != Guid.Empty)
+            {
+                FolderModel? folderModel = await _folderRepository.GetByIdAsync(folder);
+
+                if (folderModel == null)
+                {
+                    return BadRequest("Folder not found");
+                }
+
+                bool isAvailable = await _accessHandler.GetAccessStateAsync(folderModel, Request.Headers["Authorization"]);
+
+                if (isAvailable == false)
+                {
+                    return BadRequest("Access denied");
+                }
             }
 
             var result = await _folderRepository.AddAsync(name, Guid.Parse(userId.Value), folder);
@@ -95,6 +131,23 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest("Invalid name");
             }
 
+            if (id != Guid.Empty)
+            {
+                FolderModel? folderModel = await _folderRepository.GetByIdAsync(id);
+
+                if (folderModel == null)
+                {
+                    return BadRequest("Folder not found");
+                }
+
+                bool isAvailable = await _accessHandler.GetAccessStateAsync(folderModel, Request.Headers["Authorization"]);
+
+                if (isAvailable == false)
+                {
+                    return BadRequest("Access denied");
+                }
+            }
+
             await _folderRepository.UpdateName(id, name);
 
             await _storageHub.Clients.Group(folderId.ToString())
@@ -114,6 +167,23 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             Guid id
         )
         {
+            if (id != Guid.Empty)
+            {
+                FolderModel? folderModel = await _folderRepository.GetByIdAsync(id);
+
+                if (folderModel == null)
+                {
+                    return BadRequest("Folder not found");
+                }
+
+                bool isAvailable = await _accessHandler.GetAccessStateAsync(folderModel, Request.Headers["Authorization"]);
+
+                if (isAvailable == false)
+                {
+                    return BadRequest("Access denied");
+                }
+            }
+
             await fileService.DeleteFolderById
                 (fileRespository, folderRepository, id);
 

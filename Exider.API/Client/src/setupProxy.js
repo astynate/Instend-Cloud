@@ -9,7 +9,8 @@ const context = [
     "/password-recovery",
     "/storage",
     "/file",
-    "/folders"
+    "/folders",
+    "/access"
 ];
 
 const onError = (err, req, resp, target) => {

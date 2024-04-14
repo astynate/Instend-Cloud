@@ -1,26 +1,31 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styles from './main.module.css';
+import { OpenAccessContext } from '../../../../pages/cloud/widgets/open-access/OpenAccess';
 
 const Friends = (props) => {
+    const context = useContext(OpenAccessContext);
 
     return (
         <div className={styles.friends}>
-            {
-                Array.from({length: 20}).map((_, index) =>
+            {context.searchUsers && context.searchUsers.map ? 
+                context.searchUsers.map((user, index) =>
                     <div className={styles.friend} key={index}>
-                        <div className={styles.avatar}>
-
-                        </div>
+                        <img className={styles.avatar} src={`data:image/png;base64,${user.avatar}`} />
                         <div className={styles.description}>
-                            <span className={styles.username}>asdadadadadadasdadasd</span>
-                            <span className={styles.fullname}>asdadadadadadasdadasd</span>
+                            <span className={styles.username}>{user.nickname}</span>
+                            <span className={styles.fullname}>{user.name} {user.surname}</span>
                         </div>
-                        <div className={styles.select}>
-                            {props.children}
-                        </div>
+                        {user.ability ? 
+                            <div className={styles.select}>
+                                {props.children}
+                            </div>
+                        : 
+                            <div className={styles.button}>
+                                <span>Add</span>
+                            </div>}
                     </div>
                 )
-            }
+            : null}
         </div>
     );
 

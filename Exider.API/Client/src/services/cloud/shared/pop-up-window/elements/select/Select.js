@@ -8,18 +8,13 @@ const Select = (props) => {
     const node = useRef();
 
     const handleClickOutside = e => {
-
-        if (node.current.contains(e.target)) {
-            return;
+        if (node.current.contains(e.target) === false) {
+            setOpenState(false);
         }
-
-        setOpenState(false);
     };
 
     useEffect(() => {
         document.addEventListener("mousedown", handleClickOutside);
-
-        console.log(props.items)
 
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);

@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core;
+using Exider.Core.Models.Storage;
 using Microsoft.EntityFrameworkCore;
 
 namespace Exider.Repositories.Storage
@@ -17,6 +18,16 @@ namespace Exider.Repositories.Storage
         {
             return await _context.FolderAccesses.FirstOrDefaultAsync(x => x.UserId == userId &&
                 x.FolderId == folderId) != null;
+        }
+
+        public async Task<object[]> GetUsersWithAccess(Guid folderId)
+        {
+            return await _context.FolderAccesses
+                .Where(x => x.FolderId == folderId)
+                .Join(_context.Users,
+                    a => a.UserId,
+                    b => b.Id,
+                    (a, b) => new object[] { a, b }).ToArrayAsync();
         }
 
         public async Task<Result> OpenAccess(Guid userId, Guid folderId)

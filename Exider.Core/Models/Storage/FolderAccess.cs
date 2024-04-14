@@ -10,8 +10,10 @@ namespace Exider.Core.Models.Storage
     {
         [Column("folder_id")] public Guid FolderId { get; private set; }
         [Column("user_id")] public Guid UserId { get; private set; }
+        [Column("ability")] public string Ability { get; private set; } = "read-only";
 
         private FolderAccess() { }
+
         public static Result<FolderAccess> Create(Guid folderId,  Guid userId) 
         {
             if (folderId == Guid.Empty)

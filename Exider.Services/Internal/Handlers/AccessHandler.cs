@@ -23,7 +23,7 @@ namespace Exider.Services.Internal.Handlers
             _fileAccessRepository = fileAccessRepository;
         }
 
-        public async Task<bool> GetFileAccessStateAsync(FileModel file, string bearer)
+        public async Task<bool> GetAccessStateAsync(FileModel file, string bearer)
         {
             var userId = _requestHandler.GetUserId(bearer);
 
@@ -44,7 +44,7 @@ namespace Exider.Services.Internal.Handlers
             return true;
         }
 
-        public async Task<bool> GetFileAccessStateAsync(FolderModel folder, string bearer)
+        public async Task<bool> GetAccessStateAsync(FolderModel folder, string bearer)
         {
             var userId = _requestHandler.GetUserId(bearer);
 

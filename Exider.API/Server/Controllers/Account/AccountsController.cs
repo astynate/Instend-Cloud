@@ -13,7 +13,6 @@ using Exider_Version_2._0._0.ServerApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Transactions;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Account
 {
@@ -70,6 +69,25 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
             }
 
             return Ok(getUserResult.Value);
+        }
+
+        [Authorize]
+        [HttpGet("all/{prefix}")]
+        public async Task<IActionResult> GetUsersByPrefixAsync(string prefix)
+        {
+            if (string.IsNullOrEmpty(prefix))
+            {
+                return BadRequest("Prefix required");
+            }
+
+            UserPublic[] users = await _userDataRepository.GetUsersbyPrefixAsync(prefix);
+
+            if (users == null)
+            {
+                return Unauthorized("User not found");
+            }
+
+            return Ok(users);
         }
 
         [HttpGet("email/{email}")]

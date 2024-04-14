@@ -1,10 +1,10 @@
 .button {
     height: fit-content;
     width: fit-content;
-    padding: 4px 13px;
+    padding: 7px 20px;
     background: var(--main-blue-color);
     color: var(--main-font-color);
-    border-radius: 7px;
-    font-size: 14px;
+    border-radius: 15px;
+    font-size: 15px;
     cursor: pointer;
 }

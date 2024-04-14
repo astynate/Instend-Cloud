@@ -37,6 +37,8 @@ builder.Services.AddScoped<IConfirmationRespository, ConfirmationRespository>();
 builder.Services.AddScoped<IUserDataRepository, UserDataRepository>();
 builder.Services.AddScoped<IFolderRepository, FolderRepository>();
 builder.Services.AddScoped<IFileRespository, FileRespository>();
+builder.Services.AddScoped<IFileAccessRepository, FileAccessRepository>();
+builder.Services.AddScoped<IFolderAccessRepository, FolderAccessRepository>();
 
 builder.Services.AddSingleton<IValidationService, ValidationService>();
 builder.Services.AddSingleton<ITokenService, JwtService>();
@@ -46,6 +48,8 @@ builder.Services.AddSingleton<IUserAgentHandler, UserAgentHandler>();
 builder.Services.AddSingleton<IRequestHandler, RequestHandler>();
 builder.Services.AddSingleton<IFileService, FileService>();
 builder.Services.AddSingleton<IImageService, ImageService>();
+
+builder.Services.AddScoped<IAccessHandler, AccessHandler>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

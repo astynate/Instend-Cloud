@@ -2,6 +2,7 @@
 {
     public record class UserPublic
     {
+        public Guid Id { get; set; }
         public string? Name { get; init; }
         public string? Surname { get; init; }
         public string? Nickname { get; init; }

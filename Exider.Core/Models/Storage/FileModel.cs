@@ -82,9 +82,9 @@ namespace Exider.Core.Models.Storage
         }
 
         private async Task DocumentHandlerAsync(IFileService fileService)
-            => FileAsBytes = await fileService.GetWordDocumentPreviewImage(Path);
+            => FileAsBytes = fileService.GetWordDocumentPreviewImage(Path);
 
         private async Task PdfHandlerAsync(IFileService fileService)
-            => FileAsBytes = await fileService.GetPdfPreviewImage(Path);
+            => FileAsBytes = fileService.GetPdfPreviewImage(Path);
     }
 }
