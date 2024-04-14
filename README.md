@@ -1,4 +1,4 @@
-# [Exider Cloud][exider] – First Cloud Network
+# [Yexider Cloud][exider] – First Cloud Network
 
 Welcome to Exider Cloud - first cloud storage with neural newtworks! It is a unique platform that offers a convenient and secure place to store and share important information. We are proud that our project is open source, which allows us to collaborate with the community and create better solutions together.
 
