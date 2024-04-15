@@ -4,7 +4,7 @@ import open from './images/open.png';
 
 const Select = (props) => {
     const [isOpen, setOpenState] = useState(false);
-    const [current, setCurrent] = useState(0);
+    const [ability, setAbility] = useState(props.current);
     const node = useRef();
 
     const handleClickOutside = e => {
@@ -24,13 +24,18 @@ const Select = (props) => {
     return (
         <div className={styles.select} ref={node}>
             <div className={styles.current} onClick={() => setOpenState(!isOpen)}>
-                <span>{props.items[current]}</span>
+                <span>{props.items[ability]}</span>
                 <img src={open} />
             </div>
             {isOpen ?
                 <div className={styles.all} onClick={() => setOpenState(false)}>
                     {props.items.map((item, index) => 
-                        (<span key={index} onClick={() => setCurrent(index)}>{item}</span>)
+                        (<span key={index} onClick={() => {
+                            if (props.setCurrent) {
+                                setAbility(index);
+                                props.setCurrent(index);
+                            }  
+                        }}>{item}</span>)
                     )}
                 </div>
             : null}

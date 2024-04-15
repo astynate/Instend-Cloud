@@ -52,11 +52,11 @@
     grid-gap: 10px;
     padding: 5px;
     z-index: 1;
-    width: 100%;
+    width: 125%;
     top: 32px;
-    left: 0;
+    right: -12.5%;
     font-size: 14px;
-    border-radius: 5px;
+    border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -64,8 +64,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    cursor: pointer;
+    padding: 10px;
+    padding-left: 7px;
+    border-radius: 5px;
 }
 
-.all:hover { 
 
+.all span:hover { 
+    background: rgba(0, 0, 0, 0.1);
 }

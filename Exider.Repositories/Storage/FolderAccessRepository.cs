@@ -1,6 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core;
-using Exider.Core.Models.Storage;
 using Microsoft.EntityFrameworkCore;
 
 namespace Exider.Repositories.Storage
@@ -28,6 +27,22 @@ namespace Exider.Repositories.Storage
                     a => a.UserId,
                     b => b.Id,
                     (a, b) => new object[] { a, b }).ToArrayAsync();
+        }
+
+        public async Task<Result> UpdateAccessState(Configuration.AccessTypes type, Guid userId, Guid folderId)
+        {
+            int result = await _context.Folders
+                .Where(x => x.Id == folderId && x.OwnerId == userId)
+                .ExecuteUpdateAsync(folder => folder.SetProperty(p => p.Access, type));
+
+            await _context.SaveChangesAsync();
+
+            if (result <= 0)
+            {
+                return Result.Failure("Folder not found");
+            }
+
+            return Result.Success();
         }
 
         public async Task<Result> OpenAccess(Guid userId, Guid folderId)

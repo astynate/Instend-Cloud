@@ -51,7 +51,7 @@ const AccessPicker = (props) => {
                     <div className={styles.copy}>
                         <span>Copy link</span>
                     </div>
-                    <Button title="Save" />
+                    <Button title="Save" callback={() => props.send()} />
                 </div>
             </div>
         </PopUpWindow>

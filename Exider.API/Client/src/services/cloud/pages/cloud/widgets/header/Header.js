@@ -10,7 +10,6 @@ import Create from "../../../../shared/create/Create";
 import Next from './images/arrow.png';
 import { instance } from "../../../../../../state/Interceptors";
 import ContextMenu from "../../../../shared/context-menu/ContextMenu";
-import OpenAccessWindow from "../open-access/OpenAccess";
 import OpenAccessProcess from "../../processes/OpenAccessProcess";
 
 const Header = (props) => {

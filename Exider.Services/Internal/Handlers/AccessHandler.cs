@@ -1,4 +1,5 @@
-﻿using Exider.Core.Models.Storage;
+﻿using Exider.Core;
+using Exider.Core.Models.Storage;
 using Exider.Repositories.Storage;
 
 namespace Exider.Services.Internal.Handlers
@@ -32,13 +33,13 @@ namespace Exider.Services.Internal.Handlers
                 return false;
             }
 
-            if (file.Access == "public")
+            if (file.Access == Configuration.AccessTypes.Public)
                 return true;
 
-            if (file.Access == "private" && Guid.Parse(userId.Value) != file.OwnerId)
+            if (file.Access == Configuration.AccessTypes.Private && Guid.Parse(userId.Value) != file.OwnerId)
                 return false;
 
-            if (file.Access == "favorites" && await _fileAccessRepository.GetUserAccess(Guid.Parse(userId.Value), file.Id))
+            if (file.Access == Configuration.AccessTypes.Favorites && await _fileAccessRepository.GetUserAccess(Guid.Parse(userId.Value), file.Id))
                 return false;
 
             return true;
@@ -53,13 +54,13 @@ namespace Exider.Services.Internal.Handlers
                 return false;
             }
 
-            if (folder.Access == "public")
+            if (folder.Access == Configuration.AccessTypes.Public)
                 return true;
 
-            if (folder.Access == "private" && Guid.Parse(userId.Value) != folder.OwnerId)
+            if (folder.Access == Configuration.AccessTypes.Private && Guid.Parse(userId.Value) != folder.OwnerId)
                 return false;
 
-            if (folder.Access == "favorites" && await _folderAccessRepository.GetUserAccess(Guid.Parse(userId.Value), folder.Id))
+            if (folder.Access == Configuration.AccessTypes.Favorites && await _folderAccessRepository.GetUserAccess(Guid.Parse(userId.Value), folder.Id))
                 return false;
 
             return true;

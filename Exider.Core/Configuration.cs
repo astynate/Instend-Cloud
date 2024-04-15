@@ -65,6 +65,12 @@ namespace Exider.Core
             November,
             December
         }
+        public enum AccessTypes
+        {
+            Public,
+            Private,
+            Favorites
+        }
 
         public static SymmetricSecurityKey GetSecurityKey()
             => new(Encoding.UTF8.GetBytes(TestEncryptionKey));

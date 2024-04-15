@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styles from './main.module.css';
 import search from '../../images/search.png';
-import { OpenAccessContext } from '../../../../pages/cloud/widgets/open-access/OpenAccess';
+import { OpenAccessContext } from '../../../../pages/cloud/processes/OpenAccessProcess';
 import { instance } from '../../../../../../state/Interceptors';
 
 const Search = () => {
@@ -20,7 +20,13 @@ const Search = () => {
                 clearTimeout(prevTimer);
             }
             const timer = setTimeout(GetUsers, 350);
+
             setPrevTimer(timer);
+            context.setSearchingState(true);
+
+        } else {
+            context.setSearchUsers([]);
+            context.setSearchingState(false);
         }
     }, [prefix]);
 
@@ -34,7 +40,6 @@ const Search = () => {
             />
         </div>
     );
-
 };
 
 export default Search;
