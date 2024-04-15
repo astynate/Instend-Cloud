@@ -5,6 +5,7 @@ using Exider.Services.Internal.Handlers;
 using Exider_Version_2._0._0.Server.TransferModels.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Storage
 {
@@ -36,7 +37,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         {
             if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
             {
-                return Ok("private");
+                return Ok(new object[] { Configuration.AccessTypes.Private });
             }
 
             FolderModel? folder = await _folderRepository.GetByIdAsync(Guid.Parse(id));
@@ -48,15 +49,15 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
             if (folder.Access == Configuration.AccessTypes.Public || folder.Access == Configuration.AccessTypes.Private)
             {
-                return Ok(folder.Access);
+                return Ok(new object[] { folder.Access });
             }
 
-            return Ok(await _folderAccessRepository.GetUsersWithAccess(Guid.Parse(id)));
+            return Ok(new object[] { folder.Access, await _folderAccessRepository.GetUsersWithAccess(Guid.Parse(id)) });
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> ChangeAccessState([FromForm] string? id, [FromForm] Configuration.AccessTypes type, [FromForm] UserAccessModel[] users)
+        public async Task<IActionResult> ChangeAccessState(string? id, Configuration.AccessTypes type, [FromBody] List<UserAccessModel> users)
         {
             if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
             {
@@ -70,21 +71,32 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest("Invalid user id");
             }
 
-            //if (type >= 0 && type <= 2)
-            //{
-            //    return BadRequest("Invalid type");
-            //}
-
             var executionResult = await _folderAccessRepository
                 .UpdateAccessState(type, Guid.Parse(userId.Value), Guid.Parse(id));
 
-
-            if (Configuration.AccessTypes.Public == 0)
+            if (executionResult.IsFailure)
             {
-
+                return BadRequest(executionResult.Error);
             }
 
-            return Ok(new object[] { id, type, users});
+            await _folderAccessRepository.CrearAccess(Guid.Parse(id));
+
+            foreach (UserAccessModel user in users) 
+            {
+                if (string.IsNullOrEmpty(user.Id) || string.IsNullOrWhiteSpace(user.Id))
+                {
+                    return BadRequest("Bad user id");
+                }
+
+                var result = await _folderAccessRepository.OpenAccess(Guid.Parse(user.Id), Guid.Parse(id), user.Ability);
+
+                if (result.IsFailure)
+                {
+                    return Conflict(result.Error);
+                }
+            }
+
+            return Ok();
         }
     }
 }

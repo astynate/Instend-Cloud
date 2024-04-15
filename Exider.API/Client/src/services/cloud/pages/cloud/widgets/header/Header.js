@@ -73,6 +73,7 @@ const Header = (props) => {
     return (
       <div className={styles.header}>
         {isOpenAccessWindow === true ? <OpenAccessProcess
+            id={params.id}
             close={() => setOpenAccessWindowState(false)}
         /> : null}
         <div className={styles.buttons}>

@@ -65,11 +65,18 @@ namespace Exider.Core
             November,
             December
         }
+
         public enum AccessTypes
         {
             Public,
             Private,
             Favorites
+        }
+
+        public enum Abilities
+        {
+            Read,
+            Write
         }
 
         public static SymmetricSecurityKey GetSecurityKey()

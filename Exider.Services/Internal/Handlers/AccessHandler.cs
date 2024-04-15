@@ -29,11 +29,9 @@ namespace Exider.Services.Internal.Handlers
             var userId = _requestHandler.GetUserId(bearer);
 
             if (userId.IsFailure)
-            {
                 return false;
-            }
 
-            if (file.Access == Configuration.AccessTypes.Public)
+            if (file.OwnerId == Guid.Parse(userId.Value))
                 return true;
 
             if (file.Access == Configuration.AccessTypes.Private && Guid.Parse(userId.Value) != file.OwnerId)
@@ -50,17 +48,15 @@ namespace Exider.Services.Internal.Handlers
             var userId = _requestHandler.GetUserId(bearer);
 
             if (userId.IsFailure)
-            {
                 return false;
-            }
 
-            if (folder.Access == Configuration.AccessTypes.Public)
+            if (folder.OwnerId == Guid.Parse(userId.Value))
                 return true;
 
             if (folder.Access == Configuration.AccessTypes.Private && Guid.Parse(userId.Value) != folder.OwnerId)
                 return false;
 
-            if (folder.Access == Configuration.AccessTypes.Favorites && await _folderAccessRepository.GetUserAccess(Guid.Parse(userId.Value), folder.Id))
+            if (folder.Access == Configuration.AccessTypes.Favorites && await _fileAccessRepository.GetUserAccess(Guid.Parse(userId.Value), folder.Id))
                 return false;
 
             return true;

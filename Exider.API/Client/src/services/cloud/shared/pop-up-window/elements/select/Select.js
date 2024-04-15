@@ -30,11 +30,14 @@ const Select = (props) => {
             {isOpen ?
                 <div className={styles.all} onClick={() => setOpenState(false)}>
                     {props.items.map((item, index) => 
-                        (<span key={index} onClick={() => {
+                        (<span key={index} onClick={async () => {
                             if (props.setCurrent) {
-                                setAbility(index);
-                                props.setCurrent(index);
-                            }  
+                                if (item !== 'Delete') {
+                                    setAbility(index);
+                                    props.setCurrent(index);
+                                }
+                                await props.callbacks[index]();
+                            }
                         }}>{item}</span>)
                     )}
                 </div>

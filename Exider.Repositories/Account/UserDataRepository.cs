@@ -1,7 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core;
 using Exider.Core.Models.Account;
-using Exider.Core.Models.Storage;
 using Exider.Core.TransferModels.Account;
 using Exider.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;

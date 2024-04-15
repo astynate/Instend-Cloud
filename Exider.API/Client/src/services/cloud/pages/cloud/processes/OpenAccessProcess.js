@@ -1,5 +1,4 @@
 import React, { useState, createContext } from 'react';
-import styles from './main.module.css'
 import AccessPicker from '../widgets/access-picker/AccessPicker';
 import OpenAccess from '../widgets/open-access/OpenAccess';
 import { instance } from '../../../../../state/Interceptors';
@@ -14,13 +13,7 @@ const OpenAccessProcess = (props) => {
     const [isSearching, setSearchingState] = useState(false);
 
     const SendAccessRequest = async (access, users) => {
-        const form = new FormData();
-
-        form.append("id", props.id || "");
-        form.append("type", access)
-        form.append("users", users);
-        
-        await instance.post(`/access`, form);
+        await instance.post(`/access?id=${props.id || ""}&type=${access}`, users.map(x => ({id: x.id, ability: x.ability})));
     };
 
     useState(() => {

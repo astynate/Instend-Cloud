@@ -47,7 +47,7 @@ const Friends = () => {
                         <div className={styles.select}>
                             <Select
                                 items={[
-                                    "Read only",
+                                    "Read",
                                     "Edit",
                                     "Delete"
                                 ]}
@@ -59,6 +59,15 @@ const Friends = () => {
                                     });
                                     user.ability = state;
                                 }}
+                                callbacks={[
+                                    () => {},
+                                    () => {},
+                                    () => {
+                                        context.setUsers((prev) => {
+                                            return prev.filter(x => x.id !== user.id);
+                                        }); 
+                                    }
+                                ]}
                             />
                         </div>
                     </div>

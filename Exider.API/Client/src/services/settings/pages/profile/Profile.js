@@ -105,7 +105,6 @@ const Profile = observer((props) => {
     useEffect(() => {
 
         const SetDefault = async () => {
-
             setAvatar(`data:image/png;base64,${user.avatar || ""}`);
             setHeader(`data:image/png;base64,${user.header || ""}`);
             setProfileSettings(defaultProfileSettings);
@@ -117,13 +116,10 @@ const Profile = observer((props) => {
             nickname.current.value = user.nickname;
 
             props.setCancelState(false);
-
         }
 
         if (props.cancel) {
-
             SetDefault();
-
         }
 
     }, [props.cancel]);
@@ -265,9 +261,7 @@ const Profile = observer((props) => {
                 />
             </div>
         </ProfileSettingsContext.Provider>
-        
     );
-
 });
 
 export default Profile;

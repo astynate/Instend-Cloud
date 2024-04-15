@@ -15,7 +15,15 @@ namespace Exider.Core.Models.Storage
         [Column("type")] public string? Type { get; private set; } = null;
         [Column("owner_id")] public Guid OwnerId { get; private set; }
         [Column("folder_id")] public Guid FolderId { get; private set; }
-        [Column("access")] public Configuration.AccessTypes Access { get; private set; }
+        [Column("access")] public string AccessId { get; set; } = Configuration.AccessTypes.Private.ToString();
+
+        [EnumDataType(typeof(Configuration.AccessTypes))]
+        [NotMapped]
+        public Configuration.AccessTypes Access
+        {
+            get => Enum.Parse<Configuration.AccessTypes>(AccessId);
+            set => AccessId = value.ToString();
+        }
 
         [NotMapped] public byte[] FileAsBytes { get; private set; } = new byte[0];
 
