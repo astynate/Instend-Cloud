@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styles from './main.module.css'
 import PreviewButton from '../../shared/button/PreviewButton';
 import account from './images/account.png';
 import arrow from './images/arrow.png';
-import trash from './images/trash.png';
 import download from './images/download.png';
+import { instance } from '../../../../state/Interceptors';
+import { DownloadFromResponse } from '../../../../utils/DownloadFromResponse';
 
 const PreviewHeader = (props) => {
     return (
@@ -23,7 +24,20 @@ const PreviewHeader = (props) => {
             <div className={styles.buttons}>
                 <PreviewButton 
                     src={download}
-                    title="Download" 
+                    title="Download"
+                    onClick={async () => {
+                        if (props.id) {
+                            await instance
+                            .get(`/file/download?id=${props.id}`)
+                            .then((response) => {
+                                DownloadFromResponse(response)
+                            })
+                            .catch((error) => {
+                                props.error('Attention!', error.response.data);
+                                props.close();
+                            });
+                        }
+                    }}
                 />
             </div>
         </div>

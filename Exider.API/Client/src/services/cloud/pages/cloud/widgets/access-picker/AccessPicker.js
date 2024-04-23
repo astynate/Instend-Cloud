@@ -6,9 +6,14 @@ import friends from './images/friends.png';
 import link from './images/link.png';
 import next from './images/next.png';
 import Button from '../../../../shared/pop-up-window/elements/button/Button';
+import Loader from '../../../../shared/loader/Loader';
+import copy from './images/copy.png';
+import { useParams } from 'react-router-dom';
 
 const AccessPicker = (props) => {
-    const [activeElement, setActiveElement] = props.access;
+    const [isCopyInfoOpen, setCopyInfoState] = useState(false);
+    const [isCopied, setCopiedState] = useState(false);
+    const params = useParams();
 
     return (
         <PopUpWindow 
@@ -17,41 +22,71 @@ const AccessPicker = (props) => {
             title={"Manage access"}
         >
             <div className={styles.accessPicker}>
-                <div 
-                    className={styles.item} 
-                    id={activeElement === 'private' ? 'active' : ''} 
-                    onClick={() => setActiveElement('private')}
-                >
-                    <img src={personal} className={styles.headerImage} />
-                    <span className={styles.title}>Private access</span>
-                    <div className={styles.select}></div>
+            {props.isLoading ?
+
+                <div className={styles.loaderWrapper}>
+                    <Loader />
                 </div>
-                <div 
-                    className={styles.item} 
-                    id={activeElement === 'favorites' ? 'active' : ''} 
-                    onClick={() => {
-                        setActiveElement('favorites');
-                        props.next();
-                    }}
-                >
-                    <img src={friends} className={styles.headerImage} />
-                    <span className={styles.title}>Only people which you choose</span>
-                    <img src={next} className={styles.next} />
-                </div>
-                <div 
-                    className={styles.item} 
-                    id={activeElement === 'public' ? 'active' : ''} 
-                    onClick={() => setActiveElement('public')}
-                >
-                    <img src={link} className={styles.headerImage} />
-                    <span className={styles.title}>Everybody who have link</span>
-                    <div className={styles.select}></div>
-                </div>
-                <div className={styles.footer}>
-                    <div className={styles.copy}>
-                        <span>Copy link</span>
+
+            :
+                <>    
+                    <div 
+                        className={styles.item} 
+                        id={props.access[0] === 0 ? 'active' : ''} 
+                        onClick={() => props.access[1](0)}
+                    >
+                        <img src={personal} className={styles.headerImage} />
+                        <span className={styles.title}>Private access</span>
+                        <div className={styles.select}></div>
                     </div>
-                    <Button title="Save" callback={() => props.send()} />
+                    <div 
+                        className={styles.item} 
+                        id={props.access[0] === 1 ? 'active' : ''} 
+                        onClick={() => {
+                            props.access[1](1);
+                            props.next();
+                        }}
+                    >
+                        <img src={friends} className={styles.headerImage} />
+                        <span className={styles.title}>Only people which you choose</span>
+                        <img src={next} className={styles.next} />
+                    </div>
+                    <div 
+                        className={styles.item} 
+                        id={props.access[0] === 2 ? 'active' : ''} 
+                        onClick={() => props.access[1](2)}
+                    >
+                        <img src={link} className={styles.headerImage} />
+                        <span className={styles.title}>Everybody who have link</span>
+                        <div className={styles.select}></div>
+                    </div>
+                </>}
+                <div className={styles.footer}>
+                    <div className={styles.copyWrapper}>
+                        {isCopyInfoOpen ? 
+                            <span className={styles.info}>{isCopied ? "Copied" : "Copy"}</span>
+                        : null}
+                        <div className={styles.copy} 
+                            onMouseOver={() => {
+                                setCopiedState(false);
+                                setCopyInfoState(true)
+                            }}
+                            onMouseLeave={() => setCopyInfoState(false)}
+                            onClick={() => {
+                                navigator.clipboard.writeText('http://localhost:44441/cloud' + params.id);
+                                setCopiedState(true);
+                            }}
+                        >
+                            <img src={copy} />
+                            <span>Link</span>
+                        </div>
+                    </div>
+                    <Button title="Save" callback={
+                        async () => {
+                            await props.send();
+                            props.close();
+                        } 
+                    } />
                 </div>
             </div>
         </PopUpWindow>

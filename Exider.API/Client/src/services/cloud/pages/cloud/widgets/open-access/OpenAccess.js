@@ -2,8 +2,10 @@ import styles from './main.module.css';
 import PopUpWindow from '../../../../shared/pop-up-window/PopUpWindow';
 import Search from '../../../../shared/pop-up-window/elements/search/Search';
 import Friends from '../../../../shared/pop-up-window/elements/friends/Friends';
+import { useState } from 'react';
 
 const OpenAccess = (props) => {
+    const [isLoading, setLoadingState] = useState(false);
 
     return (
         <PopUpWindow 
@@ -13,8 +15,13 @@ const OpenAccess = (props) => {
             title={"Manage access"}
         >
                 <div className={styles.openAccessWrapper}>
-                    <Search />
-                    <Friends />
+                    <Search 
+                        isLoading={isLoading}
+                        setLoadingState={setLoadingState}
+                    />
+                    <Friends 
+                        isLoading={isLoading} 
+                    />
                 </div>
         </PopUpWindow>
     );

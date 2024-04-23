@@ -1,6 +1,5 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { instance } from '../../../../../state/Interceptors';
-import { ConvertDate } from '../../../../../utils/DateHandler';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import Search from '../../../features/search/Search';
@@ -22,8 +21,7 @@ import Folder from '../shared/folder/Folder';
 import { useNavigate, useParams } from 'react-router-dom';
 import PropertiesWindow from '../widgets/properties/Properties';
 import { storageWSContext } from '../../../layout/Layout';
-import PopUpWindow from '../../../shared/pop-up-window/PopUpWindow';
-import AccessPicker from '../widgets/access-picker/AccessPicker';
+import Information from '../../../shared/information/Information';
 
 const GuidEmpthy = '00000000-0000-0000-0000-000000000000';
 
@@ -43,6 +41,25 @@ const Cloud = observer((props) => {
   const [isPreview, setPreviewState] = useState(false);
   const [isRightPanelOpen, setRightPanelState] = useState(false);
   const [path, setPath] = useState([]);
+  const [isError, setErrorState] = useState(false);
+  const [errorTitle, setErrorTitle] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const ErrorMessage = (title, message) => {
+    setErrorTitle(title);
+    setErrorMessage(message);
+    setErrorState(true);
+  }
+
+  const OpenPreview = (file) => {
+    setSelectedItems([file]);
+
+    if (file.strategy === "file") {
+      setPreviewState(true);
+    } else {
+      navigate(`/cloud/${selectedItems[0].id}`)
+    }
+  };
 
   storageWSContext.useSignalREffect(
     "CreateFolder",
@@ -54,7 +71,7 @@ const Cloud = observer((props) => {
           id={folder.id}
           folder={folder}
           name={folder.name} 
-          time={ConvertDate(folder.creationTime)}
+          time={folder.creationTime}
           onContextMenu={(event) => {
             event.preventDefault();
             setContextMenuState(true);
@@ -77,9 +94,10 @@ const Cloud = observer((props) => {
           <File 
           key={file.id} 
           name={file.name} 
-          time={ConvertDate(file.lastEditTime)}
+          time={file.lastEditTime}
           image={file.fileAsBytes == "" ? null : file.fileAsBytes}
           type={file.type}
+          onClick={() => OpenPreview(file)}
           onContextMenu={(event) => {
             event.preventDefault();
             setContextMenuState(true);
@@ -159,7 +177,8 @@ const Cloud = observer((props) => {
 
   useEffect(() => {
     const GetFiles = async () => {
-      const response = await instance.get(`/storage?id=${params.id ? params.id : ""}`);
+      const response = await instance.get(`/storage?id=${params.id ? params.id : ""}`)
+        .catch((error) => ErrorMessage('Attention!', error.response.data));
 
       setFolders(response.data[0] ? response.data[0].map(element => {
         element.strategy = "folder";
@@ -170,7 +189,7 @@ const Cloud = observer((props) => {
             id={element.id}
             folder={element}
             name={element.name} 
-            time={ConvertDate(element.creationTime)}
+            time={element.creationTime}
             onContextMenu={(event) => {
               event.preventDefault();
               setContextMenuState(true);
@@ -189,9 +208,10 @@ const Cloud = observer((props) => {
           <File 
             key={element.id} 
             name={element.name} 
-            time={ConvertDate(element.lastEditTime)}
+            time={element.lastEditTime}
             image={element.fileAsBytes == "" ? null : element.fileAsBytes}
             type={element.type}
+            onClick={() => OpenPreview(element)}
             onContextMenu={(event) => {
               event.preventDefault();
               setContextMenuState(true);
@@ -230,6 +250,7 @@ const Cloud = observer((props) => {
           <Preview
             close={() => setPreviewState(false)} 
             file={selectedItems[0]}
+            ErrorMessage={ErrorMessage}
           />
         : null}
       <div className={styles.wrapper}>
@@ -239,6 +260,7 @@ const Cloud = observer((props) => {
             path={path}
             files={[files, setFiles]}
             folders={[folders, setFolders]}
+            error={ErrorMessage}
           />
           {isRenameOpen === true ?
             <PopUpField 
@@ -246,22 +268,30 @@ const Cloud = observer((props) => {
               text={'This field is require'}
               field={[fileName, setFilename]}
               close={() => setRenameState(false)}
-              callback={() => 
-                instance.put(`/${selectedItems[0].strategy === "file" ? 
-                  "storage" : "folders"}?id=${selectedItems[0].id}&folderId=${selectedItems[0].folderId === GuidEmpthy ?
-                    selectedItems[0].ownerId : selectedItems[0].folderId}&name=${fileName}`)
-              }
+              callback={async () => {
+                if (!selectedItems || selectedItems.length === 0) {
+                  console.error('No items selected');
+                  return;
+                }
+              
+                const item = selectedItems[0];
+                const endpoint = item.strategy === "file" ? "storage" : "folders";
+                const folderId = item.folderId === GuidEmpthy ? item.ownerId : item.folderId;
+              
+                await instance.put(`/${endpoint}?id=${item.id}&folderId=${folderId}&name=${fileName}`)
+                  .catch((error) => ErrorMessage('Attention!', error.response.data));
+              }}
           /> : null}
+          <Information
+            open={isError}
+            close={() => setErrorState(false)}
+            title={errorTitle}
+            message={errorMessage}
+          />
           {isContextMenuOpen === true ?
             <ContextMenu 
               items={[
-                [Open, "Open", () => {
-                  if (selectedItems[0].strategy === "file") {
-                    setPreviewState(true);
-                  } else {
-                    navigate(`/cloud/${selectedItems[0].id}`)
-                  }
-                }],
+                [Open, "Open", () => OpenPreview(selectedItems[0])],
                 [Rename, "Rename", () => setRenameState(true)],
                 [Properties, "Properties", () => { 
                   if (selectedItems[0].strategy === "file") {
@@ -271,10 +301,13 @@ const Cloud = observer((props) => {
                   }
                 }],
                 [Share, "Share", () => alert('!')],
-                [Delete, "Delete", () => {
-                    instance.delete(`/${selectedItems[0].strategy === "file" ? 
-                      "storage" : "folders"}?id=${selectedItems[0].id}&folderId=${selectedItems[0].folderId === GuidEmpthy ?
-                        selectedItems[0].ownerId : selectedItems[0].folderId}`);
+                [Delete, "Delete", async () => {
+                  const item = selectedItems[0];
+                  const endpoint = item.strategy === "file" ? "storage" : "folders";
+                  const folderId = item.folderId === GuidEmpthy ? item.ownerId : item.folderId;
+                
+                  await instance.delete(`/${endpoint}?id=${item.id}&folderId=${folderId}&name=${fileName}`)
+                    .catch((error) => ErrorMessage('Attention!', error.response.data));
                   }
                 ]
               ]} 

@@ -9,24 +9,27 @@ const PopUpWindow = (props) => {
         return (
             <div className={styles.popUpWrapper}>
                 <div className={styles.window}>
-                    <div className={styles.header}>
-                        {props.back ? 
-                            <div className={styles.backButton}>
-                                <img src={back} 
-                                    className={styles.back} 
-                                    draggable={false} 
-                                    onClick={props.back}
+                    {props.isHeaderless ?
+                        null 
+                    :
+                        <div className={styles.header}>
+                            {props.back ? 
+                                <div className={styles.backButton}>
+                                    <img src={back} 
+                                        className={styles.back} 
+                                        draggable={false} 
+                                        onClick={props.back}
+                                    />
+                                </div>
+                            : null}
+                            <h1 className={styles.title}>{props.title}</h1>
+                            <div className={styles.close} onClick={props.close}>
+                                <img src={cancel} 
+                                    className={styles.closeImage} 
+                                    draggable={false}
                                 />
                             </div>
-                        : null}
-                        <h1 className={styles.title}>{props.title}</h1>
-                        <div className={styles.close} onClick={props.close}>
-                            <img src={cancel} 
-                                className={styles.closeImage} 
-                                draggable={false}
-                            />
-                        </div>
-                    </div>
+                    </div>}
                     <div className={styles.popupContent}>
                         {props.children}
                     </div>

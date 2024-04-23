@@ -1,31 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
 import PreviewHeader from '../widgets/header/Header';
-import Scale from '../shared/scale/Scale';
 import { instance } from '../../../state/Interceptors';
 import { ConvertFullDate } from '../../../utils/DateHandler';
 
 const Preview = (props) => {
     const [isLoading, setLoadingState] = useState(true);
     const [file, setFile] = useState(null);
+    const fileRef = useRef();
+    const [scaleFactor, setScaleFactor] = useState(100);
 
     useEffect(() => {
 
+        try {
+
+            let firstChild = fileRef.current.querySelector('*');
+            firstChild.style.transform = `scale(${scaleFactor}%)`;
+
+        } catch { }
+
+    }, [scaleFactor])
+
+    useEffect(() => {
         const GetFile = async () => {
-            const response = await instance
+            await instance
                 .get(`/file?id=${props.file.id}`)
-                .catch(() => props.close());
-                
-            if (response.status === 200){
-                setFile(response.data);
-                setLoadingState(false);
-            } else {
-                props.close();
-            }
+                .then((response) => {
+                    setFile(response.data);
+                    setLoadingState(false);
+                })
+                .catch((error) => {
+                    props.ErrorMessage('Attention!', error.response.data);
+                    props.close();
+                });
         };
 
         GetFile();
-
     }, []);
 
     return (
@@ -34,13 +44,35 @@ const Preview = (props) => {
                 name={props.file.name}
                 time={ConvertFullDate(props.file.lastEditTime)}
                 close={props.close}
+                id={props.file.id}
+                error={props.ErrorMessage}
             />
             {isLoading ?
                 <div className={styles.loader}></div>
             :   
                 <div className={styles.preview}>
-                    <div className={styles.file} dangerouslySetInnerHTML={{ __html: file }}></div>
+                    <div 
+                        className={styles.file} ref={fileRef} 
+                        dangerouslySetInnerHTML={{ __html: file }}
+                    ></div>
                 </div>}
+            <div className={styles.footer}>
+                <div className={styles.left}>
+
+                </div>
+                <div className={styles.center}>
+                    <input
+                        type="range"
+                        min="100"
+                        max="200"
+                        value={scaleFactor}
+                        onChange={(event) => setScaleFactor(event.target.value)}
+                    />
+                </div>
+                <div className={styles.right}>
+                    
+                </div>
+            </div>
         </div>
     );
  };

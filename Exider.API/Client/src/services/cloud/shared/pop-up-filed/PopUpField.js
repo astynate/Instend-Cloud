@@ -6,10 +6,10 @@ const PopUpField = (props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = async (event) => {
       if (wrapper.current && !wrapper.current.contains(event.target)) {
         if (isOpen) {
-          props.close();
+          await props.close();
           setIsOpen(false);
         }
       }
@@ -35,11 +35,11 @@ const PopUpField = (props) => {
         maxLength={50} 
         minLength={1}
       />
-      <button onClick={() => {
+      <button onClick={async () => {
         if (props.field[0] === '' || props.field[0] === null){
           alert('This field must not be empthy');
         } else {
-          props.callback();
+          await props.callback();
           props.close();
         }
       }}>Next</button>

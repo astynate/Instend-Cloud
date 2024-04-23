@@ -4,15 +4,20 @@ import search from '../../images/search.png';
 import { OpenAccessContext } from '../../../../pages/cloud/processes/OpenAccessProcess';
 import { instance } from '../../../../../../state/Interceptors';
 
-const Search = () => {
+const Search = (props) => {
     const [prefix, setPrefix] = useState('');
     const context = useContext(OpenAccessContext);
     const [prevTimer, setPrevTimer] = useState();
 
     useEffect(() => {
         const GetUsers = async () => {
-            const response = await instance.get(`/accounts/all/${prefix}`);
-            context.setSearchUsers(response.data);
+            props.setLoadingState(true);
+            try {
+                const response = await instance.get(`/accounts/all/${prefix}`);
+                context.setSearchUsers(response.data);
+            } finally {
+                props.setLoadingState(false);
+            }
         };
 
         if (prefix != null && prefix != "") {
@@ -27,6 +32,7 @@ const Search = () => {
         } else {
             context.setSearchUsers([]);
             context.setSearchingState(false);
+            props.setLoadingState(false);
         }
     }, [prefix]);
 

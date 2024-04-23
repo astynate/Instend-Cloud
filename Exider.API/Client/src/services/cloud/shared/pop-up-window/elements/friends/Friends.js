@@ -1,9 +1,10 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import styles from './main.module.css';
 import { OpenAccessContext } from '../../../../pages/cloud/processes/OpenAccessProcess';
 import Select from '../select/Select';
+import Loader from '../../../loader/Loader';
 
-const Friends = () => {
+const Friends = (props) => {
     const context = useContext(OpenAccessContext);
 
     const AddUser = (id) => {
@@ -22,6 +23,11 @@ const Friends = () => {
     
     return (
         <div className={styles.friends}>
+            {props.isLoading ?
+                <div className={styles.loaderWrapper}>
+                    <Loader />
+                </div>
+            : null}
             {context.searchUsers && context.searchUsers.map ? 
                 context.searchUsers.filter(x => context.users.map(user => user.id).includes(x.id) == false).map((user, index) =>
                     <div className={styles.friend} key={index}>

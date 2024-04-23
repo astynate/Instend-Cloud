@@ -8,7 +8,6 @@
     z-index: 1;
     background: var(--main-background-color);
     padding-bottom: 15px;
-    /* backdrop-filter: var(--main-blur-effect); */
 }
 
 .buttons {

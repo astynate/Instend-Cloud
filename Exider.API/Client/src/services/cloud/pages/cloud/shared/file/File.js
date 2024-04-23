@@ -1,8 +1,8 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import styles from './main.module.css';
+import { ConvertDate } from '../../../../../../utils/DateHandler';
 
 const File = (props) => {
-
   const [aspectRatio, setAspectRatio] = useState(1);
 
   useLayoutEffect(() => {
@@ -32,17 +32,15 @@ const File = (props) => {
   } else {
 
     return (
-      <div className={styles.wrapper} onContextMenu={props.onContextMenu}>
+      <div className={styles.wrapper} onClick={props.onClick} onContextMenu={props.onContextMenu}>
         <div className={styles.content}>
           {props.image != null ? 
-          // <div className={styles.imageWrapper}>
             <img 
               src={`data:image/png;base64,${props.image}`} 
               className={styles.image}
               draggable={false}
               id={aspectRatio < 1 ? 'width' : 'height'}
             />
-          // </div>
           : 
             <div className={styles.file}>
               <span>{props.type}</span>
@@ -50,7 +48,7 @@ const File = (props) => {
         </div>
         <div className={styles.description}>
           <span className={styles.name}>{props.name}</span>
-          <span className={styles.time}>{props.time}</span>
+          <span className={styles.time}>{ConvertDate(props.time)}</span>
         </div>
       </div>
     );

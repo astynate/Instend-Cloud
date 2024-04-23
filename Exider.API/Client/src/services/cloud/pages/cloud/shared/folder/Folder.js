@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from './main.module.css';
 import { Link } from 'react-router-dom';
+import { ConvertDate } from '../../../../../../utils/DateHandler';
 
 const Folder = (props) => {
   const [files, setFiles] = useState([]);
@@ -27,7 +28,7 @@ const Folder = (props) => {
         </div>
         <div className={styles.description}>
           <span className={styles.name}>{props.name}</span>
-          <span className={styles.time}>{props.time}</span>
+          <span className={styles.time}>{ConvertDate(props.time)}</span>
         </div>
       </div>
     </Link>

@@ -11,6 +11,7 @@ import Next from './images/arrow.png';
 import { instance } from "../../../../../../state/Interceptors";
 import ContextMenu from "../../../../shared/context-menu/ContextMenu";
 import OpenAccessProcess from "../../processes/OpenAccessProcess";
+import { DownloadFromResponse } from "../../../../../../utils/DownloadFromResponse";
 
 const Header = (props) => {
     const params = useParams();
@@ -21,39 +22,39 @@ const Header = (props) => {
     const [isOpenAccessWindow, setOpenAccessWindowState] = useState(false);
 
     const SortByNameAsending = () => {
-        props.folders[1]((prev) => {
-            return prev.slice().sort((a, b) => (a.props.name < b.props.name ? 1 : -1));
-        });
-        props.files[1]((prev) => {
-            return prev.slice().sort((a, b) => (a.props.name < b.props.name ? 1 : -1));
-        });
+        props.folders[1]((prev) => [...prev].sort((a, b) => 
+            a.props.name.localeCompare(b.props.name)
+        ));
+        props.files[1]((prev) => [...prev].sort((a, b) => 
+            a.props.name.localeCompare(b.props.name)
+        ));
     }
-
+    
     const SortByNameDesending = () => {
-        props.folders[1]((prev) => {
-            return prev.slice().sort((a, b) => (a.props.name > b.props.name ? 1 : -1));
-        });
-        props.files[1]((prev) => {
-            return prev.slice().sort((a, b) => (a.props.name > b.props.name ? 1 : -1));
-        });
-    }
+        props.folders[1]((prev) => [...prev].sort((a, b) => 
+            b.props.name.localeCompare(a.props.name)
+        ));
+        props.files[1]((prev) => [...prev].sort((a, b) => 
+            b.props.name.localeCompare(a.props.name)
+        ));
+    }    
 
     const SortByDateAsending = () => {
-        props.folders[1]((prev) => {
-            return prev.slice().sort((a, b) => a.props.creationTime - b.props.creationTime);
-        });
-        props.files[1]((prev) => {
-            return prev.slice().sort((a, b) => a.props.creationTime - b.props.creationTime);
-        });
+        props.folders[1]((prev) => [...prev].sort((a, b) => {
+            return new Date(b.props.time).getTime() - new Date(a.props.time).getTime();
+        }));      
+        props.files[1]((prev) => [...prev].sort((a, b) => {
+            return new Date(b.props.time).getTime() - new Date(a.props.time).getTime();
+        })); 
     }    
 
     const SortByDateDesending = () => {
-        props.folders[1]((prev) => {
-            return prev.slice().sort((a, b) => b.props.creationTime - a.props.creationTime);
-        });
-        props.files[1]((prev) => {
-            return prev.slice().sort((a, b) => b.props.creationTime - a.props.creationTime);
-        });
+        props.folders[1]((prev) => [...prev].sort((a, b) => {
+            return new Date(a.props.time).getTime() - new Date(b.props.time).getTime();
+        }));      
+        props.files[1]((prev) => [...prev].sort((a, b) => {
+            return new Date(a.props.time).getTime() - new Date(b.props.time).getTime();
+        })); 
     }    
 
     useEffect(() => {
@@ -81,7 +82,13 @@ const Header = (props) => {
                 <Button 
                     img={OpenAccess} 
                     title="Open access" 
-                    onClick={() => setOpenAccessWindowState(true)}
+                    onClick={() => {
+                        if (params.id) {
+                            setOpenAccessWindowState(true)
+                        } else {
+                            props.error('Sorry but...', 'You cannot open access to your root f');
+                        }
+                    }}
                 />
             </div>
             <div className={styles.buttonBlock}>
@@ -100,22 +107,7 @@ const Header = (props) => {
                         responseType: 'blob',
                     })
                     .then((response) => {
-                        const url = window.URL.createObjectURL(new Blob([response.data]));
-                        const link = document.createElement('a');
-                        link.href = url;
-                        const contentDisposition = response.headers['content-disposition'];
-                        let filename = 'default_filename.zip';
-                        if (contentDisposition) {
-                            const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-                            let matches = filenameRegex.exec(contentDisposition);
-                            if (matches != null && matches[1]) { 
-                              filename = matches[1].replace(/['"]/g, '');
-                            }
-                        }
-                        link.setAttribute('download', filename);
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
+                        DownloadFromResponse(response)
                     });
                 }}/>
                 <Button 
@@ -124,7 +116,7 @@ const Header = (props) => {
                     onClick={(event) => {
                         setSortMenuState(prev => !prev);
                         setSortMenuPosition([event.clientX, 90]);
-                    }} 
+                    }}
                 />
             </div>
         </div>

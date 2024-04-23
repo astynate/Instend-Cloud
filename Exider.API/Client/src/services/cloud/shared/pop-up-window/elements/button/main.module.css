@@ -1,10 +1,20 @@
 .button {
     height: fit-content;
     width: fit-content;
-    padding: 7px 20px;
-    background: var(--main-blue-color);
-    color: var(--main-font-color);
-    border-radius: 15px;
-    font-size: 15px;
+    padding: 7px 25px;
+    background: var(--main-font-color);
+    color: var(--main-paragrapp-color);
+    border-radius: 7px;
+    font-size: 16px;
     cursor: pointer;
+    font-weight: 600;
+    transition: 0.25s ease;
+}
+
+.button:hover {
+    transform: scale(102%);
+}
+
+.button:active {
+    transform: scale(98%);
 }

@@ -10,7 +10,8 @@ const context = [
     "/storage",
     "/file",
     "/folders",
-    "/access"
+    "/access",
+    "/api",
 ];
 
 const onError = (err, req, resp, target) => {

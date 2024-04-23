@@ -37,7 +37,7 @@ const Layout = () => {
                 <div className='cloud-wrapper'>
                     {isLoading && <Loader />}
                     <Helmet>
-                        <title>Exider Cloud</title>
+                        <title>Yexider Cloud</title>
                     </Helmet>
                     {windowWidth > 700 ? <Desktop /> : <Mobile /> }
                 </div>

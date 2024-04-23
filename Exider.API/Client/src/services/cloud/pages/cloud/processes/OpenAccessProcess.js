@@ -7,20 +7,35 @@ export const OpenAccessContext = createContext();
 
 const OpenAccessProcess = (props) => {
     const [state, setState] = useState('AccessPicker');
-    const [access, setAccess] = useState(props.access || "private");
+    const [access, setAccess] = useState(props.access || 0);
     const [users, setUsers] = useState([]);
     const [searchUsers, setSearchUsers] = useState([]);
     const [isSearching, setSearchingState] = useState(false);
+    const [isLoading, setLoadingState] = useState(true);
 
     const SendAccessRequest = async (access, users) => {
-        await instance.post(`/access?id=${props.id || ""}&type=${access}`, users.map(x => ({id: x.id, ability: x.ability})));
+        await instance.post(`/access?id=${props.id || ""}&type=${access}`, 
+            users.map(x => ({id: x.id, ability: x.ability})));
     };
 
     useState(() => {
         const GetAccessState = async () => {
             const response = await instance.get(`/access?id=${props.id || ""}`);
-            setAccess(response ? response.data : "private");
-        }
+            setAccess(response.data[0] ? response.data[0] : 0);
+        
+            if (response.data[1]) {
+                setUsers(response.data[1].map(element => ({
+                    id: element.user.id,
+                    name: element.user.name,
+                    surname: element.user.surname,
+                    nickname: element.user.nickname,
+                    avatar: element.base64Avatar,
+                    ability: element.access.ability
+                })));
+            }
+
+            setLoadingState(false);
+        }        
 
         GetAccessState();
     }, []);
@@ -32,6 +47,7 @@ const OpenAccessProcess = (props) => {
                 close={props.close}
                 access={[access, setAccess]}
                 send={() => SendAccessRequest(access, users)}
+                isLoading={isLoading}
             />
         ),
         'OpenAccess': (

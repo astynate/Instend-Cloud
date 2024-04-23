@@ -1,0 +1,15 @@
+.photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-gap: 4px;
+    margin-right: 10px;
+    padding-bottom: 20px;
+    margin-top: 15px;
+}
+
+.date {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--main-font-color);
+}

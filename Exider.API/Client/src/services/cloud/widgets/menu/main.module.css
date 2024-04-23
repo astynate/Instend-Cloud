@@ -1,0 +1,25 @@
+.menu {
+    height: auto;
+    display: flex;
+    grid-gap: 30px;
+    left: 0;
+    padding-bottom: 5px;
+    z-index: 9999;
+}
+
+.button {
+    user-select: none;
+    cursor: pointer;
+}
+
+.button a {
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--main-paragraph-color);
+    padding-bottom: 10px;
+}
+
+.button[id="active"] a {
+    color: var(--main-font-color);
+    border-bottom: 2px solid var(--main-font-color);
+}
