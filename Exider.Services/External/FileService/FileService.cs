@@ -221,5 +221,14 @@ namespace Exider.Services.External.FileService
             }
         }
 
+        public string ConvertSystemTypeToContentType(string systemType)
+        {
+            if (Configuration.imageTypes.Contains(systemType))
+            {
+                return "image/" + systemType;
+            }
+
+            return "application/" + systemType;
+        }
     }
 }

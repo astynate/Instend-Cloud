@@ -143,12 +143,12 @@ const Header = (props) => {
                 <Link to={`/cloud`} className={styles.folder}>
                     <span className={styles.path}>Cloud Storage</span>
                 </Link>
-                {props.path.map((element, index) => (
+                {props.path && props.path.map ? props.path.map((element, index) => (
                     <Link to={`/cloud/${element.id}`} className={styles.folder} key={index}>
                         <img src={Next} />
                         <span className={styles.path}>{element.name}</span>
                     </Link>
-                ))}
+                )) : null}
             </div>
         </div>
       </div>

@@ -15,7 +15,7 @@ const File = (props) => {
       setAspectRatio(height / width);
     };
 
-    img.src = `data:image/png;base64,${props.image}`;
+    img.src = `data:image/png;base64,${props.image ? props.image : null}`;
 
   }, [props.image]);
 

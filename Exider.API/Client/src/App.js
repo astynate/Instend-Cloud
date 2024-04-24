@@ -7,22 +7,23 @@ import { observer } from 'mobx-react-lite';
 import MainLoader from './components/loader/MainLoader';
 
 const App = observer(() => {
-
     let navigate = useNavigate();
     let location = useLocation();
 
     const {UpdateAuthorizeState, isLoading} = userState;
 
     useEffect(() => {
-
-        document.querySelector('#root').className = localStorage.getItem('color-mode');
-        UpdateAuthorizeState(location.pathname, navigate);
-
+        try {
+            document.querySelector('#root').className = localStorage.getItem('color-mode');
+            UpdateAuthorizeState(location.pathname, navigate);
+        } catch {
+            // console.error(error);
+        }
     }, []);
 
     return (
 
-        (isLoading ?  <MainLoader /> :
+        (isLoading ? <MainLoader /> :
 
             <>
                 <Routes>
@@ -33,7 +34,6 @@ const App = observer(() => {
             </>
         )
     );
-
 });
 
 export default App;

@@ -7,7 +7,6 @@ namespace Exider.Core.Models.Account
     [Table("user_data")]
     public class UserDataModel
     {
-
         [Column("user_id")][Key] public Guid UserId { get; private set; }
         [Column("avatar")] public string? Avatar { get; private set; } = Configuration.DefaultAvatarPath;
         [Column("header")] public string Header { get; private set; } = string.Empty;
@@ -32,6 +31,5 @@ namespace Exider.Core.Models.Account
 
             return Result.Success(userDataModel);
         }
-
     }
 }

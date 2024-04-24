@@ -9,6 +9,7 @@ namespace Exider.Repositories.Storage
         Task<Result> Delete(Guid id);
         Task<FileModel[]> GetByFolderId(Guid userId, Guid folderId);
         Task<Result<FileModel>> GetByIdAsync(Guid id);
+        Task<FileModel[]> GetLastPhotoByUserIdAsync(Guid userId, int from, int count);
         Task<Result<FileModel>> UpdateName(Guid id, string name);
     }
 }

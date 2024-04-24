@@ -1,4 +1,5 @@
-﻿using Exider.Core.Models.Storage;
+﻿using Exider.Core;
+using Exider.Core.Models.Storage;
 using Exider.Repositories.Storage;
 using Exider.Services.External.FileService;
 using Exider.Services.Internal.Handlers;
@@ -57,11 +58,12 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
             if (folder != null)
             {
-                bool isAvailable = await _accessHandler.GetAccessStateAsync(folder, Request.Headers["Authorization"]);
+                var available = await _accessHandler.GetAccessStateAsync(folder, 
+                    Configuration.Abilities.Read, Request.Headers["Authorization"]);
 
-                if (isAvailable == false) 
+                if (available.IsFailure) 
                 {
-                    return BadRequest("Access denied");
+                    return BadRequest(available.Error);
                 }
             }
 
@@ -99,11 +101,11 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                     return BadRequest("Folder not found");
                 }
 
-                bool isAvailable = await _accessHandler.GetAccessStateAsync(folderModel, Request.Headers["Authorization"]);
+                var available = await _accessHandler.GetAccessStateAsync(folderModel, Configuration.Abilities.Write, Request.Headers["Authorization"]);
 
-                if (isAvailable == false)
+                if (available.IsFailure)
                 {
-                    return BadRequest("Access denied");
+                    return BadRequest(available.Error);
                 }
             }
 
@@ -140,11 +142,11 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                     return BadRequest("Folder not found");
                 }
 
-                bool isAvailable = await _accessHandler.GetAccessStateAsync(folderModel, Request.Headers["Authorization"]);
+                var available = await _accessHandler.GetAccessStateAsync(folderModel, Configuration.Abilities.Write, Request.Headers["Authorization"]);
 
-                if (isAvailable == false)
+                if (available.IsFailure)
                 {
-                    return BadRequest("Access denied");
+                    return BadRequest(available.Error);
                 }
             }
 
@@ -176,11 +178,11 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                     return BadRequest("Folder not found");
                 }
 
-                bool isAvailable = await _accessHandler.GetAccessStateAsync(folderModel, Request.Headers["Authorization"]);
+                var available = await _accessHandler.GetAccessStateAsync(folderModel, Configuration.Abilities.Write, Request.Headers["Authorization"]);
 
-                if (isAvailable == false)
+                if (available.IsFailure)
                 {
-                    return BadRequest("Access denied");
+                    return BadRequest(available.Error);
                 }
             }
 

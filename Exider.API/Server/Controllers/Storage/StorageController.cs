@@ -62,12 +62,12 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest("File not found");
             }
 
-            bool isAvailable = await _accessHandler.GetAccessStateAsync(fileModel.Value, 
-                Request.Headers["Authorization"]);
+            var available = await _accessHandler.GetAccessStateAsync(fileModel.Value, 
+                Configuration.Abilities.Read, Request.Headers["Authorization"]);
 
-            if (isAvailable == false)
+            if (available.IsFailure)
             {
-                return BadRequest("Access denied");
+                return BadRequest(available.Error);
             }
 
             var file = fileService.GetFileAsHTMLBase64String(fileModel.Value);
@@ -78,6 +78,44 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             }
 
             return Ok(file.Value);
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("/file/download")]
+        public async Task<ActionResult> Download(IFileService fileService, string? id)
+        {
+            if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest("Invalid file id");
+            }
+
+            var fileModel = await _fileRespository.GetByIdAsync(Guid.Parse(id));
+
+            if (fileModel.IsFailure)
+            {
+                return BadRequest("File not found");
+            }
+
+            var available = await _accessHandler.GetAccessStateAsync(fileModel.Value,
+                Configuration.Abilities.Read, Request.Headers["Authorization"]);
+
+            if (available.IsFailure)
+            {
+                return BadRequest(available.Error);
+            }
+
+            var file = await fileService.ReadFileAsync(fileModel.Value.Path);
+
+            if (file.IsFailure)
+            {
+                return Conflict("Cannot read file");
+            }
+
+            string contentType = string.IsNullOrEmpty(fileModel.Value.Type) == false ? 
+                fileService.ConvertSystemTypeToContentType(fileModel.Value.Type) : "";
+
+            return File(file.Value, contentType, fileModel.Value.Name);
         }
 
         [HttpGet]
@@ -98,12 +136,12 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                     return BadRequest("Folder not found");
                 }
 
-                bool isAvailable = await _accessHandler.GetAccessStateAsync(folderModel, 
-                    Request.Headers["Authorization"]);
+                var available = await _accessHandler.GetAccessStateAsync(folderModel, 
+                    Configuration.Abilities.Read, Request.Headers["Authorization"]);
 
-                if (isAvailable == false)
+                if (available.IsFailure)
                 {
-                    return BadRequest("Access denied");
+                    return BadRequest(available.Error);
                 }
             }
 
@@ -130,12 +168,12 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                     return BadRequest("Folder not found");
                 }
 
-                bool isAvailable = await _accessHandler.GetAccessStateAsync(folderModel, 
-                    Request.Headers["Authorization"]);
+                var available = await _accessHandler.GetAccessStateAsync(folderModel, 
+                    Configuration.Abilities.Write, Request.Headers["Authorization"]);
 
-                if (isAvailable == false)
+                if (available.IsFailure)
                 {
-                    return BadRequest("Access denied");
+                    return BadRequest(available.Error);
                 }
             }
 
@@ -195,12 +233,12 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest("File not found");
             }
 
-            bool isAvailable = await _accessHandler.GetAccessStateAsync(fileModel.Value, 
-                Request.Headers["Authorization"]);
+            var available = await _accessHandler.GetAccessStateAsync(fileModel.Value, 
+                Configuration.Abilities.Write, Request.Headers["Authorization"]);
 
-            if (isAvailable == false)
+            if (available.IsFailure)
             {
-                return BadRequest("Access denied");
+                return BadRequest(available.Error);
             }
 
             var result = await _fileRespository.UpdateName(id, name);
@@ -232,12 +270,12 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest("File not found");
             }
 
-            bool isAvailable = await _accessHandler.GetAccessStateAsync(fileModel.Value,
-                Request.Headers["Authorization"]);
+            var available = await _accessHandler.GetAccessStateAsync(fileModel.Value,
+                Configuration.Abilities.Write, Request.Headers["Authorization"]);
 
-            if (isAvailable == false)
+            if (available.IsFailure)
             {
-                return BadRequest("Access denied");
+                return BadRequest(available.Error);
             }
 
             var result = await _fileRespository.Delete(id);

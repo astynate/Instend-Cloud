@@ -13,5 +13,6 @@ namespace Exider.Services.External.FileService
         byte[] GetPdfPreviewImage(string path);
         byte[] GetWordDocumentPreviewImage(string path);
         string WordToHTML(string path);
+        string ConvertSystemTypeToContentType(string systemType);
     }
 }

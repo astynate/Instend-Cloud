@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Header from '../../../widgets/header/Header';
 import { observer } from 'mobx-react-lite';
 import Search from '../../../features/search/Search';
@@ -11,6 +11,7 @@ import Range from '../../../shared/range/Range';
 
 const Gallery = observer((props) => {
   const [scale, setScale] = useState(150);
+  const scroll = useRef();
 
   useEffect(() => {
     if (props.setPanelState) {
@@ -20,7 +21,7 @@ const Gallery = observer((props) => {
   }, [props.setPanelState]);
 
   return (
-    <div className={styles.gallery}>
+    <div className={styles.gallery} ref={scroll}>
         <Header />
         <Search />
         <div className={styles.header}>
@@ -48,7 +49,7 @@ const Gallery = observer((props) => {
           </div>
         <div className={styles.content}>
           <Routes>
-            <Route path='' element={<Photos scale={scale} />} />
+            <Route path='' element={<Photos scale={scale} scroll={scroll} />} />
             <Route path='/albums' element={<Albums />} />
           </Routes>
         </div>

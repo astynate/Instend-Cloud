@@ -93,5 +93,15 @@ namespace Exider.Repositories.Storage
             await _context.SaveChangesAsync();
             return Result.Success();
         }
+
+        public async Task<FileModel[]> GetLastPhotoByUserIdAsync(Guid userId, int from, int count)
+        {
+            return await _context.Files.AsNoTracking()
+                .Where(x => x.OwnerId == userId && Configuration.imageTypes.Contains(x.Type))
+                .OrderByDescending(x => x.LastEditTime)
+                .Skip(from)
+                .Take(count)
+                .ToArrayAsync();
+        }
     }
 }

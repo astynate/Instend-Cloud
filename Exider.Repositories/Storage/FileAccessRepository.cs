@@ -19,6 +19,12 @@ namespace Exider.Repositories.Storage
                 x.FileId == fileId) != null;
         }
 
+        public async Task<bool> GetFolderAccess(Guid userId, Guid folderId)
+        {
+            return await _context.FileAccess.FirstOrDefaultAsync(x => x.UserId == userId &&
+                x.FileId == folderId) != null;
+        }
+
         public async Task<Result> OpenAccess(Guid userId, Guid fileId)
         {
             var file = Core.Models.Storage.FileAccess.Create

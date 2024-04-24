@@ -8,16 +8,47 @@ import { Helmet } from 'react-helmet';
 import Desktop from './Desktop';
 import Mobile from './Mobile';
 import { createSignalRContext } from "react-signalr/signalr";
+import { observer } from 'mobx-react-lite';
+import storageState from '../../../states/storage-state';
 
 export const messageWSContext = createSignalRContext();
 export const storageWSContext = createSignalRContext();
 
-const Layout = () => {
-
+const Layout = observer(() => {
     const handleLoading = () => setIsLoading(false);
 
     const [isLoading, setIsLoading] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+    storageWSContext.useSignalREffect(
+        "CreateFolder",
+        (folder) => {storageState.CreateFolder(folder)}
+    );
+
+    storageWSContext.useSignalREffect(
+        "RenameFolder",
+        (data) => {storageState.RenameFolder(data)}
+    ); 
+
+    storageWSContext.useSignalREffect(
+        "DeleteFolder",
+        (data) => {storageState.DeleteFolder(data)}
+    );
+
+    storageWSContext.useSignalREffect(
+        "UploadFile",
+        (file) => {storageState.UploadFile(file)}
+    );
+
+    storageWSContext.useSignalREffect(
+        "RenameFile",
+        (file) => {storageState.RenameFile(file)}
+    ); 
+
+    storageWSContext.useSignalREffect(
+        "DeleteFile",
+        (data) => {storageState.DeleteFile(data)}
+    );
 
     useEffect(() => {
         const handleResize = () => {
@@ -44,7 +75,6 @@ const Layout = () => {
             </storageWSContext.Provider>
         </messageWSContext.Provider>
     );
-
-};
+});
 
 export default Layout;

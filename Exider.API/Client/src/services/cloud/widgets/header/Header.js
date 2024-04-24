@@ -7,7 +7,6 @@ import userState from '../../../../states/user-state';
 import ProfileModal from '../../features/modal/profile/ProfileModal';
 
 const Header = observer((props) => {
-    
     const [profilePopUpState, setProfilePopUpState] = useState(false);
     const { user } = userState;
     const profileRef = useRef();

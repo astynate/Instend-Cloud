@@ -1,5 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core;
+using Exider.Core.TransferModels;
+using Exider.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
 
 namespace Exider.Repositories.Storage
@@ -8,9 +10,12 @@ namespace Exider.Repositories.Storage
     {
         private readonly DatabaseContext _context;
 
-        public FolderAccessRepository(DatabaseContext context)
+        private readonly IFileService _fileService;
+
+        public FolderAccessRepository(DatabaseContext context, IFileService fileService)
         {
             _context = context;
+            _fileService = fileService;
         }
 
         public async Task<bool> GetUserAccess(Guid userId, Guid folderId)
@@ -19,13 +24,29 @@ namespace Exider.Repositories.Storage
                 x.FolderId == folderId) != null;
         }
 
-        public async Task<object[]> GetUsersWithAccess(Guid folderId)
+        public async Task<AccessTransferModel[]> GetUsersWithAccess(Guid folderId)
         {
-            return await  _context.FolderAccesses
+            AccessTransferModel[] result = await _context.FolderAccesses
                 .Where(x => x.FolderId == folderId)
-                .Join(_context.Users, t1 => t1.UserId, t2 => t2.Id, (t1, t2) => new { t1, t2 })
-                .Join(_context.UserData, t2 => t2.t2.Id, t3 => t3.UserId, (t2, t3) => new { Access = t2.t1, User = t2.t2, UserData = t3 })
+                .Join(_context.Users, accessTable => accessTable.UserId, usersTable => usersTable.Id, (access, user) => new { access, user })
+                .Join(_context.UserData, mergedTable => mergedTable.user.Id, data => data.UserId, (merged, data)
+                    => new AccessTransferModel(merged.access, merged.user, data))
                 .ToArrayAsync();
+
+            foreach (AccessTransferModel item in result)
+            {
+                if (item.data.Avatar == Configuration.DefaultAvatarPath)
+                {
+                    item.base64Avatar = Configuration.DefaultAvatar;
+                }
+                else if (string.IsNullOrEmpty(item.data.Avatar) == false)
+                {
+                    var avatarReadingResult = await _fileService.ReadFileAsync(item.data.Avatar);
+                    item.base64Avatar = Convert.ToBase64String(avatarReadingResult.Value);
+                }
+            }
+
+            return result;
         }
 
         public async Task<Result> UpdateAccessState(Configuration.AccessTypes type, Guid userId, Guid folderId)

@@ -6,7 +6,6 @@ import PrivateRoutes from '../../../routes/PrivateRoutes';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 const Desktop = observer(({ }) => {
-    
     const { user, UpdateAuthorizeState, isAuthorize } = userState;
     const [isPanelRolledUp, setPanelState] = useState(true);
 
@@ -14,7 +13,6 @@ const Desktop = observer(({ }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-
         if (user === null) {
             UpdateAuthorizeState(location.pathname, navigate);
         }
@@ -24,7 +22,6 @@ const Desktop = observer(({ }) => {
     if (isAuthorize) {
 
         return (
-
             <>
                 <NavigationPanel isPanelRolledUp={isPanelRolledUp} />
                 <div className='cloud-content-wrapper'>
@@ -45,13 +42,11 @@ const Desktop = observer(({ }) => {
                     </Routes>
                 </div>
             </>
-            
         );
 
     } else {
         navigate('/account/login');
     }
-
 });
 
 export default Desktop;

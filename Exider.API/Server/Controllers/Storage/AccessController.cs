@@ -1,5 +1,6 @@
 ﻿using Exider.Core;
 using Exider.Core.Models.Storage;
+using Exider.Core.TransferModels;
 using Exider.Repositories.Storage;
 using Exider.Services.Internal.Handlers;
 using Exider_Version_2._0._0.Server.TransferModels.Account;
@@ -52,7 +53,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 return Ok(new object[] { folder.Access });
             }
 
-            return Ok(new object[] { folder.Access, await _folderAccessRepository.GetUsersWithAccess(Guid.Parse(id)) });
+            AccessTransferModel[] access = await _folderAccessRepository.GetUsersWithAccess(Guid.Parse(id));
+            return Ok(new object[] { folder.Access, access });
         }
 
         [HttpPost]

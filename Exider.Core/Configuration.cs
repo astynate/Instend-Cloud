@@ -68,9 +68,9 @@ namespace Exider.Core
 
         public enum AccessTypes
         {
-            Public,
             Private,
-            Favorites
+            Favorites,
+            Public,
         }
 
         public enum Abilities
