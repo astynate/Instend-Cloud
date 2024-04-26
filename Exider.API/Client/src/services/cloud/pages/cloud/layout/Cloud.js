@@ -6,6 +6,7 @@ import { storageWSContext } from '../../../layout/Layout';
 import { toJS } from 'mobx';
 import { RenameCallback } from './Callbacks';
 import { AdaptId } from '../../../../../states/storage-state';
+import { Delete, Properties } from './ContextMenuHandler';
 import storageState from '../../../../../states/storage-state';
 import userState from '../../../../../states/user-state';
 import Search from '../../../features/search/Search';
@@ -16,9 +17,9 @@ import File from '../shared/file/File';
 import ContextMenu from '../../../shared/context-menu/ContextMenu';
 import Open from './images/open.png';
 import Rename from './images/rename.png';
-import Properties from './images/properties.png';
+import PropertiesImage from './images/properties.png';
 import Share from './images/share.png';
-import Delete from './images/delete.png';
+import DeleteImage from './images/delete.png';
 import PopUpField from '../../../shared/pop-up-filed/PopUpField';
 import Preview from '../../../../preview/layout/Preview';
 import RightPanel from '../widgets/right-panel/RightPanel';
@@ -111,6 +112,7 @@ const Cloud = observer((props) => {
               title={'Rename'}
               text={'This field is require'}
               field={[fileName, setFilename]}
+              open={isRenameOpen}
               close={() => setRenameState(false)}
               callback={async () => {await RenameCallback(fileName, selectedItems, ErrorMessage)}}
             /> : null}
@@ -125,9 +127,9 @@ const Cloud = observer((props) => {
               items={[
                 [Open, "Open", () => OpenPreview(selectedItems[0])],
                 [Rename, "Rename", () => setRenameState(true)],
-                [Properties, "Properties", () => {}],
+                [PropertiesImage, "Properties", () => Properties(selectedItems, setRightPanelState, setFolderProperties)],
                 [Share, "Share", () => {}],
-                [Delete, "Delete", async () => {}]
+                [DeleteImage, "Delete", async () => Delete(selectedItems, ErrorMessage, params.id)]
               ]} 
               close={() => setContextMenuState(false)}
               isContextMenu={true}

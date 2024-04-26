@@ -3,7 +3,7 @@
     width: 100%;
     overflow: hidden;
     display: flex;
-    grid-template-columns: auto 400px;
+    /* grid-template-columns: auto 550px; */
     box-sizing: border-box;
     position: relative;
     padding-top: 5px;
@@ -15,18 +15,9 @@
     overflow-y: scroll;
     overflow-x: hidden;
     padding-bottom: 20px;
-    resize: horizontal;
     position: relative;
     min-width: 500px;
     width: 100%;
-}
-
-::-webkit-resizer {
-    height: 100vh;
-    background: rgb(255, 255, 255);
-    border: none;
-    outline: none;
-    margin-bottom: 100px;
 }
 
 .content {
@@ -40,7 +31,8 @@
 }
 
 .contentWrapper::-webkit-scrollbar {
-    width: 2px;
+    width: 5px;
+    border-radius: 10px;
 }
 
 .contentWrapper::-webkit-scrollbar-track {
@@ -48,5 +40,6 @@
 }
 
 .contentWrapper::-webkit-scrollbar-thumb {
-    background: #777;
+    background: #aaa;
+    border-radius: 10px;
 }

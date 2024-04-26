@@ -20,7 +20,6 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    /* padding-bottom: 25px; */
 }
 
 .close {
@@ -68,6 +67,12 @@
     height: 60px;
 }
 
+.header[id="absulute"] {
+    top: 0;
+    right: 0;
+    position: absolute;
+}
+
 .title {
     font-size: 16px;
     font-weight: 500;
@@ -100,8 +105,6 @@
 }
 
 .popupContent {
-    /* padding-left: 15px; */
-    /* padding-right: 15px; */
     height: 100%;
     display: flex;
     overflow: hidden;

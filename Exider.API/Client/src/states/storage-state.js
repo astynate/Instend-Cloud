@@ -48,11 +48,13 @@ class StorageState {
         };
     }    
 
-    DeleteFolder = (folderId, data) => {
-        runInAction(() => {
-            this.folders[folderId] = this.folders[folderId]
-                .filter(element => element.id !== data);
-        });
+    DeleteFolder = (id) => {
+        for (let key in this.folders) {
+            runInAction(() => {
+                this.folders[key] = this.folders[key]
+                    .filter(element => element.id !== id);
+            });
+        }
     }
     
     UploadFile = (file) => {
@@ -60,7 +62,7 @@ class StorageState {
 
         if (this.IsFolderExisitInFiles(file)) {
             runInAction(() => {
-                this.files[file.folderId] = [...this.files[file.folderId], file];
+                this.files[file.folderId] = [file, ...this.files[file.folderId]];
             });
         }
     }
@@ -78,11 +80,13 @@ class StorageState {
         };
     }
     
-    DeleteFile = (folderId, data) => {
-        runInAction(() => {
-            this.files[folderId] = this.files[folderId]
-                .filter(element => element.id !== data);
-        });
+    DeleteFile = (data) => {
+        for (let key in this.folders) {
+            runInAction(() => {
+                this.files[key] = this.files[key]
+                    .filter(element => element.id !== data);
+            });
+        }
     }
 
     async SetFolderItemsById(id, ErrorMessage) {

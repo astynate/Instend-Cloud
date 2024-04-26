@@ -217,6 +217,47 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             return Ok("Files uploaded successfully.");
         }
 
+        [HttpPost]
+        [Authorize]
+        [Route("/file")]
+        public async Task<IActionResult> CreateFile([FromForm] string name, [FromForm] string type, [FromForm] string? folderId, IRequestHandler requestHandler)
+        {
+            var idResult = requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            Guid userId = idResult.Value == null ? Guid.Empty : Guid.Parse(idResult.Value);
+            Guid folderIdAsGuid = string.IsNullOrEmpty(folderId) ? Guid.Empty : Guid.Parse(folderId);
+
+            if (folderId != null)
+            {
+                FolderModel? folderModel = await _folderRepository.GetByIdAsync(Guid.Parse(folderId));
+
+                if (folderModel == null)
+                {
+                    return BadRequest("Folder not found");
+                }
+
+                var available = await _accessHandler.GetAccessStateAsync(folderModel,
+                    Configuration.Abilities.Write, Request.Headers["Authorization"]);
+
+                if (available.IsFailure)
+                {
+                    return BadRequest(available.Error);
+                }
+            }
+
+            var result = await _fileRespository.AddAsync(name, type, userId, folderIdAsGuid);
+
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            await _storageHub.Clients.Group(result.Value.FolderId == Guid.Empty ? result.Value.OwnerId.ToString() :
+                result.Value.FolderId.ToString()).SendAsync("UploadFile", result.Value);
+
+            return Ok();
+        }
+
         [HttpPut]
         [Authorize]
         public async Task<IActionResult> UpdateName(Guid id, string name)

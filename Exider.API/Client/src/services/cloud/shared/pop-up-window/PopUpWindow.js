@@ -4,7 +4,6 @@ import cancel from './images/cancel.png';
 import back from './images/back.png';
 
 const PopUpWindow = (props) => {
-
     if (props.open) {
         return (
             <div className={styles.popUpWrapper}>
@@ -12,7 +11,7 @@ const PopUpWindow = (props) => {
                     {props.isHeaderless ?
                         null 
                     :
-                        <div className={styles.header}>
+                        <div className={styles.header} id={props.isHeaderPositionAbsulute ? 'absulute' : null}>
                             {props.back ? 
                                 <div className={styles.backButton}>
                                     <img src={back} 
@@ -37,7 +36,6 @@ const PopUpWindow = (props) => {
             </div>
         );
     }
-
 };
 
 export default PopUpWindow;

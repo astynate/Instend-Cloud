@@ -1,38 +1,29 @@
-.wrapper {
-    height: 250px;
-    width: 450px;
-    position: fixed;
+.field {
+    height: auto;
+    width: 400px;
+    padding: 20px;
+    padding-bottom: 25px;
     display: flex;
     flex-direction: column;
-    background: var(--main-background-color);
-    z-index: 99999999;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-    border-radius: 10px;
-    /* filter: drop-shadow(0px 0px 100px rgba(255, 255, 255, 0.3)); */
-    padding: 20px;
-    border: 1px solid var(--main-border-color);
-    animation: open .35s ease;
 }
 
-.wrapper h1 {
+.field h1 {
     font-size: 18px;
     font-weight: 500;
 }
 
-.wrapper span {
+.field span {
     font-size: 14px;
     font-weight: 400;
     color: var(--main-paragraph-color);
 }
 
-.wrapper input {
+.field input {
     padding: 10px;
     border: 2px solid var(--main-border-color);
     outline: none;
     background: none;
-    border-radius: 7px;
+    border-radius: 10px;
     color: var(--main-font-color);
     transition: 0.25s ease;
     margin-top: 20px;
@@ -40,22 +31,23 @@
     font-family: 'Open Sans', sans-serif;
 }
 
-.wrapper input:focus {
-    border: 2px solid var(--main-blue-color);
+.field input:focus {
+    border: 2px solid var(--main-font-color);
 }
 
-.wrapper button {
+.field button {
     width: fit-content;
     margin-left: auto;
     margin-top: auto;
-    padding: 9px 18px;
+    padding: 10px 21px;
     background: var(--sub-accent-color);
     border: none;
     outline: none;
-    border-radius: 10px;
+    border-radius: 5px;
     color: var(--sub-font-color);
     font-weight: 600;
     cursor: pointer;
+    margin-top: 35px;
 }
 
 @keyframes open {

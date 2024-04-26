@@ -1,7 +1,7 @@
 .header {
     display: flex;
     flex-direction: column;
-    grid-gap: 18px;
+    grid-gap: 20px;
     top: 0;
     left: 0;
     position: sticky;

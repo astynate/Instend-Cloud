@@ -1,0 +1,31 @@
+.elements {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    border-bottom: 1px solid var(--main-border-color);
+}
+
+.button {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    color: var(--main-paragraph-color);
+    user-select: none;
+    cursor: pointer;
+    padding-bottom: 20px;
+}
+
+.button[id="active"] {
+    color: var(--main-font-color);
+    border-bottom: 1px solid var(--main-font-color);
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    height: 10%;
+    width: 10%;
+}
