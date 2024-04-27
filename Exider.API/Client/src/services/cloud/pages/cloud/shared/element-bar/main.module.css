@@ -1,8 +1,11 @@
 .elements {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
+    height: auto;
     width: 100%;
-    border-bottom: 1px solid var(--main-border-color);
+    top: 0px;
+    left: 0;
+    position: sticky;
 }
 
 .button {
@@ -12,20 +15,21 @@
     color: var(--main-paragraph-color);
     user-select: none;
     cursor: pointer;
-    padding-bottom: 20px;
 }
 
-.button[id="active"] {
+.button span {
+    font-size: 14px;
+    padding-bottom: 12px;
+}
+
+.button[id="active"] span {
     color: var(--main-font-color);
-    border-bottom: 1px solid var(--main-font-color);
+    border-bottom: 2px solid var(--main-font-color);
 }
 
 .menu {
     display: flex;
     flex-direction: column;
-}
-
-.content {
-    height: 10%;
-    width: 10%;
+    height: 100%;
+    width: 100%;
 }

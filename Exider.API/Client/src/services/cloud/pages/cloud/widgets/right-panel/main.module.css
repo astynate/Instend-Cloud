@@ -1,43 +1,36 @@
 .rightPanel {
-    height: 100%;
-    width: 800px;
+    height: calc(100vh - 70px);
+    width: 700px;
     position: relative;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    padding: 20px;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: 100px auto 80px;
     padding-top: 0;
-    animation: right 0.5s ease;
+    animation: right 0.3s ease-in-out;
+    margin-left: 4px;
+    grid-gap: 0px;
+    border-radius: 5px;
 }
 
-.rightPanel::-webkit-scrollbar {
-    width: 5px;
-    border-radius: 10px;
-}
-
-.rightPanel::-webkit-scrollbar-track {
-    background: transparent; 
-}
-
-.rightPanel::-webkit-scrollbar-thumb {
-    background: #aaa;
-    border-radius: 10px;
-}
-
-/* .resize {
+.block {
+    display: flex;
     height: 100%;
-    width: 5px;
-    background: transparent;
-    position: absolute;
-    top: 0;
-    left: 0;
-    cursor: col-resize;
-    transition: 0.25s ease;
-    border-radius: 30px;
+    flex-direction: column;
+    border-radius: 0px;
+    background: var(--main-accent-color);
+    overflow: hidden;
+    position: relative;
+    /* border-radius: 2px; */
 }
 
-.resize:hover {
-    background: var(--main-blue-color);
-} */
+.block[id="items"] {
+    /* background: var(--main-accent-color); */
+    /* background: none; */
+}
+
+.block[id="header"] {
+    /* background: var(--main-accent-color); */
+}
 
 .header {
     display: flex;
@@ -46,9 +39,9 @@
     top: 0;
     left: 0;
     position: sticky;
-    backdrop-filter: blur(10px);
-    padding-bottom: 10px;
-    align-items: flex-start;
+    padding: 10px;
+    padding-bottom: 15px;
+    align-items: center;
 }
 
 .filename {
@@ -65,6 +58,7 @@
     text-align: center;
     max-width: 8ic;
     overflow: hidden;
+    text-wrap: nowrap;
     text-overflow: ellipsis;
 }
 
@@ -85,21 +79,41 @@
 }
 
 .button {
-    height: 30px;
+    height: 35px;
     cursor: pointer;
     filter: invert(100%);
     opacity: 0.8;
-    background: rgba(0, 0, 0, 0.35);
     border-radius: 100%;
     padding: 7px;
+    transition: 0.15s ease;
+}
+
+.button:hover {
+    background: rgba(0, 0, 0, 0.2);
 }
 
 .content {
-    height: calc(100% - 120px);
+    height: 100%;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.content::-webkit-scrollbar {
+    width: 5px;
+    border-radius: 10px;
+}
+
+.content::-webkit-scrollbar-track {
+    background: transparent; 
+}
+
+.content::-webkit-scrollbar-thumb {
+    background: #aaa;
+    border-radius: 10px;
 }
 
 .loader {
@@ -113,8 +127,8 @@
 }
 
 .file {
-    height: 85%;
-    width: 85%;
+    height: 90%;
+    width: 90%;
     display: flex;
     color: var(--main-font-color);
     border-color: var(--main-font-color);

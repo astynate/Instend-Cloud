@@ -7,18 +7,18 @@ const ElementBar = (props) => {
             <div className={styles.elements}>
                 {Object.keys(props.elements).map(key => {
                     return (
-                        <>
-                            <div key={key} className={styles.button} id={key === props.current ? 'active' : null}>
-                                <span>
-                                    {key}
-                                </span>
-                            </div>
-                        </>
+                        <div 
+                            key={key} 
+                            className={styles.button} 
+                            id={key === props.current ? 'active' : null}
+                            onClick={() => props.setCurrent(key)}
+                        >
+                            <span>
+                                {key}
+                            </span>
+                        </div>
                     )
                 })}
-            </div>
-            <div className={styles.content}>
-                {props.elements[props.current]}
             </div>
         </div>
     );

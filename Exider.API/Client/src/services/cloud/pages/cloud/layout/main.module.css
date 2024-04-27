@@ -3,7 +3,6 @@
     width: 100%;
     overflow: hidden;
     display: flex;
-    /* grid-template-columns: auto 550px; */
     box-sizing: border-box;
     position: relative;
     padding-top: 5px;

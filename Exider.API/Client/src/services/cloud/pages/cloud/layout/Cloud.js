@@ -89,7 +89,7 @@ const Cloud = observer((props) => {
   }, [props.setPanelState]);
 
   return (
-    <>
+    <div className={styles.cloud}>
       <Search />
       <Header />
       {isPreview ? 
@@ -197,7 +197,7 @@ const Cloud = observer((props) => {
           />
         : null}
       </div>
-    </>
+    </div>
   )
 });
 
