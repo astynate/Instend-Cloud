@@ -201,23 +201,25 @@ namespace Exider.Services.External.FileService
         {
             using (var memoryStream = new MemoryStream())
             {
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
                 {
-                    using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                    foreach (var file in files)
                     {
-                        foreach (var file in files)
-                        {
-                            ZipArchiveEntry fileToWrite = archive.CreateEntry($"{file.Name}.{file.Type}");
+                        ZipArchiveEntry fileToWrite = archive.CreateEntry($"{file.Name}.{file.Type}");
 
+                        try
+                        {
                             using (var entryStream = fileToWrite.Open())
                             {
                                 byte[] fileBytes = File.ReadAllBytes(file.Path);
                                 entryStream.Write(fileBytes, 0, fileBytes.Length);
                             }
-                        }
-                    }
 
-                    return memoryStream.ToArray();
+                        } catch { }
+                    }
                 }
+
+                return memoryStream.ToArray();
             }
         }
 

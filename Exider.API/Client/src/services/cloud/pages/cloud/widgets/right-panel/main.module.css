@@ -1,5 +1,5 @@
 .rightPanel {
-    height: calc(100vh - 70px);
+    height: calc(100vh - 75px);
     width: 700px;
     position: relative;
     overflow: hidden;
@@ -8,8 +8,9 @@
     padding-top: 0;
     animation: right 0.3s ease-in-out;
     margin-left: 4px;
+    margin-right: 2px;
     grid-gap: 0px;
-    border-radius: 5px;
+    border-radius: 25px;
 }
 
 .block {

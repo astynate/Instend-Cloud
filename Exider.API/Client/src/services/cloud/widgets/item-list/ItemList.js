@@ -20,7 +20,7 @@ const ItemList = observer((props) => {
         const element = elementsWrapper.current;
         const children = Array.from(element.children);
         
-        Promise.all(children.map(async (item) => {
+        children.map(async (item) => {
             item.id = 'passive';
     
             if (CalculateAverageEqual(item.offsetLeft + 25, element.scrollLeft + (element.clientWidth / 2), 25)) {
@@ -30,17 +30,16 @@ const ItemList = observer((props) => {
                     let fileObject = await storageState.files[props.id]
                         .find(x => x.id === item.dataset.id);
     
-                    if (item && toJS(fileObject).fileAsBytes) {
-                        await props.setActive(toJS(fileObject).fileAsBytes);
+                    if (fileObject && fileObject.fileAsBytes) {
+                        await props.setActive(fileObject);
                     }
                 }
             }
     
             return item;
-        }));
+        });
     };
     
-
     return (
         <>
             <div ref={elementsWrapper} className={styles.itemList} onScroll={handleScroll}>

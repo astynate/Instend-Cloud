@@ -5,14 +5,14 @@
     height: auto;
     width: auto;
     position: absolute;
-    border-radius: 25px;
+    border-radius: 22px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     z-index: 99999999999999999999999;
     grid-gap: 4px;
     backdrop-filter: var(--main-blur-effect);
     background: rgba(0, 0, 0, 0.65);
-    padding: 4px;
+    padding: 2px;
     user-select: none;
     transition: 0.25s ease;
     opacity: 0;
@@ -26,8 +26,8 @@
 }
 
 .item {
-    height: 120px;
-    width: 120px;
+    height: 110px;
+    width: 110px;
     background: rgba(255, 255, 255, 0.3);
     z-index: 999;
     border-radius: 20px;

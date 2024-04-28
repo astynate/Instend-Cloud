@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
 import close from './images/close.png';
 import panel from './images/panel.png';
@@ -8,17 +8,18 @@ import ElementBar from '../../shared/element-bar/ElementBar';
 import ItemList from '../../../../widgets/item-list/ItemList';
 import { observer } from 'mobx-react-lite';
 import { toJS } from 'mobx';
+import FileInformation from '../../shared/file-information/FileInformation';
 
 const RightPanel = observer((props) => {
+    const rightPanel = useRef();
     const [isLoading, setLoadingState] = useState(true);
-    const [activeFile, setActiveFile] = useState(null);
-    const [file, setFile] = useState(null);
+    const [activeFile, setActiveFile] = useState(props.file);
     const [current, setCurrent] = useState("Preview");
+    const [isPanelOpen, setPanelState] = useState(true);
 
     let Elements = {
         "Preview": <div className={styles.file}></div>,
         "Information": <h1>!!!</h1>,
-        "Chat": <div></div> 
     }
 
     const [elements, setElements] = useState(Elements);
@@ -29,13 +30,20 @@ const RightPanel = observer((props) => {
                 .get(`/file?id=${props.file.id}`);
                 
             if (response.status === 200){
-                setFile(response.data);
                 setLoadingState(false);
 
                 let Elements = {
                     "Preview": <div className={styles.file} dangerouslySetInnerHTML={{ __html: response.data }}></div>,
-                    "Information": <h1>!!!</h1>,
-                    "Chat": <div></div> 
+                    "Information": <FileInformation 
+                                        file={activeFile} 
+                                        items={[
+                                            ["Name", activeFile.name],
+                                            ["Type", activeFile.type],
+                                            ["Creation time", ConvertFullDate(activeFile.creationTime)],
+                                            ["Last edit time", ConvertFullDate(activeFile.lastEditTime)],
+                                            ["Access", activeFile.accessId]
+                                        ]}
+                                    />
                 }
 
                 setElements(Elements);
@@ -49,29 +57,46 @@ const RightPanel = observer((props) => {
     }, [props.file]);
 
     useEffect(() => {
-        if (activeFile) {
-            setFile(`<img src="data:image/png;base64,${activeFile}" />`);
-
-            let Elements = {
-                "Preview": <div className={styles.file} dangerouslySetInnerHTML={{ __html: file }}></div>,
-                "Information": <h1>!!!</h1>,
-                "Chat": <div></div> 
+        const SetActiveAsync = () => {
+            if (activeFile) {
+                setElements(prevElements => ({
+                    ...prevElements,
+                    "Preview": <div className={styles.file} dangerouslySetInnerHTML={{ __html: `<img src="data:image/png;base64,${activeFile.fileAsBytes}" />` }}></div>,
+                    "Information": <FileInformation 
+                                        file={activeFile} 
+                                        items={[
+                                            ["Name", activeFile.name],
+                                            ["Type", activeFile.type],
+                                            ["Creation time", ConvertFullDate(activeFile.creationTime)],
+                                            ["Last edit time", ConvertFullDate(activeFile.lastEditTime)],
+                                            ["Access", activeFile.accessId]
+                                        ]}
+                                    />
+                }));
             }
-
-            setElements(Elements);
         }
-    }, [activeFile]);
+
+        SetActiveAsync();
+    }, [activeFile, setActiveFile]);
+
+    const ChangePanelState = () => {
+        setPanelState(prev => !prev);
+
+        if (rightPanel.current) {
+            rightPanel.current.style.gridTemplateRows = isPanelOpen ? '100px auto' : '100px auto 80px';
+        }
+      }; 
 
     return (
-        <div className={styles.rightPanel}>
+        <div className={styles.rightPanel} ref={rightPanel}>
             <div className={styles.block} id='header'>
                 <div className={styles.header}>
-                    <img src={panel} className={styles.button} />
+                    <img src={panel} className={styles.button} onClick={ChangePanelState} />
                     <div>
                         <div className={styles.filename}>
-                            <span className={styles.name}>{props.file ? props.file.name : 'Select file'}</span>
+                            <span className={styles.name}>{activeFile ? activeFile.name : 'Select file'}</span>
                         </div>
-                        <span className={styles.time}>{props.file ? ConvertFullDate(props.file.lastEditTime) : 'To select file please click on it'}</span>
+                        <span className={styles.time}>{activeFile ? ConvertFullDate(activeFile.lastEditTime) : 'To select file please click on it'}</span>
                     </div>
                     <img src={close} className={styles.button} onClick={props.close} />
                 </div>
@@ -86,13 +111,13 @@ const RightPanel = observer((props) => {
                     {elements[current]}
                 </div>
             </div>
-            <div className={styles.block} id='items'>
+            {isPanelOpen && <div className={styles.block} id='items'>
                 <ItemList 
                     id={props.file && props.file.folderId ? props.file.folderId : null}
                     current={props.file && props.file.id ? props.file.id : null}
                     setActive={setActiveFile}
                 />
-            </div>
+            </div>}
         </div>
     );
  });

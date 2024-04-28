@@ -12,8 +12,11 @@ import { instance } from "../../../../../../state/Interceptors";
 import ContextMenu from "../../../../shared/context-menu/ContextMenu";
 import OpenAccessProcess from "../../processes/OpenAccessProcess";
 import { DownloadFromResponse } from "../../../../../../utils/DownloadFromResponse";
+import { observer } from "mobx-react-lite";
+import { AdaptId } from "../../../../../../states/storage-state";
+import storageState from "../../../../../../states/storage-state";
 
-const Header = (props) => {
+const Header = observer((props) => {
     const params = useParams();
     const createWindow = useRef();
     const [isCreateOpen, setCreationWindowState] = useState(false);
@@ -22,39 +25,39 @@ const Header = (props) => {
     const [isOpenAccessWindow, setOpenAccessWindowState] = useState(false);
 
     const SortByNameAsending = () => {
-        props.folders[1]((prev) => [...prev].sort((a, b) => 
-            a.props.name.localeCompare(b.props.name)
-        ));
-        props.files[1]((prev) => [...prev].sort((a, b) => 
-            a.props.name.localeCompare(b.props.name)
-        ));
+        storageState.folders[AdaptId(params.id)] = storageState.folders[AdaptId(params.id)].sort((a, b) => 
+            a.name.localeCompare(b.name)
+        );
+        storageState.files[AdaptId(params.id)] = storageState.files[AdaptId(params.id)].sort((a, b) => 
+            a.name.localeCompare(b.name)
+        );
     }
     
     const SortByNameDesending = () => {
-        props.folders[1]((prev) => [...prev].sort((a, b) => 
-            b.props.name.localeCompare(a.props.name)
-        ));
-        props.files[1]((prev) => [...prev].sort((a, b) => 
-            b.props.name.localeCompare(a.props.name)
-        ));
+        storageState.folders[AdaptId(params.id)] = storageState.folders[AdaptId(params.id)].sort((a, b) => 
+            b.name.localeCompare(a.name)
+        );
+        storageState.files[AdaptId(params.id)] = storageState.files[AdaptId(params.id)].sort((a, b) => 
+            b.name.localeCompare(a.name)
+        );
     }    
 
     const SortByDateAsending = () => {
-        props.folders[1]((prev) => [...prev].sort((a, b) => {
-            return new Date(b.props.time).getTime() - new Date(a.props.time).getTime();
-        }));      
-        props.files[1]((prev) => [...prev].sort((a, b) => {
-            return new Date(b.props.time).getTime() - new Date(a.props.time).getTime();
-        })); 
+        storageState.folders[AdaptId(params.id)] = storageState.folders[AdaptId(params.id)].sort((a, b) => 
+            new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime()
+        );      
+        storageState.files[AdaptId(params.id)] = storageState.files[AdaptId(params.id)].sort((a, b) => 
+            new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime()
+        );
     }    
 
     const SortByDateDesending = () => {
-        props.folders[1]((prev) => [...prev].sort((a, b) => {
-            return new Date(a.props.time).getTime() - new Date(b.props.time).getTime();
-        }));      
-        props.files[1]((prev) => [...prev].sort((a, b) => {
-            return new Date(a.props.time).getTime() - new Date(b.props.time).getTime();
-        })); 
+        storageState.folders[AdaptId(params.id)] = storageState.folders[AdaptId(params.id)].sort((a, b) => 
+            new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime()
+        );      
+        storageState.files[AdaptId(params.id)] = storageState.files[AdaptId(params.id)].sort((a, b) => 
+            new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime()
+        );
     }    
 
     useEffect(() => {
@@ -86,7 +89,7 @@ const Header = (props) => {
                         if (params.id) {
                             setOpenAccessWindowState(true)
                         } else {
-                            props.error('Sorry but...', 'You cannot open access to your root f');
+                            props.error('🔒 Attention!', 'Due to possible security issues, you cannot share this directory.');
                         }
                     }}
                 />
@@ -153,6 +156,6 @@ const Header = (props) => {
         </div>
       </div>
     )
-  };
+  });
   
   export default Header;

@@ -43,6 +43,10 @@
     color:var(--main-font-color);
 }
 
+.title {
+    font-weight: 600;
+}
+
 .description {
     font-size: 14px;
     opacity: 0.7;

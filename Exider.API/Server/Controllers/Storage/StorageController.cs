@@ -252,6 +252,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest(result.Error);
             }
 
+            await System.IO.File.WriteAllBytesAsync(result.Value.Path, new byte[0]);
+
             await _storageHub.Clients.Group(result.Value.FolderId == Guid.Empty ? result.Value.OwnerId.ToString() :
                 result.Value.FolderId.ToString()).SendAsync("UploadFile", result.Value);
 

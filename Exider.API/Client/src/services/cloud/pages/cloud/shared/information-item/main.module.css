@@ -1,0 +1,20 @@
+.informationItem {
+    display: flex;
+}
+
+.left {
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--main-font-color);
+}
+
+.description {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--main-paragraph-color);
+}
