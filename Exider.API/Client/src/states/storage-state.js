@@ -10,7 +10,6 @@ export const AdaptId = (id) => {
 class StorageState {
     files = {};
     folders = {};
-    photos = {};
     path = [];
 
     constructor() {

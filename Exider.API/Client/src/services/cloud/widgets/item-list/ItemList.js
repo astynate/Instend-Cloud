@@ -4,6 +4,10 @@ import { observer } from 'mobx-react-lite';
 import storageState, { AdaptId } from '../../../../states/storage-state';
 import { toJS } from 'mobx';
 
+export const CalculateAverageEqual = (a, b, offest) => {
+    return b < a + offest && b > a - offest;
+}
+
 const ItemList = observer((props) => {
     const elementsWrapper = useRef();
 
@@ -11,10 +15,6 @@ const ItemList = observer((props) => {
         const element = elementsWrapper.current;
         element.scrollLeft = element.scrollWidth;
     }, [props.id]);
-
-    const CalculateAverageEqual = (a, b, offest) => {
-        return b < a + offest && b > a - offest;
-    }
 
     const handleScroll = () => {
         const element = elementsWrapper.current;

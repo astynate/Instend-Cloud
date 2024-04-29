@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './main.module.css'
+import styles from './main.module.css';
 import { NavLink, useLocation } from 'react-router-dom';
 
 const Menu = (props) => {

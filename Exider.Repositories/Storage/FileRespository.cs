@@ -98,7 +98,7 @@ namespace Exider.Repositories.Storage
         {
             return await _context.Files.AsNoTracking()
                 .Where(x => x.OwnerId == userId && Configuration.imageTypes.Contains(x.Type))
-                .OrderByDescending(x => x.LastEditTime)
+                //.OrderByDescending(x => x.LastEditTime)
                 .Skip(from)
                 .Take(count)
                 .ToArrayAsync();

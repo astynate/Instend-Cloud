@@ -1,23 +1,67 @@
-import React, { useEffect, useState } from 'react';
-import { instance } from '../../../../../../state/Interceptors';
-import { ConvertDate } from '../../../../../../utils/DateHandler';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
-import Photo from '../../widgets/photo/Photo';
 import Information from '../../../../shared/information/Information';
 import Sroll from '../../../../widgets/sroll/Scroll';
+import { observer } from 'mobx-react-lite';
+import galleryState from '../../../../../../states/gallery-state';
+import { CalculateAverageEqual } from '../../../../widgets/item-list/ItemList';
+import ContextMenu from '../../../../shared/context-menu/ContextMenu';
+import Preview from '../../../../../preview/layout/Preview';
+import { GetPhotoById } from '../../layout/Gallery';
+import { instance } from '../../../../../../state/Interceptors';
+import { DownloadFromResponse } from '../../../../../../utils/DownloadFromResponse';
 
-const Photos = (props) => {
-    const [photos, setPhotos] = useState([]);
+const Photos = observer((props) => {
     const [isError, setErrorState] = useState(false);
     const [errorTitle, setErrorTitle] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [gridTemplateColumns, setGridTemplateColumns] = useState('repeat(auto-fill, minmax(200px, 1fr))');
-    const [dates, setDates] = useState([]);
-    const [isHasMore, setHasMore] = useState(true);
+    const [columnCount, setColumnCount] = useState(null);
+    const [objectFit, setObjectFit] = useState(props.objectFit);
+    const [isContextMenuOpen, setContextMenuState] = useState(false);
+    const [contextMenuPosition, setContextMenuPosition] = useState([0, 0]);
+    const [selectedItems, setSelectedItems] = useState([]);
+    const [isPreview, setPreviewState] = useState(false);
+    const photosWrapper = useRef();
+    
+    const changeDate = () => {
+        try {
+            const element = photosWrapper.current;
+            let children = Array.from(element.children);
+            
+            children = children.filter((item) => {
+                let rect = item.getBoundingClientRect(); 
+                return CalculateAverageEqual(rect.top, props.dataRef.current.offsetTop, 60);
+            });
+    
+            if (children.length > 0) {
+                props.setCurrent(children.map(e => e.id));
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     useEffect(() => {
-        setGridTemplateColumns(`repeat(auto-fill, minmax(${props.scale}px, 1fr))`);
-    }, [props.scale]);
+        props.scroll.current.addEventListener('scroll', changeDate);
+      
+        return () => {
+          try {
+            props.scroll.current.removeEventListener('scroll', changeDate);
+          } catch {}
+        };
+    }, []);  
+
+    useEffect(() => {
+        if (props.photoGrid === 'grid') {
+            setGridTemplateColumns(`repeat(auto-fill, minmax(${100 + 25 * props.scale}px, 1fr))`);
+            setColumnCount(null);
+        } else if (props.photoGrid === 'waterfall') {
+            setGridTemplateColumns(null);
+            setColumnCount(8 - props.scale);
+        }
+    
+    }, [props.scale, props.photoGrid]);
 
     const ErrorMessage = (title, message) => {
         setErrorTitle(title);
@@ -25,45 +69,9 @@ const Photos = (props) => {
         setErrorState(true);
     }
 
-    const GetPhotos = async () => {
-        const response = await instance.get(`api/gallery?from=${0}&count=${3}`)
-          .catch((error) => ErrorMessage('Attention!', error.response.data));
-
-        if (response.data.length < 1) {
-            setHasMore(false);
-            return;
-        }
-
-        let dates = [response.data[0].lastEditTime];
-        let index = 0;
-        let photos = [];
-        
-        for (let i = 0; i < response.data.length; i++) {
-            const dateOne = new Date(response.data[i].lastEditTime);
-            const dateTwo = new Date(response.data[index].lastEditTime);
-        
-            if (dateOne.getDay() !== dateTwo.getDay() || i === response.data.length - 1) {
-                photos.push(response.data.slice(index, i).map(element => {
-                    return <Photo 
-                        key={element.id} 
-                        file={element}
-                    />
-                }));
-        
-                dates.push(response.data[i].lastEditTime);
-                index = i;
-            }
-        }
-          
-        setDates(prev => [...prev, dates]);
-        setPhotos(prev => [...prev, photos]); 
-    };
-
     useEffect(() => {
-        setDates([]);
-        setPhotos([]);
-        GetPhotos();
-    }, []);
+        setObjectFit(props.objectFit);
+    }, [props.objectFit]);
 
     return (
         <>
@@ -73,30 +81,68 @@ const Photos = (props) => {
                 title={errorTitle}
                 message={errorMessage}
             />
-            <div>
-                {photos.map((element, index) => {
+            {isPreview && 
+                <Preview
+                    close={() => setPreviewState(false)} 
+                    file={selectedItems[0]}
+                    ErrorMessage={ErrorMessage}
+            />}
+            {isContextMenuOpen &&
+                <ContextMenu 
+                items={[
+                    [null, "Open", () => {setPreviewState(true)}],
+                    [null, "Add to album", () => {}],
+                    [null, "Share", () => {}],
+                    [null, "Download", async () => {
+                        await instance
+                            .get(`/file/download?id=${selectedItems[0].id}`)
+                            .then((response) => {
+                                DownloadFromResponse(response);
+                            })
+                            .catch((error) => {
+                                ErrorMessage('Attention!', 'Something went wrong');
+                            });
+                    }],
+                    [null, "Delete", () => {}]
+                ]} 
+                close={() => setContextMenuState(false)}
+                isContextMenu={true}
+                position={contextMenuPosition}
+            />}
+            <div className={styles.photos} id={props.photoGrid} style={{ gridTemplateColumns, columnCount }} ref={photosWrapper}>
+                {galleryState.photos.map((element, index) => {
                     return (
-                        <div key={index}>
-                            <div className={styles.date} >
-                                <span>{dates[index] ? ConvertDate(dates[index]) : null}</span>
-                            </div>
-                            <div className={styles.photos} style={{ gridTemplateColumns }}>
-                                {element}
-                            </div>
+                        <div 
+                            key={index} 
+                            className={styles.photoWrapper} 
+                            id={element.id}
+                            onContextMenu={async (event) => {
+                                event.preventDefault();
+                                setContextMenuState(true);
+                                setContextMenuPosition([event.clientX, event.clientY]);
+                                setSelectedItems([element]);
+                            }}
+                        >
+                            <img 
+                                src={`data:image/png;base64,${element.fileAsBytes}`}
+                                draggable="false"
+                                style={{objectFit}}
+                                id={objectFit === 'contain' ? 'contain' : null}
+                            />
                         </div>
                     )
                 })}
-                <Sroll 
-                    scroll={props.scroll}
-                    isHasMore={isHasMore}
-                    array={photos}
-                    callback={() => {
-                        GetPhotos();
-                    }}
-                />
             </div>
+            <Sroll 
+                scroll={props.scroll}
+                isHasMore={galleryState.hasMore}
+                array={galleryState.photos}
+                callback={() => {
+                    galleryState.GetPhotos();
+                }}
+            />
         </>
     );
- };
+});
 
 export default Photos;

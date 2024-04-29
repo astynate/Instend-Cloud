@@ -9,8 +9,8 @@
     top: 0;
     font-family: 'Open Sans', sans-serif;
     left: 0;
-    background: var(--main-header-background-color);
-    backdrop-filter: blur(10px) saturate(50%);
+    background: var(--main-background-color);
+    /* backdrop-filter: blur(10px) saturate(50%); */
 }
 
 .buttons {

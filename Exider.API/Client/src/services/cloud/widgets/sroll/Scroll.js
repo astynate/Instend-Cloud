@@ -1,23 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
 
-const Sroll = (props) => {
+const Scroll = (props) => {
     const [available, setAvailableState] = useState(true);
     const ref = useRef();
+    const isHasMoreRef = useRef(props.isHasMore);
+    const isAvailable = useRef(available);
 
     useEffect(() => {
-        let length = 0;
-
-        for (let i = 0; i < props.array.length - 1; i++) {
-            length += props.array[i][0].length;
-        }
-    }, [props.length]);
+        isHasMoreRef.current = props.isHasMore;
+    }, [props.isHasMore]);
 
     const checkScroll = async () => {
-      if (ref.current) {
+      if (ref.current && isHasMoreRef.current === true) {
         const rect = ref.current.getBoundingClientRect();
 
-        if (available && props.isHasMore && rect.top < window.innerHeight) {
+        if (isAvailable.current === true && rect.top < window.innerHeight) {
             setAvailableState(false);
             await props.callback(props.photos);
             setAvailableState(true);
@@ -26,20 +24,22 @@ const Sroll = (props) => {
     };
   
     useEffect(() => {
-        checkScroll();
-    }, [props.length]);
+        if (isHasMoreRef.current === true) {
+            checkScroll();
+        }
+    }, [props.array.length]);
 
     useEffect(() => {
-        props.scroll.current.addEventListener('scroll', checkScroll);
+        props.scroll.current.addEventListener('scroll', () => checkScroll());
       
         return () => {
             try {
-                props.scroll.current.removeEventListener('scroll', checkScroll);
+                props.scroll.current.removeEventListener('scroll', () =>  checkScroll());
             } catch {}
         };
     }, []);
   
-    return <div ref={ref}>Привет, я компонент!</div>;
+    return <div ref={ref}></div>;
  };
 
-export default Sroll;
+export default Scroll;

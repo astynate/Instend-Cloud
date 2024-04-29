@@ -11,14 +11,10 @@ const Preview = (props) => {
     const [scaleFactor, setScaleFactor] = useState(100);
 
     useEffect(() => {
-
         try {
-
             let firstChild = fileRef.current.querySelector('*');
             firstChild.style.transform = `scale(${scaleFactor}%)`;
-
         } catch { }
-
     }, [scaleFactor])
 
     useEffect(() => {

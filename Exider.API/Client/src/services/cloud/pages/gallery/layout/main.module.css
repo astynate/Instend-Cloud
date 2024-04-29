@@ -7,18 +7,60 @@
     top: 60px;
     left: 0;
     position: sticky;
-    background: var(--main-background-color);
     padding-bottom: 10px;
     background: var(--main-header-background-color);
-    backdrop-filter: blur(10px) saturate(50%);
+    background: var(--main-background-color);
+    /* backdrop-filter: blur(10px) saturate(50%); */
+    padding-top: 20px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+    display: flex;
+    grid-gap: 30px;
+    flex-direction: column;
+}
+
+.up {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.down {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .content {
-    margin-top: 30px;
+    margin-top: 0px;
 }
 
 .navigation {
     display: flex;
-    padding-top: 10px;
-    padding-bottom: 30px;
+}
+
+.buttons {
+    display: flex;
+    grid-gap: 20px;
+}
+
+.button {
+    height: 18px;
+    width: 18px;
+    filter: var(--main-filter);
+    cursor: pointer;
+}
+
+.currentDate {
+    display: flex;
+    flex-direction: column;
+}
+
+.date {
+    font-weight: 600;
+    color: var(--main-font-color);
+}
+
+.location {
+    color: var(--main-paragraph-color);
 }
