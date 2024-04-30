@@ -57,33 +57,35 @@ const Gallery = observer((props) => {
         <Search />
         <div className={styles.header}>
           <div className={styles.up}>
-            <Menu 
-              items={[
-                {
-                  'name': 'Photos', 
-                  'route': '/gallery'
-                }, 
-                {
-                  'name': 'Albums', 
-                  'route': '/gallery/albums'
-                }
-              ]}
-            />
-            <div className={styles.navigation}>
-              <Range
-                min={1}
-                max={5}
-                value={scale}
-                setValue={setScale}
-                inc={1}
+              <div>
+                <Range
+                  min={1}
+                  max={5}
+                  value={scale}
+                  setValue={setScale}
+                  inc={1}
+                />
+              </div>
+              <Menu 
+                items={[
+                  {
+                    'name': 'Photos', 
+                    'route': '/gallery'
+                  }, 
+                  {
+                    'name': 'Albums', 
+                    'route': '/gallery/albums'
+                  },
+                  {
+                    'name': 'People', 
+                    'route': '/gallery/people'
+                  },
+                  {
+                    'name': 'Public access', 
+                    'route': '/gallery/public-access'
+                  }
+                ]}
               />
-            </div>
-          </div>
-          <div className={styles.down}>
-            <div className={styles.currentDate}>
-              <span className={styles.date} ref={dataRef}>{date}</span>
-              <span className={styles.location}>{folder}</span>
-            </div>
             <div className={styles.buttons}>
               <img 
                 src={objectFit === 'contain' ? zoomIn : zoomOut}
@@ -95,6 +97,12 @@ const Gallery = observer((props) => {
                 className={styles.button} 
                 onClick={() => setPhotoGeridState(prev => prev === 'grid' ? 'waterfall' : 'grid')} 
               />
+            </div>
+          </div>
+          <div className={styles.down}>
+            <div className={styles.currentDate}>
+              <span className={styles.date} ref={dataRef}>{date}</span>
+              <span className={styles.location}>{folder}</span>
             </div>
           </div>
         </div>

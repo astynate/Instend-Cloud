@@ -95,11 +95,14 @@ const Photos = observer((props) => {
                     [null, "Share", () => {}],
                     [null, "Download", async () => {
                         await instance
-                            .get(`/file/download?id=${selectedItems[0].id}`)
+                            .get(`/file/download?id=${selectedItems[0].id}`, {
+                                responseType: "blob"
+                            })
                             .then((response) => {
                                 DownloadFromResponse(response);
                             })
                             .catch((error) => {
+                                console.error(error);
                                 ErrorMessage('Attention!', 'Something went wrong');
                             });
                     }],

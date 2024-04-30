@@ -1,9 +1,12 @@
 .menu {
     height: auto;
     display: flex;
-    grid-gap: 30px;
+    grid-gap: 40px;
     left: 0;
+    position: relative;
     z-index: 9999;
+    padding: 7px 15px;
+    align-items: center;
 }
 
 .button {
@@ -12,13 +15,26 @@
 }
 
 .button a {
-    font-weight: 700;
-    font-size: 17px;
+    font-weight: 500;
+    font-size: 16px;
     color: var(--main-paragraph-color);
-    padding-bottom: 10px;
+    border-radius: 10px;
 }
 
 .button[id="active"] a {
+    /* font-weight: 700; */
     color: var(--main-font-color);
-    border-bottom: 3px solid var(--main-font-color);
+}
+
+.pointer {
+    height: 100%;
+    width: 90px;
+    /* background: rgb(255, 255, 255); */
+    position: absolute;
+    top: 0;
+    left: 0;
+    backdrop-filter: invert(100%);
+    border-radius: 30px;
+    cursor: pointer;
+    transition: 0.25s ease;
 }

@@ -2,14 +2,13 @@
     display: flex;
     grid-gap: 10px;
     align-items: center;
-    transform: scale(95%);
 }
 
 .range {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    width: 180px;
+    width: 160px;
     height: 17px;
     border: none;
     border-radius: 4px;
@@ -20,14 +19,14 @@
 .range::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    background-color: var(--main-background-color);
+    /* background-color: var(--main-background-color); */
     border: none;
     border-radius: 50%;
     height: 16px;
     width: 16px;
     margin-top: -6px;
     border: 3px solid var(--main-font-color);
-    box-shadow: calc(-100vmax - 15px) 0 0 100vmax var(--main-background-color);
+    box-shadow: calc(-100vmax - 15px) 0 0 100vmax var(--main-font-color);
     cursor: pointer;
     clip-path: polygon(
         100% 0,
@@ -50,12 +49,12 @@
 }
 
 .button {
-    height: 25px;
-    width: 25px;
+    height: 23px;
+    width: 23px;
     padding: 5px;
     image-rendering: pixelated;
     cursor: pointer;
-    filter: var(--main-filter);
+    /* filter: var(--main-filter); */
 }
 
 /* .button:hover {

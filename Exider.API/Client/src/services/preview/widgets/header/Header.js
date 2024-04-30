@@ -28,13 +28,15 @@ const PreviewHeader = (props) => {
                     onClick={async () => {
                         if (props.id) {
                             await instance
-                            .get(`/file/download?id=${props.id}`)
+                            .get(`/file/download?id=${props.id}`, {
+                                responseType: "blob"
+                            })
                             .then((response) => {
-                                DownloadFromResponse(response)
+                                DownloadFromResponse(response);
                             })
                             .catch((error) => {
-                                props.error('Attention!', error.response.data);
-                                props.close();
+                                console.error(error);
+                                props.error('Attention!', 'Something went wrong');
                             });
                         }
                     }}

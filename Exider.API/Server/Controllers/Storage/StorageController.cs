@@ -115,7 +115,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             string contentType = string.IsNullOrEmpty(fileModel.Value.Type) == false ? 
                 fileService.ConvertSystemTypeToContentType(fileModel.Value.Type) : "";
 
-            return File(file.Value, contentType, fileModel.Value.Name);
+            return File(await System.IO.File.ReadAllBytesAsync(fileModel.Value.Path), contentType, fileModel.Value.Name + "." + fileModel.Value.Type);
         }
 
         [HttpGet]
