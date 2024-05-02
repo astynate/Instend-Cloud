@@ -28,6 +28,7 @@
     margin-top: 5px;
     overflow: hidden;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    padding: 5px;
 }
 
 .contentWrapper::-webkit-scrollbar {

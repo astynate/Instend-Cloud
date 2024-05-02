@@ -31,7 +31,7 @@ const Header = () => {
         <div className="header" id={isMenuOpen ? 'menu-open' : (windowWidth > 550) ? 'desktop' : 'mobile'}>
             <div className="product-logo">
                 <img src={logo} className="logo" alt="Logo" draggable="false" />
-                <span className="product-name"><span className="company-name">Exider</span>&nbsp;{t('account.service_name')}</span>
+                <span className="product-name"><span className="company-name">Yexider</span>&nbsp;{t('account.service_name')}</span>
             </div>
             {(windowWidth > 550) ? (
                 <div className="links">

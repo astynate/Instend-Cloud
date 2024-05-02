@@ -14,14 +14,24 @@ namespace Exider.Core.Models.Storage
         [Column("owner_id")] public Guid OwnerId { get; private set; }
         [Column("folder_id")] public Guid FolderId { get; private set; }
         [NotMapped] public List<FileModel> Preview { get; private set; } = new();
+        [Column("visibility")] public bool Visibility { get; private set; } = true;
+        [Column("visibility")] public string TypeId { get; private set; } = Configuration.FolderTypes.Ordinary.ToString();
         [Column("access")] public string AccessId { get; set; } = Configuration.AccessTypes.Private.ToString();
 
-        [EnumDataType(typeof(Configuration.AccessTypes))]
         [NotMapped]
+        [EnumDataType(typeof(Configuration.AccessTypes))]
         public Configuration.AccessTypes Access
         {
             get => Enum.Parse<Configuration.AccessTypes>(AccessId);
             set => AccessId = value.ToString();
+        }
+
+        [NotMapped]
+        [EnumDataType(typeof(Configuration.FolderTypes))]
+        public Configuration.FolderTypes FolderType
+        {
+            get => Enum.Parse<Configuration.FolderTypes>(TypeId);
+            set => TypeId = value.ToString();
         }
 
         private FolderModel() { }
@@ -45,6 +55,30 @@ namespace Exider.Core.Models.Storage
                 OwnerId = ownerId,
                 CreationTime = DateTime.Now,
                 FolderId = folderId
+            });
+        }
+
+        public static Result<FolderModel> Create(string name, Guid ownerId, Guid folderId, Configuration.FolderTypes folderType, bool visibility)
+        {
+            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrEmpty(name))
+            {
+                return Result.Failure<FolderModel>("Invalid folder name");
+            }
+
+            if (ownerId == Guid.Empty)
+            {
+                return Result.Failure<FolderModel>("Invalid ownder id");
+            }
+
+            return Result.Success(new FolderModel()
+            {
+                Id = Guid.NewGuid(),
+                Name = name,
+                OwnerId = ownerId,
+                CreationTime = DateTime.Now,
+                FolderId = folderId,
+                FolderType = folderType,
+                Visibility = visibility
             });
         }
 

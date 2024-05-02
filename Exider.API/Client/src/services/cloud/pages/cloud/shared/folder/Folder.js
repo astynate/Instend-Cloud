@@ -22,7 +22,12 @@ const Folder = (props) => {
 
   return (
     <Link to={`/cloud/${props.id}`}>
-      <div className={styles.wrapper} onContextMenu={props.onContextMenu}>
+      <div 
+        className={styles.wrapper} 
+        id={props.isSelected === true ? 'selected' : null} 
+        onContextMenu={props.onContextMenu}
+        onClick={props.callback}
+      >
         <div className={styles.content}>
           {(files)}
         </div>

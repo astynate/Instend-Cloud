@@ -26,7 +26,6 @@ import RightPanel from '../widgets/right-panel/RightPanel';
 import Folder from '../shared/folder/Folder';
 import PropertiesWindow from '../widgets/properties/Properties';
 import Information from '../../../shared/information/Information';
-import FileLoader from '../../../shared/file-loader/FileLoader';
 import SelectBox from '../../../shared/interaction/select-box/SelectBox';
 
 const Cloud = observer((props) => {
@@ -45,7 +44,9 @@ const Cloud = observer((props) => {
   const [errorTitle, setErrorTitle] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setLoadingState] = useState(false);
+  const [activeFiles, setActiveFiles] = useState([]);
   const params = useParams();
+  const selectPlaceWrapper = useRef();
   const selectPlace = useRef();
 
   const ErrorMessage = (title, message) => {
@@ -54,13 +55,26 @@ const Cloud = observer((props) => {
     setErrorState(true);
   }
 
+  const single = [
+    [Open, "Open", () => OpenPreview(activeFiles[0])],
+    [Rename, "Rename", () => setRenameState(true)],
+    [PropertiesImage, "Properties", () => Properties(activeFiles[0], setRightPanelState, setFolderProperties)],
+    [DeleteImage, "Delete", async () => Delete(activeFiles, ErrorMessage, params.id)]
+  ]
+
+  const multiple = [
+    [DeleteImage, "Delete", async () => Delete(activeFiles, ErrorMessage, params.id)]
+  ]
+
+  const [contextMenuItems, setContextMenuItems] = useState(single);
+
   const OpenPreview = (file) => {
     setSelectedItems([file]);
 
     if (file.strategy === "file") {
       setPreviewState(true);
     } else {
-      navigate(`/cloud/${selectedItems[0].id}`)
+      navigate(`/cloud/${activeFiles[0].id}`)
     }
   };
   
@@ -87,9 +101,54 @@ const Cloud = observer((props) => {
     storageState.SetFolderItemsById(params.id, ErrorMessage);
   }, [params.id]);
 
+  const ClearSelectedItems = (event) => {
+    if ([selectPlace, selectPlaceWrapper]
+        .includes(event.target) === false &&
+        event.shiftKey === false) {
+      setSelectedItems([]); 
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('click', ClearSelectedItems);
+
+    return () => {
+      window.removeEventListener('click', ClearSelectedItems);
+    };
+  }, []);
+
   useEffect(() => {
     if (props.setPanelState) { props.setPanelState(false); }
   }, [props.setPanelState]);
+
+  useEffect(() => {
+    if (selectedItems.length > 1) {
+      setContextMenuItems(multiple);
+    } else {
+      setContextMenuItems(single);
+    }
+    
+    if (selectedItems.length > 0) {
+      setActiveFiles(selectedItems);
+    }
+  }, [activeFiles, selectedItems]);
+
+  const HandleSelect = (event, element) => {
+    if (event.shiftKey) {
+      if (selectedItems.map(element => element.id).includes(element.id)) {
+        setSelectedItems(prev => prev
+          .filter(e => e.id !== element.id)); 
+      }
+      else {
+        setSelectedItems(prev => [...prev, element]);
+      }
+
+      event.preventDefault();
+    } else {
+      setSelectedItems(prev => prev
+        .filter(e => e.id !== element.id)); 
+    }
+  }
 
   return (
     <div className={styles.cloud}>
@@ -98,56 +157,51 @@ const Cloud = observer((props) => {
       {isPreview && 
           <Preview
             close={() => setPreviewState(false)} 
-            file={selectedItems[0]}
+            file={activeFiles[0]}
             ErrorMessage={ErrorMessage}
           />}
       <div className={styles.wrapper}>
-        <div className={styles.contentWrapper}>
+        <div className={styles.contentWrapper} ref={selectPlaceWrapper}>
           <CloudHeader 
             name={user.nickname} 
             path={storageState.path && storageState.path[AdaptId(params.id)] ? 
               storageState.path[AdaptId(params.id)] : null}
             error={ErrorMessage}
           />
-          {isRenameOpen === true ?
+          {isRenameOpen === true &&
             <PopUpField 
               title={'Rename'}
               text={'This field is require'}
               field={[fileName, setFilename]}
               open={isRenameOpen}
               close={() => setRenameState(false)}
-              callback={async () => {await RenameCallback(fileName, selectedItems, ErrorMessage)}}
-            /> : null}
+              callback={async () => {await RenameCallback(fileName, activeFiles[0], ErrorMessage)}}
+            />}
           <Information
             open={isError}
             close={() => setErrorState(false)}
             title={errorTitle}
             message={errorMessage}
           />
-          {isContextMenuOpen === true ?
+          {isContextMenuOpen === true &&
             <ContextMenu 
-              items={[
-                [Open, "Open", () => OpenPreview(selectedItems[0])],
-                [Rename, "Rename", () => setRenameState(true)],
-                [PropertiesImage, "Properties", () => Properties(selectedItems, setRightPanelState, setFolderProperties)],
-                [Share, "Share", () => {}],
-                [DeleteImage, "Delete", async () => Delete(selectedItems, ErrorMessage, params.id)]
-              ]} 
+              items={contextMenuItems} 
               close={() => setContextMenuState(false)}
               isContextMenu={true}
               position={contextMenuPosition}
-          /> : null}
+            />}
           <div className={styles.content} ref={selectPlace}>
             {isLoading ? 
                 Array.from({ length: 4 }).map((_, index) => (
                   <File key={index} isPlaceholder={true} />))
             : null}
             {folders && toJS(folders)[AdaptId(params.id)] ?
-              toJS(folders)[AdaptId(params.id)].map(element => {
+              toJS(folders)[AdaptId(params.id)].map((element, index) => {
                 return (
                   <Folder 
                     key={element.id} 
                     id={element.id}
+                    isSelected={selectedItems.map(element => element.id).includes(element.id)}
                     folder={element}
                     name={element.name} 
                     time={element.creationTime}
@@ -156,8 +210,12 @@ const Cloud = observer((props) => {
                       setContextMenuState(true);
                       setContextMenuPosition([event.clientX, event.clientY]);
                       setFilename(element.name);
-                      setSelectedItems([element]);
+                      
+                      if (selectedItems.map(element => element.id).includes(element.id) === false) {
+                        setSelectedItems(prev => [...prev, element])
+                      }
                     }}
+                    callback={(event) => HandleSelect(event, element)}
                   />
                 )
               })
@@ -171,34 +229,40 @@ const Cloud = observer((props) => {
                     time={element.lastEditTime}
                     image={element.fileAsBytes == "" ? null : element.fileAsBytes}
                     type={element.type}
+                    isSelected={selectedItems.map(element => element.id).includes(element.id) === true}
                     onClick={() => OpenPreview(element)}
                     onContextMenu={(event) => {
                       event.preventDefault();
                       setContextMenuState(true);
                       setContextMenuPosition([event.clientX, event.clientY]);
                       setFilename(element.name);
-                      setSelectedItems([element]);
+
+                      if (selectedItems.map(element => element.id).includes(element.id) === false) {
+                        setSelectedItems(prev => [...prev, element])
+                      }
                     }}
+                    callback={(event) => HandleSelect(event, element)}
                   />
                 )
               })
             : null}
           </div>
         </div>
-        {isRightPanelOpen === true ? 
+        {isRightPanelOpen === true && 
           <RightPanel 
-            file={selectedItems[0]} 
+            file={selectedItems} 
             close={() => setRightPanelState(false)} 
-          /> 
-        : null}
-        {isFolderProperties === true ? 
+          />}
+        {isFolderProperties === true &&
           <PropertiesWindow 
             file={selectedItems[0]}
             close={() => setFolderProperties(false)} 
             items={[]}
-          />
-        : null}
-        <SelectBox selectPlace={selectPlace} />
+          />}
+        <SelectBox 
+          setSelectedItems
+          selectPlace={[selectPlaceWrapper, selectPlace]} 
+        />
       </div>
     </div>
   )

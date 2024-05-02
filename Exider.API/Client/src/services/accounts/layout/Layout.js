@@ -22,7 +22,7 @@ const Layout = () => {
 
         <div className={styles.wrapper}>
             <Helmet>
-                <title>Exider Account</title>
+                <title>Yexider Account</title>
             </Helmet>
             <Header />
             {isLanguageSelect === false ? <Notification title={t('account.select_language')} />: null}

@@ -19,7 +19,8 @@ const Preview = (props) => {
 
     useEffect(() => {
         const GetFile = async () => {
-            await instance
+            if (props.file && props.file.strategy === 'file') {
+                await instance
                 .get(`/file?id=${props.file.id}`)
                 .then((response) => {
                     setFile(response.data);
@@ -29,6 +30,7 @@ const Preview = (props) => {
                     props.ErrorMessage('Attention!', error.response.data);
                     props.close();
                 });
+            }
         };
 
         GetFile();

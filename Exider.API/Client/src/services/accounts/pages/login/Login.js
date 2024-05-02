@@ -15,14 +15,11 @@ import { observer } from 'mobx-react-lite';
 import './main.css';
 
 const ValidateLoginForm = (email, password) => {
-
     return ValidationHandler.ValidateVarchar(email, 45) &&
         password.length >= 8;
-
 };
 
 const Login = observer(() => {
-
     const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -33,13 +30,10 @@ const Login = observer(() => {
     let location = useLocation();
 
     useEffect(() => {
-
         setFormState(ValidateLoginForm(email, password) === true ? 'valid' : 'invalid');
-
     }, [email, password]);
 
     const Authorize = async () => {
-
         const userData = new FormData();
 
         userData.append('username', email);
@@ -51,10 +45,8 @@ const Login = observer(() => {
         const signal = controller.signal;
       
         const timeoutId = setTimeout(() => {
-
             controller.abort();
             setFormState('invalid');
-
         }, 10000);
       
         try {
@@ -68,7 +60,6 @@ const Login = observer(() => {
             clearTimeout(timeoutId);
         
             if (response.status === 200) {
-
                 const accessToken = await response.text();
                 localStorage.setItem('system_access_token', accessToken);
 
@@ -76,39 +67,31 @@ const Login = observer(() => {
 
                 setFormState('valid');
                 navigate('/');
-
             } 
             
             else if (response.status === 470) {
-
                 const confirmationLink = await response.text();
                 navigate('/account/email/confirmation/' + confirmationLink);
-
             } 
             
             else {
-
                 setErrorState(true);
                 setFormState('invalid');
-
             }
 
         } catch (error) {
-
             clearTimeout(timeoutId);
             setFormState('invalid');
 
             setErrorState(true);
-
         }
-
     };
 
     return (
 
         <GoogleOAuthProvider clientId="1099397056156-quc1l3h460li634u6o8eh03feat63s7v.apps.googleusercontent.com">
             { isError ? <Error message="Something went wrong." state={isError} setState={setErrorState} /> : null }
-            <h1>{t('account.login_with')} <span className="selected-text">Exider ID</span></h1>
+            <h1>{t('account.login_with')} <span className="selected-text">Yexider ID</span></h1>
             <p className='page-description'>{t('account.login_with.message')}</p>
             <InputText placeholder={t('account.email_or_nickname')} SetValue={setEmail} autofocus={true} />
             <InputPassword placeholder={t('account.password')} SetValue={setPassword} autofocus={false} />

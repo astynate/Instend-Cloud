@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using Exider.Core;
 using Exider.Core.Models.Storage;
 using Exider.Services.External.FileService;
 
@@ -13,5 +14,6 @@ namespace Exider.Repositories.Storage
         Task UpdateName(Guid id, string name);
         Task Delete(Guid id);
         Task<FolderModel[]> GetFoldersByUserId(Guid userId);
+        Task<Result<FolderModel>> AddAsync(string name, Guid ownerId, Guid folderId, Configuration.FolderTypes folderType, bool visibility);
     }
 }

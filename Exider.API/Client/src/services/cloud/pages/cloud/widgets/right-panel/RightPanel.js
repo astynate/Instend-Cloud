@@ -16,6 +16,7 @@ const RightPanel = observer((props) => {
     const [activeFile, setActiveFile] = useState(props.file);
     const [current, setCurrent] = useState("Preview");
     const [isPanelOpen, setPanelState] = useState(true);
+    const [file] = useState(props.file);
 
     let Elements = {
         "Preview": <div className={styles.file}></div>,
@@ -26,34 +27,39 @@ const RightPanel = observer((props) => {
 
     useEffect(() => {
         const GetFile = async () => {
-            const response = await instance
-                .get(`/file?id=${props.file.id}`);
+            try {
+                const response = await instance
+                .get(`/file?id=${file.id}`);
                 
-            if (response.status === 200){
-                setLoadingState(false);
+                if (response.status === 200){
+                    setLoadingState(false);
 
-                let Elements = {
-                    "Preview": <div className={styles.file} dangerouslySetInnerHTML={{ __html: response.data }}></div>,
-                    "Information": <FileInformation 
-                                        file={activeFile} 
-                                        items={[
-                                            ["Name", activeFile.name],
-                                            ["Type", activeFile.type],
-                                            ["Creation time", ConvertFullDate(activeFile.creationTime)],
-                                            ["Last edit time", ConvertFullDate(activeFile.lastEditTime)],
-                                            ["Access", activeFile.accessId]
-                                        ]}
-                                    />
+                    let Elements = {
+                        "Preview": <div className={styles.file} dangerouslySetInnerHTML={{ __html: response.data }}></div>,
+                        "Information": <FileInformation 
+                                            file={activeFile} 
+                                            items={[
+                                                ["Name", activeFile.name],
+                                                ["Type", activeFile.type],
+                                                ["Creation time", ConvertFullDate(activeFile.creationTime)],
+                                                ["Last edit time", ConvertFullDate(activeFile.lastEditTime)],
+                                                ["Access", activeFile.accessId]
+                                            ]}
+                                        />
+                    }
+
+                    setElements(Elements);
+                } else {
+                    setLoadingState(false);
                 }
-
-                setElements(Elements);
-            } else {
-                setLoadingState(false);
+            } catch (error) {
+                console.warn(error);
             }
         };
 
-        GetFile();
-
+        if (props.file && props.file.id) {
+            GetFile();
+        }
     }, [props.file]);
 
     useEffect(() => {

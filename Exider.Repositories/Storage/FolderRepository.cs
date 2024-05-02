@@ -17,7 +17,22 @@ namespace Exider.Repositories.Storage
 
         public async Task<FolderModel?> GetByIdAsync(Guid id)
             => await _context.Folders.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-         
+
+        public async Task<Result<FolderModel>> AddAsync(string name, Guid ownerId, Guid folderId, Configuration.FolderTypes folderType, bool visibility)
+        {
+            var folderCreationResult = FolderModel.Create(name, ownerId, folderId, folderType, visibility);
+
+            if (folderCreationResult.IsFailure)
+            {
+                return Result.Failure<FolderModel>(folderCreationResult.Error);
+            }
+
+            await _context.Folders.AddAsync(folderCreationResult.Value);
+            await _context.SaveChangesAsync();
+
+            return Result.Success(folderCreationResult.Value);
+        }
+
         public async Task<Result<FolderModel>> AddAsync(string name, Guid ownerId, Guid folderId)
         {
             var folderCreationResult = FolderModel.Create(name, ownerId, folderId);

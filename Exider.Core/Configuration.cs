@@ -78,6 +78,13 @@ namespace Exider.Core
             Public,
         }
 
+        public enum FolderTypes
+        {
+            Ordinary,
+            System,
+            Secret
+        }
+
         public enum Abilities
         {
             Read,

@@ -26,6 +26,11 @@
     border-radius: 5px;
 }
 
+.content[id="selected"] {
+    outline: 2px solid var(--main-font-color);
+    outline-offset: 2px;
+}
+
 .content[id="placeholder"] {
     background: var(--main-accent-color);
 }

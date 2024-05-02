@@ -7,7 +7,9 @@ const SelectBox = (props) => {
     const [isDrawing, setIsDrawing] = useState(false);
 
     const startDrawing = (event) => {
-        if (event.target === props.selectPlace.current) {
+        const except = props.selectPlace.map(element => element.current);
+
+        if (except && except.includes && except.includes(event.target) === true) {
             setIsDrawing(true);
             setStartPosition([event.clientX, event.clientY]);
         }
@@ -22,19 +24,19 @@ const SelectBox = (props) => {
     };
 
     useEffect(() => {
-        try {
-            props.selectPlace.current.addEventListener('mousedown', startDrawing);
-            props.selectPlace.current.addEventListener('mousemove', draw);
-            window.addEventListener('mouseup', endDrawing);
-    
-            return () => {
-                props.selectPlace.current.removeEventListener('mousedown', startDrawing);
-                props.selectPlace.current.removeEventListener('mousemove', draw);
-                window.current.removeEventListener('mouseup', endDrawing);
-            };
-        } catch (error) {
-            console.warn(error)
-        }
+        window.addEventListener('mousedown', startDrawing);
+        window.addEventListener('mousemove', draw);
+        window.addEventListener('mouseup', endDrawing);
+
+        return () => {
+            try {
+                window.removeEventListener('mousedown', startDrawing);
+                window.removeEventListener('mousemove', draw);
+                window.removeEventListener('mouseup', endDrawing);
+            } catch (error) {
+                console.warn(error);
+            }
+        };
     }, []);
 
     return (

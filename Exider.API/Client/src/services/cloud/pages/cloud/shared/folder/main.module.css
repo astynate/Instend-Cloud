@@ -10,6 +10,11 @@
     transition: 0.25s ease;
 }
 
+.wrapper[id="selected"] .content {
+    outline: 2px solid var(--main-font-color);
+    outline-offset: 4px;
+}
+
 .wrapper:hover .description {
     opacity: 1;
 }

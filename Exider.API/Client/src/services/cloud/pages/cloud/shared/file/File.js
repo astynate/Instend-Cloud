@@ -32,8 +32,8 @@ const File = (props) => {
   } else {
 
     return (
-      <div className={styles.wrapper} onClick={props.onClick} onContextMenu={props.onContextMenu}>
-        <div className={styles.content}>
+      <div className={styles.wrapper} onClick={props.callback} onContextMenu={props.onContextMenu}>
+        <div className={styles.content} id={props.isSelected === true ? 'selected' : null}>
           {props.image != null ? 
             <img 
               src={`data:image/png;base64,${props.image}`} 

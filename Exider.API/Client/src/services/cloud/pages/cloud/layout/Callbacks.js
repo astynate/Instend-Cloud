@@ -1,12 +1,7 @@
 import { instance } from "../../../../../state/Interceptors";
 import { GuidEmpthy } from "../../../../../states/storage-state";
 
-export const RenameCallback = async (fileName, selectedItems, ErrorMessage) => {
-    if (!selectedItems || selectedItems.length === 0) {
-        return;
-    }
-    
-    const item = selectedItems[0];
+export const RenameCallback = async (fileName, item, ErrorMessage) => {    
     const endpoint = item.strategy === "file" ? "storage" : "folders";
     const folderId = item.folderId === GuidEmpthy ? item.ownerId : item.folderId;
 

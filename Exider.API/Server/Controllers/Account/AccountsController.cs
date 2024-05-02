@@ -1,4 +1,5 @@
-﻿using Exider.Core;
+﻿using CSharpFunctionalExtensions;
+using Exider.Core;
 using Exider.Core.Dependencies.Repositories.Account;
 using Exider.Core.Models.Account;
 using Exider.Core.Models.Email;
@@ -6,6 +7,7 @@ using Exider.Core.TransferModels.Account;
 using Exider.Dependencies.Services;
 using Exider.Repositories.Account;
 using Exider.Repositories.Email;
+using Exider.Repositories.Storage;
 using Exider.Services.External.FileService;
 using Exider.Services.Internal.Handlers;
 using Exider_Version_2._0._0.Server.TransferModels.Account;
@@ -30,6 +32,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
         private readonly IImageService _imageService;
 
+        private readonly IFolderRepository _folderRepository;
+
         private readonly DatabaseContext _context;
 
         public AccountsController
@@ -39,6 +43,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
             IConfirmationRespository confirmation,
             IUserDataRepository userDataRepository,
             IImageService imageService,
+            IFolderRepository folderRepository,
             DatabaseContext context
         )
         {
@@ -47,6 +52,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
             _confirmationRespository = confirmation;
             _userDataRepository = userDataRepository;
             _imageService = imageService;
+            _folderRepository = folderRepository;
             _context = context;
         }
 
@@ -127,7 +133,12 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAccount([FromBody] UserTransferModel user, IEmailService emailService, IEncryptionService encryptionService)
+        public async Task<IActionResult> CreateAccount
+        (
+            [FromBody] UserTransferModel user, 
+            IEmailService emailService, 
+            IEncryptionService encryptionService
+        )
         {
             try
             {
@@ -190,6 +201,13 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
                         await emailService.SendEmailConfirmation(userCreationResult.Value.Email, confirmationCreationResult.Value.Code,
                             Configuration.URL + "account/email/confirmation/" + confirmationCreationResult.Value.Link.ToString());
+
+                        var systemResult = await CreateSystemFolders(userCreationResult.Value.Id);
+
+                        if (systemResult.IsFailure)
+                        {
+                            return Conflict(systemResult.Error);
+                        }
 
                         transaction.Commit();
 
@@ -267,6 +285,23 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
             }
 
             return Ok();
+        }
+
+        public async Task<Result> CreateSystemFolders(Guid userId)
+        {
+            string[] systemFolders = ["Music", "Photos", "Recently deleted"];
+
+            foreach (string systemFolder in systemFolders)
+            {
+                var photos = await _folderRepository.AddAsync(systemFolder, userId, Guid.Empty, Configuration.FolderTypes.System, false);
+
+                if (photos.IsFailure)
+                {
+                    return Result.Failure(photos.Error);
+                }
+            }
+
+            return Result.Success();
         }
     }
 }
