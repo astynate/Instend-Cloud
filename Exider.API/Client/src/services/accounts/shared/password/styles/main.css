@@ -13,7 +13,7 @@
     border-radius: 7px;
     transition: 0.15s ease;
     cursor: pointer;
-    filter: var(--password-visibility);
+    filter: var(--accounts-password-visibility);
 }
 
     .password-visibility-button:hover {

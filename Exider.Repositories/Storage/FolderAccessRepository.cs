@@ -52,14 +52,14 @@ namespace Exider.Repositories.Storage
         public async Task<Result> UpdateAccessState(Configuration.AccessTypes type, Guid userId, Guid folderId)
         {
             int result = await _context.Folders
-                .Where(x => x.Id == folderId && x.OwnerId == userId)
+                .Where(x => x.Id == folderId && x.OwnerId == userId && x.TypeId != Configuration.FolderTypes.System.ToString())
                 .ExecuteUpdateAsync(folder => folder.SetProperty(p => p.AccessId, type.ToString()));
 
             await _context.SaveChangesAsync();
 
             if (result <= 0)
             {
-                return Result.Failure("Folder not found");
+                return Result.Failure("Folder not found or access denied");
             }
 
             return Result.Success();

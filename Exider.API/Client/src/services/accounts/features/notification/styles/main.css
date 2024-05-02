@@ -4,7 +4,7 @@
     top: 50px;
     left: 0;
     height: 0px;
-    background: var(--notification-color);
+    background: var(--accounts-notification-color);
     width: 100vw;
     display: flex;
     align-items: center;
@@ -52,7 +52,7 @@
     padding: 10px;
     cursor: pointer;
     transition: 0.15s ease;
-    filter: var(--close-button-invert);
+    filter: var(--accounts-close-button-invert);
     animation: notification-content-in 2.7s ease;
 
 }
@@ -117,7 +117,7 @@
     }
 
     100% {
-        background: var(--notification-color);
+        background: var(--accounts-notification-color);
     }
 
 }

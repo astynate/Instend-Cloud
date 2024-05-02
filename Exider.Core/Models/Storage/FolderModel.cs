@@ -15,7 +15,7 @@ namespace Exider.Core.Models.Storage
         [Column("folder_id")] public Guid FolderId { get; private set; }
         [NotMapped] public List<FileModel> Preview { get; private set; } = new();
         [Column("visibility")] public bool Visibility { get; private set; } = true;
-        [Column("visibility")] public string TypeId { get; private set; } = Configuration.FolderTypes.Ordinary.ToString();
+        [Column("type")] public string TypeId { get; private set; } = Configuration.FolderTypes.Ordinary.ToString();
         [Column("access")] public string AccessId { get; set; } = Configuration.AccessTypes.Private.ToString();
 
         [NotMapped]

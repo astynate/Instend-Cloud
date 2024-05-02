@@ -15,8 +15,8 @@ body {
     overflow: hidden;
     font-family: 'Open Sans';
     position: relative;
-    background: var(--main-background-color);
-    color-scheme: var(--color-scheme);
+    background: var(--accounts-main-background-color);
+    color-scheme: var(--accounts-color-scheme);
     -webkit-overflow-scrolling:touch;
     transition: 0.25s ease;
 }

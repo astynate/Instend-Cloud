@@ -12,7 +12,7 @@
     z-index: 9999999;
     padding-bottom: 5px;
     transition: 0.5s ease;
-    background: var(--main-header-color);
+    background: var(--accounts-main-header-color);
     backdrop-filter: blur(10px) saturate(70%);
     -webkit-backdrop-filter: blur(10px) saturate(70%);
     align-items: center;
@@ -25,7 +25,7 @@
 .header[id="menu-open"] {
     position: fixed;
     overflow: visible;
-    background: var(--main-header-color);
+    background: var(--accounts-main-header-color);
 }
 
 .product-logo {
@@ -41,12 +41,12 @@
 .logo {
     height: 40px;
     width: 40px;
-    filter: var(--header-icon-filter);
+    filter: var(--accounts-header-icon-filter);
 }
 
 .product-name {
     font-size: 15px;
-    color: var(--main-font-color);
+    color: var(--accounts-main-font-color);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -66,7 +66,7 @@
 .account-header-menu-image {
     height: 30px;
     padding: 5px;
-    filter: var(--main-header-link-icon-filter);
+    filter: var(--accounts-main-header-link-icon-filter);
 }
 
 .header-menu-items {
@@ -79,7 +79,7 @@
     position: fixed;
     transition: 0.5s ease;
     overflow: hidden;
-    filter: var(--main-header-link-icon-filter);
+    filter: var(--accounts-main-header-link-icon-filter);
 }
 
 .header-menu-items[id="open"] {
@@ -89,7 +89,7 @@
 .header-menu-links {
     padding-left: 4vw;
     padding-right: 4vw;
-    filter: var(--main-header-link-icon-filter);
+    filter: var(--accounts-main-header-link-icon-filter);
 }
 
 .header-menu-links .link {

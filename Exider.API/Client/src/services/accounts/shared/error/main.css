@@ -4,8 +4,8 @@
     transform: translateX(-50%) translateY(200%) scale(90%);
     position: fixed;
     padding: 15px 20px;
-    background: var(--error-alert-background);
-    color: var(--error-alert-font-color);
+    background: var(--accounts-error-alert-background);
+    color: var(--accounts-error-alert-font-color);
     font-size: 14px;
     z-index: 99999999999999999999;
     border-radius: 10px;

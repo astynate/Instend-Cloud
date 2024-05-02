@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
 import styles from './styles/main.module.css';
 import Button from "../../shared/button/Button";
@@ -25,6 +25,7 @@ import photoshop from './images/types/photoshop.png';
 import powerpoint from './images/types/powerpoint.png';
 import upload from './images/types/upload.png';
 import word from './images/types/word.png';
+import { LayoutContext } from "../../../../layout/Layout";
 
 export const sendFiles = async (event, folderId, setCount, setTotal) => {
     event.preventDefault();
@@ -115,6 +116,7 @@ const Header = observer((props) => {
     const [name, setName] = useState('');
     const [count, setCount] = useState(0);
     const [total, setTotal] = useState(0);
+    const { Error } = useContext(LayoutContext);
 
     const OpenDialog = (current_type) => {
         setType(current_type);
@@ -192,19 +194,23 @@ const Header = observer((props) => {
               formData.append("name", name);
 
               if (type.type === 'folder') {
-                  instance.post(`/folders`, formData, {
-                      headers: {
-                          'Content-Type': 'multipart/form-data'
-                      }
-                  });
+                instance.post(`/folders`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }).catch(response => {
+                    props.error('Attention!', response.data);
+                });
               } else {
-                  formData.append("type", type.type);
+                formData.append("type", type.type);
 
-                  instance.post(`/file`, formData, {
-                      headers: {
-                          'Content-Type': 'multipart/form-data'
-                      }
-                  });
+                instance.post(`/file`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }).catch(response => {
+                    props.error('Attention!', response.data);
+                });
               }
           }}
         />

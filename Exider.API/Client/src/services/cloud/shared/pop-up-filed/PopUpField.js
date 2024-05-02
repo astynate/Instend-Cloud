@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './main.module.css';
 import PopUpWindow from '../pop-up-window/PopUpWindow';
+import Button from '../ui-kit/button/Button';
 
 const PopUpField = (props) => {
   return (
@@ -21,14 +22,17 @@ const PopUpField = (props) => {
           minLength={1}
           autoFocus={true}
         />
-        <button onClick={async () => {
-          if (props.field[0] === '' || props.field[0] === null){
-            alert('This field must not be empthy');
-          } else {
-            await props.callback();
-            props.close();
-          }
-        }}>Next</button>
+        <Button 
+          value={'Next'}
+          onClick={async () => {
+            if (props.field[0] === '' || props.field[0] === null){
+              alert('This field must not be empthy');
+            } else {
+              await props.callback();
+              props.close();
+            }
+          }}
+        />
       </div>
     </PopUpWindow>
   );

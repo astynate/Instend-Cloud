@@ -15,16 +15,12 @@
 }
 
 .open-link img {
-
     height: 10px;
     filter: invert(0.7);
     margin-top: 2px;
     transition: 0.15s ease;
-
 }
 
 .open { 
-
     transform: rotate(180deg);
-
 }

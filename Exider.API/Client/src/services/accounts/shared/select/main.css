@@ -11,7 +11,7 @@
     display: flex;
     align-items: center;
     border-radius: 30px;
-    border: 2px solid var(--select-border);
+    border: 2px solid var(--accounts-select-border);
     font-weight: 600;
     cursor: pointer;
     user-select: none;

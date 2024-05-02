@@ -21,7 +21,6 @@
 }
 
 .search input {
-    /* height: 40px; */
     width: 100%;
     border: none;
     outline: none;
@@ -29,4 +28,8 @@
     font-weight: 400;
     font-family: 'Open Sans', sans-serif;
     background: none;
+}
+
+.search input::placeholder {
+    color: var(--main-paragraph-color);
 }

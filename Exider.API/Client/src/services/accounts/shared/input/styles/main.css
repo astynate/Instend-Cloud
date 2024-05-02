@@ -13,8 +13,8 @@
         font-size: 16px;
         padding: 13px;
         border-radius: 10px;
-        color: var(--main-font-color);
-        border: 2px solid var(--main-border-color);
+        color: var(--accounts-main-font-color);
+        border: 2px solid var(--accounts-main-border-color);
         background: transparent;
         transition: 0.1s ease;
         font-family: 'Open Sans';
@@ -30,7 +30,7 @@
   .input-container input:valid ~ label {
     transform: translateY(-22px);
     font-size: 13px;
-    background: var(--main-background-color);
+    background: var(--accounts-main-background-color);
     padding: 0px 5px;
   }
 
@@ -44,5 +44,5 @@
     left: 15px;
     pointer-events: none;
     transition: 0.15s;
-    color: var(--placeholder-color);
+    color: var(--accounts-placeholder-color);
   }

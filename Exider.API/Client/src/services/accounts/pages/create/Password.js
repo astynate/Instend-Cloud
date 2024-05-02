@@ -8,7 +8,6 @@ import ValidationHandler from "../../../../utils/handlers/ValidationHandler";
 import { useTranslation } from "react-i18next";
 
 const ValidateUserData = (user, password, confirm) => {
-
     if (ValidationHandler.ValidateEmail(user.email) === false) {
         return false;
     }
@@ -18,11 +17,9 @@ const ValidateUserData = (user, password, confirm) => {
     }
 
     return password.length >= 8 && password === confirm;
-
 }
 
 const Password = () => {
-
     let user = useContext(UserContext);
     let navigate = useNavigate();
 
@@ -33,9 +30,7 @@ const Password = () => {
     const { t } = useTranslation();
 
     const SendRegistrationRequest = async () => {
-
         try {
-
             setValidationState('loading');
 
             const response = await fetch("/accounts", {
@@ -47,42 +42,34 @@ const Password = () => {
             })
 
             if (response.status === 200) {
-
                 const responseData = await response.text();
                 navigate('/account/email/confirmation/' + responseData, { replace: true });
 
                 setValidationState('valid');
 
             } else {
-
                 setErrorState(true);
                 setValidationState('invalid');
-
             }
 
         } catch (exception) {
-
             console.error(exception);
 
             setErrorState(true);
             setValidationState('invalid');
-
         }
 
     }
 
     useEffect(() => {
-
         user.password = password;
         setValidationState(ValidateUserData(user, password, confirmedPassword) ? 'valid' : 'invalid');
-
     }, [user, password, confirmedPassword, setValidationState]);
 
     return (
-
         <>
             { isError ? <Error message="Something went wrong." state={isError} setState={setErrorState} /> : null }
-            <h1>{t('account.create.creation_of')} <span className="selected-text">Exider ID</span></h1>
+            <h1>{t('account.create.creation_of')} <span className="selected-text">Yexider ID</span></h1>
             <p className='page-description'>This is a required field. Your password must be at least 8 characters long.</p>
             <InputPassword
                 placeholder={t('account.enter_password')}
@@ -102,9 +89,7 @@ const Password = () => {
                 />
             </div>
         </>
-
     );
-
 }
 
 export default Password;

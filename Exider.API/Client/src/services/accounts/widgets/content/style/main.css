@@ -34,20 +34,20 @@ h1 {
     font-size: 28px;
     margin-top: 10px;
     font-weight: 600;
-    color: var(--main-font-color)
+    color: var(--accounts-main-font-color)
 }
 
 .page-description {
     max-width: 450px;
     font-size: 14px;
     text-align: center;
-    color: var(--paragraph-text-color);
+    color: var(--accounts-paragraph-text-color);
     margin-bottom: 22px;
 }
 
 .selected-text {
-    background: var(--h1-accent-color);
-    background-image: var(--h1-accent-color-g);
+    background: var(--accounts-h1-accent-color);
+    background-image: var(--accounts-h1-accent-color-g);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }

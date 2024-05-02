@@ -1,4 +1,4 @@
-﻿.light-color-mode {
+﻿.light-mode {
     --accounts-main-background-color: #fff;
     --accounts-main-font-color: #000;
     --accounts-main-header-link-icon-filter: invert(0%);
@@ -8,7 +8,7 @@
     --accounts-main-header-color: #ffffff7f;
     --accounts-main-border-color: #e4e4e4;
     --accounts-main-accent-color: #f3f3f3;
-    --accounts-paragraph-text-color: #777;
+    --accounts-paragraph-text-color: #555;
     --accounts-placeholder-color: #ddd;
     --accounts-line-desc-color: #ddd;
     --accounts-h1-accent-color: -webkit-linear-gradient(45deg, #ff5bff, #3127f7);
@@ -33,7 +33,7 @@
     --accounts-color-scheme: light;
 }
 
-.dark-color-mode {
+.dark-mode {
     --accounts-main-background-color: rgb(0, 0, 0);
     --accounts-main-font-color: #eee;
     --accounts-main-header-link-icon-filter: invert(100%);

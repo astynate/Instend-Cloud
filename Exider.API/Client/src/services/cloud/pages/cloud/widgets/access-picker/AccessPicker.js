@@ -5,10 +5,10 @@ import personal from './images/personal.png';
 import friends from './images/friends.png';
 import link from './images/link.png';
 import next from './images/next.png';
-import Button from '../../../../shared/pop-up-window/elements/button/Button';
 import Loader from '../../../../shared/loader/Loader';
 import copy from './images/copy.png';
 import { useParams } from 'react-router-dom';
+import Button from '../../../../shared/ui-kit/button/Button';
 
 const AccessPicker = (props) => {
     const [isCopyInfoOpen, setCopyInfoState] = useState(false);
@@ -81,7 +81,7 @@ const AccessPicker = (props) => {
                             <span>Link</span>
                         </div>
                     </div>
-                    <Button title="Save" callback={
+                    <Button value="Save" callback={
                         async () => {
                             await props.send();
                             props.close();

@@ -6,7 +6,7 @@
 
 .icon {
     height: 13px;
-    filter: var(--main-header-link-icon-filter);
+    filter: var(--accounts-main-header-link-icon-filter);
     opacity: 0.5;
 }
 

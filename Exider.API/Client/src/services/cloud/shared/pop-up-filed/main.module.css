@@ -36,18 +36,8 @@
 }
 
 .field button {
-    width: fit-content;
     margin-left: auto;
-    margin-top: auto;
-    padding: 10px 21px;
-    background: var(--sub-accent-color);
-    border: none;
-    outline: none;
-    border-radius: 5px;
-    color: var(--sub-font-color);
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 35px;
+    margin-top: 38px;
 }
 
 @keyframes open {

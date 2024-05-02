@@ -69,6 +69,9 @@ namespace Exider.Services.Internal.Handlers
         {
             var userId = _requestHandler.GetUserId(bearer);
 
+            if (folder.FolderType == Configuration.FolderTypes.System && operation != Configuration.Abilities.Read)
+                return Result.Failure("You cannot perform this operation on the system folder.");
+
             if (userId.IsFailure)
                 return Result.Failure("Invalid user id");
 

@@ -30,6 +30,12 @@
     --input-background: rgba(0, 0, 0, 0.05);
     --input-placeholder: #fffff6;
     --input-border: #777780;
+
+    --main-button-background-color: black;
+    --main-button-font-color: white;
+
+    --main-create-background-color: rgba(0, 0, 0, 0.05);
+    --main-create-accent-color: rgba(255, 255, 255, 0.5);
 }
 
 .dark-mode {
@@ -64,4 +70,10 @@
     --input-background: rgba(255, 255, 255, 0.05);
     --input-placeholder: #9e9ea5;
     --input-border: #777780;
+
+    --main-button-background-color: white;
+    --main-button-font-color: black;
+
+    --main-create-background-color: rgba(0, 0, 0, 0.65);
+    --main-create-accent-color: rgba(255, 255, 255, 0.3);
 }

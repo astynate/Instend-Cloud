@@ -5,12 +5,12 @@
     border-radius: 21px;
     display: flex;
     /* grid-template-columns: repeat(4, 1fr); */
-    max-width: 460px;
+    max-width: 456px;
     flex-wrap: wrap;
     z-index: 99999999999999999999999;
     grid-gap: 4px;
     backdrop-filter: var(--main-blur-effect);
-    background: rgba(0, 0, 0, 0.65);
+    background: var(--main-create-background-color);
     padding: 2px;
     user-select: none;
     transition: 0.25s ease;
@@ -28,7 +28,7 @@
 .item {
     height: 110px;
     width: 110px;
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--main-create-accent-color);
     z-index: 999;
     border-radius: 20px;
     cursor: pointer;

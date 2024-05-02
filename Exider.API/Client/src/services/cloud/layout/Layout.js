@@ -1,4 +1,4 @@
-﻿import React, { useContext } from 'react'
+﻿import React, { createContext } from 'react'
 import { useState, useEffect } from 'react';
 import Loader from '../widgets/loader/Loader';
 import './css/fonts.css';
@@ -11,9 +11,11 @@ import { createSignalRContext } from "react-signalr/signalr";
 import { observer } from 'mobx-react-lite';
 import storageState from '../../../states/storage-state';
 import galleryState from '../../../states/gallery-state';
+import Information from '../shared/information/Information';
 
 export const messageWSContext = createSignalRContext();
 export const storageWSContext = createSignalRContext();
+export const LayoutContext = createContext();
 export const imageTypes = ['png', 'jpg', 'jpeg', 'gif'];
 
 const Layout = observer(() => {
@@ -21,6 +23,15 @@ const Layout = observer(() => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    const [isError, setErrorState] = useState(false);
+    const [errorTitle, setErrorTitle] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const ErrorMessage = (title, message) => {
+        setErrorTitle(title);
+        setErrorMessage(message);
+        setErrorState(true);
+      }
 
     storageWSContext.useSignalREffect(
         "CreateFolder",
@@ -76,13 +87,21 @@ const Layout = observer(() => {
     return (
         <messageWSContext.Provider url={"http://localhost:5000/message-hub"}>
             <storageWSContext.Provider url={"http://localhost:5000/storage-hub"}>
-                <div className='cloud-wrapper'>
-                    {isLoading && <Loader />}
-                    <Helmet>
-                        <title>Yexider Cloud</title>
-                    </Helmet>
-                    {windowWidth > 700 ? <Desktop /> : <Mobile /> }
-                </div>
+                <LayoutContext.Provider value={{Error: ErrorMessage}}>
+                    <div className='cloud-wrapper'>
+                        {isLoading && <Loader />}
+                        <Helmet>
+                            <title>Yexider Cloud</title>
+                        </Helmet>
+                        <Information
+                            open={isError}
+                            close={() => setErrorState(false)}
+                            title={errorTitle}
+                            message={errorMessage}
+                        />
+                        {windowWidth > 700 ? <Desktop /> : <Mobile /> }
+                    </div>
+                </LayoutContext.Provider>
             </storageWSContext.Provider>
         </messageWSContext.Provider>
     );
