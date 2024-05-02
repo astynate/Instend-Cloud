@@ -1,0 +1,42 @@
+.add {
+    height: auto;
+    width: auto;
+    position: fixed;
+    left: 47%;
+    bottom: 25px;
+    cursor: pointer;
+    transition: 0.25s ease;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    grid-gap: 15px;
+}
+
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 55px;
+    width: 55px;
+    /* background: var(--sub-accent-color); */
+    background: rgb(35, 160, 255);
+    backdrop-filter: blur(10px);
+    border-radius: 100%;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.5);
+    transition: 0.15s ease;
+}
+
+.button img {
+    height: 22px;
+    width: 22px;
+    filter: var(--main-filter);
+}
+
+.button:hover {
+    transform: scale(102%);
+}
+
+.button:active {
+    transform: scale(98%);
+}

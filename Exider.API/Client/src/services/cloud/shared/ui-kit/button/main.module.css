@@ -1,0 +1,12 @@
+.button {
+    width: fit-content;
+    padding: 9px 23px;
+    border-radius: 8px;
+    outline: none;
+    border: none;
+    background: var(--main-font-color);
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    color: var(--sub-background-color);
+}

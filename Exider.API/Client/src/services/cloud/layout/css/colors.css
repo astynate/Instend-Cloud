@@ -27,11 +27,14 @@
     --main-blur-effect: blur(10px) saturate(50%);
     --color-scheme: light;
     --pop-up-accent-color: rgba(0, 0, 0, 0.1);
+    --input-background: rgba(0, 0, 0, 0.05);
+    --input-placeholder: #fffff6;
+    --input-border: #777780;
 }
 
 .dark-mode {
     --main-background-color: rgb(0, 0, 0);
-    --main-border-color: rgba(255, 255, 255, 0.2);
+    --main-border-color: rgba(255, 255, 255, 0.25);
     --main-accent-color: #212125;
     --main-font-color: #ffffff;
     --main-header-font-color: #161616;
@@ -58,4 +61,7 @@
     --main-blur-effect: blur(10px) saturate(50%);
     --color-scheme: dark;
     --pop-up-accent-color: #313134;
+    --input-background: rgba(255, 255, 255, 0.05);
+    --input-placeholder: #9e9ea5;
+    --input-border: #777780;
 }

@@ -1,0 +1,26 @@
+.textArea {
+    resize: none;
+}
+
+.textArea {
+    height: 120px;
+    width: 100%;
+    padding: 14px;
+    border: 1px solid var(--input-border);
+    outline: none;
+    background: none;
+    border-radius: 12px;
+    color: var(--main-font-color);
+    transition: 0.25s ease;
+    font-size: 17px;
+    font-family: 'Open Sans', sans-serif;
+    background: var(--input-background);
+}
+
+.textArea:focus {
+    border: 1px solid var(--main-font-color);
+}
+
+.textArea::placeholder {
+    color: var(--input-placeholder);
+}

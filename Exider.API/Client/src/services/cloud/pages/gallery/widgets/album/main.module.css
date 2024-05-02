@@ -1,0 +1,30 @@
+.album {
+    height: 100%;
+    width: 100%;
+    cursor: 
+}
+
+.cover {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    aspect-ratio: 1.7 / 1;
+    border-radius: 15px;
+
+}
+
+.information {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: var(--main-paragraph-color);
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.name {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--main-font-color);
+}

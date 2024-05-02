@@ -14,7 +14,7 @@ import grid from './images/grid.png';
 import warterfall from './images/waterfall.png';
 import galleryState from '../../../../../states/gallery-state';
 import { toJS } from 'mobx';
-import { ConvertDate } from '../../../../../utils/DateHandler';
+import Add from '../widgets/add/Add';
 
 export const GetPhotoById = async (id) => {
   return await toJS(galleryState.photos.find(element => element.id === id));
@@ -24,26 +24,7 @@ const Gallery = observer((props) => {
   const [scale, setScale] = useState(2);
   const [photoGrid, setPhotoGeridState] = useState('grid');
   const [objectFit, setObjectFit] = useState('cover');
-  const [current, setCurrent] = useState([]);
   const scroll = useRef();
-  const dataRef = useRef();
-  const [date, setDate] = useState(Date.now);
-  const [folder, setFolder] = useState('Yexider Cloud');
-  
-  useEffect(() => {
-    const fetchPhotos = async () => {
-      const startPhoto = await GetPhotoById(current[0]);
-      const endPhoto = await GetPhotoById(current[current.length - 1]);
-
-      try {
-        if (startPhoto.lastEditTime && endPhoto.lastEditTime) {
-          setDate(`${ConvertDate(startPhoto.lastEditTime)} — ${ConvertDate(endPhoto.lastEditTime)}`);
-          setFolder(startPhoto.name);
-        }
-      } catch {}
-    }
-    fetchPhotos();
-  }, [current]);
 
   useEffect(() => {
     if (props.setPanelState) {
@@ -75,14 +56,6 @@ const Gallery = observer((props) => {
                   {
                     'name': 'Albums', 
                     'route': '/gallery/albums'
-                  },
-                  {
-                    'name': 'People', 
-                    'route': '/gallery/people'
-                  },
-                  {
-                    'name': 'Public access', 
-                    'route': '/gallery/public-access'
                   }
                 ]}
               />
@@ -99,25 +72,18 @@ const Gallery = observer((props) => {
               />
             </div>
           </div>
-          <div className={styles.down}>
-            <div className={styles.currentDate}>
-              <span className={styles.date} ref={dataRef}>{date}</span>
-              <span className={styles.location}>{folder}</span>
-            </div>
-          </div>
         </div>
         <div className={styles.content}>
+          <Add />
           <Routes>
             <Route 
-              path='' 
+              path=''
               element={
                 <Photos 
                   photoGrid={photoGrid} 
                   objectFit={objectFit}
                   scale={scale}
                   scroll={scroll}
-                  setCurrent={setCurrent}
-                  dataRef={dataRef}
               />} 
             />
             <Route 

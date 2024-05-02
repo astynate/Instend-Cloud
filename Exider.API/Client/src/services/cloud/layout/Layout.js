@@ -10,9 +10,11 @@ import Mobile from './Mobile';
 import { createSignalRContext } from "react-signalr/signalr";
 import { observer } from 'mobx-react-lite';
 import storageState from '../../../states/storage-state';
+import galleryState from '../../../states/gallery-state';
 
 export const messageWSContext = createSignalRContext();
 export const storageWSContext = createSignalRContext();
+export const imageTypes = ['png', 'jpg', 'jpeg', 'gif'];
 
 const Layout = observer(() => {
     const handleLoading = () => setIsLoading(false);
@@ -37,7 +39,13 @@ const Layout = observer(() => {
 
     storageWSContext.useSignalREffect(
         "UploadFile",
-        (file) => {storageState.UploadFile(file)}
+        (file) => {
+            storageState.UploadFile(file);
+
+            if (imageTypes.includes(file.type)) {
+                galleryState.AddPhoto(file);
+            }
+        }
     );
 
     storageWSContext.useSignalREffect(
@@ -47,7 +55,10 @@ const Layout = observer(() => {
 
     storageWSContext.useSignalREffect(
         "DeleteFile",
-        (data) => {storageState.DeleteFile(data)}
+        (data) => {
+            storageState.DeleteFile(data);
+            galleryState.DeletePhoto(data);
+        }
     );
 
     useEffect(() => {

@@ -1,13 +1,12 @@
 .wrapper {
-    top: 30px;
-    left: 50%;
-    transform: translateX(-52%) scale(95%);
     height: auto;
-    width: auto;
-    position: absolute;
-    border-radius: 22px;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    width: fit-content;
+    /* position: absolute; */
+    border-radius: 21px;
+    display: flex;
+    /* grid-template-columns: repeat(4, 1fr); */
+    max-width: 460px;
+    flex-wrap: wrap;
     z-index: 99999999999999999999999;
     grid-gap: 4px;
     backdrop-filter: var(--main-blur-effect);
@@ -17,12 +16,13 @@
     transition: 0.25s ease;
     opacity: 0;
     visibility: hidden;
+    transform: scale(80%);
 }
 
 .wrapper[id="open"] {
     opacity: 1;
     visibility: visible;
-    transform: translateX(-52%) scale(100%);
+    transform: scale(100%);
 }
 
 .item {

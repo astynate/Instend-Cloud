@@ -11,6 +11,7 @@ namespace Exider.Core
             try
             {
                 DefaultAvatar = Convert.ToBase64String(File.ReadAllBytes(DefaultAvatarPath));
+                DefaultAlbumCover = Convert.ToBase64String(File.ReadAllBytes(DefaultAlbumCoverPath));
             }
             catch (Exception exception) 
             {
@@ -30,6 +31,8 @@ namespace Exider.Core
 
         public static readonly string DefaultAvatarPath = "D:/Exider-System/default-avatar.png";
 
+        public static readonly string DefaultAlbumCoverPath = "D:/Exider-System/default-album-cover.png";
+
         public static readonly string URL = "http://localhost:44441/";
 
         public static readonly int confirmationLifeTimeInHours = 3;
@@ -39,6 +42,8 @@ namespace Exider.Core
         public static readonly int accsessTokenLifeTimeInMinutes = 30;
 
         public static readonly string? DefaultAvatar;
+
+        public static readonly string? DefaultAlbumCover;
 
         public static readonly string SystemDrive = "D:/Exider-System/";
 

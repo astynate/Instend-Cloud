@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -15,21 +15,22 @@ import styles from './main.module.css';
 import CloudHeader from '../widgets/header/Header';
 import File from '../shared/file/File';
 import ContextMenu from '../../../shared/context-menu/ContextMenu';
-import Open from './images/open.png';
-import Rename from './images/rename.png';
-import PropertiesImage from './images/properties.png';
-import Share from './images/share.png';
-import DeleteImage from './images/delete.png';
+import Open from './images/context-menu/open.png';
+import Rename from './images/context-menu/rename.png';
+import PropertiesImage from './images/context-menu/properties.png';
+import Share from './images/context-menu/share.png';
+import DeleteImage from './images/context-menu/delete.png';
 import PopUpField from '../../../shared/pop-up-filed/PopUpField';
 import Preview from '../../../../preview/layout/Preview';
 import RightPanel from '../widgets/right-panel/RightPanel';
 import Folder from '../shared/folder/Folder';
 import PropertiesWindow from '../widgets/properties/Properties';
 import Information from '../../../shared/information/Information';
+import FileLoader from '../../../shared/file-loader/FileLoader';
+import SelectBox from '../../../shared/interaction/select-box/SelectBox';
 
 const Cloud = observer((props) => {
   const navigate = useNavigate();
-  const params = useParams();
   const { user } = userState;
   const { files, folders } = storageState;
   const [isFolderProperties, setFolderProperties] = useState(false);
@@ -44,6 +45,8 @@ const Cloud = observer((props) => {
   const [errorTitle, setErrorTitle] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setLoadingState] = useState(false);
+  const params = useParams();
+  const selectPlace = useRef();
 
   const ErrorMessage = (title, message) => {
     setErrorTitle(title);
@@ -92,13 +95,12 @@ const Cloud = observer((props) => {
     <div className={styles.cloud}>
       <Search />
       <Header />
-      {isPreview ? 
+      {isPreview && 
           <Preview
             close={() => setPreviewState(false)} 
             file={selectedItems[0]}
             ErrorMessage={ErrorMessage}
-          />
-        : null}
+          />}
       <div className={styles.wrapper}>
         <div className={styles.contentWrapper}>
           <CloudHeader 
@@ -135,7 +137,7 @@ const Cloud = observer((props) => {
               isContextMenu={true}
               position={contextMenuPosition}
           /> : null}
-          <div className={styles.content}>
+          <div className={styles.content} ref={selectPlace}>
             {isLoading ? 
                 Array.from({ length: 4 }).map((_, index) => (
                   <File key={index} isPlaceholder={true} />))
@@ -196,6 +198,7 @@ const Cloud = observer((props) => {
             items={[]}
           />
         : null}
+        <SelectBox selectPlace={selectPlace} />
       </div>
     </div>
   )

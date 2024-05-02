@@ -1,5 +1,6 @@
 ﻿using Exider.Core.Models.Account;
 using Exider.Core.Models.Email;
+using Exider.Core.Models.Gallery;
 using Exider.Core.Models.Storage;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,8 @@ namespace Exider.Core
         public DbSet<UserDataModel> UserData { get; set; } = null!;
         public DbSet<FolderModel> Folders { get; set; } = null!;
         public DbSet<FileModel> Files { get; set; } = null!;
+        public DbSet<AlbumModel> Albums { get; set; } = null!;
+        public DbSet<AlbumAccess> AlbumAccess { get; set; } = null!;
         public DbSet<FolderAccess> FolderAccesses { get; set; } = null!;
         public DbSet<Models.Storage.FileAccess> FileAccess { get; set; } = null!;
 

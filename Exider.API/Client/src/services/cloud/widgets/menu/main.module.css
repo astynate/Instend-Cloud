@@ -12,6 +12,7 @@
 .button {
     user-select: none;
     cursor: pointer;
+    transition: 0.25s ease;
 }
 
 .button a {
@@ -19,6 +20,7 @@
     font-size: 16px;
     color: var(--main-paragraph-color);
     border-radius: 10px;
+    transition: 0.25s ease;
 }
 
 .button[id="active"] a {

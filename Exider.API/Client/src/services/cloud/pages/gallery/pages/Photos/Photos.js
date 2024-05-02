@@ -10,6 +10,7 @@ import Preview from '../../../../../preview/layout/Preview';
 import { GetPhotoById } from '../../layout/Gallery';
 import { instance } from '../../../../../../state/Interceptors';
 import { DownloadFromResponse } from '../../../../../../utils/DownloadFromResponse';
+import { ConvertDate } from '../../../../../../utils/DateHandler';
 
 const Photos = observer((props) => {
     const [isError, setErrorState] = useState(false);
@@ -23,19 +24,38 @@ const Photos = observer((props) => {
     const [selectedItems, setSelectedItems] = useState([]);
     const [isPreview, setPreviewState] = useState(false);
     const photosWrapper = useRef();
+    const [date, setDate] = useState(Date.now);
+    const [folder, setFolder] = useState('Yexider Cloud');
+    const [current, setCurrent] = useState([]);
+    const dataRef = useRef();
+
+    useEffect(() => {
+        const fetchPhotos = async () => {
+          const startPhoto = await GetPhotoById(current[0]);
+          const endPhoto = await GetPhotoById(current[current.length - 1]);
+    
+          try {
+            if (startPhoto.lastEditTime && endPhoto.lastEditTime) {
+              setDate(`${ConvertDate(startPhoto.lastEditTime)} — ${ConvertDate(endPhoto.lastEditTime)}`);
+              setFolder(startPhoto.name);
+            }
+          } catch {}
+        }
+        fetchPhotos();
+      }, [current]);
     
     const changeDate = () => {
         try {
             const element = photosWrapper.current;
             let children = Array.from(element.children);
-            
+    
             children = children.filter((item) => {
-                let rect = item.getBoundingClientRect(); 
-                return CalculateAverageEqual(rect.top, props.dataRef.current.offsetTop, 60);
+                let rect = item.getBoundingClientRect();
+                return CalculateAverageEqual(rect.top, dataRef.current.offsetTop, 60);
             });
     
             if (children.length > 0) {
-                props.setCurrent(children.map(e => e.id));
+                setCurrent(children.map(e => e.id));
             }
         } catch (error) {
             console.error(error);
@@ -89,29 +109,35 @@ const Photos = observer((props) => {
             />}
             {isContextMenuOpen &&
                 <ContextMenu 
-                items={[
-                    [null, "Open", () => {setPreviewState(true)}],
-                    [null, "Add to album", () => {}],
-                    [null, "Share", () => {}],
-                    [null, "Download", async () => {
-                        await instance
-                            .get(`/file/download?id=${selectedItems[0].id}`, {
-                                responseType: "blob"
-                            })
-                            .then((response) => {
-                                DownloadFromResponse(response);
-                            })
-                            .catch((error) => {
-                                console.error(error);
-                                ErrorMessage('Attention!', 'Something went wrong');
-                            });
-                    }],
-                    [null, "Delete", () => {}]
-                ]} 
-                close={() => setContextMenuState(false)}
-                isContextMenu={true}
-                position={contextMenuPosition}
-            />}
+                    items={[
+                        [null, "Open", () => {setPreviewState(true)}],
+                        [null, "Add to album", () => {}],
+                        [null, "Share", () => {}],
+                        [null, "Download", async () => {
+                            await instance
+                                .get(`/file/download?id=${selectedItems[0].id}`, {
+                                    responseType: "blob"
+                                })
+                                .then((response) => {
+                                    DownloadFromResponse(response);
+                                })
+                                .catch((error) => {
+                                    console.error(error);
+                                    ErrorMessage('Attention!', 'Something went wrong');
+                                });
+                        }],
+                        [null, "Delete", () => {}]
+                    ]} 
+                    close={() => setContextMenuState(false)}
+                    isContextMenu={true}
+                    position={contextMenuPosition}
+                />}
+            <div className={styles.down}>
+                <div className={styles.currentDate}>
+                    <span className={styles.date} ref={dataRef}>{date}</span>
+                    <span className={styles.location}>Yexider Cloud</span>
+                </div>
+            </div>
             <div className={styles.photos} id={props.photoGrid} style={{ gridTemplateColumns, columnCount }} ref={photosWrapper}>
                 {galleryState.photos.map((element, index) => {
                     return (

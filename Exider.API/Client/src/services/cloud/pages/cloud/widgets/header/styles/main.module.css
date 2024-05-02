@@ -52,3 +52,19 @@
     grid-gap: 14px;
     position: relative;
 }
+
+.create {
+    height: auto;
+    width: 460px;
+    top: 30px;
+    left: calc(50% - 232.5px);
+    position: absolute;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.25s ease;
+}
+
+.create[id="open"] {
+    opacity: 1;
+    visibility: visible;
+}

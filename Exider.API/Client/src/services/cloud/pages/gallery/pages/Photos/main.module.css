@@ -1,6 +1,6 @@
 .photos {
     margin-right: 15px;
-    padding-bottom: 15px;
+    padding-bottom: 110px;
 }
 
 .photos img {
@@ -40,13 +40,14 @@
 .photos[id="grid"] {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    grid-gap: 1px;
+    grid-gap: 4px;
 }
 
 .photos[id="grid"] img {
     border-radius: 0px;
     border: 0px solid rgba(255, 255, 255, 0.2);
     aspect-ratio: 1/1;
+    border-radius: 10px;
 }
 
 .photos img[id="contain"] {
@@ -64,4 +65,30 @@
 
 .padding {
     padding: 10px;
+}
+
+.down {
+    top: 130px;
+    left: 0;
+    position: sticky;
+    padding-bottom: 15px;
+    backdrop-filter: blur(100px) brightness(50%);
+    background: linear-gradient(180deg, var(--main-background-color), rgba(0, 0, 0, 0));
+}
+
+.currentDate {
+    display: flex;
+    flex-direction: column;
+}
+
+.date {
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--main-font-color);
+}
+
+.location {
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--main-paragraph-color);
 }

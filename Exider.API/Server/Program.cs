@@ -4,6 +4,7 @@ using Exider.Core.Models.Account;
 using Exider.Dependencies.Services;
 using Exider.Repositories.Account;
 using Exider.Repositories.Email;
+using Exider.Repositories.Gallery;
 using Exider.Repositories.Repositories;
 using Exider.Repositories.Storage;
 using Exider.Services.External.FileService;
@@ -39,6 +40,7 @@ builder.Services.AddScoped<IFolderRepository, FolderRepository>();
 builder.Services.AddScoped<IFileRespository, FileRespository>();
 builder.Services.AddScoped<IFileAccessRepository, FileAccessRepository>();
 builder.Services.AddScoped<IFolderAccessRepository, FolderAccessRepository>();
+builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
 
 builder.Services.AddSingleton<IValidationService, ValidationService>();
 builder.Services.AddSingleton<ITokenService, JwtService>();
