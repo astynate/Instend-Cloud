@@ -17,6 +17,7 @@ namespace Exider.Core
         public DbSet<FileModel> Files { get; set; } = null!;
         public DbSet<AlbumModel> Albums { get; set; } = null!;
         public DbSet<AlbumAccess> AlbumAccess { get; set; } = null!;
+        public DbSet<AlbumLink> AlbumLinks { get; set; } = null!;
         public DbSet<FolderAccess> FolderAccesses { get; set; } = null!;
         public DbSet<Models.Storage.FileAccess> FileAccess { get; set; } = null!;
 

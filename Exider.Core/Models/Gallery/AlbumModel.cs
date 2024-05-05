@@ -57,7 +57,14 @@ namespace Exider.Core.Models.Gallery
                 return Result.Failure(result.Error);
             }
 
-            Cover = result.Value; return Result.Success();
+            if (result.Value == null || result.Value.Length < 1)
+            {
+                Cover = Configuration.DefaultAlbumCover;
+                return Result.Success();
+            }
+
+            Cover = result.Value; 
+            return Result.Success();
         }
     }
 }

@@ -17,26 +17,28 @@ const Scroll = (props) => {
 
         if (isAvailable.current === true && rect.top < window.innerHeight) {
             setAvailableState(false);
-            await props.callback(props.photos);
+            await props.callback();
             setAvailableState(true);
         }
       }
     };
   
     useEffect(() => {
-        if (isHasMoreRef.current === true) {
+        if (isHasMoreRef && isHasMoreRef.current === true) {
             checkScroll();
         }
     }, [props.array.length]);
 
     useEffect(() => {
-        props.scroll.current.addEventListener('scroll', () => checkScroll());
+        if (props.scroll && props.scroll.current) {
+            props.scroll.current.addEventListener('scroll', () => checkScroll());
       
-        return () => {
-            try {
-                props.scroll.current.removeEventListener('scroll', () =>  checkScroll());
-            } catch {}
-        };
+            return () => {
+                try {
+                    props.scroll.current.removeEventListener('scroll', () =>  checkScroll());
+                } catch {}
+            };
+        }
     }, []);
   
     return <div ref={ref}></div>;

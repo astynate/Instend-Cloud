@@ -43,7 +43,7 @@ namespace Exider.Core
 
         public static readonly string? DefaultAvatar;
 
-        public static readonly string? DefaultAlbumCover;
+        public static readonly string DefaultAlbumCover;
 
         public static readonly string SystemDrive = "D:/Exider-System/";
 

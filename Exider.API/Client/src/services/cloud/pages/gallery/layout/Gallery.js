@@ -8,23 +8,68 @@ import styles from './main.module.css';
 import Photos from '../pages/Photos/Photos';
 import Albums from '../pages/Albums/Albums';
 import Range from '../../../shared/range/Range';
-import zoomIn from './images/zoom-in.png';
-import zoomOut from './images/zoom-out.png';
-import grid from './images/grid.png';
-import warterfall from './images/waterfall.png';
 import galleryState from '../../../../../states/gallery-state';
 import { toJS } from 'mobx';
-import Add from '../widgets/add/Add';
+import share from './images/share.png';
+import download from './images/download.png';
+import SimpleButton from '../../../shared/ui-kit/header/simple-button/SimpleButton';
+import SelectItems from '../../../shared/ui-kit/header/select-items/SelectItems.js';
+import sort from './images/sort.png';
+import grid from './images/grid.png';
+import Add from '../widgets/add/Add.js';
+import AlbumView from '../pages/AlbumView/AlbumView.js';
 
 export const GetPhotoById = async (id) => {
   return await toJS(galleryState.photos.find(element => element.id === id));
 }
 
 const Gallery = observer((props) => {
+  const PhotosSortFunctions = [
+    {
+      "title": "Name",
+      "isSelected": false
+    },
+    {
+      "title": "Last edit date",
+      "isSelected": true
+    }
+  ];
+  
+  const SortingOrder = [
+    {
+      "title": "Accending",
+      "isSelected": true
+    },
+    {
+      "title": "Descending",
+      "isSelected": false
+    }
+  ];
+
   const [scale, setScale] = useState(2);
   const [photoGrid, setPhotoGeridState] = useState('grid');
-  const [objectFit, setObjectFit] = useState('cover');
+  const [PhotosSortState, setSortingTypeState] = useState(PhotosSortFunctions);
+  const [SortingOrderState, setSortingOrderState] = useState(SortingOrder);
+  const [albumId, setAlbumId] = useState(null);
   const scroll = useRef();
+
+  useEffect(() => {
+    let type = PhotosSortState
+      .find(element => element.isSelected === true);
+
+    let ordingState = SortingOrderState
+      .find(element => element.isSelected === true);
+
+    if (type && ordingState) {
+      const ordingStateId = ordingState.title === 'Accending';
+
+      if (type.title === 'Name') {
+        galleryState.SortPhotosByName(ordingStateId);
+      } else {
+        galleryState.SortPhotosByDate(ordingStateId);
+      }
+    }
+  }, [PhotosSortState, SortingOrderState]);
 
   useEffect(() => {
     if (props.setPanelState) {
@@ -60,28 +105,25 @@ const Gallery = observer((props) => {
                 ]}
               />
             <div className={styles.buttons}>
-              <img 
-                src={objectFit === 'contain' ? zoomIn : zoomOut}
-                className={styles.button} 
-                onClick={() => setObjectFit(prev => prev === 'cover' ? 'contain' : 'cover')} 
+              <SelectItems 
+                icon={sort}
+                items={[PhotosSortState, SortingOrderState]}
+                states={[setSortingTypeState, setSortingOrderState]}
               />
-              <img 
-                src={photoGrid === 'grid' ? warterfall : grid} 
-                className={styles.button} 
-                onClick={() => setPhotoGeridState(prev => prev === 'grid' ? 'waterfall' : 'grid')} 
-              />
+              <SelectItems icon={grid} />
+              <SimpleButton icon={share} />
+              <SimpleButton icon={download} />
             </div>
           </div>
         </div>
         <div className={styles.content}>
-          <Add />
+          <Add id={albumId} />
           <Routes>
             <Route 
               path=''
               element={
                 <Photos 
                   photoGrid={photoGrid} 
-                  objectFit={objectFit}
                   scale={scale}
                   scroll={scroll}
               />} 
@@ -90,6 +132,17 @@ const Gallery = observer((props) => {
               path='/albums' 
               element={<Albums />} 
               photoGrid={photoGrid} 
+            />
+            <Route 
+              path='/albums/:id' 
+              element={<AlbumView 
+                setAlbumId={setAlbumId}
+                photoGrid={photoGrid} 
+                scale={scale}
+                scroll={scroll} 
+              />} 
+              photoGrid={photoGrid} 
+              scroll={scroll}
             />
           </Routes>
         </div>

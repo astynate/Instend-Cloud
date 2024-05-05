@@ -24,7 +24,7 @@ const PopUpField = (props) => {
         />
         <Button 
           value={'Next'}
-          onClick={async () => {
+          callback={async () => {
             if (props.field[0] === '' || props.field[0] === null){
               alert('This field must not be empthy');
             } else {

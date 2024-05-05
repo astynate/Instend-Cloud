@@ -38,13 +38,13 @@ const Cloud = observer((props) => {
   const [isContextMenuOpen, setContextMenuState] = useState(false);
   const [contextMenuPosition, setContextMenuPosition] = useState([0, 0]);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [activeItems, setActiveItems] = useState([]);
   const [isPreview, setPreviewState] = useState(false);
   const [isRightPanelOpen, setRightPanelState] = useState(false);
   const [isError, setErrorState] = useState(false);
   const [errorTitle, setErrorTitle] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setLoadingState] = useState(false);
-  const [activeFiles, setActiveFiles] = useState([]);
   const params = useParams();
   const selectPlaceWrapper = useRef();
   const selectPlace = useRef();
@@ -56,14 +56,14 @@ const Cloud = observer((props) => {
   }
 
   const single = [
-    [Open, "Open", () => OpenPreview(activeFiles[0])],
+    [Open, "Open", () => OpenPreview(activeItems[0])],
     [Rename, "Rename", () => setRenameState(true)],
-    [PropertiesImage, "Properties", () => Properties(activeFiles[0], setRightPanelState, setFolderProperties)],
-    [DeleteImage, "Delete", async () => Delete(activeFiles, ErrorMessage, params.id)]
+    [PropertiesImage, "Properties", () => Properties(activeItems[0], setRightPanelState, setFolderProperties)],
+    [DeleteImage, "Delete", async () => Delete(activeItems, ErrorMessage, params.id)]
   ]
 
   const multiple = [
-    [DeleteImage, "Delete", async () => Delete(activeFiles, ErrorMessage, params.id)]
+    [DeleteImage, "Delete", async () => Delete(activeItems, ErrorMessage, params.id)]
   ]
 
   const [contextMenuItems, setContextMenuItems] = useState(single);
@@ -74,20 +74,9 @@ const Cloud = observer((props) => {
     if (file.strategy === "file") {
       setPreviewState(true);
     } else {
-      navigate(`/cloud/${activeFiles[0].id}`)
+      navigate(`/cloud/${activeItems[0].id}`)
     }
   };
-  
-  useEffect(() => {
-    const Connect = async () => {
-        if (storageWSContext.connection.state === "Connected") {
-          await storageWSContext.connection.invoke("Join", 
-            localStorage.getItem("system_access_token")); 
-        }       
-    }
-
-    Connect();
-  }, [storageWSContext.connection.state]);
 
   useEffect(() => {
     if (!storageState.files || !storageState.files[params.id]) {
@@ -129,9 +118,9 @@ const Cloud = observer((props) => {
     }
     
     if (selectedItems.length > 0) {
-      setActiveFiles(selectedItems);
+      setActiveItems(selectedItems);
     }
-  }, [activeFiles, selectedItems]);
+  }, [activeItems, selectedItems]);
 
   const HandleSelect = (event, element) => {
     if (event.shiftKey) {
@@ -157,7 +146,7 @@ const Cloud = observer((props) => {
       {isPreview && 
           <Preview
             close={() => setPreviewState(false)} 
-            file={activeFiles[0]}
+            file={activeItems[0]}
             ErrorMessage={ErrorMessage}
           />}
       <div className={styles.wrapper}>
@@ -175,7 +164,7 @@ const Cloud = observer((props) => {
               field={[fileName, setFilename]}
               open={isRenameOpen}
               close={() => setRenameState(false)}
-              callback={async () => {await RenameCallback(fileName, activeFiles[0], ErrorMessage)}}
+              callback={async () => {await RenameCallback(fileName, activeItems[0], ErrorMessage)}}
             />}
           <Information
             open={isError}
@@ -260,8 +249,9 @@ const Cloud = observer((props) => {
             items={[]}
           />}
         <SelectBox 
-          setSelectedItems
-          selectPlace={[selectPlaceWrapper, selectPlace]} 
+          selectPlace={[selectPlaceWrapper, selectPlace]}
+          selectedItems={[selectedItems, setSelectedItems]}
+          activeItems={[activeItems, setActiveItems]}
         />
       </div>
     </div>

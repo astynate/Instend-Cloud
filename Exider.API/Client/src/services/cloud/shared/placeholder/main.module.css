@@ -1,0 +1,5 @@
+.placeholder {
+    font-size: 24px;
+    color: var(--main-paragraph-color);
+    font-weight: 600;
+}

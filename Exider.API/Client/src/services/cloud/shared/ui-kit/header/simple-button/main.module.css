@@ -1,0 +1,21 @@
+.simpleButton {
+    height: 20px;
+}
+
+.simpleButton img {
+    height: 20px;
+    width: 20px;
+    object-fit: contain;
+    filter: var(--main-filter);
+    transition: 0.15s ease;
+    cursor: pointer;
+    user-select: none;
+}
+
+.simpleButton img:hover {
+    transform: scale(102%);
+}
+
+.simpleButton img:active {
+    transform: scale(95%);
+}

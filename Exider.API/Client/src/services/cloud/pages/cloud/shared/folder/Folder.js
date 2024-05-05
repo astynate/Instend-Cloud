@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './main.module.css';
 import { Link } from 'react-router-dom';
 import { ConvertDate } from '../../../../../../utils/DateHandler';
+import system from './images/gear.png';
 
 const Folder = (props) => {
   const [files, setFiles] = useState([]);
@@ -32,7 +33,10 @@ const Folder = (props) => {
           {(files)}
         </div>
         <div className={styles.description}>
-          <span className={styles.name}>{props.name}</span>
+          <div className={styles.nameWrapper}>
+            {props.folder.typeId === 'System' && <img src={system} className={styles.folderType} />}
+            <span className={styles.name}>{props.name}</span>
+          </div>
           <span className={styles.time}>{ConvertDate(props.time)}</span>
         </div>
       </div>

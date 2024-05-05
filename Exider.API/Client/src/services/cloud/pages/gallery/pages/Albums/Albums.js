@@ -3,6 +3,7 @@ import styles from './main.module.css';
 import { observer } from 'mobx-react-lite';
 import galleryState from '../../../../../../states/gallery-state';
 import Album from '../../widgets/album/Album';
+import { toJS } from 'mobx';
 
 const Albums = observer(() => {
     useEffect(() => {        
@@ -11,11 +12,12 @@ const Albums = observer(() => {
 
     return (
         <div className={styles.content}>
-            {galleryState.albums.map(element => {
-                return (
-                    <Album key={element.id} album={element} />
-                )
-            })}
+            {Object.entries(galleryState.albums).map(([key, value]) => {
+                    return (
+                        <Album key={key} album={value} />
+                    )
+                })
+            }
         </div>
     );
 });

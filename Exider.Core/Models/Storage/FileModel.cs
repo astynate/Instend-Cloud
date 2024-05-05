@@ -61,6 +61,11 @@ namespace Exider.Core.Models.Storage
 
         public async Task<Result> SetPreview(IFileService fileService)
         {
+            if (Type == null)
+            {
+                return Result.Success();
+            }
+
             Dictionary<string[], Configuration.HandleFileCover> actions = new Dictionary<string[], Configuration.HandleFileCover>
             {
                 { Configuration.imageTypes, PngHandler },
@@ -69,7 +74,7 @@ namespace Exider.Core.Models.Storage
             };
 
             KeyValuePair<string[], Configuration.HandleFileCover> handler = actions
-                .FirstOrDefault(pair => pair.Key.Contains(Type));
+                .FirstOrDefault(pair => pair.Key.Contains(Type.ToLower()));
 
             if (handler.Value != null)
             {

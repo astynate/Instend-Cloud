@@ -44,5 +44,20 @@ namespace Exider.Repositories.Gallery
 
             return Result.Success<AlbumModel[]>(albums);
         }
+
+        public async Task<Result> AddPhotoToAlbum(Guid fileId, Guid albumId)
+        {
+            var result = AlbumLink.Create(albumId, fileId);
+
+            if (result.IsFailure)
+            {
+                return Result.Failure(result.Error);
+            }
+
+            await _context.AlbumLinks.AddAsync(result.Value);
+            await _context.SaveChangesAsync();
+
+            return Result.Success();
+        }
     }
 }

@@ -3,6 +3,7 @@
     width: 800px;
     padding: 20px 25px;
     padding-right: 0;
+    cursor: default;
 }
 
 .content {

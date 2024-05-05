@@ -7,6 +7,7 @@ namespace Exider.Repositories.Gallery
     public interface IAlbumRepository
     {
         Task<Result<AlbumModel>> AddAsync(Guid ownerId, byte[] cover, string name, string description);
+        Task<Result> AddPhotoToAlbum(Guid fileId, Guid albumId);
         Task<Result<AlbumModel[]>> GetAlbums(IImageService imageService, Guid userId);
     }
 }

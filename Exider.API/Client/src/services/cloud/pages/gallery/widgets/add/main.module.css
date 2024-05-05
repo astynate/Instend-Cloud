@@ -30,7 +30,7 @@
 .button img {
     height: 22px;
     width: 22px;
-    filter: var(--main-filter);
+    filter: invert(100%);
 }
 
 .button:hover {

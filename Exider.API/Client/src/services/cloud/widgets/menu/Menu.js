@@ -7,10 +7,11 @@ const Menu = (props) => {
     const pointer = useRef();
     const [pointerOffset, setPointerOffset] = useState(0);
     const [width, setWidth] = useState(0);
+    const [current, setCurrent] = useState();
 
     useEffect(() => {
         setPointerOffset(pointer.current ? pointer.current.offsetLeft - 15 : 0);
-        setWidth(pointer.current ? pointer.current.clientWidth + 30 : 0)
+        setWidth(pointer.current ? pointer.current.clientWidth + 30 : 0);
     }, [location]);
 
     return (
@@ -19,8 +20,9 @@ const Menu = (props) => {
                 <div 
                     className={styles.button} 
                     key={index} 
-                    id={location.pathname === element.route ? 'active' : 'passive'}
-                    ref={location.pathname === element.route ? pointer : null}
+                    id={location.pathname === element.route || current === index ? 'active' : 'passive'}
+                    ref={location.pathname === element.route || current === index ? pointer : null}
+                    onClick={() => setCurrent(index)}
                 >
                     <NavLink to={element.route}>
                         {element.name}

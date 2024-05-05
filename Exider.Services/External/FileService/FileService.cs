@@ -101,6 +101,11 @@ namespace Exider.Services.External.FileService
 
         public Result<string> GetFileAsHTMLBase64String(FileModel fileModel)
         {
+            if (fileModel.Type == null)
+            {
+                return Result.Failure<string>("Can't handle this file type");
+            }
+
             Dictionary<string[], Configuration.ConvertToHtml> actions = new Dictionary<string[], Configuration.ConvertToHtml>
             {
                 { Configuration.documentTypes, WordToHTML },
@@ -109,11 +114,11 @@ namespace Exider.Services.External.FileService
             };
 
             KeyValuePair<string[], Configuration.ConvertToHtml> handler = 
-                actions.FirstOrDefault(pair => pair.Key.Contains(fileModel.Type));
+                actions.FirstOrDefault(pair => pair.Key.Contains(fileModel.Type.ToLower()));
 
             if (handler.Value == null)
             {
-                return Result.Failure<string>("Can't handle this fileToWrite type");
+                return Result.Failure<string>("Can't handle this file type");
             }
 
             return Result.Success(handler.Value(fileModel.Path));
@@ -225,7 +230,7 @@ namespace Exider.Services.External.FileService
 
         public string ConvertSystemTypeToContentType(string systemType)
         {
-            if (Configuration.imageTypes.Contains(systemType))
+            if (Configuration.imageTypes.Contains(systemType.ToLower()))
             {
                 return "image/" + systemType;
             }

@@ -20,7 +20,6 @@ export const imageTypes = ['png', 'jpg', 'jpeg', 'gif'];
 
 const Layout = observer(() => {
     const handleLoading = () => setIsLoading(false);
-
     const [isLoading, setIsLoading] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [isError, setErrorState] = useState(false);
@@ -31,7 +30,7 @@ const Layout = observer(() => {
         setErrorTitle(title);
         setErrorMessage(message);
         setErrorState(true);
-      }
+    }
 
     storageWSContext.useSignalREffect(
         "CreateFolder",
@@ -83,6 +82,25 @@ const Layout = observer(() => {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
+    
+    useEffect(() => {
+        const connectToWebSocket = async () => {
+            try {
+                while (storageWSContext.connection.state !== 'Connected') {
+                    if (storageWSContext.connection.state === 'Disconnected') {
+                        await storageWSContext.connection.start();
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+    
+                await storageWSContext.connection.invoke("Join", localStorage.getItem("system_access_token"));
+            } catch (error) {
+                console.error('Failed to connect or join:', error);
+            }
+        };
+    
+        connectToWebSocket();
+    }, [storageWSContext.connection]);      
 
     return (
         <messageWSContext.Provider url={"http://localhost:5000/message-hub"}>

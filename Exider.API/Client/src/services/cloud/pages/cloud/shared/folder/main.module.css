@@ -60,9 +60,24 @@
     width: 100%;
     text-align: center;
     overflow: hidden;
-    max-width: 70%;
+    max-width: 100%;
     text-wrap: nowrap;
-    /* max-width: 16px; */
+}
+
+.nameWrapper {
+    display: flex;
+    align-items: center;
+    grid-gap: 3px; 
+    justify-content: center;
+    max-width: 80%;
+}
+
+.folderType {
+    height: 8px;
+    width: 8px;
+    margin-top: 1px;
+    justify-self: end;
+    filter: var(--main-filter);
 }
 
 .time {
