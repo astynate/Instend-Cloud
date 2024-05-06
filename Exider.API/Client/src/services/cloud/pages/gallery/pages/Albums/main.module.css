@@ -4,4 +4,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     padding-top: 20px;
+    padding-right: 15px;
+    grid-gap: 15px;
+    padding-bottom: 100px;
 }

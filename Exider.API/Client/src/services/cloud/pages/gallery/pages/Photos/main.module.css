@@ -16,7 +16,8 @@
     position: sticky;
     padding-bottom: 15px;
     backdrop-filter: blur(20px);
-    background: linear-gradient(180deg, var(--main-background-color), rgba(0, 0, 0, 0));
+    /* background: linear-gradient(180deg, var(--main-background-color), rgba(0, 0, 0, 0)); */
+    background: var(--main-background-color);
     z-index: 1;
 }
 

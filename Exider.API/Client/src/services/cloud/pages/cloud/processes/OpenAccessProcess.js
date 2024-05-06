@@ -13,6 +13,20 @@ const OpenAccessProcess = (props) => {
     const [isSearching, setSearchingState] = useState(false);
     const [isLoading, setLoadingState] = useState(true);
 
+    const GetData = async (prefix) => {
+        setLoadingState(true);
+
+        try {
+            await instance
+                .get(`/accounts/all/${prefix}`)
+                .then(response => {
+                    setSearchUsers(response.data);
+                });
+        } finally {
+            setLoadingState(false);
+        }
+    }
+
     const SendAccessRequest = async (access, users) => {
         await instance.post(`/access?id=${props.id || ""}&type=${access}`, 
             users.map(x => ({id: x.id, ability: x.ability})));
@@ -66,7 +80,8 @@ const OpenAccessProcess = (props) => {
             searchUsers, 
             setSearchUsers, 
             isSearching, 
-            setSearchingState
+            setSearchingState,
+            GetData
         }}>
             {components[state]}
         </OpenAccessContext.Provider>

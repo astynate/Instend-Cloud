@@ -15,6 +15,7 @@ import Information from '../shared/information/Information';
 
 export const messageWSContext = createSignalRContext();
 export const storageWSContext = createSignalRContext();
+export const galleryWSContext = createSignalRContext();
 export const LayoutContext = createContext();
 export const imageTypes = ['png', 'jpg', 'jpeg', 'gif'];
 
@@ -71,6 +72,24 @@ const Layout = observer(() => {
         }
     );
 
+    galleryWSContext.useSignalREffect(
+        "Create",
+        (album) => {galleryState.AddAlbum(album)}
+    );
+
+    galleryWSContext.useSignalREffect(
+        "Upload",
+        ([file, albumId]) => {
+            storageState.UploadFile(file);
+
+            if (imageTypes.includes(file.type)) {
+                galleryState.AddPhoto(file);
+            }
+
+            galleryState.AddToAlbum(file, albumId);
+        }
+    );
+
     useEffect(() => {
         const handleResize = () => {
             setWindowWidth(window.innerWidth);
@@ -100,26 +119,47 @@ const Layout = observer(() => {
         };
     
         connectToWebSocket();
-    }, [storageWSContext.connection]);      
+    }, [storageWSContext.connection]);   
+    
+    useEffect(() => {
+        const connectToGallerySocket = async () => {
+            try {
+                while (galleryWSContext.connection.state !== 'Connected') {
+                    if (galleryWSContext.connection.state === 'Disconnected') {
+                        await galleryWSContext.connection.start();
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+    
+                await galleryWSContext.connection.invoke("Join", localStorage.getItem("system_access_token"));
+            } catch (error) {
+                console.error('Failed to connect or join:', error);
+            }
+        };
+    
+        connectToGallerySocket();
+    }, [galleryWSContext.connection]);
 
     return (
         <messageWSContext.Provider url={"http://localhost:5000/message-hub"}>
             <storageWSContext.Provider url={"http://localhost:5000/storage-hub"}>
-                <LayoutContext.Provider value={{Error: ErrorMessage}}>
-                    <div className='cloud-wrapper'>
-                        {isLoading && <Loader />}
-                        <Helmet>
-                            <title>Yexider Cloud</title>
-                        </Helmet>
-                        <Information
-                            open={isError}
-                            close={() => setErrorState(false)}
-                            title={errorTitle}
-                            message={errorMessage}
-                        />
-                        {windowWidth > 700 ? <Desktop /> : <Mobile /> }
-                    </div>
-                </LayoutContext.Provider>
+                <galleryWSContext.Provider url={"http://localhost:5000/gallery-hub"}>
+                    <LayoutContext.Provider value={{Error: ErrorMessage}}>
+                        <div className='cloud-wrapper'>
+                            {isLoading && <Loader />}
+                            <Helmet>
+                                <title>Yexider</title>
+                            </Helmet>
+                            <Information
+                                open={isError}
+                                close={() => setErrorState(false)}
+                                title={errorTitle}
+                                message={errorMessage}
+                            />
+                            {windowWidth > 700 ? <Desktop /> : <Mobile /> }
+                        </div>
+                    </LayoutContext.Provider>
+                </galleryWSContext.Provider>
             </storageWSContext.Provider>
         </messageWSContext.Provider>
     );

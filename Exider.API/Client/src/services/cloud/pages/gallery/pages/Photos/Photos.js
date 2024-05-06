@@ -9,6 +9,7 @@ import { ConvertDate, ConvertFullDate } from '../../../../../../utils/DateHandle
 import Placeholder from '../../../../shared/placeholder/Placeholder';
 import { toJS } from 'mobx';
 import PhotoList from '../../shared/photo-list/PhotoList';
+import Add from '../../widgets/add/Add';
 
 const Photos = observer((props) => {
     const photosWrapper = useRef();
@@ -76,6 +77,7 @@ const Photos = observer((props) => {
                 <div className={styles.placeholder}>
                     <Placeholder title='No photos or videos uploaded.' />
                 </div>}
+            <Add id={null} />
             <PhotoList 
                 photos={galleryState.photos} 
                 scale={props.scale}

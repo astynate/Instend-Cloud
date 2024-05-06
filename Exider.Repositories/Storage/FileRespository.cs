@@ -135,7 +135,7 @@ namespace Exider.Repositories.Storage
                 .Skip(from)
                 .Take(count)
                 .Join(_context.Files,
-                    albumLink => albumLink.Id,
+                    albumLink => albumLink.FileId,
                     fileModel => fileModel.Id,
                     (albumLink, fileModel) => fileModel)
                 .ToArrayAsync();

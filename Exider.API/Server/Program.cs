@@ -129,4 +129,5 @@ app.UseAuthorization();
 
 app.MapHub<MessageHub>("/message-hub");
 app.MapHub<StorageHub>("/storage-hub");
+app.MapHub<GalleryHub>("/gallery-hub");
 app.Run();

@@ -14,6 +14,21 @@ class GalleryState {
         this.photos = [photo, ...this.photos];
     }
 
+    AddAlbum(album) {
+        if (album) {
+            album.photos = []
+            album.hasMore = true;
+    
+            this.albums[album.id] = album;
+        }
+    }
+
+    AddToAlbum(photo, id) {
+        if (this.albums[id] && this.albums[id].photos) {
+            this.albums[id].photos = [photo, ...this.albums[id].photos];
+        }
+    }
+
     DeletePhoto(data) {
         this.photos = this.photos
             .filter(element => element.id !== data);

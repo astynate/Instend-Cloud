@@ -2,10 +2,12 @@ import styles from './main.module.css';
 import PopUpWindow from '../../../../shared/pop-up-window/PopUpWindow';
 import Search from '../../../../shared/pop-up-window/elements/search/Search';
 import Friends from '../../../../shared/pop-up-window/elements/friends/Friends';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { OpenAccessContext } from '../../processes/OpenAccessProcess';
 
 const OpenAccess = (props) => {
     const [isLoading, setLoadingState] = useState(false);
+    const context = useContext(OpenAccessContext);
 
     return (
         <PopUpWindow 
@@ -17,7 +19,10 @@ const OpenAccess = (props) => {
                 <div className={styles.openAccessWrapper}>
                     <Search 
                         isLoading={isLoading}
+                        setSearchResult={context.setSearchUsers}
                         setLoadingState={setLoadingState}
+                        setSearchingState={context.setSearchingState}
+                        GetData={context.GetData}
                     />
                     <Friends 
                         isLoading={isLoading} 

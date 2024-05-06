@@ -1,16 +1,17 @@
 import React from 'react';
 import styles from './main.module.css';
-import { ConvertDate, ConvertFullDate } from '../../../../../../utils/DateHandler';
+import { ConvertFullDate } from '../../../../../../utils/DateHandler';
 import { Link } from 'react-router-dom';
 
 const Album = (props) => {
     return (
-        <Link to={`/gallery/albums/${props.album.id}`} className={styles.album}>
+        <Link to={`/gallery/albums/${props.album.id}`} className={styles.album} data={props.album.id}>
             <div>
                 <img 
                     src={`data:image/png;base64,${props.album.cover}`} 
                     className={styles.cover}
                     draggable="false"
+                    id={props.isSelected ? 'selected' : null}
                 />
             </div>
             <div className={styles.information}>

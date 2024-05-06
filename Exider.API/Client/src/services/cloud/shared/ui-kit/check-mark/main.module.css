@@ -1,0 +1,16 @@
+.checkmark {
+    height: 25px;
+    width: 25px;
+    border: 2px solid var(--main-border-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100%;
+}
+
+.check {
+    height: 17px;
+    width: 17px;
+    background: var(--main-font-color);
+    border-radius: 100%;
+}

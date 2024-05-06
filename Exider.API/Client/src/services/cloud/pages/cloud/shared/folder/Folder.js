@@ -22,7 +22,7 @@ const Folder = (props) => {
   }, [props.folder])
 
   return (
-    <Link to={`/cloud/${props.id}`}>
+    <Link to={`/cloud/${props.id}`} data={props.folder.id}>
       <div 
         className={styles.wrapper} 
         id={props.isSelected === true ? 'selected' : null} 

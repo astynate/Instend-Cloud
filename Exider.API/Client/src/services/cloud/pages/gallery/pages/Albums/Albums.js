@@ -1,24 +1,65 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
 import { observer } from 'mobx-react-lite';
 import galleryState from '../../../../../../states/gallery-state';
 import Album from '../../widgets/album/Album';
+import Add from '../../widgets/add/Add';
+import { autorun } from 'mobx';
 import { toJS } from 'mobx';
+import SelectBox from '../../../../shared/interaction/select-box/SelectBox';
 
 const Albums = observer(() => {
+    const wrapper = useRef();
+    const [selectedItems, setSelectedItems] = useState([]);
+    const [activeItems, setActiveItems] = useState([]);
+    const [items, setItems] = useState();
+
+    const single = [
+        [null, "Rename", () => {}],
+        [null, "Delete", async () => {}]
+    ]
+
+    const multiple = [
+        [null, "Delete", async () => {}]
+    ]
+
     useEffect(() => {        
         galleryState.GetAlbums();
     }, []);
 
+    useEffect(() => {
+        const disposer = autorun(() => {
+          setItems(Object.values(toJS(galleryState.albums)).flat());
+        });
+    
+        return () => disposer();
+    }, []);
+
     return (
-        <div className={styles.content}>
-            {Object.entries(galleryState.albums).map(([key, value]) => {
-                    return (
-                        <Album key={key} album={value} />
-                    )
-                })
-            }
-        </div>
+        <>        
+            <Add id={null} />
+            <div className={styles.content} ref={wrapper}>
+                {Object.entries(galleryState.albums).map(([key, value]) => {
+                        return (
+                            <Album 
+                                key={key} 
+                                album={value}
+                                isSelected={selectedItems[0] ? selectedItems.map(element => element.id).includes(value.id) : null}
+                            />
+                        )
+                    })
+                }
+            </div>
+            <SelectBox
+                selectPlace={[wrapper]}
+                selectedItems={[selectedItems, setSelectedItems]}
+                activeItems={[activeItems, setActiveItems]}
+                itemsWrapper={wrapper}
+                items={items}
+                single={single}
+                multiple={multiple}
+            />
+        </>
     );
 });
 

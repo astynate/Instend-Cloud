@@ -5,48 +5,36 @@ import { ProfileSettingsContext } from '../../Profile';
 import { useTranslation } from "react-i18next";
 
 const UploadAvatar = (props) => {
-
     const [context, setContext] = useContext(ProfileSettingsContext);
     const [isFileEnter, setFileEnterState] = useState(false);
     const { t } = useTranslation();
 
     useEffect(() => {
-
         props.Update(null, setContext);
-
     }, []);
 
     const onDragOver = (event) => {
-
         event.preventDefault();
         setFileEnterState(true);
-
     }
 
     const onDragLeave = (event) => {
-
         event.preventDefault();
         setFileEnterState(false);
-
     }
     const onDrag = (event) => {
-
         event.preventDefault();
         props.Update([...event.dataTransfer.files][0], setContext);
         props.setNextOperation(true)
-
     };
 
     const setFile = (event) => {
-
         event.preventDefault();
         props.Update(event.target.files[0], setContext);
         props.setNextOperation(true)
-
     };
 
     return (
-
         <PopUpWindow isOpen={props.isOpen} setOpenState={props.setOpenState}>
             <div 
                 className={styles.wrapper} 
@@ -66,10 +54,8 @@ const UploadAvatar = (props) => {
                     </div>
                 </div>
             </div>
-        </PopUpWindow>
-        
+        </PopUpWindow>  
     );
-
 };
 
 export default UploadAvatar;

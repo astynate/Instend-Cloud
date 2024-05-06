@@ -59,6 +59,36 @@ export const sendFiles = async (event, folderId, setCount, setTotal) => {
     });
 };
 
+export const sendFilesAsync = async (files, folderId, setCount, setTotal) => {
+    if (setCount && setTotal) {
+        setCount(0);
+        setTotal(files.length);
+    }
+  
+    await Array.from(files).forEach(async (file) => {
+      const files = new FormData();
+
+      files.append('file', file);
+      files.append('folderId', folderId ? folderId : "");
+
+      await instance
+        .post('/storage', files)
+        .then(() => {
+            if (setCount) {
+                setCount((prev) => prev + 1);
+            }
+        })
+        .catch((error) => {
+          console.error(error);
+
+          if (setCount && setTotal) {
+            setCount(0);
+            setTotal(0);
+          }
+        });
+    });
+};
+
 const Header = observer((props) => {
     const types = {
         "folder": {
@@ -116,7 +146,6 @@ const Header = observer((props) => {
     const [name, setName] = useState('');
     const [count, setCount] = useState(0);
     const [total, setTotal] = useState(0);
-    const { Error } = useContext(LayoutContext);
 
     const OpenDialog = (current_type) => {
         setType(current_type);

@@ -2,23 +2,21 @@ import React, { useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { storageWSContext } from '../../../layout/Layout';
 import { toJS } from 'mobx';
 import { RenameCallback } from './Callbacks';
 import { AdaptId } from '../../../../../states/storage-state';
 import { Delete, Properties } from './ContextMenuHandler';
+import { autorun } from 'mobx';
 import storageState from '../../../../../states/storage-state';
 import userState from '../../../../../states/user-state';
 import Search from '../../../features/search/Search';
 import Header from '../../../widgets/header/Header';
 import styles from './main.module.css';
-import CloudHeader from '../widgets/header/Header';
+import CloudHeader, { sendFiles, sendFilesAsync } from '../widgets/header/Header';
 import File from '../shared/file/File';
-import ContextMenu from '../../../shared/context-menu/ContextMenu';
 import Open from './images/context-menu/open.png';
 import Rename from './images/context-menu/rename.png';
 import PropertiesImage from './images/context-menu/properties.png';
-import Share from './images/context-menu/share.png';
 import DeleteImage from './images/context-menu/delete.png';
 import PopUpField from '../../../shared/pop-up-filed/PopUpField';
 import Preview from '../../../../preview/layout/Preview';
@@ -27,6 +25,12 @@ import Folder from '../shared/folder/Folder';
 import PropertiesWindow from '../widgets/properties/Properties';
 import Information from '../../../shared/information/Information';
 import SelectBox from '../../../shared/interaction/select-box/SelectBox';
+import DragFiles from '../../../features/drag-files/DragFiles';
+
+const sendAsync = async (event) => {
+  var files = event.dataTransfer.files;
+  sendFilesAsync(files);
+}
 
 const Cloud = observer((props) => {
   const navigate = useNavigate();
@@ -35,8 +39,6 @@ const Cloud = observer((props) => {
   const [isFolderProperties, setFolderProperties] = useState(false);
   const [fileName, setFilename] = useState('');
   const [isRenameOpen, setRenameState] = useState(false);
-  const [isContextMenuOpen, setContextMenuState] = useState(false);
-  const [contextMenuPosition, setContextMenuPosition] = useState([0, 0]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [activeItems, setActiveItems] = useState([]);
   const [isPreview, setPreviewState] = useState(false);
@@ -45,6 +47,7 @@ const Cloud = observer((props) => {
   const [errorTitle, setErrorTitle] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setLoadingState] = useState(false);
+  const [items, setItems] = useState([...Object.values(toJS(storageState.files)).flat(), ...Object.values(toJS(storageState.folders)).flat()]);
   const params = useParams();
   const selectPlaceWrapper = useRef();
   const selectPlace = useRef();
@@ -59,14 +62,12 @@ const Cloud = observer((props) => {
     [Open, "Open", () => OpenPreview(activeItems[0])],
     [Rename, "Rename", () => setRenameState(true)],
     [PropertiesImage, "Properties", () => Properties(activeItems[0], setRightPanelState, setFolderProperties)],
-    [DeleteImage, "Delete", async () => Delete(activeItems, ErrorMessage, params.id)]
+    [DeleteImage, "Delete", async () => Delete(activeItems, ErrorMessage)]
   ]
 
   const multiple = [
     [DeleteImage, "Delete", async () => Delete(activeItems, ErrorMessage, params.id)]
   ]
-
-  const [contextMenuItems, setContextMenuItems] = useState(single);
 
   const OpenPreview = (file) => {
     setSelectedItems([file]);
@@ -90,75 +91,48 @@ const Cloud = observer((props) => {
     storageState.SetFolderItemsById(params.id, ErrorMessage);
   }, [params.id]);
 
-  const ClearSelectedItems = (event) => {
-    if ([selectPlace, selectPlaceWrapper]
-        .includes(event.target) === false &&
-        event.shiftKey === false) {
-      setSelectedItems([]); 
-    }
-  }
-
-  useEffect(() => {
-    window.addEventListener('click', ClearSelectedItems);
-
-    return () => {
-      window.removeEventListener('click', ClearSelectedItems);
-    };
-  }, []);
-
   useEffect(() => {
     if (props.setPanelState) { props.setPanelState(false); }
   }, [props.setPanelState]);
 
   useEffect(() => {
-    if (selectedItems.length > 1) {
-      setContextMenuItems(multiple);
-    } else {
-      setContextMenuItems(single);
-    }
-    
-    if (selectedItems.length > 0) {
-      setActiveItems(selectedItems);
-    }
-  }, [activeItems, selectedItems]);
+    const disposer = autorun(() => {
+      setItems([...Object.values(toJS(storageState.files)).flat(), ...Object.values(toJS(storageState.folders)).flat()]);
+    });
 
-  const HandleSelect = (event, element) => {
-    if (event.shiftKey) {
-      if (selectedItems.map(element => element.id).includes(element.id)) {
-        setSelectedItems(prev => prev
-          .filter(e => e.id !== element.id)); 
-      }
-      else {
-        setSelectedItems(prev => [...prev, element]);
-      }
-
-      event.preventDefault();
-    } else {
-      setSelectedItems(prev => prev
-        .filter(e => e.id !== element.id)); 
-    }
-  }
+    return () => disposer();
+  }, []);
 
   return (
     <div className={styles.cloud}>
       <Search />
       <Header />
       {isPreview && 
-          <Preview
-            close={() => setPreviewState(false)} 
-            file={activeItems[0]}
-            ErrorMessage={ErrorMessage}
-          />}
+        <Preview
+          close={() => setPreviewState(false)} 
+          file={activeItems[0]}
+          ErrorMessage={ErrorMessage}
+        />}
+      <DragFiles 
+        items={[
+          {title: "Current collection", description: "", callback: (event) => {
+            sendAsync(event, params.id);
+          }},
+          {title: "Main collection", description: "", callback: (event) => {
+            sendAsync(event);
+          }},
+        ]}
+      />
       <div className={styles.wrapper}>
         <div className={styles.contentWrapper} ref={selectPlaceWrapper}>
           <CloudHeader 
             name={user.nickname} 
+            error={ErrorMessage}
             path={storageState.path && storageState.path[AdaptId(params.id)] ? 
               storageState.path[AdaptId(params.id)] : null}
-            error={ErrorMessage}
           />
           {isRenameOpen === true &&
-            <PopUpField 
+            <PopUpField
               title={'Rename'}
               text={'This field is require'}
               field={[fileName, setFilename]}
@@ -172,13 +146,6 @@ const Cloud = observer((props) => {
             title={errorTitle}
             message={errorMessage}
           />
-          {isContextMenuOpen === true &&
-            <ContextMenu 
-              items={contextMenuItems} 
-              close={() => setContextMenuState(false)}
-              isContextMenu={true}
-              position={contextMenuPosition}
-            />}
           <div className={styles.content} ref={selectPlace}>
             {isLoading ? 
                 Array.from({ length: 4 }).map((_, index) => (
@@ -194,17 +161,7 @@ const Cloud = observer((props) => {
                     folder={element}
                     name={element.name} 
                     time={element.creationTime}
-                    onContextMenu={(event) => {
-                      event.preventDefault();
-                      setContextMenuState(true);
-                      setContextMenuPosition([event.clientX, event.clientY]);
-                      setFilename(element.name);
-                      
-                      if (selectedItems.map(element => element.id).includes(element.id) === false) {
-                        setSelectedItems(prev => [...prev, element])
-                      }
-                    }}
-                    callback={(event) => HandleSelect(event, element)}
+                    onContextMenu={() => setFilename(element.name)}
                   />
                 )
               })
@@ -212,25 +169,16 @@ const Cloud = observer((props) => {
             {files && toJS(files)[AdaptId(params.id)] ?
               toJS(files)[AdaptId(params.id)].map(element => {
                 return (
-                  <File 
+                  <File
                     key={element.id} 
-                    name={element.name} 
+                    name={element.name}
+                    file={element}
                     time={element.lastEditTime}
                     image={element.fileAsBytes == "" ? null : element.fileAsBytes}
                     type={element.type}
                     isSelected={selectedItems.map(element => element.id).includes(element.id) === true}
                     onClick={() => OpenPreview(element)}
-                    onContextMenu={(event) => {
-                      event.preventDefault();
-                      setContextMenuState(true);
-                      setContextMenuPosition([event.clientX, event.clientY]);
-                      setFilename(element.name);
-
-                      if (selectedItems.map(element => element.id).includes(element.id) === false) {
-                        setSelectedItems(prev => [...prev, element])
-                      }
-                    }}
-                    callback={(event) => HandleSelect(event, element)}
+                    onContextMenu={() => setFilename(element.name)}
                   />
                 )
               })
@@ -248,10 +196,14 @@ const Cloud = observer((props) => {
             close={() => setFolderProperties(false)} 
             items={[]}
           />}
-        <SelectBox 
+        <SelectBox
           selectPlace={[selectPlaceWrapper, selectPlace]}
           selectedItems={[selectedItems, setSelectedItems]}
           activeItems={[activeItems, setActiveItems]}
+          itemsWrapper={selectPlace}
+          items={items}
+          single={single}
+          multiple={multiple}
         />
       </div>
     </div>

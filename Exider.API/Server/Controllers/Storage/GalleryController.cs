@@ -24,6 +24,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         private IAlbumRepository _albumRepository;
 
+        private readonly IHubContext<GalleryHub> _galleryHub;
+
         private DatabaseContext _context;
 
         public GalleryController
@@ -32,6 +34,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             IRequestHandler requestHandler, 
             IAlbumRepository albumRepository,
             IFolderRepository folderRepository,
+            IHubContext<GalleryHub> galleryHub,
             DatabaseContext context
         )
         {
@@ -39,6 +42,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             _requestHandler = requestHandler;
             _albumRepository = albumRepository;
             _folderRespository = folderRepository;
+            _galleryHub = galleryHub;
             _context = context;
         }
 
@@ -139,9 +143,6 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                             await fileModel.Value.SetPreview(fileService);
                         }
 
-                        await storageHub.Clients.Group(fileModel.Value.FolderId == Guid.Empty ? fileModel.Value.OwnerId.ToString() :
-                            fileModel.Value.FolderId.ToString()).SendAsync("UploadFile", fileModel.Value);
-
                         if (string.IsNullOrEmpty(albumId) == false && string.IsNullOrWhiteSpace(albumId) == false)
                         {
                             var result = await albumRepository.AddPhotoToAlbum(fileModel.Value.Id, Guid.Parse(albumId));
@@ -150,6 +151,13 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                             {
                                 return Conflict(result.Error);
                             }
+
+                            await _galleryHub.Clients.Group(albumId).SendAsync("Upload", new object[] { fileModel.Value, albumId });
+                        }
+                        else
+                        {
+                            await storageHub.Clients.Group(fileModel.Value.FolderId == Guid.Empty ? fileModel.Value.OwnerId.ToString() :
+                                fileModel.Value.FolderId.ToString()).SendAsync("UploadFile", fileModel.Value);
                         }
 
                         transaction.Commit(); 
@@ -185,6 +193,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 return Conflict(result.Error);
             }
 
+            //await _galleryHub.Clients.Group(albumId).SendAsync("Upload", new object[] { result.Value, albumId });
+
             return Ok();
         }
 
@@ -215,7 +225,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAlbum([FromForm] IFormFile? cover, [FromForm] string? name, [FromForm] string? description)
+        public async Task<IActionResult> CreateAlbum(IImageService imageService, [FromForm] IFormFile? cover, [FromForm] string? name, [FromForm] string? description)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
@@ -246,6 +256,9 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             {
                 return BadRequest(result.Error);
             }
+
+            await result.Value.SetCover(imageService);
+            await _galleryHub.Clients.Group(result.Value.OwnerId.ToString()).SendAsync("Create", result.Value);
 
             return Ok();
         }

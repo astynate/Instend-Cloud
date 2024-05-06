@@ -1,6 +1,7 @@
 .photos {
     margin-right: 15px;
     padding-bottom: 110px;
+    user-select: none;
 }
 
 .photos img {
@@ -14,6 +15,9 @@
     image-rendering: -o-crisp-edges;             /* Opera */
     image-rendering: pixelated;                  /* Standard */
     -ms-interpolation-mode: nearest-neighbor;    /* IE */
+    transition: 0.25s ease;
+    outline: 4px solid transparent;
+    outline-offset: -4px;
 }
 
 .photos[id="waterfall"] {
@@ -48,4 +52,8 @@
 
 .photos img[id="contain"] {
     padding: 5px;
+}
+
+.photos img[id="active"] {
+    outline: 4px solid var(--main-blue-color);
 }

@@ -1,16 +1,22 @@
 .album {
     height: 100%;
     width: 100%;
-    cursor: 
+    user-select: none;
 }
 
 .cover {
     height: 100%;
     width: 100%;
     object-fit: cover;
-    aspect-ratio: 1.7 / 1;
+    aspect-ratio: 1.6 / 1;
     border-radius: 15px;
+    transition: 0.15s ease;
+    outline: 2px solid transparent;
+    outline-offset: 3px;
+}
 
+.cover[id="selected"] {
+    outline: 2px solid var(--main-blue-color);
 }
 
 .information {
@@ -24,7 +30,7 @@
 }
 
 .name {
-    font-size: 18px;
-    font-weight: 500;
+    font-size: 17px;
+    font-weight: 600;
     color: var(--main-font-color);
 }

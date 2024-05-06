@@ -1,0 +1,112 @@
+.addToAlbum {
+    height: 470px;
+    width: 400px;
+    display: grid;
+    grid-template-rows: 90px auto 80px;
+}
+
+.header {
+    /* display: flex;
+    flex-direction: column;
+    grid-gap: 10px; */
+}
+
+.controlPanel {
+    display: flex;
+    align-self: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button {
+    display: flex;
+    align-items: center;
+    grid-gap: 5px;
+    font-size: 15px;
+    color: var(--main-paragraph-color);
+    cursor: pointer;
+    user-select: none;
+}
+
+.buttonImage {
+    height: 12px;
+    width: 12px;
+    opacity: 0.65;
+    filter: var(--main-filter);
+}
+
+.content {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+    padding-right: 20px;
+    grid-gap: 15px;
+    
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: var(--pop-up-accent-color);
+        border-radius: 20px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #888;
+        border-radius: 20px;
+        border: 3px solid var(--sub-accentc-color);
+    }
+}
+
+.album {
+    height: 50px;
+    width: 100%;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    user-select: none;
+    cursor: pointer;
+}
+
+.albumImage {
+    height: 50px;
+    width: 50px;
+    background: var(--pop-up-accent-color);
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.information {
+    height: 100%;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 15px;
+}
+
+.name {
+    font-size: 15px;
+    color: var(--main-font-color);
+}
+
+.date {
+    font-size: 13px;
+    color: var(--main-paragraph-color);
+}
+
+.right {
+    margin-left: auto;
+}

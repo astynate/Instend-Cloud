@@ -117,7 +117,6 @@ const Gallery = observer((props) => {
           </div>
         </div>
         <div className={styles.content}>
-          <Add id={albumId} />
           <Routes>
             <Route 
               path=''

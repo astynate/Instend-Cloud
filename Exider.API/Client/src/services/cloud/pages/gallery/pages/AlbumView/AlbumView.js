@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
 import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
@@ -9,19 +9,26 @@ import { toJS } from 'mobx';
 import Loader from '../../../../shared/loader/Loader';
 import { ConvertFullDate } from '../../../../../../utils/DateHandler';
 import PhotoList from '../../shared/photo-list/PhotoList';
+import AddToAlbum from '../../../../process/add-to-album/AddToAlbum';
+import Add from '../../widgets/add/Add';
 
 const AlbumView = observer((props) => {
     const { albums } = galleryState;
     const params = useParams();
+    const wrapper = useRef();
 
     useEffect(() => {
         const fetchAlbums = async () => {
             await galleryState.GetAlbums(); 
-            await galleryState.GetAlbumPhotos(params.id, 0, 5);
+            await galleryState.GetAlbumPhotos(params.id);
         };
 
         fetchAlbums();
     }, []);
+
+    useEffect(() => {
+        props.setAlbumId(params.id);
+    }, [params])
 
     return (
         <div className={styles.album}>
@@ -43,19 +50,21 @@ const AlbumView = observer((props) => {
                                 draggable="false"
                             />
                         </div>
-                    </div>   
+                    </div>
                     <div className={styles.right}>
+                        <Add id={params.id} />
                         {!albums[params.id].photos || albums[params.id].photos.length === 0 ?
                             <div className={styles.noImages}>
                                 <Placeholder title="No photos uploaded" />
                             </div>              
                         :
                             <div className={styles.photosWrapper}>
-                                <PhotoList 
+                                <PhotoList
                                     photos={galleryState.albums && galleryState.albums[params.id] && galleryState.albums[params.id].photos ? 
                                         galleryState.albums[params.id].photos : []} 
                                     scale={props.scale}
                                     photoGrid={props.photoGrid}
+                                    forwardRef={wrapper}
                                 />
                                 <Scroll
                                     scroll={props.scroll}
