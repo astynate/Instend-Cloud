@@ -19,6 +19,21 @@ export const galleryWSContext = createSignalRContext();
 export const LayoutContext = createContext();
 export const imageTypes = ['png', 'jpg', 'jpeg', 'gif'];
 
+export const connectToFoldersListener = async () => {
+    try {
+        while (storageWSContext.connection.state !== 'Connected') {
+            if (storageWSContext.connection.state === 'Disconnected') {
+                await storageWSContext.connection.start();
+            }
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+
+        await storageWSContext.connection.invoke("Join", localStorage.getItem("system_access_token"));
+    } catch (error) {
+        console.error('Failed to connect or join:', error);
+    }
+};
+
 const Layout = observer(() => {
     const handleLoading = () => setIsLoading(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -35,7 +50,10 @@ const Layout = observer(() => {
 
     storageWSContext.useSignalREffect(
         "CreateFolder",
-        (folder) => {storageState.CreateFolder(folder)}
+        async ([folder, queueId]) => {
+            await connectToFoldersListener();
+            await storageState.ReplaceLoadingFolder(folder, queueId);
+        }
     );
 
     storageWSContext.useSignalREffect(
@@ -103,23 +121,8 @@ const Layout = observer(() => {
     }, []);
     
     useEffect(() => {
-        const connectToWebSocket = async () => {
-            try {
-                while (storageWSContext.connection.state !== 'Connected') {
-                    if (storageWSContext.connection.state === 'Disconnected') {
-                        await storageWSContext.connection.start();
-                    }
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                }
-    
-                await storageWSContext.connection.invoke("Join", localStorage.getItem("system_access_token"));
-            } catch (error) {
-                console.error('Failed to connect or join:', error);
-            }
-        };
-    
-        connectToWebSocket();
-    }, [storageWSContext.connection, storageState.folders]);   
+        connectToFoldersListener();
+    }, [storageWSContext.connection]);   
     
     useEffect(() => {
         const connectToGallerySocket = async () => {
@@ -138,7 +141,7 @@ const Layout = observer(() => {
         };
     
         connectToGallerySocket();
-    }, [galleryWSContext.connection, galleryState.albums]);
+    }, [galleryWSContext.connection]);
 
     return (
         <messageWSContext.Provider url={"http://localhost:5000/message-hub"}>

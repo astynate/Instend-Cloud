@@ -25,53 +25,10 @@ import photoshop from './images/types/photoshop.png';
 import powerpoint from './images/types/powerpoint.png';
 import upload from './images/types/upload.png';
 import word from './images/types/word.png';
+import { CreateFolder } from "../../api/FolderRequests";
+import { CreateFile, SendFilesFromEvent, types } from "../../api/FileRequests";
 
 const Header = observer((props) => {
-    const types = {
-        "folder": {
-            title: "Create folder",
-            text: "Name is required",
-            placeholder: "Folder name",
-            type: "folder"
-        },
-        "txt": {
-            title: "Create note",
-            text: "Name is required",
-            placeholder: "Note name",
-            type: "txt"
-        },
-        "docx": {
-            title: "Create Word Document",
-            text: "Name is required",
-            placeholder: "Document name",
-            type: "docx"
-        },
-        "xlsx": {
-            title: "Create Excel Table",
-            text: "Name is required",
-            placeholder: "Table name",
-            type: "xlsx"
-        },
-        "pptx": {
-            title: "Create Powerpoint Presentation",
-            text: "Name is required",
-            placeholder: "Presentation name",
-            type: "pptx"
-        },
-        "psd": {
-            title: "Create Phoshop file",
-            text: "Name is required",
-            placeholder: "File name",
-            type: "psd"
-        },
-        "ai": {
-            title: "Create Illustrator file",
-            text: "Name is required",
-            placeholder: "File name",
-            type: "ai"
-        }
-    }
-
     const params = useParams();
     const createWindow = useRef();
     const [isCreateOpen, setCreationWindowState] = useState(false);
@@ -116,35 +73,10 @@ const Header = observer((props) => {
                 return;
 
             if (type.type === 'folder') {
-                CreateFolder
+                CreateFolder(name, params.id, Error);
             } else {
-
+                CreateFile()
             }
-              
-              let formData = new FormData();
-              
-              formData.append("folderId", params.id ? params.id : "");
-              formData.append("name", name);
-
-              if (type.type === 'folder') {
-                instance.post(`/folders`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                }).catch(response => {
-                    props.error('Attention!', response.data);
-                });
-              } else {
-                formData.append("type", type.type);
-
-                instance.post(`/file`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                }).catch(response => {
-                    props.error('Attention!', response.data);
-                });
-              }
           }}
         />
         {isOpenAccessWindow === true && <OpenAccessProcess
@@ -176,7 +108,7 @@ const Header = observer((props) => {
                         isOpen={isCreateOpen}
                         items={[
                             {image: newFolder, title: "Folder", callback: () => OpenDialog(types.folder)},
-                            {image: upload, title: "Upload", callback: () => {}, type: "upload", sendFiles: (event) => sendFiles(event, params.id, setCount, setTotal)},
+                            {image: upload, title: "Upload", callback: () => {}, type: "upload", sendFiles: (event) => SendFilesFromEvent(event, params.id)},
                             {image: note, title: "Note", callback: () => OpenDialog(types.txt)},
                             {image: word, title: "Word", callback: () => OpenDialog(types.docx)},
                             {image: excel, title: "Excel", callback: () => OpenDialog(types.xlsx)},
@@ -212,10 +144,10 @@ const Header = observer((props) => {
         {isSortMenuOpen === true ?
             <ContextMenu 
                 items={[
-                    [null, "Ascending by name", () => SortByNameAsending()],
-                    [null, "Descending by name", () => SortByNameDesending()],
-                    [null, "New ones first", () => SortByDateAsending()],
-                    [null, "Old ones first", () => SortByDateDesending()]
+                    [null, "Ascending by name", () => storageState.SortByNameAsending(params.id)],
+                    [null, "Descending by name", () => storageState.SortByNameDesending(params.id)],
+                    [null, "New ones first", () => storageState.SortByDateAsending(params.id)],
+                    [null, "Old ones first", () => storageState.SortByDateDesending(params.id)]
                 ]}
                 position={sortMenuPosition}
                 close={() => setSortMenuState(false)}
@@ -229,7 +161,7 @@ const Header = observer((props) => {
             }
             <div className={styles.pathWrapper}>
                 <Link to={`/cloud`} className={styles.folder}>
-                    <span className={styles.path}>Cloud Storage</span>
+                    <span className={styles.path}>Yexider Cloud</span>
                 </Link>
                 {props.path && props.path.map ? props.path.map((element, index) => (
                     <Link to={`/cloud/${element.id}`} className={styles.folder} key={index}>

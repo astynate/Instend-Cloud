@@ -27,11 +27,7 @@ import Information from '../../../shared/information/Information';
 import SelectBox from '../../../shared/interaction/select-box/SelectBox';
 import DragFiles from '../../../features/drag-files/DragFiles';
 import Placeholder from '../../../shared/placeholder/Placeholder';
-
-const sendAsync = async (event) => {
-  var files = event.dataTransfer.files;
-  sendFilesAsync(files);
-}
+import { SendFilesFromDragEvent } from '../api/FileRequests';
 
 const Cloud = observer((props) => {
   const navigate = useNavigate();
@@ -117,10 +113,10 @@ const Cloud = observer((props) => {
       <DragFiles 
         items={[
           {title: "Current collection", description: "", callback: (event) => {
-            sendAsync(event, params.id);
+            SendFilesFromDragEvent(event, params.id);
           }},
           {title: "Main collection", description: "", callback: (event) => {
-            sendAsync(event);
+            SendFilesFromDragEvent(event);
           }},
         ]}
       />
@@ -153,25 +149,26 @@ const Cloud = observer((props) => {
                 <File key={index} isPlaceholder={true} />
               ))
             : 
-              (items.filter(element => element.typeId !== 'System').length > 0) ?
+              (items.filter(element => element.typeId !== 'System' && element.folderId === AdaptId(params.id)).length > 0) ?
                 <>
                   {folders && toJS(folders)[AdaptId(params.id)] &&
                     toJS(folders)[AdaptId(params.id)].filter(element => element.typeId !== 'System').map((element, index) => (
                       <Folder 
-                        key={element.id}
+                        key={element.id != null ? element.id : index}
                         id={element.id}
                         isSelected={selectedItems.map(element => element.id).includes(element.id)}
                         folder={element}
                         name={element.name} 
                         time={element.creationTime}
                         onContextMenu={() => setFilename(element.name)}
+                        isLoading={element.isLoading}
                       />
                     ))
                   }
                   {files && toJS(files)[AdaptId(params.id)] &&
-                    toJS(files)[AdaptId(params.id)].map(element => (
+                    toJS(files)[AdaptId(params.id)].map((element, index) => (
                       <File
-                        key={element.id} 
+                        key={element.id ? element.id : index} 
                         name={element.name}
                         file={element}
                         time={element.lastEditTime}
@@ -183,7 +180,6 @@ const Cloud = observer((props) => {
                       />
                     ))
                   }
-                  <File isLoading={true} />
                 </>
               : 
                 <div className={styles.placeholder}>

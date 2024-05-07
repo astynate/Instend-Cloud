@@ -8,6 +8,7 @@ export const AdaptId = (id) => {
 }
 
 class StorageState {
+
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     files = {};
@@ -41,20 +42,26 @@ class StorageState {
             name: name,
             isLoading: true,
             strategy: 'loadingFolder',
-            folderId: folderId
+            folderId: AdaptId(folderId)
         }
 
-        runInAction(() => {
-            this.folders[folderId] = [folder, ...toJS(this.folders[folderId])];
-            this.folderQueueId++;
-        });
+        if (this.IsFolderExisitInFolders(folder)) {
+            runInAction(() => {
+                this.folders[AdaptId(folderId)] = [folder, ...this.folders[AdaptId(folderId)]];
+                this.folderQueueId++;
+            });
+        }
+
+        return folder.queueId;
     }
 
     ReplaceLoadingFolder(folder, queueId) {
         if (folder && folder.folderId) {
+            folder.strategy = 'folder';
+
             runInAction(() => {
-                this.folders[folder.folderId] = this.files[folder.folderId].map(element => {
-                    if (element.queueId && element.queueId === queueId) {
+                this.folders[AdaptId(folder.folderId)] = this.folders[AdaptId(folder.folderId)].map(element => {
+                    if (element.queueId === queueId) {
                         element = folder;
                     }
 
@@ -65,37 +72,27 @@ class StorageState {
     }
 
     // ################################################################################### //
-
-    CreateFolder(folder) {
-        folder.strategy = 'folder';
-
-        if (this.IsFolderExisitInFolders(folder)) {
-            runInAction(() => {
-                this.folders[folder.folderId] = [folder, ...toJS(this.folders[folder.folderId])];
-            });
-        }
-    }
     
     RenameFolder = (folder) => {
-        for (let key in this.folders) {
-            const index = this.folders[key]
-                .findIndex(element => element.id === folder[0]);
+        // for (let key in this.folders) {
+        //     const index = this.folders[key]
+        //         .findIndex(element => element.id === folder[0]);
 
-            if (index !== -1) {
-                runInAction(() => {
-                    this.folders[key][index].name = folder[1];
-                });
-            }
-        };
+        //     if (index !== -1) {
+        //         runInAction(() => {
+        //             this.folders[key][index].name = folder[1];
+        //         });
+        //     }
+        // };
     }    
 
     DeleteFolder = (id) => {
-        for (let key in this.folders) {
-            runInAction(() => {
-                this.folders[key] = this.folders[key]
-                    .filter(element => element.id !== id);
-            });
-        }
+        // for (let key in this.folders) {
+        //     runInAction(() => {
+        //         this.folders[key] = this.folders[key]
+        //             .filter(element => element.id !== id);
+        //     });
+        // }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
@@ -110,16 +107,20 @@ class StorageState {
             folderId: folderId
         }
 
-        runInAction(() => {
-            this.files[folderId] = [file, ...this.files[folderId]];
-            this.fileQueueId++;
-        });
+        if (this.IsFolderExisitInFiles(file)) {
+            runInAction(() => {
+                this.files[folderId] = [file, ...this.files[folderId]];
+                this.fileQueueId++;
+            });
+        }
+
+        return file.queueId;
     }
 
     ReplaceLoadingFile(file, queueId) {
         if (file && file.folderId) {
             runInAction(() => {
-                this.files[file.folderId] = this.files[file.folderId].map(element => {
+                this.files[AdaptId(file.folderId)] = this.files[AdaptId(file.folderId)].map(element => {
                     if (element.queueId && element.queueId === queueId) {
                         element = file;
                     }
@@ -133,35 +134,35 @@ class StorageState {
     // ################################################################################### //
     
     UploadFile(file) {
-        file.strategy = 'file';
+        // file.strategy = 'file';
 
-        if (this.IsFolderExisitInFiles(file)) {
-            runInAction(() => {
-                this.files[file.folderId] = [file, ...this.files[file.folderId]];
-            });
-        }
+        // if (this.IsFolderExisitInFiles(file)) {
+        //     runInAction(() => {
+        //         this.files[file.folderId] = [file, ...this.files[file.folderId]];
+        //     });
+        // }
     }
 
     RenameFile = (file) => {
-        for (let key in this.files) {
-            const index = this.files[key]
-                .findIndex(element => element.id === file.id);
+        // for (let key in this.files) {
+        //     const index = this.files[key]
+        //         .findIndex(element => element.id === file.id);
 
-            if (index !== -1) {
-                runInAction(() => {
-                    this.files[key][index].name = file.name;
-                });
-            }
-        };
+        //     if (index !== -1) {
+        //         runInAction(() => {
+        //             this.files[key][index].name = file.name;
+        //         });
+        //     }
+        // };
     }
     
     DeleteFile = (data) => {
-        for (let key in this.folders) {
-            runInAction(() => {
-                this.files[key] = this.files[key]
-                    .filter(element => element.id !== data);
-            });
-        }
+        // for (let key in this.folders) {
+        //     runInAction(() => {
+        //         this.files[key] = this.files[key]
+        //             .filter(element => element.id !== data);
+        //     });
+        // }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
@@ -199,38 +200,38 @@ class StorageState {
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-    SortByNameAsending() {
-        storageState.folders[AdaptId(params.id)] = storageState.folders[AdaptId(params.id)].sort((a, b) => 
+    SortByNameAsending(id) {
+        this.folders[AdaptId(id)] = this.folders[AdaptId(id)].sort((a, b) => 
             a.name.localeCompare(b.name)
         );
-        storageState.files[AdaptId(params.id)] = storageState.files[AdaptId(params.id)].sort((a, b) => 
+        this.files[AdaptId(id)] = this.files[AdaptId(id)].sort((a, b) => 
             a.name.localeCompare(b.name)
         );
     }
     
-    SortByNameDesending() {
-        storageState.folders[AdaptId(params.id)] = storageState.folders[AdaptId(params.id)].sort((a, b) => 
+    SortByNameDesending(id) {
+        this.folders[AdaptId(id)] = this.folders[AdaptId(id)].sort((a, b) => 
             b.name.localeCompare(a.name)
         );
-        storageState.files[AdaptId(params.id)] = storageState.files[AdaptId(params.id)].sort((a, b) => 
+        this.files[AdaptId(id)] = this.files[AdaptId(id)].sort((a, b) => 
             b.name.localeCompare(a.name)
         );
     }    
 
-    SortByDateAsending() {
-        storageState.folders[AdaptId(params.id)] = storageState.folders[AdaptId(params.id)].sort((a, b) => 
+    SortByDateAsending(id) {
+        this.folders[AdaptId(id)] = this.folders[AdaptId(id)].sort((a, b) => 
             new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime()
         );      
-        storageState.files[AdaptId(params.id)] = storageState.files[AdaptId(params.id)].sort((a, b) => 
+        this.files[AdaptId(id)] = this.files[AdaptId(id)].sort((a, b) => 
             new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime()
         );
     }    
 
-    SortByDateDesending() {
-        storageState.folders[AdaptId(params.id)] = storageState.folders[AdaptId(params.id)].sort((a, b) => 
+    SortByDateDesending(id) {
+        this.folders[AdaptId(id)] = this.folders[AdaptId(id)].sort((a, b) => 
             new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime()
         );      
-        storageState.files[AdaptId(params.id)] = storageState.files[AdaptId(params.id)].sort((a, b) => 
+        this.files[AdaptId(id)] = this.files[AdaptId(id)].sort((a, b) => 
             new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime()
         );
     }  
