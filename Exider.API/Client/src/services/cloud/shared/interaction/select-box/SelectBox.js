@@ -45,7 +45,7 @@ const SelectBox = observer((props) => {
     }
 
     const getElementById = (id) => {
-        if (props.items) {
+        if (props.items && id) {
             return props.items.find(element => element.id === id);
         }
 
@@ -68,20 +68,28 @@ const SelectBox = observer((props) => {
 
     const HandleContextMenu = (event, id) => {
         event.preventDefault();
-        setContextMenuState(true);
-        setContextMenuPosition([event.clientX, event.clientY]);
-
-        if (isElementExist(id) === false) {
-            props.selectedItems[1](prev => [...prev, getElementById(id)]);
+        if (props.items && id) {
+            setContextMenuState(true);
+            setContextMenuPosition([event.clientX, event.clientY]);
+    
+            const element = getElementById(id);
+    
+            if (isElementExist(id) === false && element !== null) {
+                props.selectedItems[1](prev => [...prev, element]);
+            }   
         }
     }
 
     const HandleClick = (event, id) => {
-        if (event.shiftKey && isElementExist(id) === false) {
-            props.selectedItems[1](prev => [...prev, getElementById(id)]);
-            event.preventDefault();
-        } else if (event.shiftKey && isElementExist(id) === true) {
-            props.selectedItems[1](prev => prev.filter(element => element.id !== id));
+        if (props.items && id) {
+            if (event.shiftKey && isElementExist(id) === false) {
+                props.selectedItems[1](prev => [...prev, getElementById(id)]);
+                event.preventDefault();
+            } else if (event.shiftKey && isElementExist(id) === true) {
+                props.selectedItems[1](prev => prev.filter(element => element.id !== id));
+                event.preventDefault();
+            }
+        }  else {
             event.preventDefault();
         }
     }

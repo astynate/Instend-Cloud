@@ -7,20 +7,35 @@ import Add from '../../widgets/add/Add';
 import { autorun } from 'mobx';
 import { toJS } from 'mobx';
 import SelectBox from '../../../../shared/interaction/select-box/SelectBox';
+import { instance } from '../../../../../../state/Interceptors';
+
+const deleteAlbums = async (albums) => {
+    if (albums && albums.length > 0) {
+        for (let i = 0; i < albums.length; i++) {
+            if (albums[i].id) {
+                await instance
+                    .delete(`/api/albums?id=${albums[i].id}`)
+                    .catch((response) => {
+                        console.log(response);
+                    })
+            }
+        }
+    }
+}
 
 const Albums = observer(() => {
     const wrapper = useRef();
     const [selectedItems, setSelectedItems] = useState([]);
     const [activeItems, setActiveItems] = useState([]);
-    const [items, setItems] = useState();
+    const [items, setItems] = useState(Object.values(toJS(galleryState.albums)).flat());
 
     const single = [
         [null, "Rename", () => {}],
-        [null, "Delete", async () => {}]
+        [null, "Delete", () => {deleteAlbums(activeItems)}]
     ]
 
     const multiple = [
-        [null, "Delete", async () => {}]
+        [null, "Delete", () => {deleteAlbums(activeItems)}]
     ]
 
     useEffect(() => {        
@@ -33,7 +48,7 @@ const Albums = observer(() => {
         });
     
         return () => disposer();
-    }, []);
+    }, [galleryState, galleryState.albums]);
 
     return (
         <>        

@@ -8,13 +8,21 @@ export const AdaptId = (id) => {
 }
 
 class StorageState {
+    ///////////////////////////////////////////////////////////////////////////////////////////
+
     files = {};
     folders = {};
     path = [];
+    folderQueueId = 0;
+    fileQueueId = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////
 
     constructor() {
         makeAutoObservable(this);
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////
 
     IsFolderExisitInFolders(folder) {
         return folder && folder.folderId && this.folders[AdaptId(folder.folderId)];
@@ -24,7 +32,41 @@ class StorageState {
         return folder && folder.folderId && this.files[AdaptId(folder.folderId)];
     }
 
-    CreateFolder = (folder) => {
+    ///////////////////////////////////////////////////////////////////////////////////////////
+
+    CreateLoadingFolder(name, folderId) {
+        const folder = {
+            id: null,
+            queueId: this.folderQueueId,
+            name: name,
+            isLoading: true,
+            strategy: 'loadingFolder',
+            folderId: folderId
+        }
+
+        runInAction(() => {
+            this.folders[folderId] = [folder, ...toJS(this.folders[folderId])];
+            this.folderQueueId++;
+        });
+    }
+
+    ReplaceLoadingFolder(folder, queueId) {
+        if (folder && folder.folderId) {
+            runInAction(() => {
+                this.folders[folder.folderId] = this.files[folder.folderId].map(element => {
+                    if (element.queueId && element.queueId === queueId) {
+                        element = folder;
+                    }
+
+                    return element;
+                })
+            })
+        }
+    }
+
+    // ################################################################################### //
+
+    CreateFolder(folder) {
         folder.strategy = 'folder';
 
         if (this.IsFolderExisitInFolders(folder)) {
@@ -55,8 +97,42 @@ class StorageState {
             });
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////
+
+    CreateLoadingFile(name, folderId) {
+        const file = {
+            id: null,
+            queueId: this.fileQueueId,
+            name: name,
+            isLoading: true,
+            strategy: 'loadingFile',
+            folderId: folderId
+        }
+
+        runInAction(() => {
+            this.files[folderId] = [file, ...this.files[folderId]];
+            this.fileQueueId++;
+        });
+    }
+
+    ReplaceLoadingFile(file, queueId) {
+        if (file && file.folderId) {
+            runInAction(() => {
+                this.files[file.folderId] = this.files[file.folderId].map(element => {
+                    if (element.queueId && element.queueId === queueId) {
+                        element = file;
+                    }
+
+                    return element;
+                })
+            })
+        }
+    }
+
+    // ################################################################################### //
     
-    UploadFile = (file) => {
+    UploadFile(file) {
         file.strategy = 'file';
 
         if (this.IsFolderExisitInFiles(file)) {
@@ -88,6 +164,8 @@ class StorageState {
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////
+
     async SetFolderItemsById(id, ErrorMessage) {
         id = AdaptId(id);
 
@@ -118,6 +196,46 @@ class StorageState {
             }
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////
+
+    SortByNameAsending() {
+        storageState.folders[AdaptId(params.id)] = storageState.folders[AdaptId(params.id)].sort((a, b) => 
+            a.name.localeCompare(b.name)
+        );
+        storageState.files[AdaptId(params.id)] = storageState.files[AdaptId(params.id)].sort((a, b) => 
+            a.name.localeCompare(b.name)
+        );
+    }
+    
+    SortByNameDesending() {
+        storageState.folders[AdaptId(params.id)] = storageState.folders[AdaptId(params.id)].sort((a, b) => 
+            b.name.localeCompare(a.name)
+        );
+        storageState.files[AdaptId(params.id)] = storageState.files[AdaptId(params.id)].sort((a, b) => 
+            b.name.localeCompare(a.name)
+        );
+    }    
+
+    SortByDateAsending() {
+        storageState.folders[AdaptId(params.id)] = storageState.folders[AdaptId(params.id)].sort((a, b) => 
+            new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime()
+        );      
+        storageState.files[AdaptId(params.id)] = storageState.files[AdaptId(params.id)].sort((a, b) => 
+            new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime()
+        );
+    }    
+
+    SortByDateDesending() {
+        storageState.folders[AdaptId(params.id)] = storageState.folders[AdaptId(params.id)].sort((a, b) => 
+            new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime()
+        );      
+        storageState.files[AdaptId(params.id)] = storageState.files[AdaptId(params.id)].sort((a, b) => 
+            new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime()
+        );
+    }  
+    
+    /////////////////////////////////////////////////////////////////////////////////////////// 
 }
 
 export default new StorageState();

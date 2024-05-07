@@ -119,7 +119,7 @@ const Layout = observer(() => {
         };
     
         connectToWebSocket();
-    }, [storageWSContext.connection]);   
+    }, [storageWSContext.connection, storageState.folders]);   
     
     useEffect(() => {
         const connectToGallerySocket = async () => {
@@ -138,7 +138,7 @@ const Layout = observer(() => {
         };
     
         connectToGallerySocket();
-    }, [galleryWSContext.connection]);
+    }, [galleryWSContext.connection, galleryState.albums]);
 
     return (
         <messageWSContext.Provider url={"http://localhost:5000/message-hub"}>

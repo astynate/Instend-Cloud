@@ -5,6 +5,7 @@ class GalleryState {
     hasMore = true;
     photos = [];
     albums = {};
+    queue = {};
 
     constructor() {
         makeAutoObservable(this);
@@ -29,6 +30,21 @@ class GalleryState {
         }
     }
 
+    async GetAlbums() {
+        await instance
+            .get('/api/albums')
+            .then(response => {
+                for (let i = 0; i < response.data.length; i++) {
+                    if ((response.data[i].id in this.albums) === false) {
+                        response.data[i].photos = []
+                        response.data[i].hasMore = true;
+
+                        this.albums[response.data[i].id] = response.data[i];
+                    }
+                }
+            })
+    }
+
     DeletePhoto(data) {
         this.photos = this.photos
             .filter(element => element.id !== data);
@@ -45,22 +61,7 @@ class GalleryState {
 
         this.hasMore = true;
         this.photos.push(...response.data);
-    };
-
-    async GetAlbums() {
-        await instance
-            .get('/api/albums')
-            .then(response => {
-                for (let i = 0; i < response.data.length; i++) {
-                    if ((response.data[i].id in this.albums) === false) {
-                        response.data[i].photos = []
-                        response.data[i].hasMore = true;
-
-                        this.albums[response.data[i].id] = response.data[i];
-                    }
-                }
-            })
-    }    
+    };  
 
     SortPhotosByDate(ording) {
         if (ording === true) {

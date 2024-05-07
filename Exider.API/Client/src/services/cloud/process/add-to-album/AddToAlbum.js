@@ -6,13 +6,9 @@ import add from './images/add.png';
 import Search from '../../shared/pop-up-window/elements/search/Search';
 import CheckMark from '../../shared/ui-kit/check-mark/CheckMark';
 import { observer } from 'mobx-react-lite';
-import { toJS } from 'mobx';
-import galleryState from '../../../../states/gallery-state';
-import { ConvertDate, ConvertFullDate } from '../../../../utils/DateHandler';
-import SelectBox from '../../shared/interaction/select-box/SelectBox';
+import { ConvertDate } from '../../../../utils/DateHandler';
 
 const AddToAlbum = observer((props) => {
-    const { albums } = galleryState;
     const [selectedItems, setSelectedItems] = useState([]);
 
     const AddToSelected = (item) => {
@@ -28,11 +24,13 @@ const AddToAlbum = observer((props) => {
     }
 
     const Select = (item) => {
-        if (isExist(item) === false) {
-            AddToSelected(item);
-        } else {
-            RemoveFromSelected(item);
-        }
+        // if (isExist(item) === false) {
+        //     AddToSelected(item);
+        // } else {
+        //     RemoveFromSelected(item);
+        // }
+
+        setSelectedItems([item])
     }
 
     return (
@@ -53,18 +51,18 @@ const AddToAlbum = observer((props) => {
                     />
                     <div className={styles.controlPanel}>
                         <span className={styles.name}>Choose album</span>
-                        <div className={styles.button}>
+                        {/* <div className={styles.button}>
                             <img 
                                 src={add}
                                 draggable="false"
                                 className={styles.buttonImage} 
                             />
                             <span>Create new</span>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <div className={styles.content}>
-                    {Object.entries(albums).map(([key, value]) => {
+                    {props.albums && Object.entries(props.albums).map(([key, value]) => {
                             return (
                                 <div 
                                     className={styles.album} 
@@ -88,7 +86,10 @@ const AddToAlbum = observer((props) => {
                     }
                 </div>
                 <div className={styles.footer}>
-                    <Button value="Continue" />
+                    <Button 
+                        value="Continue" 
+                        callback={() => props.add(selectedItems[0])}
+                    />
                 </div>
             </div>   
         </PopUpWindow>

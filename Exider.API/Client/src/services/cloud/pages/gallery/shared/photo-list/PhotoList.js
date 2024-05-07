@@ -16,11 +16,12 @@ const PhotoList = (props) => {
     const [selectedItems, setSelectedItems] = useState([]);
     const [isPreview, setPreviewState] = useState(false);
     const [activeItems, setActiveItems] = useState([]);
-    const [isAddToAlbumOpen, setAddToAlbumState] = useState(true);
+    const [isAddToAlbumOpen, setAddToAlbumState] = useState(false);
+    const { albums } = galleryState;
 
     const single = [
         [null, "Open", () => {setPreviewState(true)}],
-        [null, "Add to album", () => {}],
+        [null, "Add to album", () => {setAddToAlbumState(true)}],
         [null, "Download", async () => {
             await instance
                 .get(`/file/download?id=${activeItems[0].id}`, {
@@ -40,7 +41,7 @@ const PhotoList = (props) => {
     ]
 
     const multiple = [
-        [null, "Add to album", () => {}],
+        [null, "Add to album", () => {setAddToAlbumState(true)}],
         [null, "Delete", () => {
             Delete(activeItems, ErrorMessage);
         }]
@@ -57,6 +58,26 @@ const PhotoList = (props) => {
     
     }, [props.scale, props.photoGrid]);
 
+    useEffect(() => {
+        const fetchDate = async () => {
+            await galleryState.GetAlbums();
+        }
+
+        fetchDate();
+    }, []);
+
+    const AddPhotosInAlbum = async (selected) => {
+        if (selected) {
+            for (let i = 0; i < activeItems.length; i++) {
+                await instance
+                    .post(`/api/albums?fileId=${activeItems[i].id}&albumId=${selected.id}`)
+                    .catch(response => {
+                        console.error(response);
+                    });
+            }
+        }
+    }
+
     return (
         <div>
             {isPreview && 
@@ -65,10 +86,12 @@ const PhotoList = (props) => {
                     file={activeItems[0]}
                     ErrorMessage={ErrorMessage}
                 />}
-            {/* <AddToAlbum             
+            <AddToAlbum
                 open={isAddToAlbumOpen}
                 close={() => setAddToAlbumState(false)}
-            /> */}
+                add={AddPhotosInAlbum}
+                albums={galleryState.albums}
+            />
             <div className={styles.photos} id={props.photoGrid} style={{ gridTemplateColumns, columnCount }} ref={props.forwardRef}>
                 {props.photos && props.photos.map && props.photos.map((element, index) => {
                     return (

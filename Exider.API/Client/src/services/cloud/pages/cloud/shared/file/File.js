@@ -1,6 +1,7 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import styles from './main.module.css';
 import { ConvertDate } from '../../../../../../utils/DateHandler';
+import Loader from '../../../../shared/loader/Loader';
 
 const File = (props) => {
   const [aspectRatio, setAspectRatio] = useState(1);
@@ -29,6 +30,36 @@ const File = (props) => {
       </div>
     );
 
+  } else if (props.isLoading === true) {
+    return (
+      <>
+        <div 
+          className={styles.wrapper} 
+          onClick={props.callback} 
+          onContextMenu={props.onContextMenu}
+          data={null}
+        >
+          <div className={styles.content} id={props.isSelected === true ? 'selected' : null}>
+            {props.image != null ? 
+              <img 
+                src={`data:image/png;base64,${props.image}`} 
+                className={styles.image}
+                draggable={false}
+                id={aspectRatio < 1 ? 'width' : 'height'}
+              />
+            :
+              <div className={styles.file} id="loading">
+                <Loader />
+                <span>{props.type}</span>
+              </div>}
+          </div>
+          <div className={styles.description}>
+            <span className={styles.name}>{props.name ? props.name: "Not set"}</span>
+            <span className={styles.time}>Loading...</span>
+          </div>
+        </div>
+      </>
+    );
   } else {
 
     return (
@@ -57,9 +88,7 @@ const File = (props) => {
         </div>
       </div>
     );
-
   }
-  
 };
 
 export default File;

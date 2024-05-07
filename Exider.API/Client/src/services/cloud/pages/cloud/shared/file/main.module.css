@@ -111,3 +111,20 @@
     justify-content: center;
     user-select: none;
 }
+
+.file[id="loading"] {
+    animation: fileAnimation 2s ease infinite;
+    cursor: not-allowed;
+}
+
+@keyframes fileAnimation {
+    0% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.3;
+    }
+}

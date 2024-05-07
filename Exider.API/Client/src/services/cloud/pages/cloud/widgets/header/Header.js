@@ -25,69 +25,6 @@ import photoshop from './images/types/photoshop.png';
 import powerpoint from './images/types/powerpoint.png';
 import upload from './images/types/upload.png';
 import word from './images/types/word.png';
-import { LayoutContext } from "../../../../layout/Layout";
-
-export const sendFiles = async (event, folderId, setCount, setTotal) => {
-    event.preventDefault();
-  
-    if (setCount && setTotal) {
-        setCount(0);
-        setTotal(event.target.files.length);
-    }
-  
-    await Array.from(event.target.files).forEach(async (file) => {
-      const files = new FormData();
-
-      files.append('file', file);
-      files.append('folderId', folderId ? folderId : "");
-
-      await instance
-        .post('/storage', files)
-        .then(() => {
-            if (setCount) {
-                setCount((prev) => prev + 1);
-            }
-        })
-        .catch((error) => {
-          console.error(error);
-
-          if (setCount && setTotal) {
-            setCount(0);
-            setTotal(0);
-          }
-        });
-    });
-};
-
-export const sendFilesAsync = async (files, folderId, setCount, setTotal) => {
-    if (setCount && setTotal) {
-        setCount(0);
-        setTotal(files.length);
-    }
-  
-    await Array.from(files).forEach(async (file) => {
-      const files = new FormData();
-
-      files.append('file', file);
-      files.append('folderId', folderId ? folderId : "");
-
-      await instance
-        .post('/storage', files)
-        .then(() => {
-            if (setCount) {
-                setCount((prev) => prev + 1);
-            }
-        })
-        .catch((error) => {
-          console.error(error);
-
-          if (setCount && setTotal) {
-            setCount(0);
-            setTotal(0);
-          }
-        });
-    });
-};
 
 const Header = observer((props) => {
     const types = {
@@ -144,50 +81,12 @@ const Header = observer((props) => {
     const [type, setType] = useState(types.folder);
     const [isOpen, setOpenState] = useState(false);
     const [name, setName] = useState('');
-    const [count, setCount] = useState(0);
-    const [total, setTotal] = useState(0);
 
     const OpenDialog = (current_type) => {
         setType(current_type);
         setOpenState(true);
         setName('');
-    }
-
-    const SortByNameAsending = () => {
-        storageState.folders[AdaptId(params.id)] = storageState.folders[AdaptId(params.id)].sort((a, b) => 
-            a.name.localeCompare(b.name)
-        );
-        storageState.files[AdaptId(params.id)] = storageState.files[AdaptId(params.id)].sort((a, b) => 
-            a.name.localeCompare(b.name)
-        );
-    }
-    
-    const SortByNameDesending = () => {
-        storageState.folders[AdaptId(params.id)] = storageState.folders[AdaptId(params.id)].sort((a, b) => 
-            b.name.localeCompare(a.name)
-        );
-        storageState.files[AdaptId(params.id)] = storageState.files[AdaptId(params.id)].sort((a, b) => 
-            b.name.localeCompare(a.name)
-        );
-    }    
-
-    const SortByDateAsending = () => {
-        storageState.folders[AdaptId(params.id)] = storageState.folders[AdaptId(params.id)].sort((a, b) => 
-            new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime()
-        );      
-        storageState.files[AdaptId(params.id)] = storageState.files[AdaptId(params.id)].sort((a, b) => 
-            new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime()
-        );
-    }    
-
-    const SortByDateDesending = () => {
-        storageState.folders[AdaptId(params.id)] = storageState.folders[AdaptId(params.id)].sort((a, b) => 
-            new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime()
-        );      
-        storageState.files[AdaptId(params.id)] = storageState.files[AdaptId(params.id)].sort((a, b) => 
-            new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime()
-        );
-    }    
+    } 
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -205,7 +104,6 @@ const Header = observer((props) => {
 
     return (
       <div className={styles.header}>
-        {total !== count && <FileLoader count={count} total={total} />}
         <PopUpField 
           title={type.title}
           text={type.text}
@@ -214,8 +112,14 @@ const Header = observer((props) => {
           close={() => setOpenState(false)}
           open={isOpen}
           callback={() => {
-              if (name === null || name === '') 
-                  return;
+            if (name === null || name === '') 
+                return;
+
+            if (type.type === 'folder') {
+                CreateFolder
+            } else {
+
+            }
               
               let formData = new FormData();
               
@@ -243,10 +147,10 @@ const Header = observer((props) => {
               }
           }}
         />
-        {isOpenAccessWindow === true ? <OpenAccessProcess
+        {isOpenAccessWindow === true && <OpenAccessProcess
             id={params.id}
             close={() => setOpenAccessWindowState(false)}
-        /> : null}
+        />}
         <div className={styles.buttons}>
             <div className={styles.buttonBlock}>
                 <Button 

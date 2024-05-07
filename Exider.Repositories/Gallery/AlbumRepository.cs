@@ -47,6 +47,11 @@ namespace Exider.Repositories.Gallery
 
         public async Task<Result> AddPhotoToAlbum(Guid fileId, Guid albumId)
         {
+            if (await _context.AlbumLinks.FirstOrDefaultAsync(x => x.FileId == fileId && x.AlbumId == albumId) == null)
+            {
+                return Result.Success();
+            }
+
             var result = AlbumLink.Create(albumId, fileId);
 
             if (result.IsFailure)
@@ -56,6 +61,29 @@ namespace Exider.Repositories.Gallery
 
             await _context.AlbumLinks.AddAsync(result.Value);
             await _context.SaveChangesAsync();
+
+            return Result.Success();
+        }
+
+        public async Task<Result> DeleteAlbumAsync(Guid id, Guid userId)
+        {
+            AlbumModel? album = await _context.Albums
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (album == null)
+            {
+                return Result.Failure("Album not found");
+            }
+            
+            int result = await _context.Albums.Where(x => x.Id == id)
+                .ExecuteDeleteAsync();
+
+            if (result == 0)
+            {
+                return Result.Failure("Album not found");
+            }
+
+            File.Delete(album.Cover);
 
             return Result.Success();
         }

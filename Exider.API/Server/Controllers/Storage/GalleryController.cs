@@ -87,6 +87,32 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             return Ok(result.Value);
         }
 
+        [HttpDelete]
+        [Route("/api/albums")]
+        public async Task<IActionResult> GeDeleteAlbum(string id)
+        {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+            {
+                return BadRequest(userId.Error);
+            }
+
+            if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest("Invalid id");
+            }
+
+            var result = await _albumRepository.DeleteAlbumAsync(Guid.Parse(id), Guid.Parse(userId.Value));
+
+            if (result.IsFailure)
+            {
+                BadRequest(result.Error);
+            }
+
+            return Ok();
+        }
+
         [HttpPost]
         [Route("/api/gallery/upload")]
         public async Task<IActionResult> UploadToGallery
@@ -172,7 +198,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             }
         }
 
-        [HttpPut]
+        [HttpPost]
         [Route("/api/albums")]
         public async Task<IActionResult> AddToAlbum(string fileId, string albumId)
         {

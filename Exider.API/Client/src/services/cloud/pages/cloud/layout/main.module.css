@@ -44,3 +44,12 @@
     background: #aaa;
     border-radius: 10px;
 }
+
+.placeholder {
+    height: 55vh;
+    width: 100%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

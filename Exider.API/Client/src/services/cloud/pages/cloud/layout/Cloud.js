@@ -26,6 +26,7 @@ import PropertiesWindow from '../widgets/properties/Properties';
 import Information from '../../../shared/information/Information';
 import SelectBox from '../../../shared/interaction/select-box/SelectBox';
 import DragFiles from '../../../features/drag-files/DragFiles';
+import Placeholder from '../../../shared/placeholder/Placeholder';
 
 const sendAsync = async (event) => {
   var files = event.dataTransfer.files;
@@ -75,7 +76,7 @@ const Cloud = observer((props) => {
     if (file.strategy === "file") {
       setPreviewState(true);
     } else {
-      navigate(`/cloud/${activeItems[0].id}`)
+      navigate(`/cloud/${activeItems[0].id}`);
     }
   };
 
@@ -148,41 +149,47 @@ const Cloud = observer((props) => {
           />
           <div className={styles.content} ref={selectPlace}>
             {isLoading ? 
-                Array.from({ length: 4 }).map((_, index) => (
-                  <File key={index} isPlaceholder={true} />))
-            : null}
-            {folders && toJS(folders)[AdaptId(params.id)] ?
-              toJS(folders)[AdaptId(params.id)].map((element, index) => {
-                return (
-                  <Folder 
-                    key={element.id} 
-                    id={element.id}
-                    isSelected={selectedItems.map(element => element.id).includes(element.id)}
-                    folder={element}
-                    name={element.name} 
-                    time={element.creationTime}
-                    onContextMenu={() => setFilename(element.name)}
-                  />
-                )
-              })
-            : null}
-            {files && toJS(files)[AdaptId(params.id)] ?
-              toJS(files)[AdaptId(params.id)].map(element => {
-                return (
-                  <File
-                    key={element.id} 
-                    name={element.name}
-                    file={element}
-                    time={element.lastEditTime}
-                    image={element.fileAsBytes == "" ? null : element.fileAsBytes}
-                    type={element.type}
-                    isSelected={selectedItems.map(element => element.id).includes(element.id) === true}
-                    onClick={() => OpenPreview(element)}
-                    onContextMenu={() => setFilename(element.name)}
-                  />
-                )
-              })
-            : null}
+              Array.from({ length: 4 }).map((_, index) => (
+                <File key={index} isPlaceholder={true} />
+              ))
+            : 
+              (items.filter(element => element.typeId !== 'System').length > 0) ?
+                <>
+                  {folders && toJS(folders)[AdaptId(params.id)] &&
+                    toJS(folders)[AdaptId(params.id)].filter(element => element.typeId !== 'System').map((element, index) => (
+                      <Folder 
+                        key={element.id}
+                        id={element.id}
+                        isSelected={selectedItems.map(element => element.id).includes(element.id)}
+                        folder={element}
+                        name={element.name} 
+                        time={element.creationTime}
+                        onContextMenu={() => setFilename(element.name)}
+                      />
+                    ))
+                  }
+                  {files && toJS(files)[AdaptId(params.id)] &&
+                    toJS(files)[AdaptId(params.id)].map(element => (
+                      <File
+                        key={element.id} 
+                        name={element.name}
+                        file={element}
+                        time={element.lastEditTime}
+                        image={element.fileAsBytes == "" ? null : element.fileAsBytes}
+                        type={element.type}
+                        isSelected={selectedItems.map(element => element.id).includes(element.id)}
+                        onClick={() => OpenPreview(element)}
+                        onContextMenu={() => setFilename(element.name)}
+                      />
+                    ))
+                  }
+                  <File isLoading={true} />
+                </>
+              : 
+                <div className={styles.placeholder}>
+                  <Placeholder title="No collections uploaded." />
+                </div>
+            }
           </div>
         </div>
         {isRightPanelOpen === true && 
