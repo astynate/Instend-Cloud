@@ -7,6 +7,7 @@ import SelectBox from '../../../../shared/interaction/select-box/SelectBox';
 import galleryState from '../../../../../../states/gallery-state';
 import AddToAlbum from '../../../../process/add-to-album/AddToAlbum';
 import { Delete } from '../../../cloud/api/FolderRequests';
+import Loader from '../../../../shared/loader/Loader';
 
 const PhotoList = (props) => {
     const [gridTemplateColumns, setGridTemplateColumns] = useState('repeat(auto-fill, minmax(200px, 1fr))');
@@ -84,27 +85,40 @@ const PhotoList = (props) => {
                     file={activeItems[0]}
                     // ErrorMessage={ErrorMessage}
                 />}
-            <AddToAlbum
+            {/* <AddToAlbum
                 open={isAddToAlbumOpen}
                 close={() => setAddToAlbumState(false)}
                 add={AddPhotosInAlbum}
                 albums={galleryState.albums}
-            />
+            /> */}
             <div className={styles.photos} id={props.photoGrid} style={{ gridTemplateColumns, columnCount }} ref={props.forwardRef}>
                 {props.photos && props.photos.map && props.photos.map((element, index) => {
-                    return (
-                        <div 
-                            key={index} 
-                            className={styles.photoWrapper} 
-                            data={element.id}
-                        >
-                            <img 
-                                src={`data:image/png;base64,${element.fileAsBytes}`}
-                                draggable="false"
-                                id={selectedItems.map(element => element.id).includes(element.id) === true ? 'active' : 'passive'}
-                            />
-                        </div>
-                    )
+                    if (element.isLoading === true) {
+                        return (
+                            <div 
+                                key={index} 
+                                className={styles.photoWrapper}
+                                data={null}
+                                id="loadingPhoto"
+                            >
+                                <Loader />
+                            </div>  
+                        );
+                    } else {
+                        return (
+                            <div 
+                                key={index} 
+                                className={styles.photoWrapper} 
+                                data={element.id}
+                            >
+                                <img 
+                                    src={`data:image/png;base64,${element.fileAsBytes}`}
+                                    draggable="false"
+                                    id={selectedItems.map(element => element.id).includes(element.id) === true ? 'active' : 'passive'}
+                                />
+                            </div>
+                        )
+                    }
                 })}
             </div>
             <SelectBox 

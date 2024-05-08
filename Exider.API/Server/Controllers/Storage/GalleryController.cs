@@ -121,7 +121,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             IFileService fileService,
             IHubContext<StorageHub> storageHub,
             [FromForm] IFormFile file,
-            [FromForm] string? albumId
+            [FromForm] string? albumId,
+            [FromForm] int queueId
         )
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
@@ -178,15 +179,14 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                                 return Conflict(result.Error);
                             }
 
-                            await _galleryHub.Clients.Group(albumId).SendAsync("Upload", new object[] { fileModel.Value, albumId });
+                            await _galleryHub.Clients.Group(albumId).SendAsync("Upload", new object[] { fileModel.Value, albumId, queueId });
                         }
                         else
                         {
-                            await storageHub.Clients.Group(fileModel.Value.FolderId == Guid.Empty ? fileModel.Value.OwnerId.ToString() :
-                                fileModel.Value.FolderId.ToString()).SendAsync("UploadFile", fileModel.Value);
+                            await storageHub.Clients.Group(fileModel.Value.OwnerId.ToString()).SendAsync("UploadFile", new object[] { fileModel.Value, queueId });
                         }
 
-                        transaction.Commit(); 
+                        transaction.Commit();
                         return Ok();
                     }
                 });

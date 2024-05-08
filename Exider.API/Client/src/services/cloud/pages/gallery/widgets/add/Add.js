@@ -6,28 +6,12 @@ import album from './images/types/album.png';
 import image from './images/types/image.png';
 import CreateAlbum from '../../../../widgets/create-album/CreateAlbum';
 import { instance } from '../../../../../../state/Interceptors';
+import { UploadPhotosInGallery } from '../../api/GalleryRequests';
 
 const Add = (props) => {
     const createWindow = useRef();
     const [isCreateOpen, setOpenState] = useState(false);
     const [isCreateAlbumOpen, setCreateAlbumOpen] = useState(false);
-
-    const AddFile = async (event, id) => {
-        event.preventDefault();
-      
-        await Array.from(event.target.files).forEach(async (file) => {
-          const files = new FormData();
-    
-          files.append('file', file);
-          files.append('albumId', id ? id : "");
-    
-          await instance
-            .post(`/api/gallery/upload`, files)
-            .catch((error) => {
-              console.error(error);
-            });        
-        });
-    }
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -53,7 +37,7 @@ const Add = (props) => {
                 isOpen={isCreateOpen}
                 items={[
                     {image: album, title: "Album", callback: () => {setCreateAlbumOpen(true)}},
-                    {image: image, title: "Image", callback: () => {}, type: "upload", sendFiles: (event) => AddFile(event, props.id)},
+                    {image: image, title: "Image", callback: () => {}, type: "upload", sendFiles: (event) => UploadPhotosInGallery(event, props.id)},
                 ]}
             />
             <div className={styles.button} onClick={() => setOpenState(prev => !prev)} ref={createWindow}>

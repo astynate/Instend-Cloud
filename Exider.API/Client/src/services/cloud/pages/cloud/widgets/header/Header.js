@@ -73,7 +73,7 @@ const Header = observer((props) => {
             if (type.type === 'folder') {
                 CreateFolder(name, params.id);
             } else {
-                CreateFile()
+                CreateFile(name, type.type, params.id);
             }
           }}
         />

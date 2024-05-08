@@ -56,6 +56,8 @@ const Layout = observer(() => {
         }
     }, [isError, applicationState, applicationState.errorQueue, applicationState.errorQueue.length]);
 
+    /////////////////////////////////////////////////////////////////////////////////
+
     storageWSContext.useSignalREffect(
         "CreateFolder",
         async ([folder, queueId]) => {
@@ -76,13 +78,15 @@ const Layout = observer(() => {
         (data) => {storageState.DeleteFolder(data)}
     );
 
+    /////////////////////////////////////////////////////////////////////////////////
+
     storageWSContext.useSignalREffect(
         "UploadFile",
         ([file, queueId]) => {
             storageState.ReplaceLoadingFile(file, queueId);
 
             if (imageTypes.includes(file.type)) {
-                galleryState.AddPhoto(file);
+                galleryState.ReplaceLoadingPhoto(file, queueId);
             }
         }
     );
@@ -100,9 +104,13 @@ const Layout = observer(() => {
         }
     );
 
+    /////////////////////////////////////////////////////////////////////////////////
+
     galleryWSContext.useSignalREffect(
         "Create",
-        (album) => {galleryState.AddAlbum(album)}
+        (album) => {
+            galleryState.AddAlbum(album);
+        }
     );
 
     galleryWSContext.useSignalREffect(
@@ -117,6 +125,8 @@ const Layout = observer(() => {
             galleryState.AddToAlbum(file, albumId);
         }
     );
+
+    /////////////////////////////////////////////////////////////////////////////////
 
     useEffect(() => {
         const handleResize = () => {

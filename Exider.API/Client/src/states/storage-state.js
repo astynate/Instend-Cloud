@@ -123,13 +123,15 @@ class StorageState {
     }
 
     SetFileAsLoaing(id, folderId) {
-        this.files[AdaptId(folderId)] = this.files[AdaptId(folderId)].map(element => {
-            if (element.id === id) {
-                element.isLoading = true;
-            }
-
-            return element;
-        });
+        if (this.files && this.files[AdaptId(folderId)]) {
+            this.files[AdaptId(folderId)] = this.files[AdaptId(folderId)].map(element => {
+                if (element.id === id) {
+                    element.isLoading = true;
+                }
+    
+                return element;
+            });
+        }
     }
 
     RemoveFileLoadingState(id, folderId) {
@@ -172,13 +174,15 @@ class StorageState {
             file.strategy = 'file';
 
             runInAction(() => {
-                const index = this.files[AdaptId(file.folderId)]
-                    .findIndex(element => element.queueId === queueId);
+                if (this.IsFolderExisitInFiles(file)) {
+                    const index = this.files[AdaptId(file.folderId)]
+                        .findIndex(element => element.queueId === queueId);
 
-                if (index === -1) {
-                    this.files[AdaptId(file.folderId)] = [file, ...this.files[AdaptId(file.folderId)]]               
-                } else {
-                    this.files[AdaptId(file.folderId)][index] = file;
+                    if (index === -1) {
+                        this.files[AdaptId(file.folderId)] = [file, ...this.files[AdaptId(file.folderId)]]               
+                    } else {
+                        this.files[AdaptId(file.folderId)][index] = file;
+                    }
                 }
             });
         }

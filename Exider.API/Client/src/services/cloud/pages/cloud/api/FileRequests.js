@@ -51,23 +51,23 @@ export const types = {
 
 //////////////////////////////////////////////////////////////////////////////////
 
-export const CreateFile = async (name, type, folderId, error) => {
+export const CreateFile = async (name, type, folderId) => {
     let formData = new FormData();
               
+    const queueId = storageState.CreateLoadingFile(name, folderId);
+
     formData.append("folderId", folderId ? folderId : "");
     formData.append("name", name);
-    formData.append("type", type.type);
-
-    const queueId = storageState.CreateLoadingFile(name, folderId);
+    formData.append("type", type);
+    formData.append('queueId', queueId);
 
     await instance.post(`/file`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
-    }).then(response => {
-        storageState.ReplaceLoadingFile(response.data, queueId);
     }).catch(response => {
-        error('Attention!', response.data);
+        applicationState.AddErrorInQueue('Attention!', response.data);
+        storageState.DeleteLoadingFile(queueId, folderId);
     });
 };
 
@@ -87,7 +87,7 @@ export const SendFilesAsync = async (files, folderId, error) => {
         .post('/storage', files)
         .catch(response => {
             applicationState.AddErrorInQueue('Attention!', response.data);
-            storageState.DeleteLoadingFolder(queueId, file.folderId);
+            storageState.DeleteLoadingFile(queueId, file.folderId);
         });
     });
 };

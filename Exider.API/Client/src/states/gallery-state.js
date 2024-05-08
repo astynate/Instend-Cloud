@@ -2,18 +2,77 @@ import { instance } from '../state/Interceptors';
 import { makeAutoObservable, runInAction, toJS } from "mobx";
 
 class GalleryState {
+
+    //////////////////////////////////////////////////////////////////////////////////////
+
     hasMore = true;
     photos = [];
     albums = {};
-    queue = {};
+    photoQueueId = 0;
+    albumsQueueId = 0;
+
+    //////////////////////////////////////////////////////////////////////////////////////
 
     constructor() {
         makeAutoObservable(this);
     }
 
-    AddPhoto(photo) {
-        this.photos = [photo, ...this.photos];
+    //////////////////////////////////////////////////////////////////////////////////////
+
+    CreateLoadingPhoto() {
+        const photo = {
+            id: null,
+            queueId: this.photoQueueId,
+            isLoading: true,
+            strategy: 'loading',
+        }
+
+        runInAction(() => {
+            this.photos = [photo, ...this.photos];
+            this.photoQueueId++;
+        });
+
+        return photo.queueId;
     }
+
+    ReplaceLoadingPhoto(photo, queueId) {
+        photo.strategy = 'file';
+
+        runInAction(() => {
+            const index = this.photos.findIndex(element => element.queueId === queueId);
+
+            if (index === -1) {
+                this.photos = [photo, ...this.photos];         
+            } else {
+                this.photos[index] = photo;
+            }
+        });
+    }
+
+    DeleteLoadingPhoto(queueId) {
+        this.photos = this.photos
+            .filter(element => element.queueId !== queueId);
+    }
+
+    DeletePhoto(data) {
+        this.photos = this.photos
+            .filter(element => element.id !== data);
+    }
+
+    async GetPhotos() {
+        this.hasMore = false;
+        const response = await instance.get(`api/gallery?from=${this.photos.length > 0 ? this.photos.length : 0}&count=${5}`);
+    
+        if (response.data.length < 1) {
+            this.hasMore = false;
+            return;
+        }
+
+        this.hasMore = true;
+        this.photos.push(...response.data);
+    }; 
+
+    //////////////////////////////////////////////////////////////////////////////////////
 
     AddAlbum(album) {
         if (album) {
@@ -45,44 +104,42 @@ class GalleryState {
             })
     }
 
-    DeletePhoto(data) {
-        this.photos = this.photos
-            .filter(element => element.id !== data);
-    }
+    ////////////////////////////////////////////////////////////////////////////////////// 
 
-    async GetPhotos() {
-        this.hasMore = false;
-        const response = await instance.get(`api/gallery?from=${this.photos.length > 0 ? this.photos.length : 0}&count=${5}`);
-    
-        if (response.data.length < 1) {
-            this.hasMore = false;
+    SortPhotosByDate(ording) {
+        if (this.photos.length <= 1) {
             return;
         }
 
-        this.hasMore = true;
-        this.photos.push(...response.data);
-    };  
+        try {
+            if (ording === true) {
+                this.photos = toJS(this.photos).sort((a, b) => 
+                    a.name.localeCompare(b.name));
+            } else {
+                this.photos = toJS(this.photos).sort((a, b) => 
+                    b.name.localeCompare(a.name));
+            }
+        } catch {
 
-    SortPhotosByDate(ording) {
-        if (ording === true) {
-            this.photos = toJS(this.photos).sort((a, b) => 
-                a.name.localeCompare(b.name));
-        } else {
-            this.photos = toJS(this.photos).sort((a, b) => 
-                b.name.localeCompare(a.name));
         }
     }
 
     SortPhotosByName(ording) {
-        if (ording === true) {
-            this.photos = toJS(this.photos).sort((a, b) => 
-                new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime()
-            );
-        } else {
-            this.photos = toJS(this.photos).sort((a, b) => 
-                new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime()
-            );
-        } 
+        if (this.photos.length <= 1) {
+            return;
+        }
+
+        try {
+            if (ording === true) {
+                this.photos = toJS(this.photos).sort((a, b) => 
+                    new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime()
+                );
+            } else {
+                this.photos = toJS(this.photos).sort((a, b) => 
+                    new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime()
+                );
+            } 
+        } catch {}
     }
 
     async GetAlbumPhotos(id) {
@@ -102,6 +159,8 @@ class GalleryState {
                 })
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////// 
 }
 
 export default new GalleryState();

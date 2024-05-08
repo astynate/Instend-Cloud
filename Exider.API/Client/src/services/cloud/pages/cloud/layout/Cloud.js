@@ -149,10 +149,10 @@ const Cloud = observer((props) => {
                 <File key={index} isPlaceholder={true} />
               ))
             : 
-              (items.filter(element => element.typeId !== 'System' && element.folderId === AdaptId(params.id)).length > 0) ?
+              (items.filter(element => element.typeId !== '0' && element.folderId === AdaptId(params.id)).length > 0) ?
                 <>
                   {folders && toJS(folders)[AdaptId(params.id)] &&
-                    toJS(folders)[AdaptId(params.id)].filter(element => element.typeId !== 'System').map((element, index) => (
+                    toJS(folders)[AdaptId(params.id)].filter(element => element.typeId !== '0').map((element, index) => (
                       <Folder 
                         key={element.id != null ? element.id : index}
                         id={element.id}

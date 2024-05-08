@@ -226,7 +226,14 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         [HttpPost]
         [Authorize]
         [Route("/file")]
-        public async Task<IActionResult> CreateFile([FromForm] string name, [FromForm] string type, [FromForm] string? folderId, IRequestHandler requestHandler)
+        public async Task<IActionResult> CreateFile
+        (
+            [FromForm] string name, 
+            [FromForm] string type, 
+            [FromForm] string? folderId,
+            [FromForm] int queueId,
+            IRequestHandler requestHandler
+        )
         {
             var idResult = requestHandler.GetUserId(Request.Headers["Authorization"]);
 
@@ -261,7 +268,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             await System.IO.File.WriteAllBytesAsync(result.Value.Path, new byte[0]);
 
             await _storageHub.Clients.Group(result.Value.FolderId == Guid.Empty ? result.Value.OwnerId.ToString() :
-                result.Value.FolderId.ToString()).SendAsync("UploadFile", result.Value);
+                result.Value.FolderId.ToString()).SendAsync("UploadFile", new object[] { result.Value, queueId });
 
             return Ok();
         }

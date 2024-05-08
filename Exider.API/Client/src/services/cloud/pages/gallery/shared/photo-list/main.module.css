@@ -57,3 +57,29 @@
 .photos img[id="active"] {
     outline: 4px solid var(--main-blue-color);
 }
+
+.photoWrapper[id="loadingPhoto"] {
+    height: 100%;
+    width: 100%;
+    aspect-ratio: 1/1;
+    background: #ddd;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 0;
+    cursor: not-allowed;
+    animation: fileAnimation 2s ease infinite;
+}
+
+@keyframes fileAnimation {
+    0% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.3;
+    }
+}
