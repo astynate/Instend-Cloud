@@ -81,16 +81,16 @@ const SelectBox = observer((props) => {
     }
 
     const HandleClick = (event, id) => {
+        if (event.shiftKey) {
+            event.preventDefault();
+        }
+
         if (props.items && id) {
             if (event.shiftKey && isElementExist(id) === false) {
                 props.selectedItems[1](prev => [...prev, getElementById(id)]);
-                event.preventDefault();
             } else if (event.shiftKey && isElementExist(id) === true) {
                 props.selectedItems[1](prev => prev.filter(element => element.id !== id));
-                event.preventDefault();
             }
-        }  else {
-            event.preventDefault();
         }
     }
 
@@ -112,7 +112,7 @@ const SelectBox = observer((props) => {
                 element.removeEventListener('click', clickListener);
             });
         };
-    }, [props.itemsWrapper, props.itemsWrapper.current, props.itemsWrapper.current?.children.length, props.selectedItems[0]]);    
+    }, [props.items, props.items.length, props.selectedItems[0], props.selectedItems[0].length]);
 
     const startDrawing = (event) => {
         const except = props.selectPlace.map(element => element.current);

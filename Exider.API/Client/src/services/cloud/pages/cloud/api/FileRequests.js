@@ -1,4 +1,5 @@
 import { instance } from "../../../../../state/Interceptors";
+import applicationState from "../../../../../states/application-state";
 import storageState from "../../../../../states/storage-state";
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -76,18 +77,17 @@ export const SendFilesAsync = async (files, folderId, error) => {
     await Array.from(files).forEach(async (file) => {
       const files = new FormData();
 
+      const queueId = await storageState.CreateLoadingFile(file.name ? file.name : null, folderId);
+
       files.append('file', file);
       files.append('folderId', folderId ? folderId : "");
-
-      const queueId = storageState.CreateLoadingFile(file.name ? file.name : null, folderId);
+      files.append('queueId', queueId);
 
       await instance
         .post('/storage', files)
-        .then((response) => {
-            storageState.ReplaceLoadingFile(response.data, queueId);
-        })
         .catch(response => {
-            error('Attention!', response.data);
+            applicationState.AddErrorInQueue('Attention!', response.data);
+            storageState.DeleteLoadingFolder(queueId, file.folderId);
         });
     });
 };

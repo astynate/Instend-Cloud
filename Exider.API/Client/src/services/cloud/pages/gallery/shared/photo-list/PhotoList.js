@@ -1,16 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styles from './main.module.css';
 import Preview from '../../../../../preview/layout/Preview';
-import { LayoutContext } from '../../../../layout/Layout';
 import { instance } from '../../../../../../state/Interceptors';
 import { DownloadFromResponse } from '../../../../../../utils/DownloadFromResponse';
 import SelectBox from '../../../../shared/interaction/select-box/SelectBox';
 import galleryState from '../../../../../../states/gallery-state';
-import { Delete } from '../../../cloud/layout/ContextMenuHandler';
 import AddToAlbum from '../../../../process/add-to-album/AddToAlbum';
+import { Delete } from '../../../cloud/api/FolderRequests';
 
 const PhotoList = (props) => {
-    const {ErrorMessage} = useContext(LayoutContext)
     const [gridTemplateColumns, setGridTemplateColumns] = useState('repeat(auto-fill, minmax(200px, 1fr))');
     const [columnCount, setColumnCount] = useState(null);
     const [selectedItems, setSelectedItems] = useState([]);
@@ -32,18 +30,18 @@ const PhotoList = (props) => {
                 })
                 .catch((error) => {
                     console.error(error);
-                    ErrorMessage('Attention!', 'Something went wrong');
+                    // ErrorMessage('Attention!', 'Something went wrong');
                 });
         }],
         [null, "Delete", () => {
-            Delete(activeItems, ErrorMessage);
+            Delete(activeItems);
         }]
     ]
 
     const multiple = [
         [null, "Add to album", () => {setAddToAlbumState(true)}],
         [null, "Delete", () => {
-            Delete(activeItems, ErrorMessage);
+            Delete(activeItems);
         }]
     ]
 
@@ -84,7 +82,7 @@ const PhotoList = (props) => {
                 <Preview
                     close={() => setPreviewState(false)} 
                     file={activeItems[0]}
-                    ErrorMessage={ErrorMessage}
+                    // ErrorMessage={ErrorMessage}
                 />}
             <AddToAlbum
                 open={isAddToAlbumOpen}

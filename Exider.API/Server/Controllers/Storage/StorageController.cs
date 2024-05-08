@@ -154,7 +154,13 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> UploadFiles([FromForm] IFormFile file, [FromForm] string? folderId, IRequestHandler requestHandler)
+        public async Task<IActionResult> UploadFiles
+        (
+            [FromForm] IFormFile file, 
+            [FromForm] string? folderId,
+            [FromForm] int queueId,
+            IRequestHandler requestHandler
+        )
         {
             var idResult = requestHandler.GetUserId(Request.Headers["Authorization"]);
             Guid userId = idResult.Value == null ? Guid.Empty : Guid.Parse(idResult.Value);
@@ -201,7 +207,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                             await fileModel.Value.SetPreview(_fileService);
 
                             await _storageHub.Clients.Group(fileModel.Value.FolderId == Guid.Empty ? fileModel.Value.OwnerId.ToString() :
-                                fileModel.Value.FolderId.ToString()).SendAsync("UploadFile", fileModel.Value);
+                                fileModel.Value.FolderId.ToString()).SendAsync("UploadFile", new object[] { fileModel.Value, queueId });
                         }
 
                         transaction.Commit();
@@ -211,10 +217,10 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             catch (Exception exception)
             {
                 await Console.Out.WriteLineAsync(exception.Message);
-                return StatusCode(500);
+                return StatusCode(500, "Something went wrong");
             }
 
-            return Ok("Files uploaded successfully.");
+            return Ok();
         }
 
         [HttpPost]

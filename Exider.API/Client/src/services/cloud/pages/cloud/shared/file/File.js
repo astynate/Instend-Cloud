@@ -17,7 +17,6 @@ const File = (props) => {
     };
 
     img.src = `data:image/png;base64,${props.image ? props.image : null}`;
-
   }, [props.image]);
 
   if (props.isPlaceholder === true) {
@@ -41,12 +40,17 @@ const File = (props) => {
         >
           <div className={styles.content} id={props.isSelected === true ? 'selected' : null}>
             {props.image != null ? 
-              <img 
-                src={`data:image/png;base64,${props.image}`} 
-                className={styles.image}
-                draggable={false}
-                id={aspectRatio < 1 ? 'width' : 'height'}
-              />
+              <div className={styles.loaderWrapper}>
+                  <div className={styles.loader}>
+                    <Loader />
+                  </div>
+                    <img 
+                      src={`data:image/png;base64,${props.image}`} 
+                      className={styles.image}
+                      draggable={false}
+                      id={aspectRatio < 1 ? 'width' : 'height'}
+                    />
+              </div>
             :
               <div className={styles.file} id="loading">
                 <Loader />

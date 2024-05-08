@@ -76,7 +76,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         [HttpPost]
         [Microsoft.AspNetCore.Authorization.Authorize]
-        public async Task<ActionResult> CreateFolder([FromForm] string? folderId, [FromForm] string name)
+        public async Task<ActionResult> CreateFolder([FromForm] string? folderId, [FromForm] string name, [FromForm] int queueId)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
@@ -119,7 +119,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             folderId = string.IsNullOrEmpty(folderId) ? userId.Value : folderId;
 
             await _storageHub.Clients.Group(folderId)
-                .SendAsync("CreateFolder", result.Value);
+                .SendAsync("CreateFolder", new object[] { result.Value, queueId });
 
             return Ok();
         }

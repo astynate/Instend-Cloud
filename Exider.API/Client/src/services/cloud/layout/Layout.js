@@ -1,4 +1,4 @@
-﻿import React, { createContext } from 'react'
+﻿import React, { createContext, useCallback } from 'react'
 import { useState, useEffect } from 'react';
 import Loader from '../widgets/loader/Loader';
 import './css/fonts.css';
@@ -12,11 +12,11 @@ import { observer } from 'mobx-react-lite';
 import storageState from '../../../states/storage-state';
 import galleryState from '../../../states/gallery-state';
 import Information from '../shared/information/Information';
+import applicationState from '../../../states/application-state';
 
 export const messageWSContext = createSignalRContext();
 export const storageWSContext = createSignalRContext();
 export const galleryWSContext = createSignalRContext();
-export const LayoutContext = createContext();
 export const imageTypes = ['png', 'jpg', 'jpeg', 'gif'];
 
 export const connectToFoldersListener = async () => {
@@ -41,12 +41,20 @@ const Layout = observer(() => {
     const [isError, setErrorState] = useState(false);
     const [errorTitle, setErrorTitle] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    
+    useEffect(() => {
+        const setError = (title, message) => {
+            setErrorTitle(title);
+            setErrorMessage(message);
+            setErrorState(true);
+        }
 
-    const ErrorMessage = (title, message) => {
-        setErrorTitle(title);
-        setErrorMessage(message);
-        setErrorState(true);
-    }
+        if (isError === false && applicationState.GetCountErrors() > 0) {
+            const [title, message] = applicationState.GetErrorFromQueue();
+            setError(title, message);
+            applicationState.RemoveErrorFromQueue();
+        }
+    }, [isError, applicationState, applicationState.errorQueue, applicationState.errorQueue.length]);
 
     storageWSContext.useSignalREffect(
         "CreateFolder",
@@ -58,7 +66,9 @@ const Layout = observer(() => {
 
     storageWSContext.useSignalREffect(
         "RenameFolder",
-        (data) => {storageState.RenameFolder(data)}
+        (data) => {
+            storageState.RenameFolder(data);
+        }
     ); 
 
     storageWSContext.useSignalREffect(
@@ -68,8 +78,8 @@ const Layout = observer(() => {
 
     storageWSContext.useSignalREffect(
         "UploadFile",
-        (file) => {
-            storageState.UploadFile(file);
+        ([file, queueId]) => {
+            storageState.ReplaceLoadingFile(file, queueId);
 
             if (imageTypes.includes(file.type)) {
                 galleryState.AddPhoto(file);
@@ -122,7 +132,7 @@ const Layout = observer(() => {
     
     useEffect(() => {
         connectToFoldersListener();
-    }, [storageWSContext.connection]);   
+    }, [storageWSContext.connection]); 
     
     useEffect(() => {
         const connectToGallerySocket = async () => {
@@ -147,21 +157,19 @@ const Layout = observer(() => {
         <messageWSContext.Provider url={"http://localhost:5000/message-hub"}>
             <storageWSContext.Provider url={"http://localhost:5000/storage-hub"}>
                 <galleryWSContext.Provider url={"http://localhost:5000/gallery-hub"}>
-                    <LayoutContext.Provider value={{Error: ErrorMessage}}>
-                        <div className='cloud-wrapper'>
-                            {isLoading && <Loader />}
-                            <Helmet>
-                                <title>Yexider</title>
-                            </Helmet>
-                            <Information
-                                open={isError}
-                                close={() => setErrorState(false)}
-                                title={errorTitle}
-                                message={errorMessage}
-                            />
-                            {windowWidth > 700 ? <Desktop /> : <Mobile /> }
-                        </div>
-                    </LayoutContext.Provider>
+                    <div className='cloud-wrapper'>
+                        {isLoading && <Loader />}
+                        <Helmet>
+                            <title>Yexider</title>
+                        </Helmet>
+                        <Information
+                            open={isError}
+                            close={() => setErrorState(false)}
+                            title={errorTitle}
+                            message={errorMessage}
+                        />
+                        {windowWidth > 700 ? <Desktop /> : <Mobile /> }
+                    </div>
                 </galleryWSContext.Provider>
             </storageWSContext.Provider>
         </messageWSContext.Provider>

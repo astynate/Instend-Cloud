@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toJS } from 'mobx';
 import { RenameCallback } from './Callbacks';
 import { AdaptId } from '../../../../../states/storage-state';
-import { Delete, Properties } from './ContextMenuHandler';
+import { Properties } from './ContextMenuHandler';
 import { autorun } from 'mobx';
 import storageState from '../../../../../states/storage-state';
 import userState from '../../../../../states/user-state';
@@ -28,6 +28,7 @@ import SelectBox from '../../../shared/interaction/select-box/SelectBox';
 import DragFiles from '../../../features/drag-files/DragFiles';
 import Placeholder from '../../../shared/placeholder/Placeholder';
 import { SendFilesFromDragEvent } from '../api/FileRequests';
+import { Delete, RenameFolder } from '../api/FolderRequests';
 
 const Cloud = observer((props) => {
   const navigate = useNavigate();
@@ -59,11 +60,11 @@ const Cloud = observer((props) => {
     [Open, "Open", () => OpenPreview(activeItems[0])],
     [Rename, "Rename", () => setRenameState(true)],
     [PropertiesImage, "Properties", () => Properties(activeItems[0], setRightPanelState, setFolderProperties)],
-    [DeleteImage, "Delete", async () => Delete(activeItems, ErrorMessage)]
+    [DeleteImage, "Delete", async () => Delete(activeItems)]
   ]
 
   const multiple = [
-    [DeleteImage, "Delete", async () => Delete(activeItems, ErrorMessage, params.id)]
+    [DeleteImage, "Delete", async () => Delete(activeItems)]
   ]
 
   const OpenPreview = (file) => {
@@ -122,9 +123,8 @@ const Cloud = observer((props) => {
       />
       <div className={styles.wrapper}>
         <div className={styles.contentWrapper} ref={selectPlaceWrapper}>
-          <CloudHeader 
+          <CloudHeader
             name={user.nickname} 
-            error={ErrorMessage}
             path={storageState.path && storageState.path[AdaptId(params.id)] ? 
               storageState.path[AdaptId(params.id)] : null}
           />
@@ -135,7 +135,7 @@ const Cloud = observer((props) => {
               field={[fileName, setFilename]}
               open={isRenameOpen}
               close={() => setRenameState(false)}
-              callback={async () => {await RenameCallback(fileName, activeItems[0], ErrorMessage)}}
+              callback={async () => {await RenameFolder(fileName, activeItems[0])}}
             />}
           <Information
             open={isError}
@@ -174,6 +174,7 @@ const Cloud = observer((props) => {
                         time={element.lastEditTime}
                         image={element.fileAsBytes == "" ? null : element.fileAsBytes}
                         type={element.type}
+                        isLoading={element.isLoading}
                         isSelected={selectedItems.map(element => element.id).includes(element.id)}
                         onClick={() => OpenPreview(element)}
                         onContextMenu={() => setFilename(element.name)}

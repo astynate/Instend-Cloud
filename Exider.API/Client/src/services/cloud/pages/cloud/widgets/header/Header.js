@@ -13,10 +13,8 @@ import ContextMenu from "../../../../shared/context-menu/ContextMenu";
 import OpenAccessProcess from "../../processes/OpenAccessProcess";
 import { DownloadFromResponse } from "../../../../../../utils/DownloadFromResponse";
 import { observer } from "mobx-react-lite";
-import { AdaptId } from "../../../../../../states/storage-state";
 import storageState from "../../../../../../states/storage-state";
 import PopUpField from "../../../../shared/pop-up-filed/PopUpField";
-import FileLoader from "../../../../shared/file-loader/FileLoader";
 import excel from './images/types/excel.png';
 import illustrator from './images/types/illustrator.png';
 import newFolder from './images/types/new-folder.png';
@@ -68,12 +66,12 @@ const Header = observer((props) => {
           placeholder={type.placeholder}
           close={() => setOpenState(false)}
           open={isOpen}
-          callback={() => {
+          callback={async () => {
             if (name === null || name === '') 
                 return;
 
             if (type.type === 'folder') {
-                CreateFolder(name, params.id, Error);
+                CreateFolder(name, params.id);
             } else {
                 CreateFile()
             }
@@ -92,7 +90,7 @@ const Header = observer((props) => {
                         if (params.id) {
                             setOpenAccessWindowState(true)
                         } else {
-                            props.error('🔒 Attention!', 'Due to possible security issues, you cannot share this directory.');
+                            Error('🔒 Attention!', 'Due to possible security issues, you cannot share this directory.');
                         }
                     }}
                 />
