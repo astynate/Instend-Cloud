@@ -9,7 +9,7 @@ export const UploadPhotosInGallery = async (event, id) => {
   
     await Array.from(event.target.files).forEach(async (file) => {
       const files = new FormData();
-      const queueId = galleryState.CreateLoadingPhoto();
+      const queueId = galleryState.CreateLoadingPhoto(id);
 
       files.append('file', file);
       files.append('albumId', id ? id : "");

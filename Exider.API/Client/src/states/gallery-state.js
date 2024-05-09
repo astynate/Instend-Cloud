@@ -19,7 +19,7 @@ class GalleryState {
 
     //////////////////////////////////////////////////////////////////////////////////////
 
-    CreateLoadingPhoto() {
+    CreateLoadingPhoto(albumId) {
         const photo = {
             id: null,
             queueId: this.photoQueueId,
@@ -28,6 +28,10 @@ class GalleryState {
         }
 
         runInAction(() => {
+            if (albumId !== null && albumId !== '' && this.albums[albumId] && this.albums[albumId]) {
+                this.albums[albumId].photos = [photo, ...this.albums[albumId].photos];
+            }
+
             this.photos = [photo, ...this.photos];
             this.photoQueueId++;
         });
