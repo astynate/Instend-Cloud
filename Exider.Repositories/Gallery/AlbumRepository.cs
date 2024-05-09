@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core;
 using Exider.Core.Models.Gallery;
+using Exider.Core.Models.Storage;
 using Exider.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,24 +46,40 @@ namespace Exider.Repositories.Gallery
             return Result.Success<AlbumModel[]>(albums);
         }
 
-        public async Task<Result> AddPhotoToAlbum(Guid fileId, Guid albumId)
+        public async Task<Result<FileModel>> AddPhotoToAlbum(Guid fileId, Guid albumId)
         {
-            if (await _context.AlbumLinks.FirstOrDefaultAsync(x => x.FileId == fileId && x.AlbumId == albumId) == null)
+            FileModel[]? files = await _context.AlbumLinks
+                .Where(x => x.FileId == fileId && x.AlbumId == albumId)
+                .Join(_context.Files,
+                      albumLink => albumLink.FileId,
+                      file => file.Id,
+                      (albumLink, file) => file)
+                .ToArrayAsync();
+
+            if (files.Length > 0)
             {
-                return Result.Success();
+                return Result.Success(files[0]);
+            }
+
+            FileModel? file = await _context.Files
+                .FirstOrDefaultAsync(x => x.Id == fileId);
+
+            if (file == null)
+            {
+                return Result.Failure<FileModel>("File not found");
             }
 
             var result = AlbumLink.Create(albumId, fileId);
 
             if (result.IsFailure)
             {
-                return Result.Failure(result.Error);
+                return Result.Failure<FileModel>(result.Error);
             }
 
             await _context.AlbumLinks.AddAsync(result.Value);
             await _context.SaveChangesAsync();
 
-            return Result.Success();
+            return Result.Success(file);
         }
 
         public async Task<Result> DeleteAlbumAsync(Guid id, Guid userId)
