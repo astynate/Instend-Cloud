@@ -47,7 +47,7 @@ const Gallery = observer((props) => {
   ];
 
   const [scale, setScale] = useState(2);
-  const [photoGrid, setPhotoGeridState] = useState('grid');
+  const [photoGrid, setPhotoGridState] = useState('grid');
   const [PhotosSortState, setSortingTypeState] = useState(PhotosSortFunctions);
   const [SortingOrderState, setSortingOrderState] = useState(SortingOrder);
   const [albumId, setAlbumId] = useState(null);
@@ -110,7 +110,9 @@ const Gallery = observer((props) => {
                 items={[PhotosSortState, SortingOrderState]}
                 states={[setSortingTypeState, setSortingOrderState]}
               />
-              <SelectItems icon={grid} />
+              <SelectItems icon={grid} 
+
+              />
               <SimpleButton icon={share} />
               <SimpleButton icon={download} />
             </div>

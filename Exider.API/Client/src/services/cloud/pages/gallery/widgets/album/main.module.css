@@ -4,6 +4,11 @@
     user-select: none;
 }
 
+.album[id="loading"] .cover {
+    background: #ddd;
+    margin-bottom: 5px;
+}
+
 .cover {
     height: 100%;
     width: 100%;
@@ -33,4 +38,33 @@
     font-size: 17px;
     font-weight: 600;
     color: var(--main-font-color);
+}
+
+.coverWrapper {
+    position: relative;
+    opacity: 0.5;
+    animation: fileAnimation 2s ease infinite;
+}
+
+.loader {
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+}
+
+@keyframes fileAnimation {
+    0% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.3;
+    }
 }

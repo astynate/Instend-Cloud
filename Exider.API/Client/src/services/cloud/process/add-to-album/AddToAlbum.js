@@ -88,7 +88,16 @@ const AddToAlbum = observer((props) => {
                 <div className={styles.footer}>
                     <Button 
                         value="Continue" 
-                        callback={() => props.add(selectedItems[0])}
+                        callback={() => {
+                            setSelectedItems(prev => {
+                                if (prev.length > 0) {
+                                    props.add(prev);
+                                }
+                                
+                                return prev;
+                            })
+                            props.close();
+                        }}
                     />
                 </div>
             </div>   

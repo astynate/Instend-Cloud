@@ -23,18 +23,30 @@ const SelectBox = observer((props) => {
     const [contextMenuItems, setContextMenuItems] = useState(props.single);
     const target = useRef();
 
+    const FilterItems = () => {
+        const items = props.items.map(e => e.id);
+
+        props.activeItems[1](prev => {
+            return prev.filter(element => items.includes(element.id) === true);
+        });
+    }
+
     useEffect(() => {
         if (props.selectedItems[0].length > 1) {
             setContextMenuItems(props.multiple);
         } else {
             setContextMenuItems(props.single);
         }
-        
+
         if (props.selectedItems[0].length > 0) {
             let uniqueItems = Array.from(new Set(props.selectedItems[0]));
+
+            uniqueItems = uniqueItems.filter(element => props.items.map(e => e.id).includes(element.id));
             props.activeItems[1](uniqueItems);
         }
-    }, [props.selectedItems[0].length]);    
+
+        FilterItems();
+    }, [props.items, props.selectedItems[0], props.selectedItems[0].length]);    
 
     const isElementExist = (id) => {
         if (props.selectedItems[0] && props.selectedItems[0].map) {
@@ -87,7 +99,7 @@ const SelectBox = observer((props) => {
             event.preventDefault();
         }
 
-        if (props.items && id) {
+        if (props.items && id && getElementById(id)) {
             if (event.ctrlKey && isElementExist(id) === false) {
                 props.selectedItems[1](prev => [...prev, getElementById(id)]);
             } else if (event.ctrlKey && isElementExist(id) === true) {
@@ -107,7 +119,7 @@ const SelectBox = observer((props) => {
                 
                 for (let i = start; i < end; i++) {
                     updateSelectedItems(prev => [...prev, items[i]]);
-                }                
+                }      
             } 
             
             if (event.shiftKey) {

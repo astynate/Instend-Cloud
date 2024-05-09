@@ -60,11 +60,19 @@ const Cloud = observer((props) => {
     [Open, "Open", () => OpenPreview(activeItems[0])],
     [Rename, "Rename", () => setRenameState(true)],
     [PropertiesImage, "Properties", () => Properties(activeItems[0], setRightPanelState, setFolderProperties)],
-    [DeleteImage, "Delete", async () => Delete(activeItems)]
+    [DeleteImage, "Delete", () => {
+      setActiveItems(prev => {
+        Delete(prev); return prev;
+      })
+    }]
   ]
 
   const multiple = [
-    [DeleteImage, "Delete", async () => Delete(activeItems)]
+    [DeleteImage, "Delete", () => {
+      setActiveItems(prev => {
+        Delete(prev); return prev;
+      })
+    }]
   ]
 
   const OpenPreview = (file) => {

@@ -5,7 +5,6 @@ import Create from '../../../../shared/create/Create';
 import album from './images/types/album.png';
 import image from './images/types/image.png';
 import CreateAlbum from '../../../../widgets/create-album/CreateAlbum';
-import { instance } from '../../../../../../state/Interceptors';
 import { UploadPhotosInGallery } from '../../api/GalleryRequests';
 
 const Add = (props) => {

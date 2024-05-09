@@ -6,6 +6,7 @@ import TextArea from '../../shared/ui-kit/text-area/TextArea';
 import Button from '../../shared/ui-kit/button/Button';
 import upload from "./images/upload.png";
 import { instance } from '../../../../state/Interceptors';
+import { CreateAlbumRequest } from '../../pages/gallery/api/AlbumRequests';
 
 const CreateAlbum = (props) => {
     const [name, setName] = useState('');
@@ -26,27 +27,6 @@ const CreateAlbum = (props) => {
             reader.readAsDataURL(file);
         } catch {}
     };
-
-    const sendRequest = async () => {
-        if (name === '') {
-            return;
-        }
-
-        let form = new FormData();
-
-        form.append("name", name);
-        form.append("description", description);
-        form.append("cover", image);
-
-        await instance({
-            method: 'post',
-            url: '/api/gallery',
-            data: form,
-            headers: { 'Content-Type': 'multipart/form-data' },
-        });
-
-        props.close();
-    }
 
     return (
         <PopUpWindow
@@ -89,7 +69,10 @@ const CreateAlbum = (props) => {
                         <div className={styles.buttonWrapper}>
                             <Button 
                                 value={"Coninue"} 
-                                callback={sendRequest}
+                                callback={() => {
+                                    CreateAlbumRequest(name, description, image);
+                                    props.close();
+                                }}
                             />
                         </div>
                     </div>

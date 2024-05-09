@@ -27,7 +27,7 @@ const PopUpField = (props) => {
         <span>{props.text}</span>
         <input 
           defaultValue={props.field[0]}
-          onInput={(event) => props.field1}
+          onInput={(event) => props.field[1](event.target.value)}
           onKeyDown={handleEnterPress}
           placeholder={props.placeholder}
           maxLength={50} 

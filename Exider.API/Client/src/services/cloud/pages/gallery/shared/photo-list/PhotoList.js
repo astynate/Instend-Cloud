@@ -8,6 +8,7 @@ import galleryState from '../../../../../../states/gallery-state';
 import AddToAlbum from '../../../../process/add-to-album/AddToAlbum';
 import { Delete } from '../../../cloud/api/FolderRequests';
 import Loader from '../../../../shared/loader/Loader';
+import { toJS } from 'mobx';
 
 const PhotoList = (props) => {
     const [gridTemplateColumns, setGridTemplateColumns] = useState('repeat(auto-fill, minmax(200px, 1fr))');
@@ -34,14 +35,20 @@ const PhotoList = (props) => {
                 });
         }],
         [null, "Delete", () => {
-            Delete(activeItems);
+            setActiveItems(prev => {
+                Delete(prev);  
+                return prev;
+            })
         }]
     ]
 
     const multiple = [
         [null, "Add to album", () => {setAddToAlbumState(true)}],
         [null, "Delete", () => {
-            Delete(activeItems);
+            setActiveItems(prev => {
+                Delete(prev);
+                return prev;
+            })
         }]
     ]
 
@@ -65,20 +72,22 @@ const PhotoList = (props) => {
     }, []);
 
     const AddPhotosInAlbum = async (selected) => {
-        if (selected) {
-            for (let i = 0; i < activeItems.length; i++) {
-                await instance
-                    .post(`/api/albums?fileId=${activeItems[i].id}&albumId=${selected.id}`)
-                    .catch(response => {
-                        console.error(response);
-                    });
-            }
+        if (selected && selected[0] && selected[0].id) {
+            setActiveItems(prev => {
+                (async () => {
+                    for (let i = 0; i < activeItems.length; i++) {
+                        await instance
+                            .post(`/api/albums?fileId=${activeItems[i].id}&albumId=${selected[0].id}`)
+                            .catch(response => {
+                                console.error(response);
+                            });
+                    }
+                })();
+
+                return prev;
+            })
         }
     }
-
-    useEffect(() => {
-        console.log(props.photos);
-    }, [props.photos]);
 
     return (
         <div>
@@ -117,8 +126,8 @@ const PhotoList = (props) => {
                                 <img 
                                     src={`data:image/png;base64,${element.fileAsBytes}`}
                                     draggable="false"
-                                    // id={selectedItems.map(element => element.id !== null ? element.id : [])
-                                    //     .includes(element.id ? element.id : null) === true ? 'active' : 'passive'}
+                                    id={selectedItems.map(element => element.id !== null ? element.id : [])
+                                        .includes(element.id ? element.id : null) === true ? 'active' : 'passive'}
                                 />
                             </div>
                         )
@@ -130,7 +139,7 @@ const PhotoList = (props) => {
                 selectedItems={[selectedItems, setSelectedItems]}
                 activeItems={[activeItems, setActiveItems]}
                 itemsWrapper={props.forwardRef}
-                items={galleryState.photos}
+                items={props.photos}
                 single={single}
                 multiple={multiple}
             />

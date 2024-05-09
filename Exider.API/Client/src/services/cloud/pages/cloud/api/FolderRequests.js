@@ -29,7 +29,7 @@ export const CreateFolder = async (name, folderId) => {
 
 export const Delete = async (selectedItems) => {
     if (selectedItems.length < 1) {
-        applicationState.AddErrorInQueue('Attention!', 'No files selected');
+        applicationState.AddErrorInQueue('Attention!', 'No items selected');
         return;
     }
 

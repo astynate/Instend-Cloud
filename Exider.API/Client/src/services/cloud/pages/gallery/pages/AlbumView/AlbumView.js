@@ -1,15 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styles from './main.module.css';
 import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import galleryState from '../../../../../../states/gallery-state';
 import Scroll from '../../../../widgets/sroll/Scroll';
 import Placeholder from '../../../../shared/placeholder/Placeholder';
-import { toJS } from 'mobx';
 import Loader from '../../../../shared/loader/Loader';
 import { ConvertFullDate } from '../../../../../../utils/DateHandler';
 import PhotoList from '../../shared/photo-list/PhotoList';
-import AddToAlbum from '../../../../process/add-to-album/AddToAlbum';
 import Add from '../../widgets/add/Add';
 
 const AlbumView = observer((props) => {
@@ -28,7 +26,7 @@ const AlbumView = observer((props) => {
 
     useEffect(() => {
         props.setAlbumId(params.id);
-    }, [params])
+    }, [params]);
 
     return (
         <div className={styles.album}>

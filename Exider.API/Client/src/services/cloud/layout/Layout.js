@@ -92,6 +92,13 @@ const Layout = observer(() => {
     );
 
     storageWSContext.useSignalREffect(
+        "AddToAlbum",
+        ([file, albumId]) => {
+            galleryState.AddToAlbum(file, albumId);
+        }
+    );
+
+    storageWSContext.useSignalREffect(
         "RenameFile",
         (file) => {storageState.RenameFile(file)}
     ); 
@@ -108,21 +115,23 @@ const Layout = observer(() => {
 
     galleryWSContext.useSignalREffect(
         "Create",
-        (album) => {
-            galleryState.AddAlbum(album);
+        ([album, queueId]) => {
+            galleryState.ReplaceLoadingAlbum(album, queueId);
         }
     );
 
     galleryWSContext.useSignalREffect(
         "Upload",
-        ([file, albumId]) => {
-            storageState.UploadFile(file);
+        ([file, albumId, queueId]) => {
+            storageState.ReplaceLoadingFile(file, queueId);
+            galleryState.ReplaceLoadingPhoto(file, queueId, albumId);
+        }
+    );
 
-            if (imageTypes.includes(file.type)) {
-                galleryState.AddPhoto(file);
-            }
-
-            galleryState.AddToAlbum(file, albumId);
+    galleryWSContext.useSignalREffect(
+        "DeleteAlbum",
+        (id) => {
+            galleryState.DeleteAlbumById(id);
         }
     );
 

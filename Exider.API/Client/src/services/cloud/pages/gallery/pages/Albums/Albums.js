@@ -7,21 +7,7 @@ import Add from '../../widgets/add/Add';
 import { autorun } from 'mobx';
 import { toJS } from 'mobx';
 import SelectBox from '../../../../shared/interaction/select-box/SelectBox';
-import { instance } from '../../../../../../state/Interceptors';
-
-const deleteAlbums = async (albums) => {
-    if (albums && albums.length > 0) {
-        for (let i = 0; i < albums.length; i++) {
-            if (albums[i].id) {
-                await instance
-                    .delete(`/api/albums?id=${albums[i].id}`)
-                    .catch((response) => {
-                        console.log(response);
-                    })
-            }
-        }
-    }
-}
+import { DeleteAlbums } from '../../api/AlbumRequests';
 
 const Albums = observer(() => {
     const wrapper = useRef();
@@ -31,11 +17,11 @@ const Albums = observer(() => {
 
     const single = [
         [null, "Rename", () => {}],
-        [null, "Delete", () => {deleteAlbums(activeItems)}]
+        [null, "Delete", () => {DeleteAlbums(activeItems)}]
     ]
 
     const multiple = [
-        [null, "Delete", () => {deleteAlbums(activeItems)}]
+        [null, "Delete", () => {DeleteAlbums(activeItems)}]
     ]
 
     useEffect(() => {        
