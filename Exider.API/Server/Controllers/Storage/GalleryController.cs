@@ -219,8 +219,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 return Conflict(result.Error);
             }
 
-            //await _galleryHub.Clients.Group(albumId).SendAsync("Upload", new object[] { result.Value, albumId });
-
+            await _galleryHub.Clients.Group(albumId).SendAsync("Upload", new object[] { result.Value, albumId });
             return Ok();
         }
 

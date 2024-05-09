@@ -16,7 +16,6 @@ const PhotoList = (props) => {
     const [isPreview, setPreviewState] = useState(false);
     const [activeItems, setActiveItems] = useState([]);
     const [isAddToAlbumOpen, setAddToAlbumState] = useState(false);
-    const { albums } = galleryState;
 
     const single = [
         [null, "Open", () => {setPreviewState(true)}],
@@ -77,6 +76,10 @@ const PhotoList = (props) => {
         }
     }
 
+    useEffect(() => {
+        console.log(props.photos);
+    }, [props.photos]);
+
     return (
         <div>
             {isPreview && 
@@ -85,12 +88,12 @@ const PhotoList = (props) => {
                     file={activeItems[0]}
                     // ErrorMessage={ErrorMessage}
                 />}
-            {/* <AddToAlbum
+            <AddToAlbum
                 open={isAddToAlbumOpen}
                 close={() => setAddToAlbumState(false)}
                 add={AddPhotosInAlbum}
                 albums={galleryState.albums}
-            /> */}
+            />
             <div className={styles.photos} id={props.photoGrid} style={{ gridTemplateColumns, columnCount }} ref={props.forwardRef}>
                 {props.photos && props.photos.map && props.photos.map((element, index) => {
                     if (element.isLoading === true) {
@@ -114,7 +117,8 @@ const PhotoList = (props) => {
                                 <img 
                                     src={`data:image/png;base64,${element.fileAsBytes}`}
                                     draggable="false"
-                                    id={selectedItems.map(element => element.id).includes(element.id) === true ? 'active' : 'passive'}
+                                    // id={selectedItems.map(element => element.id !== null ? element.id : [])
+                                    //     .includes(element.id ? element.id : null) === true ? 'active' : 'passive'}
                                 />
                             </div>
                         )

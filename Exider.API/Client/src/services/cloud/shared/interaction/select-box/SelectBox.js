@@ -31,9 +31,10 @@ const SelectBox = observer((props) => {
         }
         
         if (props.selectedItems[0].length > 0) {
-          props.activeItems[1](props.selectedItems[0]);
+            let uniqueItems = Array.from(new Set(props.selectedItems[0]));
+            props.activeItems[1](uniqueItems);
         }
-    }, [props.activeItems, props.activeItems[0], props.selectedItems, props.selectedItems[0]]);
+    }, [props.selectedItems[0].length]);    
 
     const isElementExist = (id) => {
         if (props.selectedItems[0] && props.selectedItems[0].map) {
@@ -68,6 +69,7 @@ const SelectBox = observer((props) => {
 
     const HandleContextMenu = (event, id) => {
         event.preventDefault();
+
         if (props.items && id) {
             setContextMenuState(true);
             setContextMenuPosition([event.clientX, event.clientY]);
@@ -81,15 +83,35 @@ const SelectBox = observer((props) => {
     }
 
     const HandleClick = (event, id) => {
-        if (event.shiftKey) {
+        if (event.shiftKey || event.ctrlKey) {
             event.preventDefault();
         }
 
         if (props.items && id) {
-            if (event.shiftKey && isElementExist(id) === false) {
+            if (event.ctrlKey && isElementExist(id) === false) {
                 props.selectedItems[1](prev => [...prev, getElementById(id)]);
-            } else if (event.shiftKey && isElementExist(id) === true) {
+            } else if (event.ctrlKey && isElementExist(id) === true) {
                 props.selectedItems[1](prev => prev.filter(element => element.id !== id));
+            }
+
+            if (event.shiftKey && props.selectedItems[0].length > 0) {
+                const { selectedItems, items } = props;
+                const updateSelectedItems = selectedItems[1];
+                
+                const lastItem = selectedItems[0][selectedItems[0].length - 1];
+                const indexInItems = items.findIndex(element => element.id === lastItem.id);
+                const selectedIndex = items.findIndex(element => element.id === id);
+                
+                const start = Math.min(indexInItems, selectedIndex);
+                const end = Math.max(indexInItems, selectedIndex);
+                
+                for (let i = start; i < end; i++) {
+                    updateSelectedItems(prev => [...prev, items[i]]);
+                }                
+            } 
+            
+            if (event.shiftKey) {
+                props.selectedItems[1](prev => [...prev, getElementById(id)]);
             }
         }
     }
