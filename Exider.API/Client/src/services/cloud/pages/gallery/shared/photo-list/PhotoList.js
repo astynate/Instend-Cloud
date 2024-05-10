@@ -17,6 +17,7 @@ const PhotoList = (props) => {
     const [isPreview, setPreviewState] = useState(false);
     const [activeItems, setActiveItems] = useState([]);
     const [isAddToAlbumOpen, setAddToAlbumState] = useState(false);
+    const [current, setCurrent] = useState(0);
 
     const single = [
         [null, "Open", () => {setPreviewState(true)}],
@@ -53,10 +54,22 @@ const PhotoList = (props) => {
     ]
 
     useEffect(() => {
-        if (props.photoGrid === 'grid') {
+        const current = props.photoGrid
+            .findIndex(element => element.isSelected === true);
+
+        if (current === -1) {
+            setCurrent(0);
             setGridTemplateColumns(`repeat(auto-fill, minmax(${100 + 25 * props.scale}px, 1fr))`);
             setColumnCount(null);
-        } else if (props.photoGrid === 'waterfall') {
+            return;
+        }
+
+        if (current === 0) {
+            setCurrent(current);
+            setGridTemplateColumns(`repeat(auto-fill, minmax(${100 + 25 * props.scale}px, 1fr))`);
+            setColumnCount(null);
+        } else if (current === 1) {
+            setCurrent(current);
             setGridTemplateColumns(null);
             setColumnCount(8 - props.scale);
         }
@@ -103,7 +116,7 @@ const PhotoList = (props) => {
                 add={AddPhotosInAlbum}
                 albums={galleryState.albums}
             />
-            <div className={styles.photos} id={props.photoGrid} style={{ gridTemplateColumns, columnCount }} ref={props.forwardRef}>
+            <div className={styles.photos} id={current === 1 ? 'waterfall' : 'grid'} style={{ gridTemplateColumns, columnCount }} ref={props.forwardRef}>
                 {props.photos && props.photos.map && props.photos.map((element, index) => {
                     if (element.isLoading === true) {
                         return (

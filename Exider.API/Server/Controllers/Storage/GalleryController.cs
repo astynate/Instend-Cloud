@@ -110,6 +110,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 BadRequest(result.Error);
             }
 
+            await _galleryHub.Clients.Group(userId.Value.ToString()).SendAsync("DeleteAlbum", id);
+
             return Ok();
         }
 
@@ -250,7 +252,14 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAlbum(IImageService imageService, [FromForm] IFormFile? cover, [FromForm] string? name, [FromForm] string? description)
+        public async Task<IActionResult> CreateAlbum
+        (
+            IImageService imageService, 
+            [FromForm] IFormFile? cover,
+            [FromForm] string? name, 
+            [FromForm] string? description,
+            [FromForm] int queueId
+        )
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
@@ -283,7 +292,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             }
 
             await result.Value.SetCover(imageService);
-            await _galleryHub.Clients.Group(result.Value.OwnerId.ToString()).SendAsync("Create", result.Value);
+            await _galleryHub.Clients.Group(result.Value.OwnerId.ToString()).SendAsync("Create", new object[] { result.Value, queueId });
 
             return Ok();
         }

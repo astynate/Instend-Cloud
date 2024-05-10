@@ -1,11 +1,15 @@
 .album {
-    display: grid;
-    grid-template-columns: 1fr 2.5fr;
+    display: flex;
+    flex-direction: column;
+    grid-gap: 30px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .cover {
     height: 100%;
-    width: 100%;
+    width: 300px;
     aspect-ratio: 1.6 / 1;
     border-radius: 10px;
     margin-top: 15px;
@@ -13,7 +17,15 @@
 
 .information {
     display: flex;
+    grid-gap: 20px;
+}
+
+.control {
+    display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    padding-top: 15px;
+    padding-bottom: 15px;
 }
 
 .nameWrapper {
@@ -26,6 +38,11 @@
     padding: 0;
     font-size: 32px;
     font-weight: 600;
+}
+
+.descritpion {
+    font-size: 14px;
+    color: var(--main-paragraph-color);
 }
 
 .albumDate {
@@ -53,7 +70,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     grid-gap: 4px;
-    padding-left: 30px;
+    /* padding-left: 30px; */
 }
 
 .photo img {
@@ -66,6 +83,15 @@
 }
 
 .photosWrapper {
-    margin-left: 50px;
-    margin-right: 20px;
+    /* margin-left: 50px; */
+    /* margin-right: 20px; */
+}
+
+.people {
+    display: flex;
+    grid-gap: 7px;
+}
+
+.content {
+    margin-top: 20px;
 }

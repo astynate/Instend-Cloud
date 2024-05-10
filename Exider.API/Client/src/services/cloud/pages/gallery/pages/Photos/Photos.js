@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
-import Sroll from '../../../../widgets/sroll/Scroll';
+import Sroll from '../../../../widgets/scroll/Scroll';
 import { observer } from 'mobx-react-lite';
 import galleryState from '../../../../../../states/gallery-state';
 import { CalculateAverageEqual } from '../../../../widgets/item-list/ItemList';

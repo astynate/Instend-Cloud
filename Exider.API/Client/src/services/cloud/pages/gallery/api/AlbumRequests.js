@@ -35,10 +35,9 @@ export const CreateAlbumRequest = async (name, description, image) => {
 export const DeleteAlbums = async (albums) => {
     if (albums && albums.length > 0) {
         for (let i = 0; i < albums.length; i++) {
-            console.log(albums[i]);
-            galleryState.SetAlbumAsLoading(albums[i]);
-
             if (albums[i].id) {
+                galleryState.SetAlbumAsLoading(albums[i].id);
+
                 await instance
                     .delete(`/api/albums?id=${albums[i].id}`)
                     .catch((error) => {

@@ -1,0 +1,19 @@
+.userAvatar {
+    height: 45px;
+    width: 45px;
+    background: #ddd;
+    border-radius: 100%;
+    overflow: hidden;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.userAvatar img {
+    height: 93%;
+    width: 93%;
+    object-fit: cover;
+}

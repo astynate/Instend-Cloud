@@ -46,8 +46,19 @@ const Gallery = observer((props) => {
     }
   ];
 
+  const Template = [
+    {
+      "title": "Grid",
+      "isSelected": true
+    },
+    {
+      "title": "Waterfalll",
+      "isSelected": false
+    }
+  ];
+
   const [scale, setScale] = useState(2);
-  const [photoGrid, setPhotoGridState] = useState('grid');
+  const [template, setTemplate] = useState(Template);
   const [PhotosSortState, setSortingTypeState] = useState(PhotosSortFunctions);
   const [SortingOrderState, setSortingOrderState] = useState(SortingOrder);
   const [albumId, setAlbumId] = useState(null);
@@ -111,7 +122,8 @@ const Gallery = observer((props) => {
                 states={[setSortingTypeState, setSortingOrderState]}
               />
               <SelectItems icon={grid} 
-
+                items={[template]}
+                states={[setTemplate]}
               />
               <SimpleButton icon={share} />
               <SimpleButton icon={download} />
@@ -124,7 +136,7 @@ const Gallery = observer((props) => {
               path=''
               element={
                 <Photos 
-                  photoGrid={photoGrid} 
+                  photoGrid={template} 
                   scale={scale}
                   scroll={scroll}
               />} 
@@ -132,17 +144,17 @@ const Gallery = observer((props) => {
             <Route 
               path='/albums' 
               element={<Albums />} 
-              photoGrid={photoGrid} 
+              photoGrid={template} 
             />
             <Route 
               path='/albums/:id' 
               element={<AlbumView 
                 setAlbumId={setAlbumId}
-                photoGrid={photoGrid} 
+                photoGrid={template} 
                 scale={scale}
                 scroll={scroll} 
               />} 
-              photoGrid={photoGrid} 
+              photoGrid={template} 
               scroll={scroll}
             />
           </Routes>
