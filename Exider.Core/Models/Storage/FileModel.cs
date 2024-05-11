@@ -15,6 +15,7 @@ namespace Exider.Core.Models.Storage
         [Column("type")] public string? Type { get; private set; } = null;
         [Column("owner_id")] public Guid OwnerId { get; private set; }
         [Column("folder_id")] public Guid FolderId { get; private set; }
+        [Column("size")] public double Size { get; private set; } = 0;
         [Column("access")] public string AccessId { get; set; } = Configuration.AccessTypes.Private.ToString();
 
         [EnumDataType(typeof(Configuration.AccessTypes))]
@@ -29,7 +30,7 @@ namespace Exider.Core.Models.Storage
 
         private FileModel() { }
 
-        public static Result<FileModel> Create(string name, string? type, Guid ownerId, Guid folderId)
+        public static Result<FileModel> Create(string name, string? type, double size, Guid ownerId, Guid folderId)
         {
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrEmpty(name))
             {
@@ -50,6 +51,7 @@ namespace Exider.Core.Models.Storage
                 OwnerId = ownerId,
                 CreationTime = DateTime.Now,
                 LastEditTime = DateTime.Now,
+                Size = size,
                 Path = Configuration.SystemDrive + "__files__/" + id,
                 Type = type,
                 FolderId = folderId

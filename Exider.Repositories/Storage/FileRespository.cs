@@ -22,9 +22,9 @@ namespace Exider.Repositories.Storage
         public async Task<Result<FileModel>> GetByIdAsync(Guid id) => await _context.Files.AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id) ?? Result.Failure<FileModel>("Not found");
 
-        public async Task<Result<FileModel>> AddAsync(string name, string? type, Guid ownerId, Guid folderId)
+        public async Task<Result<FileModel>> AddAsync(string name, string? type, double size, Guid ownerId, Guid folderId)
         {
-            var fileCreationResult = FileModel.Create(name, type, ownerId, folderId);
+            var fileCreationResult = FileModel.Create(name, type, size, ownerId, folderId);
 
             if (fileCreationResult.IsFailure == true)
             {
@@ -37,7 +37,7 @@ namespace Exider.Repositories.Storage
             return Result.Success(fileCreationResult.Value);
         }
 
-        public async Task<Result<FileModel>> AddPhotoAsync(string name, string? type, Guid ownerId)
+        public async Task<Result<FileModel>> AddPhotoAsync(string name, string? type, double size, Guid ownerId)
         {
             var photoFolder = await _context.Folders.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.TypeId == Configuration.FolderTypes.System.ToString() && x.Name == "Photos" && x.OwnerId == ownerId);
@@ -47,7 +47,7 @@ namespace Exider.Repositories.Storage
                 return Result.Failure<FileModel>("The system folder \"Photos\" could not be found, please try again later. If it doesn't help, contact support.");
             }
 
-            var fileCreationResult = FileModel.Create(name, type, ownerId, photoFolder.Id);
+            var fileCreationResult = FileModel.Create(name, type, size, ownerId, photoFolder.Id);
 
             if (fileCreationResult.IsFailure == true)
             {
