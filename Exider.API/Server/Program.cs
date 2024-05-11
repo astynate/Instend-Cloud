@@ -42,7 +42,7 @@ builder.Services.AddScoped<IFileRespository, FileRespository>();
 builder.Services.AddScoped<IFileAccessRepository, FileAccessRepository>();
 builder.Services.AddScoped<IFolderAccessRepository, FolderAccessRepository>();
 builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
-builder.Services.AddScoped<ICommentsRepository, CommentsRepository>();
+builder.Services.AddScoped(typeof(ICommentsRepository<>), typeof(CommentsRepository<>));
 
 builder.Services.AddSingleton<IValidationService, ValidationService>();
 builder.Services.AddSingleton<ITokenService, JwtService>();

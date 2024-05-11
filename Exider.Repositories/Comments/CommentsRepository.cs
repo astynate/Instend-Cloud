@@ -1,21 +1,50 @@
 ﻿using CSharpFunctionalExtensions;
-using CSharpFunctionalExtensions.ValueTasks;
 using Exider.Core;
+using Exider.Core.Dependencies.Repositories.Comments;
 using Exider.Core.Models.Comments;
 using Microsoft.EntityFrameworkCore;
 
 namespace Exider.Repositories.Comments
 {
-    public class CommentsRepository : ICommentsRepository
+    public class CommentsRepository<T> : ICommentsRepository<T> where T : CommentLinkBase, ICommentLinkBase
     {
         private readonly DatabaseContext _context;
+
+        private readonly DbSet<T> _entities;
 
         public CommentsRepository(DatabaseContext context)
         {
             _context = context;
+            _entities = context.Set<T>();
         }
 
-        public async Task<Result<CommentModel>> AddComment(ICommentLinkRepository commentLink, string text, Guid ownerId, Guid albumId)
+        public async Task<object[]> GetAsync(Guid itemId)
+        {
+            var result = await _entities
+                .Where(x => x.AlbumId == itemId)
+                .Join(
+                    _context.Comments,
+                    albumCommentLink => albumCommentLink.ItemId,
+                    comment => comment.Id,
+                    (albumCommentLink, comment) => new
+                    {
+                        albumCommentLink,
+                        comment
+                    })
+                .Join(
+                    _context.Users,
+                    prev => prev.comment.OwnerId,
+                    user => user.Id,
+                    (comment, user) => new
+                    {
+                        Comment = comment,
+                        User = user
+                    }).ToArrayAsync();
+
+            return result;
+        }
+
+        public async Task<Result<CommentModel>> AddComment(string text, Guid ownerId, Guid albumId)
         {
             try
             {
@@ -30,10 +59,24 @@ namespace Exider.Repositories.Comments
                             return Result.Failure<CommentModel>("Attempt to add a comment failed");
                         }
 
-                        await _context.AddAsync(result.Value);
-                        await _context.SaveChangesAsync();
+                        var creationResult = T.Create(result.Value.Id, albumId);
 
-                        await commentLink.AddAsync(albumId, result.Value.Id);
+                        if (creationResult.IsFailure)
+                        {
+                            return Result.Failure<CommentModel>("Attempt to add a comment failed");
+                        }
+
+                        Console.WriteLine(creationResult.Value is CommentLinkBase);
+
+                        T? link = creationResult.Value as T;
+
+                        if (link is not null)
+                        {
+                            await _entities.AddAsync(link);
+                            await _context.AddAsync(result.Value);
+                            await _context.SaveChangesAsync();
+                        }
+
                         await transaction.CommitAsync();
 
                         return result.Value;
