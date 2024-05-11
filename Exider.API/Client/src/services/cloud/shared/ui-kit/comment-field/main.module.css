@@ -1,0 +1,4 @@
+.commentField {
+    display: flex;
+    grid-gap: 15px;
+}

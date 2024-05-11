@@ -34,7 +34,6 @@ namespace Exider.Repositories.Repositories
                 {
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
-
                         if (session == null)
                         {
                             throw new ArgumentNullException(nameof(session));

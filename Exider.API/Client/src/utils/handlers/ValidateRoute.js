@@ -3,12 +3,10 @@
 }
 
 const ValidateRoute = (PublicRoutes, isAuthenticated, location) => {
-
     const isPublicRoute = PublicRoutes
         .some(route => location.includes(TransformPath(route)));
 
     return !(isPublicRoute === false && isAuthenticated === false);
-
 }
 
 export default ValidateRoute;

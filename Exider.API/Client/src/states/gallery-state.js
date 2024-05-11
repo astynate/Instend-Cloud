@@ -91,7 +91,7 @@ class GalleryState {
 
     async GetPhotos() {
         this.hasMore = false;
-        const response = await instance.get(`api/gallery?from=${this.photos.length > 0 ? this.photos.length : 0}&count=${5}`);
+        const response = await instance.get(`api/gallery?from=${this.photos.length > 0 ? this.photos.length : 0}&count=${20}`);
     
         if (response.data.length < 1) {
             this.hasMore = false;
@@ -166,10 +166,10 @@ class GalleryState {
 
     async GetAlbumPhotos(id) {
         if (this.albums[id] && this.albums[id].hasMore === true) {
-            const count = 5;
+            const count = 15;
 
             await instance
-                .get(`/api/album?id=${id}&from=${this.albums[id].photos.length > 0 ? this.albums[id].photos.length : 0}&count=${5}`)
+                .get(`/api/album?id=${id}&from=${this.albums[id].photos.length > 0 ? this.albums[id].photos.length : 0}&count=${count}`)
                 .then(response => {
                     if (response.data < count) {
                         this.albums[id].hasMore = false;

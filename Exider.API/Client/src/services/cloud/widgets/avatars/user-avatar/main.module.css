@@ -1,0 +1,15 @@
+.userAvatar {
+    height: 45px;
+    width: 45px;
+    background: var(--main-accent-color);
+    border-radius: 100%;
+    overflow: hidden;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.userAvatar img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}

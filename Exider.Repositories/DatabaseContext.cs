@@ -1,4 +1,5 @@
 ﻿using Exider.Core.Models.Account;
+using Exider.Core.Models.Comments;
 using Exider.Core.Models.Email;
 using Exider.Core.Models.Gallery;
 using Exider.Core.Models.Storage;
@@ -20,6 +21,8 @@ namespace Exider.Core
         public DbSet<AlbumLink> AlbumLinks { get; set; } = null!;
         public DbSet<FolderAccess> FolderAccesses { get; set; } = null!;
         public DbSet<Models.Storage.FileAccess> FileAccess { get; set; } = null!;
+        public DbSet<CommentModel> Comments { get; set; } = null!;
+        public DbSet<AlbumCommentLink> AlbumCommentLinks { get; set; } = null!;
 
         public DatabaseContext() => Database.EnsureCreated();
 

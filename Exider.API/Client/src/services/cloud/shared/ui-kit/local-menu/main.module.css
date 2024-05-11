@@ -1,0 +1,21 @@
+.localMenu {
+    display: flex;
+    grid-gap: 10px;
+}
+
+.item {
+    padding: 8px 15px;
+    width: fit-content;
+    font-size: 16px;
+    color: var(--main-font-color);
+    background: var(--main-accent-color);
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.25s ease;
+}
+
+.item[id="active"] {
+    background: var(--sub-accent-color);
+    color: var(--main-backgroud-color);
+}

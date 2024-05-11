@@ -110,7 +110,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest(result.Error);
             }
 
-            await _galleryHub.Clients.Group(result.Value.OwnerId.ToString()).SendAsync("DeleteAlbum", result.Value.Id);
+            await _galleryHub.Clients.Group(userId.Value.ToString()).SendAsync("DeleteAlbum", id);
 
             return Ok();
         }
@@ -256,7 +256,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         public async Task<IActionResult> CreateAlbum
         (
             IImageService imageService, 
-            [FromForm] IFormFile? cover, 
+            [FromForm] IFormFile? cover,
             [FromForm] string? name, 
             [FromForm] string? description,
             [FromForm] int queueId

@@ -17,11 +17,21 @@ const Albums = observer(() => {
 
     const single = [
         [null, "Rename", () => {}],
-        [null, "Delete", () => {DeleteAlbums(activeItems)}]
+        [null, "Delete", () => {
+            setActiveItems(prev => {
+                DeleteAlbums(prev);
+                return prev;
+            })
+        }]
     ]
 
     const multiple = [
-        [null, "Delete", () => {DeleteAlbums(activeItems)}]
+        [null, "Delete", () => {
+            setActiveItems(prev => {
+                DeleteAlbums(prev);
+                return prev;
+            })
+        }]
     ]
 
     useEffect(() => {        
