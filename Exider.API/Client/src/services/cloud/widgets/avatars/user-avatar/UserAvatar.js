@@ -1,12 +1,12 @@
 import React from 'react';
 import styles from './main.module.css';
 
-const UserAvatar = ({avatar}) => {
-    if (avatar) {
+const UserAvatar = ({user}) => {
+    if (user && user.avatar) {
         return (
             <div className={styles.userAvatar}>
                 <img 
-                    src={`data:image/png;base64,${avatar}`} 
+                    src={`data:image/png;base64,${user.avatar}`} 
                     draggable={false}
                 />
             </div>

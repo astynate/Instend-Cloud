@@ -14,6 +14,7 @@ import userState from '../../../../../../states/user-state';
 import AddUser from '../../../../widgets/avatars/add-user/AddUser';
 import LocalMenu from '../../../../shared/ui-kit/local-menu/LocalMenu';
 import Comments from '../../../../widgets/social/comments/Comments';
+import Button from '../../../../shared/ui-kit/button/Button';
 
 const AlbumView = observer((props) => {
     const { albums } = galleryState;
@@ -53,14 +54,17 @@ const AlbumView = observer((props) => {
                                     <h1 className={styles.albumName}>{albums[params.id].name}</h1>
                                     <span className={styles.albumDate}>{ConvertFullDate(albums[params.id].creationTime)}</span>
                                 </div>
-                                {albums[params.id].descritpion && <div className={styles.descriptionWrapper}>
-                                    <span className={styles.descritpion}>Description</span>
+                                {albums[params.id].description && <div className={styles.descriptionWrapper}>
+                                    <span className={styles.descritpion}>{albums[params.id].description}</span>
                                 </div>}
                                 <div className={styles.people}>
-                                    <UserAvatar avatar={userState.user.avatar} />
-                                    <AddUser callback={() => alert('!')} />
+                                    <Button value="Follow" />
                                 </div>
                             </div>
+                        </div>
+                        <div className={styles.addition}>
+                            <UserAvatar avatar={userState.user.avatar} />
+                            <AddUser callback={() => alert('!')} />     
                         </div>
                     </div>
                     <div>

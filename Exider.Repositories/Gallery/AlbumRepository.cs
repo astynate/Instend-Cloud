@@ -18,7 +18,7 @@ namespace Exider.Repositories.Gallery
 
         public async Task<Result<AlbumModel>> AddAsync(Guid ownerId, byte[] cover, string name, string? description)
         {
-            var albumModel = AlbumModel.Create(name, DateTime.Now, DateTime.Now, ownerId, Configuration.AccessTypes.Private);
+            var albumModel = AlbumModel.Create(name, description, DateTime.Now, DateTime.Now, ownerId, Configuration.AccessTypes.Private);
 
             if (albumModel.IsFailure)
             {

@@ -8,7 +8,7 @@ import SubInput from '../sub-input/SubInput';
 const CommentField = () => {
     return (
         <div className={styles.commentField}>
-            <UserAvatar avatar={userState.user.avatar} />
+            <UserAvatar user={userState.user} />
             <SubInput placeholder="Type your comment" />
             <Button value="Comment" />
         </div>

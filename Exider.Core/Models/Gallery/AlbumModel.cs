@@ -8,7 +8,8 @@ namespace Exider.Core.Models.Gallery
     public class AlbumModel
     {
         [Column("id")][Key] public Guid Id { get; private set; }
-        [Column("name")] public string Name { get; private set; } = string.Empty;
+        [Column("name")] public string Name { get; private set; } = "Not set";
+        [Column("description")] public string? Description { get; private set; } = string.Empty;
         [Column("cover")] public string Cover { get; private set; } = Configuration.DefaultAlbumCoverPath;
         [Column("creation_time")] public DateTime CreationTime { get; private set; }
         [Column("last_edit_time")] public DateTime LastEditTime { get; private set; }
@@ -28,6 +29,7 @@ namespace Exider.Core.Models.Gallery
         public static Result<AlbumModel> Create
         (
             string name,
+            string? description,
             DateTime creationTime,
             DateTime lastEditTime,
             Guid ownerId,
@@ -40,6 +42,7 @@ namespace Exider.Core.Models.Gallery
             {
                 Id = id,
                 Name = name,
+                Description = description,
                 Cover = Configuration.SystemDrive + "__albums__/" + id.ToString(),
                 CreationTime = creationTime,
                 LastEditTime = lastEditTime,

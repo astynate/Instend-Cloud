@@ -1,4 +1,5 @@
 .button {
+    flex-shrink: 0;
     width: fit-content;
     padding: 9px 25px;
     border-radius: 8px;
