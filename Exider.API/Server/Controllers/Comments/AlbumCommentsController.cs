@@ -1,8 +1,10 @@
-﻿using Exider.Core;
-using Exider.Core.Models.Comments;
+﻿using Exider.Core.Models.Comments;
 using Exider.Repositories.Comments;
 using Exider.Services.Internal.Handlers;
+using Exider_Version_2._0._0.Server.Hubs;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
+using Exider.Core.Dependencies.Repositories.Account;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Comments
 {
@@ -14,10 +16,18 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
 
         private readonly ICommentsRepository<AlbumCommentLink> _commentsRepository;
 
-        public AlbumCommentsController(IRequestHandler requestHandler, ICommentsRepository<AlbumCommentLink> commentLinkRepository)
+        private readonly IHubContext<GalleryHub> _galleryHub;
+
+        public AlbumCommentsController
+        (
+            IRequestHandler requestHandler, 
+            ICommentsRepository<AlbumCommentLink> commentLinkRepository,
+            IHubContext<GalleryHub> galleryHub
+        )
         {
             _requestHandler = requestHandler;
             _commentsRepository = commentLinkRepository;
+            _galleryHub = galleryHub;
         }
 
         [HttpGet]
@@ -36,7 +46,14 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
 
         [HttpPost]
         [Route("/api/album-comments")]
-        public async Task<IActionResult> Add(ICommentsRepository<AlbumCommentLink> commentsRepository, string? text, string? albumId)
+        public async Task<IActionResult> Add
+        (
+            ICommentsRepository<AlbumCommentLink> commentsRepository, 
+            IUsersRepository usersRepository, 
+            string? text, 
+            string? albumId,
+            int queueId
+        )
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
@@ -61,6 +78,28 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
             {
                 return BadRequest(result.Error);
             }
+
+            var user = await usersRepository.GetUserByIdAsync(Guid.Parse(userId.Value));
+
+            if (user == null)
+            {
+                return BadRequest("User not found");
+            }
+
+            await _galleryHub.Clients.Group(albumId).SendAsync("AddComment", 
+                new { 
+                    comment = result.Value, 
+                    user = new 
+                    { 
+                        user.Id, 
+                        user.Name, 
+                        user.Surname,
+                        user.Nickname, 
+                        user.Email 
+                    },
+                    albumId,
+                    queueId
+                });
 
             return Ok();
         }

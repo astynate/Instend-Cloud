@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using CSharpFunctionalExtensions;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Exider.Core.Models.Comments
 {

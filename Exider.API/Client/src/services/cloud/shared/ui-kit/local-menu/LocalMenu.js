@@ -7,18 +7,20 @@ const LocalMenu = ({items, defaultValue}) => {
     return (
         <>
             <div className={styles.localMenu}>
-                {items && items.map && items.map((element, index) => {
-                    return (
-                        <div 
-                            key={index} 
-                            className={styles.item} 
-                            id={index === current ? 'active' : null}
-                            onClick={() => setCurrent(index)}
-                        >
-                            <span>{element.title}</span>
-                        </div>
-                    );
-                })}
+                <div className={styles.menuItems}>
+                    {items && items.map && items.map((element, index) => {
+                        return (
+                            <div 
+                                key={index} 
+                                className={styles.item} 
+                                id={index === current ? 'active' : null}
+                                onClick={() => setCurrent(index)}
+                            >
+                                <span>{element.title}</span>
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
             {items && items.map && items.map((element, index) => {
                 if (element.component && index === current) {

@@ -4,6 +4,7 @@ using Exider.Core.Models.Email;
 using Exider.Core.Models.Gallery;
 using Exider.Core.Models.Storage;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Exider.Core
 {

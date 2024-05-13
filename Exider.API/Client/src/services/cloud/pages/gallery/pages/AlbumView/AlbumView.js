@@ -67,50 +67,54 @@ const AlbumView = observer((props) => {
                             <AddUser callback={() => alert('!')} />     
                         </div>
                     </div>
-                    <div>
-                        <LocalMenu 
-                            items={[
-                                {'title': "Photos", 'component': 
-                                    <>
-                                        <div className={styles.content}>
-                                            <Add id={params.id} />
-                                            {!albums[params.id].photos || albums[params.id].photos.length === 0 ?
-                                                <div className={styles.noImages}>
-                                                    <Placeholder title="No photos uploaded" />
-                                                </div>  
-                                            :
-                                                <div className={styles.photosWrapper}>
-                                                    <PhotoList
-                                                        photos={galleryState.albums && galleryState.albums[params.id] && galleryState.albums[params.id].photos ? 
-                                                            galleryState.albums[params.id].photos : []} 
-                                                        scale={props.scale}
-                                                        photoGrid={props.photoGrid}
-                                                        forwardRef={wrapper}
-                                                    />
-                                                    <Scroll
-                                                        scroll={props.scroll}
-                                                        isHasMore={galleryState.albums[params.id].hasMore}
-                                                        array={galleryState.albums[params.id].photos}
-                                                        callback={() => {
-                                                            galleryState.GetAlbumPhotos(params.id);
-                                                        }}
-                                                    />
-                                                </div>
-                                            }
-                                        </div>
-                                    </>
-                                },
-                                {'title': "Comments", "component": 
-                                    <>
-                                        <div className={styles.content}>
-                                            <Comments />
-                                        </div>
-                                    </>
-                                }
-                            ]}
-                            default={0}
-                        />
-                    </div>
+                    <LocalMenu 
+                        items={[
+                            {'title': "Photos", 'component': 
+                                <>
+                                    <div className={styles.content}>
+                                        <Add id={params.id} />
+                                        {!albums[params.id].photos || albums[params.id].photos.length === 0 ?
+                                            <div className={styles.noImages}>
+                                                <Placeholder title="No photos uploaded" />
+                                            </div>  
+                                        :
+                                            <div className={styles.photosWrapper}>
+                                                <PhotoList
+                                                    photos={galleryState.albums && galleryState.albums[params.id] && galleryState.albums[params.id].photos ? 
+                                                        galleryState.albums[params.id].photos : []} 
+                                                    scale={props.scale}
+                                                    photoGrid={props.photoGrid}
+                                                    forwardRef={wrapper}
+                                                />
+                                                <Scroll
+                                                    scroll={props.scroll}
+                                                    isHasMore={galleryState.albums[params.id].hasMore}
+                                                    array={galleryState.albums[params.id].photos}
+                                                    callback={() => {
+                                                        galleryState.GetAlbumPhotos(params.id);
+                                                    }}
+                                                />
+                                            </div>
+                                        }
+                                    </div>
+                                </>
+                            },
+                            {'title': "Comments", "component": 
+                                <>
+                                    <div className={styles.content}>
+                                        <Comments 
+                                            fetch_callback={() => galleryState.GetAlbumComments(params.id)}
+                                            comments={galleryState.albums[params.id].comments ? 
+                                                galleryState.albums[params.id].comments : []}
+                                            id={params.id}
+                                            setUploadingComment={galleryState.AddUploadingAlbumComment.bind(galleryState)}
+                                        />
+                                    </div>
+                                </>
+                            }
+                        ]}
+                        default={0}
+                    />
                 </>
             }
         </div>

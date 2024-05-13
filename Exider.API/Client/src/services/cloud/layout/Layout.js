@@ -137,6 +137,15 @@ const Layout = observer(() => {
 
     /////////////////////////////////////////////////////////////////////////////////
 
+    galleryWSContext.useSignalREffect(
+        "AddComment",
+        ({comment, user, albumId, queueId}) => {
+            galleryState.ReplaceLoadingComment({comment: comment, user: user}, queueId, albumId);
+        }
+    );
+
+    /////////////////////////////////////////////////////////////////////////////////
+
     useEffect(() => {
         const handleResize = () => {
             setWindowWidth(window.innerWidth);

@@ -4,7 +4,7 @@ import addPeople from './add-people.png';
 
 const AddUser = ({callback}) => {
     return (
-        <div className={styles.userAvatar}>
+        <div className={styles.userAvatar} onClick={callback}>
             <img 
                 src={addPeople} 
                 draggable={false}

@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './main.module.css';
+import defaultAvatar from './images/default-avatar.png';
 
 const UserAvatar = ({user}) => {
     if (user && user.avatar) {
@@ -12,7 +13,14 @@ const UserAvatar = ({user}) => {
             </div>
         );
     } else {
-        return null;
+        return (
+            <div className={styles.userAvatar}>
+                <img 
+                    src={defaultAvatar} 
+                    draggable={false}
+                />
+            </div>
+        );
     }
  };
 
