@@ -8,7 +8,6 @@ namespace Exider.Core.Models.Account
 {
     public class UserModel
     {
-
         [Column("id")][Key] public Guid Id { get; private set; }
 
         [Column("name")] public string Name { get; private set; } = null!;
@@ -25,7 +24,6 @@ namespace Exider.Core.Models.Account
 
         public static Result<UserModel> Create (string name, string surname, string nickname, string email, string password)
         {
-
             Func<string, bool> ValidateVarchar = (x)
                 => !(string.IsNullOrEmpty(x) || x.Length > 45 || string.IsNullOrWhiteSpace(x));
 
@@ -54,7 +52,6 @@ namespace Exider.Core.Models.Account
             };
 
             return Result.Success(user);
-
         }
 
         public void HashPassword(IEncryptionService encryptionService) 
@@ -88,6 +85,5 @@ namespace Exider.Core.Models.Account
 
             return Result.Success();
         }
-
     }
 }

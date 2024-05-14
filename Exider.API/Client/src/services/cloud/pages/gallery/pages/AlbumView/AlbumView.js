@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
 import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
@@ -15,11 +15,15 @@ import AddUser from '../../../../widgets/avatars/add-user/AddUser';
 import LocalMenu from '../../../../shared/ui-kit/local-menu/LocalMenu';
 import Comments from '../../../../widgets/social/comments/Comments';
 import Button from '../../../../shared/ui-kit/button/Button';
+import OpenAccessProcess from '../../../../process/open-access/OpenAccessProcess';
+import { DeleteComment } from '../../api/AlbumRequests';
 
 const AlbumView = observer((props) => {
     const { albums } = galleryState;
     const params = useParams();
     const wrapper = useRef();
+    const [isUsersLoading, setUsersLoadingState] = useState(true);
+    const [isOpenAccessWindow, setOpenAccessWindowState] = useState(false);
 
     useEffect(() => {
         const fetchAlbums = async () => {
@@ -33,6 +37,12 @@ const AlbumView = observer((props) => {
     useEffect(() => {
         props.setAlbumId(params.id);
     }, [params]);
+
+    const accessSaveCallback = (data) => {
+        if (data) {
+            galleryState.SetAlbumAccess(data, params.id);
+        }
+    }
 
     return (
         <div className={styles.album}>
@@ -63,10 +73,41 @@ const AlbumView = observer((props) => {
                             </div>
                         </div>
                         <div className={styles.addition}>
-                            <UserAvatar avatar={userState.user.avatar} />
-                            <AddUser callback={() => alert('!')} />     
+                            {isUsersLoading ? 
+                                <>
+                                    <div className={styles.avatarPlaceholder}></div>
+                                    <div className={styles.avatarPlaceholder}></div>
+                                    <div className={styles.avatarPlaceholder}></div>
+                                </>
+                            : 
+                                <>
+                                    {galleryState.albums && galleryState.albums[params.id] && galleryState.albums[params.id].users && galleryState.albums[params.id].users.map
+                                        && galleryState.albums[params.id].users.map((element, index) => {
+                                            if (element.user) {
+                                                let user = element.user;
+                                                user.avatar = element.base64Avatar;
+                                            
+                                                return (
+                                                    <UserAvatar key={index} user={user} />
+                                                )
+                                            } else {
+                                                return null;
+                                            }
+                                        })
+                                    }
+                                    <AddUser callback={() => setOpenAccessWindowState(true)} />   
+                                </>
+                            }
                         </div>
                     </div>
+                    <OpenAccessProcess
+                        id={params.id}
+                        open={isOpenAccessWindow}
+                        close={() => setOpenAccessWindowState(false)}
+                        setLoadingState={setUsersLoadingState}
+                        endPoint={'api/album-access'}
+                        accessSaveCallback={accessSaveCallback}
+                    />
                     <LocalMenu 
                         items={[
                             {'title': "Photos", 'component': 
@@ -108,6 +149,7 @@ const AlbumView = observer((props) => {
                                                 galleryState.albums[params.id].comments : []}
                                             id={params.id}
                                             setUploadingComment={galleryState.AddUploadingAlbumComment.bind(galleryState)}
+                                            deleteCallback={(id) => DeleteComment(id, params.id)}
                                         />
                                     </div>
                                 </>

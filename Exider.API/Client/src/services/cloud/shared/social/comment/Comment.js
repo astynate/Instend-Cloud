@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './main.module.css';
 import UserAvatar from '../../../widgets/avatars/user-avatar/UserAvatar';
 import { ConvertDate } from '../../../../../utils/DateHandler';
 import Loader from '../../loader/Loader';
+import BurgerMenu from '../../ui-kit/burger-menu/BurgerMenu';
 
-const Comment = ({user, comment, isLoading, isUploading}) => {
+const Comment = ({user, comment, isLoading, isUploading, deleteCallback}) => {
     if (user && comment) {
         return (
             <div className={styles.comment}>
@@ -20,7 +21,15 @@ const Comment = ({user, comment, isLoading, isUploading}) => {
                     <div className={styles.right}>
                         <Loader />
                     </div>
-                : null}
+                : 
+                    <div className={styles.right}>
+                        <BurgerMenu 
+                            items={[
+                                {title: "Delete", callback: () => {deleteCallback(comment.id)}},
+                            ]}
+                        />
+                    </div>
+                }
             </div>
         );
     } else if (isLoading === true) {

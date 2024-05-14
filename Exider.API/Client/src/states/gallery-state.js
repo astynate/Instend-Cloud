@@ -278,13 +278,73 @@ class GalleryState {
 
     DeleteComment(id, albumId) {
         if (this.albums[albumId] && this.albums[albumId].comments) {
-            this.albums[albumId].comments.filter(element => element.id !== id);
+            this.albums[albumId].comments = this.albums[albumId].comments
+                .filter(element => element.comment.id !== id);
         }
     }
 
     DeleteCommentByQueueId(queueId, albumId) {
         if (this.albums[albumId] && this.albums[albumId].comments) {
             this.albums[albumId].comments.filter(element => element.queueId !== queueId);
+        }
+    }
+
+    SetCommentAsLoading(id) {
+        Object.entries(this.albums).forEach(([key, _]) => {
+            if (this.albums[key].comments) {
+                this.albums[key].comments = this.albums[key].comments
+                    .map(element => {
+                        if (element.id === id) {
+                            element.isUploading = true;
+                        }
+                        return element;
+                    });
+            }
+        });
+    }
+
+    SetCommentAsNormal(id) {
+        Object.entries(this.albums).forEach(([key, _]) => {
+            if (this.albums[key].comments) {
+                this.albums[key].comments = this.albums[key].comments
+                    .map(element => {
+                        if (element.id === id) {
+                            element.isUploading = false;
+                        }
+                        return element;
+                    });
+            }
+        });
+    }
+
+    DeleteCommentById(id) {
+        Object.entries(this.albums).forEach(([key, _]) => {
+            if (this.albums[key].comments) {
+                this.albums[key].comments = this.albums[key].comments
+                    .filter(element => element.id !== id);
+            }
+        });
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////// 
+
+    SetAlbumAccess(users, albumId) {
+        if (this.albums[albumId] && users) {
+            this.albums[albumId].users = []
+
+            if (users.length) {
+                this.albums[albumId].users = [...users, ...this.albums[albumId].users];
+            } else {
+                users.isOwner = true;
+                this.albums[albumId].users = [users, ...this.albums[albumId].users];
+            }
+        }
+    }
+
+    DeleteAlbumUsers(albumId) {
+        if (this.albums[albumId] && this.albums[albumId].users) {
+            console.log('AAAAsssAAAAAAAAAAA');
+            delete this.albums[albumId].users;
         }
     }
 

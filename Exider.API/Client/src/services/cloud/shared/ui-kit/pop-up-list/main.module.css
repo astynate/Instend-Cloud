@@ -1,0 +1,26 @@
+.popUpList {
+    width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: var(--main-accent-color);
+    color: var(--main-font-color);
+    padding: 3px;
+    display: flex;
+    flex-direction: column;
+    grid-gap: 2px;
+    font-size: 16px;
+    border-radius: 7px;
+    font-weight: 400;
+    user-select: none;
+}
+
+.item {
+    padding: 7px 10px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.item:hover {
+    background: var(--pop-up-accent-color);
+}

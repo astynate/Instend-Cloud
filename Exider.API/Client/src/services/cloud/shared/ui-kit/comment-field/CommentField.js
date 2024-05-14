@@ -9,8 +9,9 @@ const CommentField = ({id, setUploadingComment}) => {
     const [comment, setComment] = useState('');
 
     const sendComment = async () => {
-        if (id) {
-            setUploadingComment(comment, userState.user, id)
+        if (id && comment !== null && comment !== '') {
+            await setUploadingComment(comment, userState.user, id);
+            setComment('');
         }
     }
 
@@ -22,7 +23,11 @@ const CommentField = ({id, setUploadingComment}) => {
                 text={comment}
                 setText={setComment}
             />
-            <Button value="Comment" callback={sendComment} />
+            <Button 
+                value="Comment" 
+                callback={sendComment} 
+                isEnter={true}
+            />
         </div>
     );
  };

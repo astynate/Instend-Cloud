@@ -1,0 +1,22 @@
+.burgerMenu {
+    position: relative;
+}
+
+.button {
+    padding: 5px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.button img {
+    height: 25px;
+    width: 25px;
+    image-rendering: pixelated;
+    filter: var(--main-filter);
+}
+
+.popUp {
+    top: 25px;
+    left: 0px;
+    position: absolute;
+}

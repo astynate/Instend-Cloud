@@ -3,7 +3,7 @@ import styles from './main.module.css';
 import CommentField from '../../../shared/ui-kit/comment-field/CommentField';
 import Comment from '../../../shared/social/comment/Comment';
 
-const Comments = ({fetch_callback, comments, id, setUploadingComment}) => {
+const Comments = ({fetch_callback, comments, id, setUploadingComment, deleteCallback}) => {
     const [isLoading, setLoadingState] = useState(false);
     
     useEffect(() => {
@@ -51,9 +51,10 @@ const Comments = ({fetch_callback, comments, id, setUploadingComment}) => {
                     } else {
                         return (
                             <Comment 
-                                key={index}
+                                key={element.comment.id}
                                 comment={element.comment} 
-                                user={element.user} 
+                                user={element.user}
+                                deleteCallback={deleteCallback}
                             />
                         )
                     }

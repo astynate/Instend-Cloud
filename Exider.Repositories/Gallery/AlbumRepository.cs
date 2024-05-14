@@ -117,5 +117,11 @@ namespace Exider.Repositories.Gallery
             File.Delete(album.Cover);
             return Result.Success(album);
         }
+
+        public async Task<AlbumModel?> GetByIdAsync(Guid id)
+        {
+            return await _context.Albums.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
     }
 }

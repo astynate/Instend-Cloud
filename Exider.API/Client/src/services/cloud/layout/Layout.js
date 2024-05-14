@@ -144,6 +144,13 @@ const Layout = observer(() => {
         }
     );
 
+    galleryWSContext.useSignalREffect(
+        "DeleteComment",
+        ({id, albumId}) => {
+            galleryState.DeleteComment(id, albumId);
+        }
+    );
+
     /////////////////////////////////////////////////////////////////////////////////
 
     useEffect(() => {

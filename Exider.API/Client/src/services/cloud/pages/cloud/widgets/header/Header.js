@@ -10,7 +10,7 @@ import Create from "../../../../shared/create/Create";
 import Next from './images/arrow.png';
 import { instance } from "../../../../../../state/Interceptors";
 import ContextMenu from "../../../../shared/context-menu/ContextMenu";
-import OpenAccessProcess from "../../processes/OpenAccessProcess";
+import OpenAccessProcess from "../../../../process/open-access/OpenAccessProcess";
 import { DownloadFromResponse } from "../../../../../../utils/DownloadFromResponse";
 import { observer } from "mobx-react-lite";
 import storageState from "../../../../../../states/storage-state";
@@ -77,10 +77,12 @@ const Header = observer((props) => {
             }
           }}
         />
-        {isOpenAccessWindow === true && <OpenAccessProcess
-            id={params.id}
-            close={() => setOpenAccessWindowState(false)}
-        />}
+        {isOpenAccessWindow === true && 
+            <OpenAccessProcess
+                id={params.id}
+                close={() => setOpenAccessWindowState(false)}
+                endPoint={'folders-access'}
+            />}
         <div className={styles.buttons}>
             <div className={styles.buttonBlock}>
                 <Button 

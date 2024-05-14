@@ -1,10 +1,10 @@
-﻿using Exider.Core.Models.Account;
+﻿using Exider.Core.Models.Access;
+using Exider.Core.Models.Account;
 using Exider.Core.Models.Comments;
 using Exider.Core.Models.Email;
 using Exider.Core.Models.Gallery;
 using Exider.Core.Models.Storage;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Exider.Core
 {
@@ -21,7 +21,7 @@ namespace Exider.Core
         public DbSet<AlbumAccess> AlbumAccess { get; set; } = null!;
         public DbSet<AlbumLink> AlbumLinks { get; set; } = null!;
         public DbSet<FolderAccess> FolderAccesses { get; set; } = null!;
-        public DbSet<Models.Storage.FileAccess> FileAccess { get; set; } = null!;
+        public DbSet<Models.Access.FileAccess> FileAccess { get; set; } = null!;
         public DbSet<CommentModel> Comments { get; set; } = null!;
         public DbSet<AlbumCommentLink> AlbumCommentLinks { get; set; } = null!;
 

@@ -102,18 +102,33 @@
     object-fit: cover;
 }
 
-.photosWrapper {
-    /* margin-left: 50px; */
-    /* margin-right: 20px; */
-}
-
 .people {
     display: flex;
     grid-gap: 7px;
 }
 
 .content {
-    /* margin-top: 20px; */
     width: 1000px;
     margin-right: 250px;
+}
+
+.avatarPlaceholder {
+    height: 45px;
+    width: 45px;
+    border-radius: 100%;
+    animation: preview 2s ease infinite;
+}
+
+@keyframes preview {
+    0% {
+        background: #bbb;
+    }
+    
+    50% {
+        background: #555;
+    }
+
+    100% {
+        background: #bbb;
+    }
 }

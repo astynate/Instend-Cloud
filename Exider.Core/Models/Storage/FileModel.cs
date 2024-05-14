@@ -1,34 +1,23 @@
 ﻿using CSharpFunctionalExtensions;
+using Exider.Core.Models.Access;
 using Exider.Services.External.FileService;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Exider.Core.Models.Storage
 {
-    public class FileModel
+    public class FileModel : AccessItemBase
     {
-        [Column("id")][Key] public Guid Id { get; private set; }
         [Column("name")] public string Name { get; private set; } = string.Empty;
         [Column("creation_time")] public DateTime CreationTime { get; private set; }
         [Column("last_edit_time")] public DateTime LastEditTime { get; private set; }
         [Column("path")] public string Path { get; private set; } = string.Empty;
         [Column("type")] public string? Type { get; private set; } = null;
-        [Column("owner_id")] public Guid OwnerId { get; private set; }
         [Column("folder_id")] public Guid FolderId { get; private set; }
         [Column("size")] public double Size { get; private set; } = 0;
-        [Column("access")] public string AccessId { get; set; } = Configuration.AccessTypes.Private.ToString();
-
-        [EnumDataType(typeof(Configuration.AccessTypes))]
-        [NotMapped]
-        public Configuration.AccessTypes Access
-        {
-            get => Enum.Parse<Configuration.AccessTypes>(AccessId);
-            set => AccessId = value.ToString();
-        }
 
         [NotMapped] public byte[] FileAsBytes { get; private set; } = new byte[0];
 
-        private FileModel() { }
+        public FileModel() { }
 
         public static Result<FileModel> Create(string name, string? type, double size, Guid ownerId, Guid folderId)
         {

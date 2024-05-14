@@ -3,7 +3,7 @@ import PopUpWindow from '../../../../shared/pop-up-window/PopUpWindow';
 import Search from '../../../../shared/pop-up-window/elements/search/Search';
 import Friends from '../../../../shared/pop-up-window/elements/friends/Friends';
 import { useContext, useState } from 'react';
-import { OpenAccessContext } from '../../processes/OpenAccessProcess';
+import { OpenAccessContext } from '../../../../process/open-access/OpenAccessProcess';
 
 const OpenAccess = (props) => {
     const [isLoading, setLoadingState] = useState(false);

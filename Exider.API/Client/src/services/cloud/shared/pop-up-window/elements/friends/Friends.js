@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import styles from './main.module.css';
-import { OpenAccessContext } from '../../../../pages/cloud/processes/OpenAccessProcess';
+import { OpenAccessContext } from '../../../../process/open-access/OpenAccessProcess';
 import Select from '../select/Select';
 import Loader from '../../../loader/Loader';
 

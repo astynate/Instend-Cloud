@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using Exider.Core.Models.Access;
 using Exider.Services.External.FileService;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
@@ -6,25 +7,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Exider.Core.Models.Storage
 {
-    public class FolderModel
+    public class FolderModel : AccessItemBase
     {
-        [Column("id")][Key] public Guid Id { get; private set; }
         [Column("name")] public string Name { get; private set; } = string.Empty;
         [Column("creation_time")] public DateTime CreationTime { get; private set; }
-        [Column("owner_id")] public Guid OwnerId { get; private set; }
         [Column("folder_id")] public Guid FolderId { get; private set; }
         [NotMapped] public List<FileModel> Preview { get; private set; } = new();
         [Column("visibility")] public bool Visibility { get; private set; } = true;
         [Column("type")] public string TypeId { get; private set; } = Configuration.FolderTypes.Ordinary.ToString();
-        [Column("access")] public string AccessId { get; set; } = Configuration.AccessTypes.Private.ToString();
-
-        [NotMapped]
-        [EnumDataType(typeof(Configuration.AccessTypes))]
-        public Configuration.AccessTypes Access
-        {
-            get => Enum.Parse<Configuration.AccessTypes>(AccessId);
-            set => AccessId = value.ToString();
-        }
 
         [NotMapped]
         [EnumDataType(typeof(Configuration.FolderTypes))]
@@ -34,7 +24,7 @@ namespace Exider.Core.Models.Storage
             set => TypeId = value.ToString();
         }
 
-        private FolderModel() { }
+        public FolderModel() { }
 
         public static Result<FolderModel> Create(string name, Guid ownerId, Guid folderId)
         {
