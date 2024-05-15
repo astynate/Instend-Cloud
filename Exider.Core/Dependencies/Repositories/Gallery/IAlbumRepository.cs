@@ -13,5 +13,6 @@ namespace Exider.Repositories.Gallery
         Task<Result<AlbumModel>> DeleteAlbumAsync(Guid id, Guid userId);
         Task<Result<AlbumModel[]>> GetAlbums(IImageService imageService, Guid userId);
         Task<Result<FileModel>> UploadPhotoToAlbum(FileModel file, Guid albumId);
+        Task<Result> UpdateAlbum(Guid id, byte[] cover, string? name, string? description);
     }
 }

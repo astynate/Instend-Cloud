@@ -1,12 +1,13 @@
 .wrapper {
     height: 100vh;
-    width: 100%;
+    width: 100vw;
     overflow: hidden;
     display: flex;
     box-sizing: border-box;
     position: relative;
     padding-top: 5px;
     user-select: none;
+    overflow: hidden;
 }
 
 .contentWrapper {
@@ -21,7 +22,7 @@
 }
 
 .content {
-    width: auto;
+    width: 100%;
     height: auto;
     display: grid;
     grid-gap: 35px;

@@ -11,6 +11,7 @@
         public string? Header { get; set; }
         public string? Description { get; init; }
         public double StorageSpace { get; init; }
+        public double OccupiedSpace { get; init; }
         public decimal Balance { get; init; }
         public uint FriendCount { get; init; }
     }

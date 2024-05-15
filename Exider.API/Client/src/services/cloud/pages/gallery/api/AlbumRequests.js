@@ -32,6 +32,30 @@ export const CreateAlbumRequest = async (name, description, image) => {
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+export const UpdateAlbum = async (name, description, image, id) => {
+    if (name === '') {
+        return;
+    }
+
+    let form = new FormData();
+
+    form.append("id", id);
+    form.append("name", name);
+    form.append("description", description);
+    form.append("cover", image);
+
+    await instance({
+        method: 'put',
+        url: '/api/gallery',
+        data: form,
+        headers: { 'Content-Type': 'multipart/form-data' },
+    }).catch((error) => {
+        applicationState.AddErrorInQueue('Attention!', error.response.data);
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 export const DeleteAlbums = async (albums) => {
     if (albums && albums.length > 0) {
         for (let i = 0; i < albums.length; i++) {

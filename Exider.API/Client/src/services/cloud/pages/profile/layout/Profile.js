@@ -8,7 +8,6 @@ import { observer } from 'mobx-react-lite';
 import userState from '../../../../../states/user-state';
 
 const Profile = observer((props) => {
-
   const { user } = userState;
 
   useEffect(() => {
@@ -22,20 +21,17 @@ const Profile = observer((props) => {
   if (props.isMobile) {
 
     return (
-
       <div className={styles.content}>
         <div className={styles.wrapper}>
           <Header src={user.header} />
           <Description isMobile={props.isMobile} />
         </div>
       </div>
-  
     )
 
   } else {
 
     return (
-
       <div className={styles.content}>
         <Search />
         <LayoutHeader />
@@ -44,11 +40,8 @@ const Profile = observer((props) => {
           <Description />
         </div>
       </div>
-  
     )
-
   }
-
 });
 
 export default Profile;

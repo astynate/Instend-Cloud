@@ -85,8 +85,8 @@ export const SendFilesAsync = async (files, folderId, error) => {
 
       await instance
         .post('/storage', files)
-        .catch(response => {
-            applicationState.AddErrorInQueue('Attention!', response.data);
+        .catch(error => {
+            applicationState.AddErrorInQueue('Attention!', error.response.data);
             storageState.DeleteLoadingFile(queueId, file.folderId);
         });
     });
@@ -101,9 +101,9 @@ export const SendFilesFromEvent = async (event, folderId) => {
 
 //////////////////////////////////////////////////////////////////////////////////
 
-export const SendFilesFromDragEvent = async (event) => {
+export const SendFilesFromDragEvent = async (event, folderId) => {
     var files = event.dataTransfer.files;
-    await SendFilesAsync(files);
+    await SendFilesAsync(files, folderId);
 }
 
 //////////////////////////////////////////////////////////////////////////////////

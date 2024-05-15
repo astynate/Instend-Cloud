@@ -21,7 +21,7 @@ const Description = observer((props) => {
         <Avatar src={`data:image/png;base64,${user.avatar}`} />
         <div className={styles.profileDescription}>
           <Username username={user.nickname} />
-          <Data coins={user.balance} friends={user.friendCount} space={user.storageSpace / 1024} />
+          <Data coins={user.balance} friends={user.friendCount} space={user.storageSpace / (1024 * 1024)} />
           <div><h3 className={styles.name}>{user.name} {user.surname}</h3></div>
           {props.isMobile ? 
 

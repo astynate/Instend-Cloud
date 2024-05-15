@@ -123,5 +123,23 @@ namespace Exider.Repositories.Gallery
             return await _context.Albums.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
+
+        public async Task<Result> UpdateAlbum(Guid id, byte[] cover, string? name, string? description)
+        {
+            AlbumModel? albumModel = await _context.Albums
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (albumModel == null)
+            {
+                return Result.Failure("Album not found");
+            }
+
+            albumModel.Update(name, description);
+
+            await File.WriteAllBytesAsync(albumModel.Cover, cover);
+            await _context.SaveChangesAsync();
+
+            return Result.Success();
+        }
     }
 }

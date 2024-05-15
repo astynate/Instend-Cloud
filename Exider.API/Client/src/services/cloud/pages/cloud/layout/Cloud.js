@@ -111,8 +111,12 @@ const Cloud = observer((props) => {
 
   return (
     <div className={styles.cloud}>
-      <Search />
-      <Header />
+      {props.isMobile === false && 
+        <>
+          <Search />
+          <Header />
+        </>
+      }
       {isPreview && 
         <Preview
           close={() => setPreviewState(false)} 
@@ -132,7 +136,8 @@ const Cloud = observer((props) => {
       <div className={styles.wrapper}>
         <div className={styles.contentWrapper} ref={selectPlaceWrapper}>
           <CloudHeader
-            name={user.nickname} 
+            name={user.nickname}
+            isMobile={props.isMobile}
             path={storageState.path && storageState.path[AdaptId(params.id)] ? 
               storageState.path[AdaptId(params.id)] : null}
           />

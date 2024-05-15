@@ -45,6 +45,7 @@ namespace Exider.Repositories.Account
                         Description = data.Description,
                         StorageSpace = data.StorageSpace,
                         Balance = data.Balance,
+                        OccupiedSpace = data.OccupiedSpace,
                         FriendCount = data.FriendCount
                     }
                 )
@@ -152,6 +153,42 @@ namespace Exider.Repositories.Account
                         .SetProperty(p => p.Header, headerPath));
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Result<UserDataModel>> IncreaseOccupiedSpace(Guid userId, double amountInBytes)
+        {
+            UserDataModel? user = await _context.UserData
+                .FirstOrDefaultAsync(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                return Result.Failure<UserDataModel>("User not found");
+            }
+            
+            var result = user.IncreaseOccupiedSpace(amountInBytes);
+
+            if (result.IsFailure)
+            {
+                return Result.Failure<UserDataModel>(result.Error);
+            }
+
+            await _context.SaveChangesAsync(); return Result.Success(user);
+        }
+
+        public async Task<Result<UserDataModel>> DecreaseOccupiedSpace(Guid userId, double amountInBytes)
+        {
+            UserDataModel? user = await _context.UserData
+                .FirstOrDefaultAsync(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                return Result.Failure<UserDataModel>("User not found");
+            }
+
+            user.DecreaseOccupiedSpace(amountInBytes);
+            
+            await _context.SaveChangesAsync();
+            return Result.Success(user);
         }
     }
 }

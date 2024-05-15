@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core;
 using Exider.Core.Models.Storage;
+using Exider.Repositories.Account;
 using Exider.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,10 +14,13 @@ namespace Exider.Repositories.Storage
 
         private readonly IFileService _fileService;
 
-        public FileRespository(DatabaseContext context, IFileService fileService)
+        private readonly IUserDataRepository _userDataRepository;
+
+        public FileRespository(DatabaseContext context, IFileService fileService, IUserDataRepository userDataRepository)
         {
             _context = context;
             _fileService = fileService;
+            _userDataRepository = userDataRepository;
         }
 
         public async Task<Result<FileModel>> GetByIdAsync(Guid id) => await _context.Files.AsNoTracking()
@@ -111,6 +115,13 @@ namespace Exider.Repositories.Storage
 
             string path = file.Path;
             await _context.Files.Where(x => x.Id == id).ExecuteDeleteAsync();
+            
+            var result = await _userDataRepository.DecreaseOccupiedSpace(file.OwnerId, file.Size);
+
+            if (result.IsFailure)
+            {
+                return Result.Failure(result.Error);
+            }
 
             File.Delete(path);
 

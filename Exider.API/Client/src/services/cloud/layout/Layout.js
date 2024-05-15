@@ -13,6 +13,7 @@ import storageState from '../../../states/storage-state';
 import galleryState from '../../../states/gallery-state';
 import Information from '../shared/information/Information';
 import applicationState from '../../../states/application-state';
+import userState from '../../../states/user-state';
 
 export const messageWSContext = createSignalRContext();
 export const storageWSContext = createSignalRContext();
@@ -82,7 +83,8 @@ const Layout = observer(() => {
 
     storageWSContext.useSignalREffect(
         "UploadFile",
-        ([file, queueId]) => {
+        ([file, queueId, occupiedSpace]) => {
+            userState.ChangeOccupiedSpace(occupiedSpace);
             storageState.ReplaceLoadingFile(file, queueId);
 
             if (imageTypes.includes(file.type)) {
@@ -121,6 +123,13 @@ const Layout = observer(() => {
     );
 
     galleryWSContext.useSignalREffect(
+        "Update",
+        ({id, coverAsBytes, name, description}) => {
+            galleryState.UpdateAlbum(id, coverAsBytes, name, description);
+        }
+    );
+
+    galleryWSContext.useSignalREffect(
         "Upload",
         ([file, albumId, queueId]) => {
             storageState.ReplaceLoadingFile(file, queueId);
@@ -148,6 +157,15 @@ const Layout = observer(() => {
         "DeleteComment",
         ({id, albumId}) => {
             galleryState.DeleteComment(id, albumId);
+        }
+    );
+
+    /////////////////////////////////////////////////////////////////////////////////
+
+    storageWSContext.useSignalREffect(
+        "UpdateOccupiedSpace",
+        (space) => {
+            userState.ChangeOccupiedSpace(space);
         }
     );
 

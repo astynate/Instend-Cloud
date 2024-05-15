@@ -1,5 +1,5 @@
 ﻿import { Link, useLocation  } from 'react-router-dom';
-import React from 'react'
+import React, { useEffect } from 'react'
 import './css/navigation.buttons.css';
 import './css/main.css';
 import './css/progress-bar.css';
@@ -15,13 +15,13 @@ import gallery_passive from './images/buttons/gallery_passive.svg';
 import gallery_active from './images/buttons/gallery_active.svg';
 import music_passive from './images/buttons/music_passive.svg';
 import music_active from './images/buttons/music_active.svg';
-import friends_passive from './images/buttons/friends_passive.svg';
-import friends_active from './images/buttons/friends_active.svg';
 import messages_passive from './images/buttons/messages_passive.svg';
 import messages_active from './images/buttons/messages_active.svg';
 import profile_passive from './images/buttons/profile_passive.svg';
 import profile_active from './images/buttons/profile_active.svg';
 import { useTranslation } from 'react-i18next';
+import userState from '../../../../states/user-state';
+import { observer } from 'mobx-react-lite';
 
 const useIsActiveButton = (name) => 
     useIsCurrentRoute(name) ? 'active' : 'passive'
@@ -29,9 +29,17 @@ const useIsActiveButton = (name) =>
 const useIsCurrentRoute = (name) => 
     useLocation()['pathname'] === '/' + name;
 
-const NavigationPanel = (props) => {
-
+const NavigationPanel = observer((props) => {
+    const { user } = userState;
     const { t } = useTranslation();
+
+    const occupiedPercentage = () => {
+        if (user && user.occupiedSpace && user.storageSpace) {
+            return (user.occupiedSpace / user.storageSpace) * 100;
+        } else {
+            return 0;
+        }
+    }
 
     return (
         <div className="left-panel" id={props.isPanelRolledUp ? 'rolled-up' : null}>
@@ -59,10 +67,6 @@ const NavigationPanel = (props) => {
                     <img src={useIsCurrentRoute('music') ? music_active : music_passive} draggable="false" alt="M" />
                     <nav>{t('cloud.navigation.music')}</nav>
                 </Link>
-                {/* <Link to="/friends" className="navigation-button" id={useIsActiveButton('friends')}>
-                    <img src={useIsCurrentRoute('friends') ? friends_active : friends_passive} draggable="false" alt="F" />
-                    <nav>Friends</nav>
-                </Link> */}
                 <Link to="/messages" className="navigation-button" id={useIsActiveButton('messages')}>
                     <img src={useIsCurrentRoute('messages') ? messages_active : messages_passive} draggable="false" alt="M" />
                     <nav>{t('cloud.navigation.messages')}</nav>
@@ -74,12 +78,11 @@ const NavigationPanel = (props) => {
             </div>
             <div className="progress-bar-wrapper">
                 <div className="progress-bar">
-                    <div className="line"></div>
+                    <div className="line" style={{width: `${occupiedPercentage()}%`}}></div>
                 </div>
             </div>
         </div>
     )
-
-}
+})
 
 export default NavigationPanel;

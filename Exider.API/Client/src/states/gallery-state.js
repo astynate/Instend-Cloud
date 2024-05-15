@@ -126,6 +126,16 @@ class GalleryState {
         return album.queueId;
     }
 
+    UpdateAlbum(id, coverAsBytes, name, description) {
+        if (this.albums[id]) {
+            if (coverAsBytes !== null && coverAsBytes !== '' && coverAsBytes !== undefined) {
+                this.albums[id].cover = coverAsBytes;
+            }
+            this.albums[id].name = name;
+            this.albums[id].description = description;
+        }
+    }
+
     ReplaceLoadingAlbum(album, queueId) {
         if (album) {
             album.photos = []
@@ -343,10 +353,8 @@ class GalleryState {
 
     DeleteAlbumUsers(albumId) {
         if (this.albums[albumId] && this.albums[albumId].users) {
-            console.log('AAAAsssAAAAAAAAAAA');
             delete this.albums[albumId].users;
         }
->>>>>>> f9687cde2559fec188f14abfabb51f09c4ba764a
     }
 
     ////////////////////////////////////////////////////////////////////////////////////// 

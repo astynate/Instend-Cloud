@@ -24,7 +24,6 @@ class UserState {
                 this.isAuthorize = false;
                 navigate('/account/login');
             }
-
         } 
         catch (exception) {
             this.isAuthorize = false;
@@ -36,6 +35,12 @@ class UserState {
         this.isLoading = true;
         await this.UpdateUserData(location, navigate);
         this.isLoading = false;
+    }
+
+    ChangeOccupiedSpace(occupiedSpace) {
+        if (this.user) {
+            this.user.occupiedSpace = occupiedSpace;
+        }
     }
 }
 

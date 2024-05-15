@@ -8,6 +8,10 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Exider.Repositories.Account;
+using Exider.Core.Models.Account;
+using Exider.Core.Dependencies.Repositories.Account;
+using Exider.Core.TransferModels.Account;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Storage
 {
@@ -23,6 +27,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IAccessHandler _accessHandler;
 
+        private readonly IUserDataRepository _userDataRespository;
+
         private readonly IHubContext<StorageHub> _storageHub;
 
         private readonly IFileService _fileService;
@@ -34,7 +40,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             IFolderRepository folderRepository,
             IHubContext<StorageHub> storageHub,
             IFileService fileService,
-            IAccessHandler accessHandler
+            IAccessHandler accessHandler,
+            IUserDataRepository userDataRepository
         )
         {
             _context = context;
@@ -43,6 +50,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             _storageHub = storageHub;
             _fileService = fileService;
             _accessHandler = accessHandler;
+            _userDataRespository = userDataRepository;
         }
 
         [HttpGet]
@@ -163,7 +171,9 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         )
         {
             var idResult = requestHandler.GetUserId(Request.Headers["Authorization"]);
+            
             Guid userId = idResult.Value == null ? Guid.Empty : Guid.Parse(idResult.Value);
+            Guid ownerId = userId;
 
             if (folderId != null)
             {
@@ -181,6 +191,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 {
                     return BadRequest(available.Error);
                 }
+
+                ownerId = folderModel.OwnerId;
             }
 
             string[] nameSplit = file.FileName.Split(".");
@@ -190,27 +202,41 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
             try
             {
-                await _context.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
+                return await _context.Database.CreateExecutionStrategy().ExecuteAsync<IActionResult>(async () =>
                 {
                     using (var transaction = _context.Database.BeginTransaction())
                     {
                         var fileModel = await _fileRespository.AddAsync(name, type, file.Length, userId,
                             folderId == null ? Guid.Empty : Guid.Parse(folderId));
 
-                        if (file.Length > 0 && fileModel.IsFailure == false)
+                        if (fileModel.IsFailure)
                         {
-                            using (var fileStream = new FileStream(fileModel.Value.Path, FileMode.Create))
-                            {
-                                await file.CopyToAsync(fileStream);
-                            }
-
-                            await fileModel.Value.SetPreview(_fileService);
-
-                            await _storageHub.Clients.Group(fileModel.Value.FolderId == Guid.Empty ? fileModel.Value.OwnerId.ToString() :
-                                fileModel.Value.FolderId.ToString()).SendAsync("UploadFile", new object[] { fileModel.Value, queueId });
+                            return Conflict(fileModel.Error);
                         }
 
+                        using (var fileStream = new FileStream(fileModel.Value.Path, FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
+
+                        if (file.Length > 0)
+                        {
+                            await fileModel.Value.SetPreview(_fileService);
+                        }
+
+                        var increaseResult = await _userDataRespository.IncreaseOccupiedSpace(ownerId, file.Length);
+
+                        if (increaseResult.IsFailure)
+                        {
+                            return Conflict(increaseResult.Error);
+                        }
+
+                        await _storageHub.Clients.Group(fileModel.Value.FolderId == Guid.Empty ? fileModel.Value.OwnerId.ToString() :
+                            fileModel.Value.FolderId.ToString()).SendAsync("UploadFile", new object[] { fileModel.Value, queueId, increaseResult.Value.OccupiedSpace });
+
                         transaction.Commit();
+
+                        return Ok();
                     }
                 });
             }
@@ -219,8 +245,6 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 await Console.Out.WriteLineAsync(exception.Message);
                 return StatusCode(500, "Something went wrong");
             }
-
-            return Ok();
         }
 
         [HttpPost]
@@ -312,7 +336,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         [HttpDelete]
         [Authorize]
-        public async Task<IActionResult> Delete(Guid id, Guid folderId)
+        public async Task<IActionResult> Delete(IUserDataRepository userRepository, Guid id, Guid folderId)
         {
             if (id == Guid.Empty)
             {
@@ -343,6 +367,18 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
             await _storageHub.Clients.Group(folderId.ToString())
                 .SendAsync("DeleteFile", id);
+
+            await userRepository.DecreaseOccupiedSpace(fileModel.Value.OwnerId, fileModel.Value.Size);
+
+            var user = await userRepository.GetUserAsync(fileModel.Value.OwnerId);
+
+            if (user.IsFailure)
+            {
+                return Conflict("User not found");
+            }
+
+            await _storageHub.Clients.Group(fileModel.Value.OwnerId.ToString())
+                .SendAsync("UpdateOccupiedSpace", user.Value.OccupiedSpace);
 
             return Ok();
         }

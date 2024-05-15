@@ -18,8 +18,8 @@ const Data = (props) => {
             <span>{t('cloud.profile.friends')}</span>
         </div>
         <div className={styles.counter}>
-            <h2>{props.space}</h2>
-            <span>GB</span>
+            <h2>{props.space.toFixed(1)}</h2>
+            <span>MB</span>
         </div>
     </div>
 

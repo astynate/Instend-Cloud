@@ -1,5 +1,6 @@
 ﻿using Exider.Core;
 using Exider.Core.Models.Storage;
+using Exider.Repositories.Account;
 using Exider.Repositories.Storage;
 using Exider.Services.External.FileService;
 using Exider.Services.Internal.Handlers;
@@ -165,10 +166,20 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             IFileService fileService, 
             IFileRespository fileRespository,
             IFolderRepository folderRepository,
+            IUserDataRepository userDataRepository,
             Guid folderId,
             Guid id
         )
         {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+            {
+                return BadRequest("Invalid user id");
+            }
+
+            Guid ownerId = Guid.Parse(userId.Value);
+
             if (id != Guid.Empty)
             {
                 FolderModel? folderModel = await _folderRepository.GetByIdAsync(id);
@@ -184,6 +195,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 {
                     return BadRequest(available.Error);
                 }
+
+                ownerId = folderModel.OwnerId;
             }
 
             await fileService.DeleteFolderById
@@ -191,6 +204,16 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
             await _storageHub.Clients.Group(folderId.ToString())
                 .SendAsync("DeleteFolder", id);
+
+            var owner = await userDataRepository.GetUserAsync(ownerId);
+
+            if (owner.IsFailure)
+            {
+                return Conflict("Owner not found");
+            }
+
+            await _storageHub.Clients.Group(ownerId.ToString())
+                .SendAsync("UpdateOccupiedSpace", owner.Value.OccupiedSpace);
 
             return Ok();
         }

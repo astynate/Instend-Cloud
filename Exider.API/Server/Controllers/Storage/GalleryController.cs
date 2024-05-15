@@ -9,6 +9,7 @@ using Exider_Version_2._0._0.Server.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Exider.Repositories.Account;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Storage
 {
@@ -16,15 +17,21 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
     [Route("api/[controller]")]
     public class GalleryController : ControllerBase
     {
-        private IFileRespository _fileRespository;
+        private readonly IFileRespository _fileRespository;
 
-        private IFolderRepository _folderRespository;
+        private readonly IFolderRepository _folderRespository;
 
-        private IRequestHandler _requestHandler;
+        private readonly IRequestHandler _requestHandler;
 
-        private IAlbumRepository _albumRepository;
+        private readonly IUserDataRepository _userDataRepository;
+
+        private readonly IAlbumRepository _albumRepository;
+
+        private readonly IAccessHandler _accessHandler;
 
         private readonly IHubContext<GalleryHub> _galleryHub;
+
+        private readonly IHubContext<StorageHub> _storageHub;
 
         private DatabaseContext _context;
 
@@ -35,6 +42,9 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             IAlbumRepository albumRepository,
             IFolderRepository folderRepository,
             IHubContext<GalleryHub> galleryHub,
+            IHubContext<StorageHub> storageHub,
+            IUserDataRepository userDataRepository,
+            IAccessHandler accessHandler,
             DatabaseContext context
         )
         {
@@ -44,6 +54,9 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             _folderRespository = folderRepository;
             _galleryHub = galleryHub;
             _context = context;
+            _userDataRepository = userDataRepository;
+            _accessHandler = accessHandler;
+            _storageHub = storageHub;
         }
 
         [HttpGet]
@@ -188,6 +201,23 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                             await storageHub.Clients.Group(fileModel.Value.OwnerId.ToString()).SendAsync("UploadFile", new object[] { fileModel.Value, queueId });
                         }
 
+                        var user = await _userDataRepository.GetUserAsync(Guid.Parse(userId.Value));
+
+                        if (user.IsFailure)
+                        {
+                            return BadRequest("User not found");
+                        }
+
+                        var space = await _userDataRepository.IncreaseOccupiedSpace(Guid.Parse(userId.Value), file.Length);
+
+                        if (space.IsFailure)
+                        {
+                            return Conflict(space.Error);
+                        }
+
+                        await _storageHub.Clients.Group(fileModel.Value.OwnerId.ToString())
+                            .SendAsync("UpdateOccupiedSpace", space.Value.OccupiedSpace);
+
                         transaction.Commit();
                         return Ok();
                     }
@@ -295,6 +325,51 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             await result.Value.SetCover(imageService);
             await _galleryHub.Clients.Group(result.Value.OwnerId.ToString()).SendAsync("Create", new object[] { result.Value, queueId });
 
+            return Ok();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> EditAlbum
+        (
+            IImageService imageService,
+            [FromForm] IFormFile? cover,
+            [FromForm] string? name,
+            [FromForm] string? description,
+            [FromForm] string? id
+        )
+        {
+            if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
+                return BadRequest("Album not found");
+
+            if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
+                return BadRequest("Name is required");
+
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+            {
+                return BadRequest(userId.Error);
+            }
+
+            byte[] coverAsBytes = [];
+
+            using (var coverStream = new MemoryStream())
+            {
+                if (cover != null && cover.Length > 0)
+                {
+                    await cover.CopyToAsync(coverStream);
+                    coverAsBytes = coverStream.ToArray();
+                }
+            }
+
+            var result = await _albumRepository.UpdateAlbum(Guid.Parse(id), coverAsBytes, name, description);
+
+            if (result.IsFailure)
+            {
+                return Conflict(result.Error);
+            }
+
+            await _galleryHub.Clients.Group(id.ToString()).SendAsync("Update", new { id, coverAsBytes, name, description });
             return Ok();
         }
     }

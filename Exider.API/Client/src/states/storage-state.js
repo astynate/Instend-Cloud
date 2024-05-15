@@ -145,8 +145,10 @@ class StorageState {
     }
 
     DeleteLoadingFile(queueId, folderId) {
-        this.files = this.files[AdaptId(folderId)]
+        if (this.files && this.files[AdaptId(folderId)] && this.files[AdaptId(folderId)].filter) {
+            this.files[AdaptId(folderId)] = this.files[AdaptId(folderId)]
             .filter(element => element.queueId !== queueId);
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////

@@ -8,15 +8,20 @@ import { autorun } from 'mobx';
 import { toJS } from 'mobx';
 import SelectBox from '../../../../shared/interaction/select-box/SelectBox';
 import { DeleteAlbums } from '../../api/AlbumRequests';
+import CreateAlbum from '../../../../widgets/create-album/CreateAlbum';
+import { useParams } from 'react-router-dom';
 
 const Albums = observer(() => {
     const wrapper = useRef();
     const [selectedItems, setSelectedItems] = useState([]);
     const [activeItems, setActiveItems] = useState([]);
+    const [isCreateAlbumOpen, setCreateAlbumOpen] = useState(false);
     const [items, setItems] = useState(Object.values(toJS(galleryState.albums)).flat());
 
     const single = [
-        [null, "Rename", () => {}],
+        [null, "Edit", () => {
+            setCreateAlbumOpen(true);
+        }],
         [null, "Delete", () => {
             setActiveItems(prev => {
                 DeleteAlbums(prev);
@@ -49,6 +54,12 @@ const Albums = observer(() => {
     return (
         <>        
             <Add id={null} />
+            {isCreateAlbumOpen && <CreateAlbum 
+                open={isCreateAlbumOpen}
+                close={() => {setCreateAlbumOpen(false)}}
+                isUpdate={true}
+                album={activeItems[0]}
+            />}
             <div className={styles.content} ref={wrapper}>
                 {Object.entries(galleryState.albums).map(([key, value]) => {
                         return (

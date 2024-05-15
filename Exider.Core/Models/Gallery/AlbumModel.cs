@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core.Models.Access;
 using Exider.Services.External.FileService;
+using Microsoft.EntityFrameworkCore.Update.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Exider.Core.Models.Gallery
@@ -57,6 +58,16 @@ namespace Exider.Core.Models.Gallery
 
             Cover = result.Value; 
             return Result.Success();
+        }
+
+        public void Update(string? name, string? description)
+        {
+            if (string.IsNullOrEmpty(name) == false && string.IsNullOrWhiteSpace(name) == false)
+            {
+                Name = name;
+            }
+
+            Description = description;
         }
     }
 }

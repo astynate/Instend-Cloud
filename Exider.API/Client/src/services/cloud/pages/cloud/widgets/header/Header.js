@@ -130,14 +130,14 @@ const Header = observer((props) => {
                         DownloadFromResponse(response)
                     });
                 }}/>
-                <Button 
+                {props.isMobile === false &&<Button 
                     img={Sort} 
                     title="Name" 
                     onClick={(event) => {
                         setSortMenuState(prev => !prev);
                         setSortMenuPosition([event.clientX, 90]);
                     }}
-                />
+                />}
             </div>
         </div>
         <div>
