@@ -50,3 +50,18 @@ export const DeleteAlbums = async (albums) => {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
+
+export const DeleteComment = async (id, albumId) => {
+    galleryState.SetCommentAsLoading(id);
+
+    if (id) {
+        await instance
+            .delete(`/api/album-comments?id=${id}&albumId=${albumId}`)
+            .catch((error) => {
+                applicationState.AddErrorInQueue('Attention!', error.response.data);
+                galleryState.SetCommentAsLoading(id);
+            });
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////

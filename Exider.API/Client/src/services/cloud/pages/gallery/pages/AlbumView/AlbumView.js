@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
 import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
@@ -15,11 +15,15 @@ import AddUser from '../../../../widgets/avatars/add-user/AddUser';
 import LocalMenu from '../../../../shared/ui-kit/local-menu/LocalMenu';
 import Comments from '../../../../widgets/social/comments/Comments';
 import Button from '../../../../shared/ui-kit/button/Button';
+import OpenAccessProcess from '../../../../process/open-access/OpenAccessProcess';
+import { DeleteComment } from '../../api/AlbumRequests';
 
 const AlbumView = observer((props) => {
     const { albums } = galleryState;
     const params = useParams();
     const wrapper = useRef();
+    const [isUsersLoading, setUsersLoadingState] = useState(true);
+    const [isOpenAccessWindow, setOpenAccessWindowState] = useState(false);
 
     useEffect(() => {
         const fetchAlbums = async () => {
@@ -33,6 +37,12 @@ const AlbumView = observer((props) => {
     useEffect(() => {
         props.setAlbumId(params.id);
     }, [params]);
+
+    const accessSaveCallback = (data) => {
+        if (data) {
+            galleryState.SetAlbumAccess(data, params.id);
+        }
+    }
 
     return (
         <div className={styles.album}>
@@ -63,54 +73,90 @@ const AlbumView = observer((props) => {
                             </div>
                         </div>
                         <div className={styles.addition}>
-                            <UserAvatar avatar={userState.user.avatar} />
-                            <AddUser callback={() => alert('!')} />     
+                            {isUsersLoading ? 
+                                <>
+                                    <div className={styles.avatarPlaceholder}></div>
+                                    <div className={styles.avatarPlaceholder}></div>
+                                    <div className={styles.avatarPlaceholder}></div>
+                                </>
+                            : 
+                                <>
+                                    {galleryState.albums && galleryState.albums[params.id] && galleryState.albums[params.id].users && galleryState.albums[params.id].users.map
+                                        && galleryState.albums[params.id].users.map((element, index) => {
+                                            if (element.user) {
+                                                let user = element.user;
+                                                user.avatar = element.base64Avatar;
+                                            
+                                                return (
+                                                    <UserAvatar key={index} user={user} />
+                                                )
+                                            } else {
+                                                return null;
+                                            }
+                                        })
+                                    }
+                                    <AddUser callback={() => setOpenAccessWindowState(true)} />   
+                                </>
+                            }
                         </div>
                     </div>
-                    <div>
-                        <LocalMenu 
-                            items={[
-                                {'title': "Photos", 'component': 
-                                    <>
-                                        <div className={styles.content}>
-                                            <Add id={params.id} />
-                                            {!albums[params.id].photos || albums[params.id].photos.length === 0 ?
-                                                <div className={styles.noImages}>
-                                                    <Placeholder title="No photos uploaded" />
-                                                </div>  
-                                            :
-                                                <div className={styles.photosWrapper}>
-                                                    <PhotoList
-                                                        photos={galleryState.albums && galleryState.albums[params.id] && galleryState.albums[params.id].photos ? 
-                                                            galleryState.albums[params.id].photos : []} 
-                                                        scale={props.scale}
-                                                        photoGrid={props.photoGrid}
-                                                        forwardRef={wrapper}
-                                                    />
-                                                    <Scroll
-                                                        scroll={props.scroll}
-                                                        isHasMore={galleryState.albums[params.id].hasMore}
-                                                        array={galleryState.albums[params.id].photos}
-                                                        callback={() => {
-                                                            galleryState.GetAlbumPhotos(params.id);
-                                                        }}
-                                                    />
-                                                </div>
-                                            }
-                                        </div>
-                                    </>
-                                },
-                                {'title': "Comments", "component": 
-                                    <>
-                                        <div className={styles.content}>
-                                            <Comments />
-                                        </div>
-                                    </>
-                                }
-                            ]}
-                            default={0}
-                        />
-                    </div>
+                    <OpenAccessProcess
+                        id={params.id}
+                        open={isOpenAccessWindow}
+                        close={() => setOpenAccessWindowState(false)}
+                        setLoadingState={setUsersLoadingState}
+                        endPoint={'api/album-access'}
+                        accessSaveCallback={accessSaveCallback}
+                    />
+                    <LocalMenu 
+                        items={[
+                            {'title': "Photos", 'component': 
+                                <>
+                                    <div className={styles.content}>
+                                        <Add id={params.id} />
+                                        {!albums[params.id].photos || albums[params.id].photos.length === 0 ?
+                                            <div className={styles.noImages}>
+                                                <Placeholder title="No photos uploaded" />
+                                            </div>  
+                                        :
+                                            <div className={styles.photosWrapper}>
+                                                <PhotoList
+                                                    photos={galleryState.albums && galleryState.albums[params.id] && galleryState.albums[params.id].photos ? 
+                                                        galleryState.albums[params.id].photos : []} 
+                                                    scale={props.scale}
+                                                    photoGrid={props.photoGrid}
+                                                    forwardRef={wrapper}
+                                                />
+                                                <Scroll
+                                                    scroll={props.scroll}
+                                                    isHasMore={galleryState.albums[params.id].hasMore}
+                                                    array={galleryState.albums[params.id].photos}
+                                                    callback={() => {
+                                                        galleryState.GetAlbumPhotos(params.id);
+                                                    }}
+                                                />
+                                            </div>
+                                        }
+                                    </div>
+                                </>
+                            },
+                            {'title': "Comments", "component": 
+                                <>
+                                    <div className={styles.content}>
+                                        <Comments 
+                                            fetch_callback={() => galleryState.GetAlbumComments(params.id)}
+                                            comments={galleryState.albums[params.id].comments ? 
+                                                galleryState.albums[params.id].comments : []}
+                                            id={params.id}
+                                            setUploadingComment={galleryState.AddUploadingAlbumComment.bind(galleryState)}
+                                            deleteCallback={(id) => DeleteComment(id, params.id)}
+                                        />
+                                    </div>
+                                </>
+                            }
+                        ]}
+                        default={0}
+                    />
                 </>
             }
         </div>

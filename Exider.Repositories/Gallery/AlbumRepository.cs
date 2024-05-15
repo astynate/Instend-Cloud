@@ -11,9 +11,12 @@ namespace Exider.Repositories.Gallery
     {
         private readonly DatabaseContext _context = null!;
 
-        public AlbumRepository(DatabaseContext context)
+        private readonly IFileService _fileService;
+
+        public AlbumRepository(DatabaseContext context, IFileService fileService)
         {
             _context = context;
+            _fileService = fileService;
         }
 
         public async Task<Result<AlbumModel>> AddAsync(Guid ownerId, byte[] cover, string name, string? description)
@@ -48,17 +51,11 @@ namespace Exider.Repositories.Gallery
 
         public async Task<Result<FileModel>> AddPhotoToAlbum(Guid fileId, Guid albumId)
         {
-            FileModel[]? files = await _context.AlbumLinks
-                .Where(x => x.FileId == fileId && x.AlbumId == albumId)
-                .Join(_context.Files,
-                      albumLink => albumLink.FileId,
-                      file => file.Id,
-                      (albumLink, file) => file)
-                .ToArrayAsync();
+            AlbumLink? link = await _context.AlbumLinks.FirstOrDefaultAsync(x => x.FileId == fileId && x.AlbumId == albumId);
 
-            if (files.Length > 0)
+            if (link != null)
             {
-                return Result.Success(files[0]);
+                return Result.Failure<FileModel>("Photo are alredy exist in this album");
             }
 
             FileModel? file = await _context.Files
@@ -76,20 +73,37 @@ namespace Exider.Repositories.Gallery
                 return Result.Failure<FileModel>(result.Error);
             }
 
+            await file.SetPreview(_fileService);
+
             await _context.AlbumLinks.AddAsync(result.Value);
             await _context.SaveChangesAsync();
 
             return Result.Success(file);
         }
 
-        public async Task<Result> DeleteAlbumAsync(Guid id, Guid userId)
+        public async Task<Result<FileModel>> UploadPhotoToAlbum(FileModel file, Guid albumId)
+        {
+            var result = AlbumLink.Create(albumId, file.Id);
+
+            if (result.IsFailure)
+            {
+                return Result.Failure<FileModel>(result.Error);
+            }
+
+            await _context.AlbumLinks.AddAsync(result.Value);
+            await _context.SaveChangesAsync();
+
+            return Result.Success(file);
+        }
+
+        public async Task<Result<AlbumModel>> DeleteAlbumAsync(Guid id, Guid userId)
         {
             AlbumModel? album = await _context.Albums
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (album == null)
             {
-                return Result.Failure("Album not found");
+                return Result.Failure<AlbumModel>("Album not found");
             }
             
             int result = await _context.Albums.Where(x => x.Id == id)
@@ -97,12 +111,17 @@ namespace Exider.Repositories.Gallery
 
             if (result == 0)
             {
-                return Result.Failure("Album not found");
+                return Result.Failure<AlbumModel>("Album not found");
             }
 
             File.Delete(album.Cover);
+            return Result.Success(album);
+        }
 
-            return Result.Success();
+        public async Task<AlbumModel?> GetByIdAsync(Guid id)
+        {
+            return await _context.Albums.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }

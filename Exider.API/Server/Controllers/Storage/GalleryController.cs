@@ -89,7 +89,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         [HttpDelete]
         [Route("/api/albums")]
-        public async Task<IActionResult> GeDeleteAlbum(string id)
+        public async Task<IActionResult> DeleteAlbum(string id)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
@@ -107,7 +107,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
             if (result.IsFailure)
             {
-                BadRequest(result.Error);
+                return BadRequest(result.Error);
             }
 
             await _galleryHub.Clients.Group(userId.Value.ToString()).SendAsync("DeleteAlbum", id);
@@ -155,7 +155,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 {
                     using (var transaction = _context.Database.BeginTransaction())
                     {
-                        var fileModel = await _fileRespository.AddPhotoAsync(name, type, Guid.Parse(userId.Value));
+                        var fileModel = await _fileRespository.AddPhotoAsync(name, type, file.Length, Guid.Parse(userId.Value));
 
                         if (fileModel.IsFailure)
                         {
@@ -174,7 +174,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
                         if (string.IsNullOrEmpty(albumId) == false && string.IsNullOrWhiteSpace(albumId) == false)
                         {
-                            var result = await albumRepository.AddPhotoToAlbum(fileModel.Value.Id, Guid.Parse(albumId));
+                            var result = await albumRepository.UploadPhotoToAlbum(fileModel.Value, Guid.Parse(albumId));
 
                             if (result.IsFailure)
                             {
@@ -221,7 +221,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 return Conflict(result.Error);
             }
 
-            await _galleryHub.Clients.Group(albumId).SendAsync("Upload", new object[] { result.Value, albumId });
+            await _galleryHub.Clients.Group(albumId).SendAsync("AddToAlbum", new object[] { result.Value, albumId });
+
             return Ok();
         }
 

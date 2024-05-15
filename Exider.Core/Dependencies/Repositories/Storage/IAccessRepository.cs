@@ -1,10 +1,13 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core;
+using Exider.Core.Models.Access;
 using Exider.Core.TransferModels;
 
 namespace Exider.Repositories.Storage
 {
-    public interface IFolderAccessRepository
+    public interface IAccessRepository<Access, Item>
+        where Access : AccessBase, new()
+        where Item : AccessItemBase, new()
     {
         Task CloseAccess(Guid userId, Guid folderId);
         Task CrearAccess(Guid folderId);

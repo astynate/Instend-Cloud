@@ -137,6 +137,22 @@ const Layout = observer(() => {
 
     /////////////////////////////////////////////////////////////////////////////////
 
+    galleryWSContext.useSignalREffect(
+        "AddComment",
+        ({comment, user, albumId, queueId}) => {
+            galleryState.ReplaceLoadingComment({comment: comment, user: user}, queueId, albumId);
+        }
+    );
+
+    galleryWSContext.useSignalREffect(
+        "DeleteComment",
+        ({id, albumId}) => {
+            galleryState.DeleteComment(id, albumId);
+        }
+    );
+
+    /////////////////////////////////////////////////////////////////////////////////
+
     useEffect(() => {
         const handleResize = () => {
             setWindowWidth(window.innerWidth);

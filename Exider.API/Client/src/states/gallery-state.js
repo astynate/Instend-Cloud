@@ -1,5 +1,7 @@
 import { instance } from '../state/Interceptors';
 import { makeAutoObservable, runInAction, toJS } from "mobx";
+import applicationState from './application-state';
+import { AdaptId } from './storage-state';
 
 class GalleryState {
 
@@ -10,6 +12,7 @@ class GalleryState {
     albums = {};
     photoQueueId = 0;
     albumsQueueId = 0;
+    albumCommentQueueId = 0;
 
     //////////////////////////////////////////////////////////////////////////////////////
 
@@ -222,10 +225,128 @@ class GalleryState {
 
     ////////////////////////////////////////////////////////////////////////////////////// 
 
-    async GetComments() {
-        const ;
+    async GetAlbumComments(albumId) {
+        albumId = AdaptId(albumId);
 
-        await instance.get('', );
+        if (albumId && !this.albums[albumId].comments) {
+            await instance
+                .get('/api/album-comments?albumId=3a345313-255a-41a2-bac3-3aa2a31a09a1')
+                .then(response => {
+                    this.albums[albumId].comments = response.data;
+                })
+                .catch(error => {
+                    applicationState.AddErrorInQueue(error.response.data);
+                })
+        }
+    }
+
+    async AddUploadingAlbumComment(text, user, albumId) {
+        const comment = {
+            comment: {
+                text
+            },
+            user: user,
+            isUploading: true,
+            queueId: this.albumCommentQueueId
+        }
+
+        if (albumId && this.albums[albumId]) {
+            this.albums[albumId].comments = [comment, ...this.albums[albumId].comments];
+
+            await instance
+                .post(`/api/album-comments?albumId=${albumId}&text=${text}&queueId=${comment.queueId}`)
+                .catch(error => {
+                    applicationState.AddErrorInQueue(error.response.data);
+                    this.DeleteCommentByQueueId(comment.queueId, albumId);
+                })
+        }
+        
+        this.albumCommentQueueId++;
+    }
+
+    ReplaceLoadingComment(comment, queueId, albumId) {
+        if (this.albums[albumId] && this.albums[albumId].comments && this.albums[albumId].comments.map) {
+            this.albums[albumId].comments = this.albums[albumId].comments.map(element => {
+                if (element.queueId === queueId){
+                    element = comment;
+                }
+
+                return element;
+            });
+        }
+    }
+
+    DeleteComment(id, albumId) {
+        if (this.albums[albumId] && this.albums[albumId].comments) {
+            this.albums[albumId].comments = this.albums[albumId].comments
+                .filter(element => element.comment.id !== id);
+        }
+    }
+
+    DeleteCommentByQueueId(queueId, albumId) {
+        if (this.albums[albumId] && this.albums[albumId].comments) {
+            this.albums[albumId].comments.filter(element => element.queueId !== queueId);
+        }
+    }
+
+    SetCommentAsLoading(id) {
+        Object.entries(this.albums).forEach(([key, _]) => {
+            if (this.albums[key].comments) {
+                this.albums[key].comments = this.albums[key].comments
+                    .map(element => {
+                        if (element.id === id) {
+                            element.isUploading = true;
+                        }
+                        return element;
+                    });
+            }
+        });
+    }
+
+    SetCommentAsNormal(id) {
+        Object.entries(this.albums).forEach(([key, _]) => {
+            if (this.albums[key].comments) {
+                this.albums[key].comments = this.albums[key].comments
+                    .map(element => {
+                        if (element.id === id) {
+                            element.isUploading = false;
+                        }
+                        return element;
+                    });
+            }
+        });
+    }
+
+    DeleteCommentById(id) {
+        Object.entries(this.albums).forEach(([key, _]) => {
+            if (this.albums[key].comments) {
+                this.albums[key].comments = this.albums[key].comments
+                    .filter(element => element.id !== id);
+            }
+        });
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////// 
+
+    SetAlbumAccess(users, albumId) {
+        if (this.albums[albumId] && users) {
+            this.albums[albumId].users = []
+
+            if (users.length) {
+                this.albums[albumId].users = [...users, ...this.albums[albumId].users];
+            } else {
+                users.isOwner = true;
+                this.albums[albumId].users = [users, ...this.albums[albumId].users];
+            }
+        }
+    }
+
+    DeleteAlbumUsers(albumId) {
+        if (this.albums[albumId] && this.albums[albumId].users) {
+            console.log('AAAAsssAAAAAAAAAAA');
+            delete this.albums[albumId].users;
+        }
+>>>>>>> f9687cde2559fec188f14abfabb51f09c4ba764a
     }
 
     ////////////////////////////////////////////////////////////////////////////////////// 

@@ -35,6 +35,7 @@ namespace Exider.Repositories.Account
                     data => data.UserId,
                     (user, data) => new UserPublic
                     {
+                        Id = user.Id,
                         Name = user.Name,
                         Surname = user.Surname,
                         Nickname = user.Nickname,

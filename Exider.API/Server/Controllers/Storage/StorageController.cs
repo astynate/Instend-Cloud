@@ -194,7 +194,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 {
                     using (var transaction = _context.Database.BeginTransaction())
                     {
-                        var fileModel = await _fileRespository.AddAsync(name, type, userId,
+                        var fileModel = await _fileRespository.AddAsync(name, type, file.Length, userId,
                             folderId == null ? Guid.Empty : Guid.Parse(folderId));
 
                         if (file.Length > 0 && fileModel.IsFailure == false)
@@ -258,7 +258,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 }
             }
 
-            var result = await _fileRespository.AddAsync(name, type, userId, folderIdAsGuid);
+            var result = await _fileRespository.AddAsync(name, type, 0, userId, folderIdAsGuid);
 
             if (result.IsFailure)
             {

@@ -1,19 +1,19 @@
 .comment {
     display: flex;
     align-items: center;
-    grid-gap: 20px;
+    grid-gap: 15px;
 }
 
 .information {
     display: flex;
-    grid-gap: 5px;
+    grid-gap: 3px;
     max-width: 300px;
     flex-direction: column;
 }
 
 .nameWrapper {
     display: flex;
-    grid-gap: 10px;
+    grid-gap: 5px;
 }
 
 .name {
@@ -23,11 +23,51 @@
 }
 
 .time {
-    font-size: 16px;
+    font-size: 14px;
     color: var(--main-paragraph-color);
 }
 
 .text {
     font-size: 16px;
     color: var(--main-font-color);
+}
+
+.avatarPreview {
+    height: 45px;
+    width: 45px;
+    border-radius: 100%;
+    flex-shrink: 0;
+    animation: preview 2s ease infinite;
+}
+
+.namePreview, .textPreview {
+    height: 20px;
+    border-radius: 5px;
+    animation: preview 2s ease infinite;
+}
+
+.namePreview {
+    width: 100px;
+}
+
+.textPreview {
+    width: 300px;
+}
+
+.right {
+    margin-left: auto;
+}
+
+@keyframes preview {
+    0% {
+        background: #bbb;
+    }
+    
+    50% {
+        background: #555;
+    }
+
+    100% {
+        background: #bbb;
+    }
 }

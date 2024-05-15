@@ -1,6 +1,8 @@
 using Exider.Core;
 using Exider.Core.Dependencies.Repositories.Account;
+using Exider.Core.Models.Access;
 using Exider.Core.Models.Account;
+using Exider.Core.Models.Storage;
 using Exider.Dependencies.Services;
 using Exider.Repositories.Account;
 using Exider.Repositories.Comments;
@@ -39,10 +41,10 @@ builder.Services.AddScoped<IConfirmationRespository, ConfirmationRespository>();
 builder.Services.AddScoped<IUserDataRepository, UserDataRepository>();
 builder.Services.AddScoped<IFolderRepository, FolderRepository>();
 builder.Services.AddScoped<IFileRespository, FileRespository>();
-builder.Services.AddScoped<IFileAccessRepository, FileAccessRepository>();
-builder.Services.AddScoped<IFolderAccessRepository, FolderAccessRepository>();
 builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
-builder.Services.AddScoped<ICommentsRepository, CommentsRepository>();
+builder.Services.AddScoped<ICommentBaseRepository, CommentBaseRepository>();
+builder.Services.AddScoped(typeof(ICommentsRepository<>), typeof(CommentsRepository<>));
+builder.Services.AddScoped(typeof(IAccessRepository<,>), typeof(AccessRepository<,>));
 
 builder.Services.AddSingleton<IValidationService, ValidationService>();
 builder.Services.AddSingleton<ITokenService, JwtService>();

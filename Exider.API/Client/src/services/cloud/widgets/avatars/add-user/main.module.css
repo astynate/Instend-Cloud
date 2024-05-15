@@ -1,7 +1,7 @@
 .userAvatar {
     height: 45px;
     width: 45px;
-    background: #ddd;
+    background: var(--main-accent-color);
     border-radius: 100%;
     overflow: hidden;
     user-select: none;
@@ -10,10 +10,13 @@
     justify-content: center;
     cursor: pointer;
     flex-shrink: 0;
+    border: 2px solid var(--main-background-color);
+    outline: 2px solid var(--main-font-color);
 }
 
 .userAvatar img {
-    height: 93%;
-    width: 93%;
+    height: 45%;
+    width: 45%;
     object-fit: cover;
+    filter: var(--main-filter);
 }
