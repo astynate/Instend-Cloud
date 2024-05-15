@@ -58,120 +58,120 @@ const Header = observer((props) => {
     }, []);
 
     return (
-      <div className={styles.header}>
-        <PopUpField 
-          title={type.title}
-          text={type.text}
-          field={[name, setName]}
-          placeholder={type.placeholder}
-          close={() => setOpenState(false)}
-          open={isOpen}
-          callback={async () => {
-            if (name === null || name === '') 
-                return;
+        <div className={styles.header}>
+            <PopUpField 
+                title={type.title}
+                text={type.text}
+                field={[name, setName]}
+                placeholder={type.placeholder}
+                close={() => setOpenState(false)}
+                open={isOpen}
+                callback={async () => {
+                    if (name === null || name === '') 
+                        return;
 
-            if (type.type === 'folder') {
-                CreateFolder(name, params.id);
-            } else {
-                CreateFile(name, type.type, params.id);
-            }
-          }}
-        />
-        {isOpenAccessWindow === true && 
-            <OpenAccessProcess
-                id={params.id}
-                close={() => setOpenAccessWindowState(false)}
-                endPoint={'folders-access'}
-            />}
-        <div className={styles.buttons}>
-            <div className={styles.buttonBlock}>
-                <Button 
-                    img={OpenAccess} 
-                    title="Open access" 
-                    onClick={() => {
-                        if (params.id) {
-                            setOpenAccessWindowState(true)
-                        } else {
-                            Error('🔒 Attention!', 'Due to possible security issues, you cannot share this directory.');
-                        }
-                    }}
-                />
-            </div>
-            <div className={styles.buttonBlock}>
-                <Button 
-                    img={Upload} 
-                    onClick={() => setCreationWindowState(prev => !prev)}
-                    forwardRef={createWindow}
-                />
-                <div className={styles.create} id={isCreateOpen ? 'open' : null}>
-                    <Create 
-                        isOpen={isCreateOpen}
-                        items={[
-                            {image: newFolder, title: "Folder", callback: () => OpenDialog(types.folder)},
-                            {image: upload, title: "Upload", callback: () => {}, type: "upload", sendFiles: (event) => SendFilesFromEvent(event, params.id)},
-                            {image: note, title: "Note", callback: () => OpenDialog(types.txt)},
-                            {image: word, title: "Word", callback: () => OpenDialog(types.docx)},
-                            {image: excel, title: "Excel", callback: () => OpenDialog(types.xlsx)},
-                            {image: powerpoint, title: "Powerpoint", callback: () => OpenDialog(types.pptx)},
-                            {image: photoshop, title: "Photoshop", callback: () => OpenDialog(types.psd)},
-                            {image: illustrator, title: "Illustrator", callback: () => OpenDialog(types.ai)}
-                        ]}
+                    if (type.type === 'folder') {
+                        CreateFolder(name, params.id);
+                    } else {
+                        CreateFile(name, type.type, params.id);
+                    }
+                }}
+            />
+            {isOpenAccessWindow === true && 
+                <OpenAccessProcess
+                    id={params.id}
+                    close={() => setOpenAccessWindowState(false)}
+                    endPoint={'folders-access'}
+                />}
+            <div className={styles.buttons}>
+                <div className={styles.buttonBlock}>
+                    <Button 
+                        img={OpenAccess} 
+                        title="Open access" 
+                        onClick={() => {
+                            if (params.id) {
+                                setOpenAccessWindowState(true)
+                            } else {
+                                Error('🔒 Attention!', 'Due to possible security issues, you cannot share this directory.');
+                            }
+                        }}
                     />
                 </div>
+                <div className={styles.buttonBlock}>
+                    <Button 
+                        img={Upload} 
+                        onClick={() => setCreationWindowState(prev => !prev)}
+                        forwardRef={createWindow}
+                    />
+                    <div className={styles.create} id={isCreateOpen ? 'open' : null}>
+                        <Create 
+                            isOpen={isCreateOpen}
+                            items={[
+                                {image: newFolder, title: "Folder", callback: () => OpenDialog(types.folder)},
+                                {image: upload, title: "Upload", callback: () => {}, type: "upload", sendFiles: (event) => SendFilesFromEvent(event, params.id)},
+                                {image: note, title: "Note", callback: () => OpenDialog(types.txt)},
+                                {image: word, title: "Word", callback: () => OpenDialog(types.docx)},
+                                {image: excel, title: "Excel", callback: () => OpenDialog(types.xlsx)},
+                                {image: powerpoint, title: "Powerpoint", callback: () => OpenDialog(types.pptx)},
+                                {image: photoshop, title: "Photoshop", callback: () => OpenDialog(types.psd)},
+                                {image: illustrator, title: "Illustrator", callback: () => OpenDialog(types.ai)}
+                            ]}
+                        />
+                    </div>
+                </div>
+                <div className={styles.buttonBlock}>
+                    <Button img={Download} title="Download" onClick={() => {
+                        instance({
+                            url: `/folders?id=${params.id || ''}`,
+                            method: 'GET',
+                            responseType: 'blob',
+                        })
+                        .then((response) => {
+                            DownloadFromResponse(response)
+                        });
+                    }}/>
+                    {props.isMobile === false &&<Button 
+                        img={Sort} 
+                        title="Name" 
+                        onClick={(event) => {
+                            setSortMenuState(prev => !prev);
+                            setSortMenuPosition([event.clientX, 90]);
+                        }}
+                    />}
+                </div>
             </div>
-            <div className={styles.buttonBlock}>
-                <Button img={Download} title="Download" onClick={() => {
-                    instance({
-                        url: `/folders?id=${params.id || ''}`,
-                        method: 'GET',
-                        responseType: 'blob',
-                    })
-                    .then((response) => {
-                        DownloadFromResponse(response)
-                    });
-                }}/>
-                {props.isMobile === false &&<Button 
-                    img={Sort} 
-                    title="Name" 
-                    onClick={(event) => {
-                        setSortMenuState(prev => !prev);
-                        setSortMenuPosition([event.clientX, 90]);
-                    }}
-                />}
-            </div>
-        </div>
-        <div>
-        {isSortMenuOpen === true ?
-            <ContextMenu 
-                items={[
-                    [null, "Ascending by name", () => storageState.SortByNameAsending(params.id)],
-                    [null, "Descending by name", () => storageState.SortByNameDesending(params.id)],
-                    [null, "New ones first", () => storageState.SortByDateAsending(params.id)],
-                    [null, "Old ones first", () => storageState.SortByDateDesending(params.id)]
-                ]}
-                position={sortMenuPosition}
-                close={() => setSortMenuState(false)}
-                isContextMenu={false}
-            /> : null}
-            {(props.path && props.path.length > 0) ?
+            <div>
+            {isSortMenuOpen === true ?
+                <ContextMenu 
+                    items={[
+                        [null, "Ascending by name", () => storageState.SortByNameAsending(params.id)],
+                        [null, "Descending by name", () => storageState.SortByNameDesending(params.id)],
+                        [null, "New ones first", () => storageState.SortByDateAsending(params.id)],
+                        [null, "Old ones first", () => storageState.SortByDateDesending(params.id)]
+                    ]}
+                    position={sortMenuPosition}
+                    close={() => setSortMenuState(false)}
+                    isContextMenu={false}
+                /> : null}
+                {(props.path && props.path.length > 0) ?
 
-                    <h1 className={styles.title}>{props.path[props.path.length - 1].name}</h1>
-                :
-                    <h1 className={styles.title}>Welcome back, {props.name}!</h1>  
-            }
-            <div className={styles.pathWrapper}>
-                <Link to={`/cloud`} className={styles.folder}>
-                    <span className={styles.path}>Yexider Cloud</span>
-                </Link>
-                {props.path && props.path.map ? props.path.map((element, index) => (
-                    <Link to={`/cloud/${element.id}`} className={styles.folder} key={index}>
-                        <img src={Next} />
-                        <span className={styles.path}>{element.name}</span>
+                        <h1 className={styles.title}>{props.path[props.path.length - 1].name}</h1>
+                    :
+                        <h1 className={styles.title}>Welcome back, {props.name}!</h1>  
+                }
+                <div className={styles.pathWrapper}>
+                    <Link to={`/cloud`} className={styles.folder}>
+                        <span className={styles.path}>Yexider Cloud</span>
                     </Link>
-                )) : null}
+                    {props.path && props.path.map ? props.path.map((element, index) => (
+                        <Link to={`/cloud/${element.id}`} className={styles.folder} key={index}>
+                            <img src={Next} />
+                            <span className={styles.path}>{element.name}</span>
+                        </Link>
+                    )) : null}
+                </div>
             </div>
         </div>
-      </div>
     )
   });
   

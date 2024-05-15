@@ -110,11 +110,12 @@ const Cloud = observer((props) => {
   }, []);
 
   return (
-    <div className={styles.cloud}>
+    <div className={styles.wrapper} ref={selectPlaceWrapper}>
       {props.isMobile === false && 
         <>
-          <Search />
-          <Header />
+          <Header>
+            <Search />
+          </Header>
         </>
       }
       {isPreview && 
@@ -133,8 +134,8 @@ const Cloud = observer((props) => {
           }},
         ]}
       />
-      <div className={styles.wrapper}>
-        <div className={styles.contentWrapper} ref={selectPlaceWrapper}>
+      {/* <div className={styles.wrapper}> */}
+        {/* <div className={styles.contentWrapper} ref={selectPlaceWrapper}> */}
           <CloudHeader
             name={user.nickname}
             isMobile={props.isMobile}
@@ -201,12 +202,12 @@ const Cloud = observer((props) => {
                 </div>
             }
           </div>
-        </div>
-        {isRightPanelOpen === true && 
+        {/* </div> */}
+        {/* {isRightPanelOpen === true && 
           <RightPanel 
             file={selectedItems} 
             close={() => setRightPanelState(false)} 
-          />}
+          />} */}
         {isFolderProperties === true &&
           <PropertiesWindow 
             file={selectedItems[0]}
@@ -222,7 +223,7 @@ const Cloud = observer((props) => {
           single={single}
           multiple={multiple}
         />
-      </div>
+      {/* </div> */}
     </div>
   )
 });

@@ -10,6 +10,7 @@
     font-family: 'Open Sans', sans-serif;
     left: 0;
     background: var(--main-background-color);
+    z-index: 1;
     /* backdrop-filter: blur(10px) saturate(50%); */
 }
 

@@ -18,7 +18,7 @@ const Description = observer((props) => {
 
     <>
       <div className={styles.description}>
-        <Avatar src={`data:image/png;base64,${user.avatar}`} />
+        <Avatar src={`data:image/png;base64,${user.avatar ? user.avatar : null}`} />
         <div className={styles.profileDescription}>
           <Username username={user.nickname} />
           <Data coins={user.balance} friends={user.friendCount} space={user.storageSpace / (1024 * 1024)} />
