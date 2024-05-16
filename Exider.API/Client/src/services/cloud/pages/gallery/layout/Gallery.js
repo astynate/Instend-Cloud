@@ -16,7 +16,6 @@ import SimpleButton from '../../../shared/ui-kit/header/simple-button/SimpleButt
 import SelectItems from '../../../shared/ui-kit/header/select-items/SelectItems.js';
 import sort from './images/sort.png';
 import grid from './images/grid.png';
-import Add from '../widgets/add/Add.js';
 import AlbumView from '../pages/AlbumView/AlbumView.js';
 
 export const GetPhotoById = async (id) => {

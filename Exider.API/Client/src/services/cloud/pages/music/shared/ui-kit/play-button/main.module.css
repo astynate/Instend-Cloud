@@ -1,0 +1,31 @@
+.playButton {
+    background: var(--main-font-color);
+    filter: var(--sub-filter);
+    padding: 20px;
+    border-radius: 100%;
+    height: fit-content;
+    width: fit-content;
+    cursor: pointer;
+    flex-shrink: 0;
+    height: 60px;
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.25s ease;
+    user-select: none;
+}
+
+.playButton img {
+    height: 100%;
+    width: 100%;
+    /* object-fit: contain; */
+}
+
+.playButton:hover {
+    transform: scale(105%);
+}
+
+.playButton:active {
+    transform: scale(95%);
+}

@@ -1,0 +1,48 @@
+.song {
+    height: 68px;
+    width: 100%;
+    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) 30px;
+    user-select: none;
+    padding-right: 70px;
+    padding-left: 10px;
+    border-radius: 10px;
+}
+
+.song:hover {
+    background: var(--main-accent-color);
+}
+
+.item {
+    width: fit-content;
+    font-size: 18px;
+    color: var(--main-paragraph-color);
+    justify-self: end;
+}
+
+.index {
+    width: 25px;
+    color: var(--main-paragraph-color);
+}
+
+.name {
+    display: flex;
+    grid-gap: 20px;
+    align-items: center;
+}
+
+.albumCover {
+    height: 45px;
+    width: 45px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.albumCoverImage {
+    height: 45px;
+    width: 45px;
+    border-radius: 5px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
