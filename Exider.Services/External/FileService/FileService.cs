@@ -237,5 +237,10 @@ namespace Exider.Services.External.FileService
 
             return "application/" + systemType;
         }
+
+        public async Task WriteFileAsync(string path, byte[] file)
+        {
+            await File.WriteAllBytesAsync(path, file);
+        }
     }
 }

@@ -2,6 +2,7 @@
 using Exider.Core.Models.Account;
 using Exider.Core.Models.Comments;
 using Exider.Core.Models.Email;
+using Exider.Core.Models.Formats;
 using Exider.Core.Models.Gallery;
 using Exider.Core.Models.Storage;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ namespace Exider.Core
         public DbSet<Models.Access.FileAccess> FileAccess { get; set; } = null!;
         public DbSet<CommentModel> Comments { get; set; } = null!;
         public DbSet<AlbumCommentLink> AlbumCommentLinks { get; set; } = null!;
+        public DbSet<SongFormat> SongsMeta { get; set; } = null!;
 
         public DatabaseContext() => Database.EnsureCreated();
 

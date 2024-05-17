@@ -2,7 +2,6 @@
 using Exider.Repositories.Account;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 
 namespace Exider.Services.External.FileService
 {

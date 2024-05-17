@@ -14,5 +14,6 @@ namespace Exider.Services.External.FileService
         byte[] GetWordDocumentPreviewImage(string path);
         string WordToHTML(string path);
         string ConvertSystemTypeToContentType(string systemType);
+        Task WriteFileAsync(string path, byte[] file);
     }
 }

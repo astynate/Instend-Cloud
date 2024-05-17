@@ -45,6 +45,7 @@ builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
 builder.Services.AddScoped<ICommentBaseRepository, CommentBaseRepository>();
 builder.Services.AddScoped(typeof(ICommentsRepository<>), typeof(CommentsRepository<>));
 builder.Services.AddScoped(typeof(IAccessRepository<,>), typeof(AccessRepository<,>));
+builder.Services.AddScoped(typeof(IFormatRepository<>), typeof(FormatRepository<>));
 
 builder.Services.AddSingleton<IValidationService, ValidationService>();
 builder.Services.AddSingleton<ITokenService, JwtService>();

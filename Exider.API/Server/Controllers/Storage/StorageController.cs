@@ -9,9 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Exider.Repositories.Account;
-using Exider.Core.Models.Account;
-using Exider.Core.Dependencies.Repositories.Account;
-using Exider.Core.TransferModels.Account;
+using Exider.Core.Models.Formats;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Storage
 {
@@ -33,6 +31,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IFileService _fileService;
 
+        private readonly IFormatRepository<SongFormat> _songFormatRepository;
+
         public StorageController
         (
             DatabaseContext context,
@@ -41,7 +41,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             IHubContext<StorageHub> storageHub,
             IFileService fileService,
             IAccessHandler accessHandler,
-            IUserDataRepository userDataRepository
+            IUserDataRepository userDataRepository,
+            IFormatRepository<SongFormat> songFormatRepository
         )
         {
             _context = context;
@@ -51,6 +52,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             _fileService = fileService;
             _accessHandler = accessHandler;
             _userDataRespository = userDataRepository;
+            _songFormatRepository = songFormatRepository;
         }
 
         [HttpGet]
@@ -200,51 +202,51 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             string name = nameSplit[0] ?? "Not set";
             string? type = nameSplit.Length >= 2 ? nameSplit[nameSplit.Length - 1] : null;
 
-            try
+            return await _context.Database.CreateExecutionStrategy().ExecuteAsync<IActionResult>(async () =>
             {
-                return await _context.Database.CreateExecutionStrategy().ExecuteAsync<IActionResult>(async () =>
+                using (var transaction = _context.Database.BeginTransaction())
                 {
-                    using (var transaction = _context.Database.BeginTransaction())
+                    var fileModel = await _fileRespository.AddAsync(name, type, file.Length, userId,
+                        folderId == null ? Guid.Empty : Guid.Parse(folderId));
+
+                    if (fileModel.IsFailure)
                     {
-                        var fileModel = await _fileRespository.AddAsync(name, type, file.Length, userId,
-                            folderId == null ? Guid.Empty : Guid.Parse(folderId));
-
-                        if (fileModel.IsFailure)
-                        {
-                            return Conflict(fileModel.Error);
-                        }
-
-                        using (var fileStream = new FileStream(fileModel.Value.Path, FileMode.Create))
-                        {
-                            await file.CopyToAsync(fileStream);
-                        }
-
-                        if (file.Length > 0)
-                        {
-                            await fileModel.Value.SetPreview(_fileService);
-                        }
-
-                        var increaseResult = await _userDataRespository.IncreaseOccupiedSpace(ownerId, file.Length);
-
-                        if (increaseResult.IsFailure)
-                        {
-                            return Conflict(increaseResult.Error);
-                        }
-
-                        await _storageHub.Clients.Group(fileModel.Value.FolderId == Guid.Empty ? fileModel.Value.OwnerId.ToString() :
-                            fileModel.Value.FolderId.ToString()).SendAsync("UploadFile", new object[] { fileModel.Value, queueId, increaseResult.Value.OccupiedSpace });
-
-                        transaction.Commit();
-
-                        return Ok();
+                        return Conflict(fileModel.Error);
                     }
-                });
-            }
-            catch (Exception exception)
-            {
-                await Console.Out.WriteLineAsync(exception.Message);
-                return StatusCode(500, "Something went wrong");
-            }
+
+                    using (var fileStream = new FileStream(fileModel.Value.Path, FileMode.Create))
+                    {
+                        await file.CopyToAsync(fileStream);
+
+                        fileStream.Seek(0, SeekOrigin.Begin);
+
+                        byte[] bytes = new byte[fileStream.Length];
+
+                        await fileStream.ReadAsync(bytes, 0, (int)fileStream.Length);
+
+                        await ProcessFileType(fileModel.Value.Id, bytes, fileModel.Value.Type);
+                    }
+
+                    if (file.Length > 0)
+                    {
+                        await fileModel.Value.SetPreview(_fileService);
+                    }
+
+                    var increaseResult = await _userDataRespository.IncreaseOccupiedSpace(ownerId, file.Length);
+
+                    if (increaseResult.IsFailure)
+                    {
+                        return Conflict(increaseResult.Error);
+                    }
+
+                    await _storageHub.Clients.Group(fileModel.Value.FolderId == Guid.Empty ? fileModel.Value.OwnerId.ToString() :
+                        fileModel.Value.FolderId.ToString()).SendAsync("UploadFile", new object[] { fileModel.Value, queueId, increaseResult.Value.OccupiedSpace });
+
+                    transaction.Commit();
+
+                    return Ok();
+                }
+            });
         }
 
         [HttpPost]
@@ -381,6 +383,14 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 .SendAsync("UpdateOccupiedSpace", user.Value.OccupiedSpace);
 
             return Ok();
+        }
+
+        private async Task ProcessFileType(Guid fileId, byte[] file, string? type)
+        {
+            if (SongFormat.SongTypes.Contains(type))
+            {
+                await _songFormatRepository.AddAsync(_fileService, fileId, file);
+            }
         }
     }
 }
