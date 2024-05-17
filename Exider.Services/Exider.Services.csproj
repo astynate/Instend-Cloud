@@ -31,6 +31,7 @@
     <PackageReference Include="Spire.Doc" Version="12.3.12" />
     <PackageReference Include="Spire.PDF" Version="10.3.16" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.2" />
+    <PackageReference Include="TagLibSharp" Version="2.3.0" />
   </ItemGroup>
 
 </Project>
