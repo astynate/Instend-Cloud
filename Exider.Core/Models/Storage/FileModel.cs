@@ -61,7 +61,8 @@ namespace Exider.Core.Models.Storage
             {
                 { Configuration.imageTypes, PngHandler },
                 { Configuration.documentTypes, DocumentHandlerAsync },
-                { new string[] { "pdf" }, PdfHandlerAsync }
+                { new string[] { "pdf" }, PdfHandlerAsync },
+                { new string[] { "mp3" }, MP3Handler },
             };
 
             KeyValuePair<string[], Configuration.HandleFileCover> handler = actions
@@ -90,5 +91,8 @@ namespace Exider.Core.Models.Storage
 
         private async Task PdfHandlerAsync(IFileService fileService)
             => FileAsBytes = fileService.GetPdfPreviewImage(Path);
+
+        private async Task MP3Handler(IFileService fileService)
+            => FileAsBytes = fileService.GetSongPreviewImage(Type.ToLower(), Path);
     }
 }

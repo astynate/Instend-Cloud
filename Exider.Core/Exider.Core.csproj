@@ -9,6 +9,7 @@
 	<ItemGroup>
 		<PackageReference Include="CSharpFunctionalExtensions" Version="2.40.3" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+		<PackageReference Include="NAudio.WaveFormRenderer" Version="2.0.0" />
 		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
 	</ItemGroup>
 

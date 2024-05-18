@@ -26,6 +26,7 @@
     <PackageReference Include="Ghostscript.NET" Version="1.2.3.1" />
     <PackageReference Include="iTextSharp" Version="5.5.13.3" />
     <PackageReference Include="Microsoft.Office.Interop.Word" Version="15.0.4797.1004" />
+    <PackageReference Include="NAudio.WaveFormRenderer" Version="2.0.0" />
     <PackageReference Include="OpenXmlPowerTools" Version="4.5.3.2" />
     <PackageReference Include="PDFsharp" Version="6.0.0" />
     <PackageReference Include="sautinsoft.pdffocus" Version="2024.3.28" />

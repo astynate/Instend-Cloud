@@ -83,7 +83,8 @@ const Layout = observer(() => {
 
     storageWSContext.useSignalREffect(
         "UploadFile",
-        ([file, queueId, occupiedSpace]) => {
+        ([file, queueId, occupiedSpace, meta]) => {
+            file.meta = meta;
             userState.ChangeOccupiedSpace(occupiedSpace);
             storageState.ReplaceLoadingFile(file, queueId);
 

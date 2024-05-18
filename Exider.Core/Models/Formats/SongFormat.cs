@@ -1,15 +1,11 @@
 ﻿using Exider.Services.External.FileService;
-using NAudio.Wave;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.IO;
 
 namespace Exider.Core.Models.Formats
 {
     [Table("songs_meta")]
     public class SongFormat : FormatBase
     {
-        [Column("name")] public string Name { get; private set; } = string.Empty;
-        [Column("cover")] public string? Cover { get; private set; } = string.Empty;
         [Column("artist")] public string? Artist { get; private set; } = string.Empty;
         [Column("album")] public string? Album { get; private set; } = string.Empty;
         [Column("plays")] public uint Plays { get; private set; } = 0;
@@ -18,7 +14,12 @@ namespace Exider.Core.Models.Formats
 
         [NotMapped] public static string[] SongTypes = { "mp3", "mp4", "aiff", "wav" };
 
-        [NotMapped] public static byte[] CoverAsBytes = new byte[0];
+        [NotMapped] public byte[] CoverAsBytes = new byte[0];
+
+        [NotMapped] static public Dictionary<string, string> mimeTypes = new Dictionary<string, string>()
+        {
+            {"mp3", "audio/mpeg"}
+        };
 
         public SongFormat() { }
 
@@ -27,35 +28,33 @@ namespace Exider.Core.Models.Formats
             return SongTypes.Contains(format);
         }
 
-
-        public async override Task SetMetaDataFromFile(IFileService fileService, byte[] file)
+        public override void SetMetaDataFromFile(string type, string path)
         {
-            using (var stream = new MemoryStream(file))
+            string? mimeType;
+
+            if (!mimeTypes.ContainsKey(type.ToLower()))
             {
-                var mp3FileReader = new Mp3FileReader(stream);
-                var id3TagData = mp3FileReader.Id3v2Tag;
-
-                if (id3TagData.Pictures.Length > 0)
-                {
-                    var firstPicture = id3TagData.Pictures[0];
-                    var pictureData = firstPicture.Data;
-
-                    CoverAsBytes = pictureData;
-                }
-
-                Name = id3TagData.Title;
-                Artist = string.Join("|||", id3TagData.Performers);
-                Album = id3TagData.Album;
-                Cover = CoverAsBytes != null ? Configuration.SystemDrive + "__songs__/" + FileId.ToString() : null;
-                Plays = 0;
-                RealeseDate = new DateTime((int)id3TagData.Year, 1, 1);
-                Genre = string.Join("|||", id3TagData.Genres);
-
-                if (CoverAsBytes != null && Cover != null)
-                {
-                    await fileService.WriteFileAsync(Cover, CoverAsBytes);
-                }
+                return;
             }
+
+            mimeType = mimeTypes[type.ToLower()];
+
+            var file = TagLib.File.Create(path, mimeType, TagLib.ReadStyle.None);
+            var id3TagData = file.Tag;
+
+            if (id3TagData.Pictures.Length > 0)
+            {
+                var firstPicture = id3TagData.Pictures[0];
+                var pictureData = firstPicture.Data.Data;
+
+                CoverAsBytes = pictureData;
+            }
+
+            Artist = string.Join("|||", id3TagData.Performers);
+            Album = id3TagData.Album;
+            Plays = 0;
+            RealeseDate = DateTime.Now;
+            Genre = string.Join("|||", id3TagData.Genres);
         }
     }
 }

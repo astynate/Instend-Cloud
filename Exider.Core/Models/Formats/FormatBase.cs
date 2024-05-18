@@ -9,14 +9,14 @@ namespace Exider.Core.Models.Formats
     {
         [Column("file_id")][Key] public Guid FileId { get; protected set; } = Guid.Empty;
 
-        public abstract Task SetMetaDataFromFile(IFileService service, byte[] file);
+        public abstract void SetMetaDataFromFile(string type, string path);
         public abstract bool DoesFormatBelongs(string format);
 
-        public static async Task<Result<T>> Create<T>(IFileService fileService, Guid fileId, byte[] file) where T : FormatBase, new()
+        public static Result<T> Create<T>(Guid fileId, string type, string path) where T : FormatBase, new()
         {
             T result = new T { FileId = fileId };
             
-            await result.SetMetaDataFromFile(fileService, file);
+            result.SetMetaDataFromFile(type, path);
 
             return result;
         }

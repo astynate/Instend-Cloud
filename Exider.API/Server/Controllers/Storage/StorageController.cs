@@ -217,15 +217,9 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                     using (var fileStream = new FileStream(fileModel.Value.Path, FileMode.Create))
                     {
                         await file.CopyToAsync(fileStream);
-
-                        fileStream.Seek(0, SeekOrigin.Begin);
-
-                        byte[] bytes = new byte[fileStream.Length];
-
-                        await fileStream.ReadAsync(bytes, 0, (int)fileStream.Length);
-
-                        await ProcessFileType(fileModel.Value.Id, bytes, fileModel.Value.Type);
                     }
+
+                    var metaData = await ProcessFileType(fileModel.Value.Id, fileModel.Value.Path, fileModel.Value.Type);
 
                     if (file.Length > 0)
                     {
@@ -240,7 +234,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                     }
 
                     await _storageHub.Clients.Group(fileModel.Value.FolderId == Guid.Empty ? fileModel.Value.OwnerId.ToString() :
-                        fileModel.Value.FolderId.ToString()).SendAsync("UploadFile", new object[] { fileModel.Value, queueId, increaseResult.Value.OccupiedSpace });
+                        fileModel.Value.FolderId.ToString()).SendAsync("UploadFile", new object[] { fileModel.Value, queueId, increaseResult.Value.OccupiedSpace, metaData });
 
                     transaction.Commit();
 
@@ -385,12 +379,26 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             return Ok();
         }
 
-        private async Task ProcessFileType(Guid fileId, byte[] file, string? type)
+        private async Task<object?> ProcessFileType(Guid fileId, string path, string? type)
         {
+            if (type == null)
+            {
+                return null;
+            }
+
             if (SongFormat.SongTypes.Contains(type))
             {
-                await _songFormatRepository.AddAsync(_fileService, fileId, file);
+                var result = await _songFormatRepository.AddAsync(fileId, type, path);
+
+                if (result.IsFailure)
+                {
+                    return null;
+                }
+
+                return result.Value;
             }
+
+            return null;
         }
     }
 }

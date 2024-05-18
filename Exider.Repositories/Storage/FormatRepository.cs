@@ -1,7 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core;
 using Exider.Core.Models.Formats;
-using Exider.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
 
 namespace Exider.Repositories.Storage
@@ -18,9 +17,9 @@ namespace Exider.Repositories.Storage
             _entities = context.Set<Format>();
         }
 
-        public async Task<Result> AddAsync(IFileService fileService, Guid fileId, byte[] file)
+        public async Task<Result<object>> AddAsync(Guid fileId, string type, string path)
         {
-            var result = await FormatBase.Create<Format>(fileService, fileId, file);
+            var result = FormatBase.Create<Format>(fileId, type, path);
 
             if (result.IsFailure)
             {
@@ -30,7 +29,19 @@ namespace Exider.Repositories.Storage
             await _entities.AddAsync(result.Value);
             await _context.SaveChangesAsync();
 
-            return Result.Success();
+            return Result.Success(result.Value);
+        }
+
+        public async Task<Result<object>> GetMetaDataAsync(Guid fileId)
+        {
+            Format? result = await _entities.FirstOrDefaultAsync(x => x.FileId == fileId);
+
+            if (result == null)
+            {
+                return Result.Failure("Metadata not found");
+            }
+
+            return result;
         }
     }
 }

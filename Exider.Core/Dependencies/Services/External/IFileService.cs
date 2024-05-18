@@ -11,6 +11,7 @@ namespace Exider.Services.External.FileService
         Task<Result<byte[]>> ReadFileAsync(string path);
         byte[] CreateZipFromFiles(FileModel[] files);
         byte[] GetPdfPreviewImage(string path);
+        byte[] GetSongPreviewImage(string type, string path);
         byte[] GetWordDocumentPreviewImage(string path);
         string WordToHTML(string path);
         string ConvertSystemTypeToContentType(string systemType);

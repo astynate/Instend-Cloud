@@ -13,6 +13,7 @@ using iTextSharp.text.pdf;
 using System.Text;
 using Exider.Repositories.Storage;
 using System.IO.Compression;
+using Exider.Core.Models.Formats;
 
 namespace Exider.Services.External.FileService
 {
@@ -110,7 +111,7 @@ namespace Exider.Services.External.FileService
             {
                 { Configuration.documentTypes, WordToHTML },
                 { Configuration.imageTypes, ImageToHtml },
-                { new string[] {"pdf"}, PdfToHtml }
+                { new string[] {"pdf"}, PdfToHtml },
             };
 
             KeyValuePair<string[], Configuration.ConvertToHtml> handler = 
@@ -241,6 +242,31 @@ namespace Exider.Services.External.FileService
         public async Task WriteFileAsync(string path, byte[] file)
         {
             await File.WriteAllBytesAsync(path, file);
+        }
+
+        public byte[] GetSongPreviewImage(string type, string path)
+        {
+            string? mimeType;
+
+            if (!SongFormat.mimeTypes.ContainsKey(type.ToLower()))
+            {
+                return new byte[0];
+            }
+
+            mimeType = SongFormat.mimeTypes[type.ToLower()];
+
+            var file = TagLib.File.Create(path, mimeType, TagLib.ReadStyle.None);
+            var id3TagData = file.Tag;
+
+            if (id3TagData.Pictures.Length > 0)
+            {
+                var firstPicture = id3TagData.Pictures[0];
+                var pictureData = firstPicture.Data.Data;
+
+                return pictureData;
+            }
+
+            return new byte[0];
         }
     }
 }
