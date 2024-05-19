@@ -110,6 +110,7 @@
     align-items: center;
     justify-content: center;
     user-select: none;
+    position: relative;
 }
 
 .file[id="loading"] {

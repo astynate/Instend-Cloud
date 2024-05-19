@@ -9,6 +9,7 @@ import AddToAlbum from '../../../../process/add-to-album/AddToAlbum';
 import { Delete } from '../../../cloud/api/FolderRequests';
 import Loader from '../../../../shared/loader/Loader';
 import { toJS } from 'mobx';
+import { AddPhotosInAlbum } from '../../api/GalleryRequests';
 
 const PhotoList = (props) => {
     const [gridTemplateColumns, setGridTemplateColumns] = useState('repeat(auto-fill, minmax(200px, 1fr))');
@@ -84,24 +85,6 @@ const PhotoList = (props) => {
         fetchDate();
     }, []);
 
-    const AddPhotosInAlbum = async (selected) => {
-        if (selected && selected[0] && selected[0].id) {
-            setActiveItems(prev => {
-                (async () => {
-                    for (let i = 0; i < activeItems.length; i++) {
-                        await instance
-                            .post(`/api/albums?fileId=${activeItems[i].id}&albumId=${selected[0].id}`)
-                            .catch(response => {
-                                console.error(response);
-                            });
-                    }
-                })();
-
-                return prev;
-            })
-        }
-    }
-
     return (
         <div>
             {isPreview && 
@@ -113,7 +96,12 @@ const PhotoList = (props) => {
             <AddToAlbum
                 open={isAddToAlbumOpen}
                 close={() => setAddToAlbumState(false)}
-                add={AddPhotosInAlbum}
+                add={(selected) => {
+                    setActiveItems(prev => {
+                        AddPhotosInAlbum(selected, prev);
+                        return prev;
+                    });
+                }}
                 albums={galleryState.albums}
             />
             <div className={styles.photos} id={current === 1 ? 'waterfall' : 'grid'} style={{ gridTemplateColumns, columnCount }} ref={props.forwardRef}>

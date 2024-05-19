@@ -85,6 +85,25 @@ namespace Exider.Repositories.Storage
             return files;
         }
 
+        public async Task<object[]> GetByFolderIdWithMetaData(Guid userId, Guid folderId)
+        {
+            var files = await _context.Files.AsNoTracking()
+                    .Where(x => (folderId == Guid.Empty) ? x.FolderId == folderId && x.OwnerId == userId : x.FolderId == folderId)
+                    .GroupJoin(_context.SongsMeta,
+                        file => file.Id,
+                        meta => meta.FileId,
+                        (x, y) => new { File = x, Meta = y })
+                    .SelectMany(
+                        x => x.Meta.DefaultIfEmpty(),
+                        (x, y) => new { x.File, Meta = y })
+                    .ToArrayAsync();
+
+            Array.ForEach(files, async
+                x => await x.File.SetPreview(_fileService));
+
+            return files;
+        }
+
         public async Task<Result<FileModel>> UpdateName(Guid id, string name)
         {
             var getFileOperation = await GetByIdAsync(id);
@@ -132,7 +151,7 @@ namespace Exider.Repositories.Storage
         public async Task<FileModel[]> GetLastPhotoByUserIdAsync(Guid userId, int from, int count)
         {
             return await _context.Files.AsNoTracking()
-                .OrderByDescending(x => x.CreationTime)
+                //.OrderByDescending(x => x.CreationTime)
                 .Where(x => x.OwnerId == userId && Configuration.imageTypes.Contains(x.Type))
                 .Skip(from)
                 .Take(count)

@@ -73,9 +73,9 @@ const OpenAccessProcess = observer((props) => {
                     props.setLoadingState(false);
                 }
             })
-            .catch(error => {
-                applicationState.AddErrorInQueue('Attention!', error.response.data);
-            });
+            // .catch(error => {
+            //     // applicationState.AddErrorInQueue('Attention!', error.response.data);
+            // });
     }
 
     useState(() => {

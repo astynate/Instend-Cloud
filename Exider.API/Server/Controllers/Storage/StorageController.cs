@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Exider.Repositories.Account;
 using Exider.Core.Models.Formats;
+using Exider.Repositories.Gallery;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Storage
 {
@@ -139,7 +141,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
             if (folderId != Guid.Empty)
             {
-                FolderModel? folderModel = await _folderRepository.GetByIdAsync(folderId);
+                FolderModel? folderModel = await _folderRepository.GetByIdAsync(folderId.ToString());
 
                 if (folderModel == null)
                 {
@@ -155,7 +157,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 }
             }
 
-            FileModel[] files = await _fileRespository.GetByFolderId(userId, folderId);
+            object[] files = await _fileRespository.GetByFolderIdWithMetaData(userId, folderId);
             FolderModel[] folders = await _folderRepository.GetFoldersByFolderId(fileService, userId, folderId);
             FolderModel[] path = await _folderRepository.GetShortPath(folderId);
 
@@ -164,7 +166,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> UploadFiles
+        public async Task<ActionResult<Guid>> UploadFiles
         (
             [FromForm] IFormFile file, 
             [FromForm] string? folderId,
@@ -177,21 +179,26 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             Guid userId = idResult.Value == null ? Guid.Empty : Guid.Parse(idResult.Value);
             Guid ownerId = userId;
 
+            FolderModel? folderModel = null;
+
             if (folderId != null)
             {
-                FolderModel? folderModel = await _folderRepository.GetByIdAsync(Guid.Parse(folderId));
+                folderModel = await _folderRepository.GetByIdAsync(folderId);
 
                 if (folderModel == null)
                 {
                     return BadRequest("Folder not found");
                 }
 
-                var available = await _accessHandler.GetAccessStateAsync(folderModel, 
-                    Configuration.Abilities.Write, Request.Headers["Authorization"]);
-
-                if (available.IsFailure)
+                if (folderModel.FolderType != Configuration.FolderTypes.System)
                 {
-                    return BadRequest(available.Error);
+                    var available = await _accessHandler.GetAccessStateAsync(folderModel,
+                        Configuration.Abilities.Write, Request.Headers["Authorization"]);
+
+                    if (available.IsFailure)
+                    {
+                        return BadRequest(available.Error);
+                    }
                 }
 
                 ownerId = folderModel.OwnerId;
@@ -202,12 +209,12 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             string name = nameSplit[0] ?? "Not set";
             string? type = nameSplit.Length >= 2 ? nameSplit[nameSplit.Length - 1] : null;
 
-            return await _context.Database.CreateExecutionStrategy().ExecuteAsync<IActionResult>(async () =>
+            return await _context.Database.CreateExecutionStrategy().ExecuteAsync<ActionResult<Guid>>(async () =>
             {
                 using (var transaction = _context.Database.BeginTransaction())
                 {
                     var fileModel = await _fileRespository.AddAsync(name, type, file.Length, userId,
-                        folderId == null ? Guid.Empty : Guid.Parse(folderId));
+                        folderModel == null ? Guid.Empty : folderModel.Id);
 
                     if (fileModel.IsFailure)
                     {
@@ -238,9 +245,59 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
                     transaction.Commit();
 
-                    return Ok();
+                    return Ok(fileModel.Value.Id);
                 }
             });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("/api/albums/upload")]
+        public async Task<IActionResult> UploadInAlbum
+        (
+            [FromForm] IFormFile file,
+            [FromForm] string? folderId,
+            [FromForm] int queueId,
+            [FromForm] string? albumId,
+            IAlbumRepository albumRepository,
+            IRequestHandler requestHandler,
+            IHubContext<GalleryHub> galleryHub
+        )
+        {
+            if (string.IsNullOrEmpty(albumId) || string.IsNullOrWhiteSpace(albumId))
+            {
+                return BadRequest("Album not found");
+            }
+
+            ActionResult<Guid> uploadedFile = await UploadFiles(file, folderId, queueId, requestHandler);
+
+            if (uploadedFile.Result is OkObjectResult okObjectResult)
+            {
+                if (okObjectResult.Value == null)
+                {
+                    return Conflict("Error when trying to upload a file");
+                }
+
+                string? actionResult = okObjectResult.Value.ToString();
+
+                if (actionResult == null)
+                {
+                    return Conflict("Error when trying to upload a file");
+                }
+
+                var result = await albumRepository.AddPhotoToAlbum(Guid.Parse(actionResult), Guid.Parse(albumId));
+
+                if (result.IsFailure)
+                {
+                    return Conflict(result.Error);
+                }
+
+                await galleryHub.Clients.Group(albumId).SendAsync("AddToAlbum", new object[] { result.Value, albumId });
+
+                return Ok();
+            }
+
+            return Conflict("Error when trying to upload a file");
         }
 
         [HttpPost]
@@ -262,7 +319,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
             if (folderId != null)
             {
-                FolderModel? folderModel = await _folderRepository.GetByIdAsync(Guid.Parse(folderId));
+                FolderModel? folderModel = await _folderRepository.GetByIdAsync(folderId);
 
                 if (folderModel == null)
                 {

@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import styles from './main.module.css';
 
 const Scroll = (props) => {
     const [available, setAvailableState] = useState(true);
@@ -27,7 +26,7 @@ const Scroll = (props) => {
         if (isHasMoreRef && isHasMoreRef.current === true) {
             checkScroll();
         }
-    }, [props.array.length]);
+    }, [props.count]);
 
     useEffect(() => {
         if (props.scroll && props.scroll.current) {

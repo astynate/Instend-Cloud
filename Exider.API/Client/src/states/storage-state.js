@@ -1,11 +1,15 @@
 import { instance } from '../state/Interceptors';
 import { makeAutoObservable, runInAction, toJS } from "mobx";
+import applicationState from './application-state';
+import FileAPI from '../services/cloud/api/FileAPI';
 
 export const GuidEmpthy = '00000000-0000-0000-0000-000000000000';
 
 export const AdaptId = (id) => {
     return (id === '' || id == null) ? GuidEmpthy : id;
 }
+
+export const SystemFolders = ["Music", "Photos", "Trash"]
 
 class StorageState {
 
@@ -16,6 +20,10 @@ class StorageState {
     path = [];
     folderQueueId = 0;
     fileQueueId = 0;
+    hasMoreSongs = true;
+    hasMorePhotos = true;
+    countPhotos = 0;
+    countSongs = 0;
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -114,6 +122,10 @@ class StorageState {
     }    
 
     DeleteFolder = (id) => {
+        if (this.folders[id]) {
+            delete this.folders[id];
+        }
+
         for (let key in this.folders) {
             runInAction(() => {
                 this.folders[key] = this.folders[key]
@@ -153,18 +165,31 @@ class StorageState {
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-    CreateLoadingFile(name, folderId) {
+    CreateLoadingFile(name, folderId, type) {
         const file = {
             id: null,
             queueId: this.fileQueueId,
             name: name,
             isLoading: true,
             strategy: 'loadingFile',
-            folderId: folderId
+            folderId: folderId,
+            type: type
         }
 
         runInAction(() => {
-            this.files[AdaptId(folderId)] = [file, ...this.files[AdaptId(folderId)]];
+            if (SystemFolders.includes(folderId)) {
+                const folder = Object.values(this.folders).flat()
+                    .find(element => (element.name && element.typeId) ? element.name === folderId && element.typeId === 'System' : null);
+
+                if (folder && folder.id && this.files[AdaptId(folder.id)]) {
+                    this.files[AdaptId(folder.id)] = [file, ...this.files[AdaptId(folder.id)]];
+                } else {
+                    this.files[AdaptId(folder.id)] = [file];
+                }
+            } else {
+                this.files[AdaptId(folderId)] = [file, ...this.files[AdaptId(folderId)]];
+            }
+            
             this.fileQueueId++;
         });
 
@@ -206,7 +231,7 @@ class StorageState {
     }
     
     DeleteFile = (data) => {
-        for (let key in this.folders) {
+        for (let key in this.files) {
             runInAction(() => {
                 this.files[key] = this.files[key]
                     .filter(element => element.id !== data);
@@ -216,27 +241,32 @@ class StorageState {
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-    async SetFolderItemsById(id, ErrorMessage) {
+    async SetFolderItemsById(id) {
         id = AdaptId(id);
 
-        if (!this.files || !this.files[id]) {
+        if (!this.folders || !this.folders[id]) {
             try {
                 const response = await instance.get(`/storage?id=${id ? id : ""}`)
-                    .catch((error) => ErrorMessage('Attention!', error.response.data));
+                    .catch((error) => applicationState.AddErrorInQueue('Attention!', error.response.data));
 
                 runInAction(() => {
                     this.folders[id] = response.data[0] ? 
                         response.data[0].map(folder => {folder.strategy = 'folder'; return folder}) : [];
 
                     this.files[id] = response.data[1] ? 
-                        response.data[1].map(file => {file.strategy = 'file'; return file}) : [];
+                        response.data[1].map(file => 
+                        {
+                            if (file.file !== undefined && file.meta !== undefined) {
+                                return {...file.file, ...file.meta, strategy: 'file'}
+                            }
+                        }) : [];
 
                     this.path[id] = response.data[2] ? 
                         response.data[2] : [];
                 });
 
             } catch (error) {
-                ErrorMessage('Attention!', 'Something went wrong 😎');
+                applicationState.AddErrorInQueue('Attention!', 'Something went wrong 😎');
                 console.error('Error fetching file:', error);
 
                 runInAction(() => {
@@ -249,43 +279,51 @@ class StorageState {
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-    SortByNameAsending(id) {
-        this.folders[AdaptId(id)] = this.folders[AdaptId(id)].sort((a, b) => 
-            a.name.localeCompare(b.name)
-        );
-        this.files[AdaptId(id)] = this.files[AdaptId(id)].sort((a, b) => 
-            a.name.localeCompare(b.name)
-        );
+    async GetItems(route = 'gallery', hasMore = this.hasMorePhotos, count=this.countPhotos) {
+        await instance
+            .get(`api/${route}?from=${count}&count=${20}`)
+            .then(response => {
+                if (response.data && response.data.length && response.data.length < 1) {
+                    hasMore = false;
+                    return;
+                }
+        
+                runInAction(() => {
+                    for (let i in response.data) {
+                        const file = response.data[i];
+
+                        if (file.id && file.folderId) {
+                            if (this.files[file.folderId] && this.files[file.folderId].filter) {
+                                this.files[file.folderId] = this.files[file.folderId]
+                                    .filter(element => element.id !== file.id);
+
+                                this.files[file.folderId] = [file, ...this.files[file.folderId]];
+                            } else {
+                                this.files[file.folderId] = [file];
+                            }
+                        }
+                    }
+
+                    if (response.data.length) {
+                        count += response.data.length;
+                    }
+
+                    hasMore = true;
+                });
+            })
+            .catch(error => {
+                applicationState.AddErrorInQueue('Attention!', error.response.data);
+            });
+    };
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    GetSelectionByType(type) {
+        return Object.values(this.files).flat()
+            .filter(element => element.type ? type.includes(element.type) === true : null); 
     }
-    
-    SortByNameDesending(id) {
-        this.folders[AdaptId(id)] = this.folders[AdaptId(id)].sort((a, b) => 
-            b.name.localeCompare(a.name)
-        );
-        this.files[AdaptId(id)] = this.files[AdaptId(id)].sort((a, b) => 
-            b.name.localeCompare(a.name)
-        );
-    }    
 
-    SortByDateAsending(id) {
-        this.folders[AdaptId(id)] = this.folders[AdaptId(id)].sort((a, b) => 
-            new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime()
-        );      
-        this.files[AdaptId(id)] = this.files[AdaptId(id)].sort((a, b) => 
-            new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime()
-        );
-    }    
-
-    SortByDateDesending(id) {
-        this.folders[AdaptId(id)] = this.folders[AdaptId(id)].sort((a, b) => 
-            new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime()
-        );      
-        this.files[AdaptId(id)] = this.files[AdaptId(id)].sort((a, b) => 
-            new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime()
-        );
-    }  
-    
-    /////////////////////////////////////////////////////////////////////////////////////////// 
+    //////////////////////////////////////////////////////////////////////////////////////////
 }
 
 export default new StorageState();

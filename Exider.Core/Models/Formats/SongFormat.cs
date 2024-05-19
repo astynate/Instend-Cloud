@@ -1,4 +1,4 @@
-﻿using Exider.Services.External.FileService;
+﻿using NAudio.Wave;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Exider.Core.Models.Formats
@@ -6,20 +6,30 @@ namespace Exider.Core.Models.Formats
     [Table("songs_meta")]
     public class SongFormat : FormatBase
     {
+        [Column("title")] public string? Title { get; private set; } = string.Empty;
         [Column("artist")] public string? Artist { get; private set; } = string.Empty;
         [Column("album")] public string? Album { get; private set; } = string.Empty;
         [Column("plays")] public uint Plays { get; private set; } = 0;
         [Column("release_date")] public DateTime RealeseDate { get; private set; } = DateTime.Now;
         [Column("genre")] public string? Genre { get; private set; } = string.Empty;
+        [Column("duration-ticks")]  public long DurationTicks { get; set; }
 
-        [NotMapped] public static string[] SongTypes = { "mp3", "mp4", "aiff", "wav" };
+        [NotMapped] public static string[] SongTypes = { "mp3", "mp4", "m4a", "aiff", "wav" };
 
         [NotMapped] public byte[] CoverAsBytes = new byte[0];
 
         [NotMapped] static public Dictionary<string, string> mimeTypes = new Dictionary<string, string>()
         {
-            {"mp3", "audio/mpeg"}
+            {"mp3", "audio/mpeg"},
+            {"m4a", "audio/mp4"}
         };
+
+        [NotMapped]
+        public TimeSpan Duration
+        {
+            get { return TimeSpan.FromTicks(DurationTicks); }
+            set { DurationTicks = value.Ticks; }
+        }
 
         public SongFormat() { }
 
@@ -50,11 +60,26 @@ namespace Exider.Core.Models.Formats
                 CoverAsBytes = pictureData;
             }
 
+            Duration = file.Properties != null ? file.Properties.Duration : TimeSpan.Zero;
+
+            if (file.Properties != null)
+            {
+                Duration = file.Properties.Duration;
+            }
+            else 
+            {
+                using (var m4aReader = new MediaFoundationReader(path))
+                {
+                    Duration = m4aReader.TotalTime;
+                }
+            }
+
+            Title = id3TagData.Title;
             Artist = string.Join("|||", id3TagData.Performers);
             Album = id3TagData.Album;
             Plays = 0;
             RealeseDate = DateTime.Now;
-            Genre = string.Join("|||", id3TagData.Genres);
+            Genre = string.Join("|||", id3TagData.Genres);   
         }
     }
 }

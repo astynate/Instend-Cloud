@@ -15,10 +15,14 @@
 }
 
 .item {
+    max-width: 10ic;
     width: fit-content;
     font-size: 18px;
     color: var(--main-paragraph-color);
     justify-self: end;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .index {

@@ -130,7 +130,7 @@ const AlbumView = observer((props) => {
                                                 <Scroll
                                                     scroll={props.scroll}
                                                     isHasMore={galleryState.albums[params.id].hasMore}
-                                                    array={galleryState.albums[params.id].photos}
+                                                    count={galleryState.albums[params.id].photos.length}
                                                     callback={() => {
                                                         galleryState.GetAlbumPhotos(params.id);
                                                     }}

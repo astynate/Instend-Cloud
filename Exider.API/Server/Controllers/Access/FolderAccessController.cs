@@ -42,7 +42,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Access
                 return Ok(new object[] { Configuration.AccessTypes.Private });
             }
 
-            FolderModel? folder = await _folderRepository.GetByIdAsync(Guid.Parse(id));
+            FolderModel? folder = await _folderRepository.GetByIdAsync(id);
 
             if (folder is null)
             {

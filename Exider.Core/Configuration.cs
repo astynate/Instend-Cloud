@@ -51,6 +51,8 @@ namespace Exider.Core
 
         public static readonly string[] documentTypes = {"doc", "docx"};
 
+        public static readonly string[] systemFolders = { "Music", "Photos", "Trash" };
+
         public delegate Task HandleFileCover(IFileService fileService);
 
         public delegate string ConvertToHtml(string path);

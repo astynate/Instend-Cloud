@@ -7,10 +7,7 @@ class GalleryState {
 
     //////////////////////////////////////////////////////////////////////////////////////
 
-    hasMore = true;
-    photos = [];
     albums = {};
-    photoQueueId = 0;
     albumsQueueId = 0;
     albumCommentQueueId = 0;
 
@@ -22,90 +19,15 @@ class GalleryState {
 
     //////////////////////////////////////////////////////////////////////////////////////
 
-    CreateLoadingPhoto(albumId) {
-        const photo = {
-            id: null,
-            queueId: this.photoQueueId,
-            isLoading: true,
-            strategy: 'loading',
-        }
-
-        runInAction(() => {
-            if (albumId !== null && albumId !== '' && this.albums[albumId] && this.albums[albumId]) {
-                this.albums[albumId].photos = [photo, ...this.albums[albumId].photos];
-            }
-
-            this.photos = [photo, ...this.photos];
-            this.photoQueueId++;
-        });
-
-        return photo.queueId;
-    }
-
-    ReplaceLoadingPhoto(photo, queueId, albumId) {
-        photo.strategy = 'file';
-
-        runInAction(() => {
-            if (albumId !== null && albumId !== '' && this.albums[albumId] && this.albums[albumId]) {
-                const photoIndex = this.albums[albumId].photos.findIndex(element => element.queueId === queueId);
-
-                if (photoIndex === -1) {
-                    this.albums[albumId].photos[photoIndex] = [photo, ...this.albums[albumId].photos[photoIndex]];
-                } else {
-                    this.albums[albumId].photos[photoIndex] = photo;
-                }
-            }
-
-            const index = this.photos.findIndex(element => element.queueId === queueId);
-
-            if (index === -1) {
-                this.photos = [photo, ...this.photos];         
-            } else {
-                this.photos[index] = photo;
-            }
-        });
-    }
-
     AddToAlbum(photo, albumId) {
         photo.strategy = 'file';
 
         runInAction(() => {
-            if (albumId !== null && albumId !== '' && this.albums[albumId] && this.albums[albumId]) {
-                this.albums[albumId].photos = [photo, ...this.photos];
+            if (albumId !== null && albumId !== '' && this.albums[albumId] && this.albums[albumId].photos) {
+                this.albums[albumId].photos = [photo, ...this.albums[albumId].photos];
             }
         });
     }
-
-    DeleteLoadingPhoto(queueId) {
-        this.photos = this.photos
-            .filter(element => element.queueId !== queueId);
-    }
-
-    DeletePhoto(data) {
-        for (let [key, value] of Object.entries(this.albums)) {
-            if (this.albums[key].photos && this.albums[key].photos.length > 0) {
-                this.albums[key].photos = this.albums[key].photos.filter(element => element.id !== data);
-            }
-        }
-          
-        this.photos = this.photos
-            .filter(element => element.id !== data);
-    }
-
-    async GetPhotos() {
-        this.hasMore = false;
-        const response = await instance.get(`api/gallery?from=${this.photos.length > 0 ? this.photos.length : 0}&count=${20}`);
-    
-        if (response.data.length < 1) {
-            this.hasMore = false;
-            return;
-        }
-
-        runInAction(() => {
-            this.hasMore = true;
-            this.photos.push(...response.data);
-        });
-    }; 
 
     //////////////////////////////////////////////////////////////////////////////////////
 
@@ -193,44 +115,6 @@ class GalleryState {
                     console.error(error);
                 })
         }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////// 
-
-    SortPhotosByDate(ording) {
-        if (this.photos.length <= 1) {
-            return;
-        }
-
-        try {
-            if (ording === true) {
-                this.photos = toJS(this.photos).sort((a, b) => 
-                    a.name.localeCompare(b.name));
-            } else {
-                this.photos = toJS(this.photos).sort((a, b) => 
-                    b.name.localeCompare(a.name));
-            }
-        } catch {
-
-        }
-    }
-
-    SortPhotosByName(ording) {
-        if (this.photos.length <= 1) {
-            return;
-        }
-
-        try {
-            if (ording === true) {
-                this.photos = toJS(this.photos).sort((a, b) => 
-                    new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime()
-                );
-            } else {
-                this.photos = toJS(this.photos).sort((a, b) => 
-                    new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime()
-                );
-            } 
-        } catch {}
     }
 
     ////////////////////////////////////////////////////////////////////////////////////// 

@@ -15,8 +15,16 @@ namespace Exider.Repositories.Storage
             _context = context;
         }
 
-        public async Task<FolderModel?> GetByIdAsync(Guid id)
-            => await _context.Folders.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        public async Task<FolderModel?> GetByIdAsync(string id)
+        {
+            if (Configuration.systemFolders.Contains(id))
+            {
+                return await _context.Folders.AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Name == id.ToString() && x.TypeId == Configuration.FolderTypes.System.ToString());
+            }
+            
+            return await _context.Folders.AsNoTracking().FirstOrDefaultAsync(x => x.Id == Guid.Parse(id));
+        }
 
         public async Task<Result<FolderModel>> AddAsync(string name, Guid ownerId, Guid folderId, Configuration.FolderTypes folderType, bool visibility)
         {
@@ -111,6 +119,12 @@ namespace Exider.Repositories.Storage
         {
             return await _context.Folders.AsNoTracking()
                 .Where(x => x.OwnerId == userId).ToArrayAsync();
+        }
+
+        public async Task<FolderModel[]> GetSystemFolders(Guid userId)
+        {
+            return await _context.Folders.AsNoTracking()
+                .Where(x => x.OwnerId == userId && x.TypeId == Configuration.FolderTypes.System.ToString()).ToArrayAsync();
         }
     }
 }

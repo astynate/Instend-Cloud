@@ -3,6 +3,7 @@ using Exider.Core;
 using Exider.Core.Dependencies.Repositories.Account;
 using Exider.Core.Models.Account;
 using Exider.Core.Models.Email;
+using Exider.Core.Models.Storage;
 using Exider.Core.TransferModels.Account;
 using Exider.Dependencies.Services;
 using Exider.Repositories.Account;
@@ -289,7 +290,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
         public async Task<Result> CreateSystemFolders(Guid userId)
         {
-            string[] systemFolders = ["Music", "Photos", "Recently deleted"];
+            string[] systemFolders = ["Music", "Photos", "Trash"];
 
             foreach (string systemFolder in systemFolders)
             {

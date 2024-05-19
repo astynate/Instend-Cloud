@@ -10,12 +10,16 @@ import Placeholder from '../../../../shared/placeholder/Placeholder';
 import { toJS } from 'mobx';
 import PhotoList from '../../shared/photo-list/PhotoList';
 import Add from '../../widgets/add/Add';
+import storageState from '../../../../../../states/storage-state';
+import FileAPI from '../../../../api/FileAPI';
 
 const Photos = observer((props) => {
     const photosWrapper = useRef();
     const [date, setDate] = useState(null);
     const [current, setCurrent] = useState([]);
     const dataRef = useRef();
+    
+    let photos = storageState.GetSelectionByType(FileAPI.imageTypes);
 
     useEffect(() => {
         const fetchPhotos = async () => {
@@ -31,28 +35,28 @@ const Photos = observer((props) => {
         fetchPhotos();
     }, [current]);
 
-    if (date === null && toJS(galleryState.photos).length > 0) {
-        setDate(ConvertFullDate(galleryState.photos[0].lastEditTime));
+    if (date === null && toJS(photos).length > 0) {
+        setDate(ConvertFullDate(photos[0].lastEditTime));
     }
     
     const changeDate = () => {
-        try {
-            const element = photosWrapper.current;
-            let children = Array.from(element.children);
+        // try {
+        //     const element = photosWrapper.current;
+        //     let children = Array.from(element.children);
     
-            children = children.filter((item) => {
-                let rect = item.getBoundingClientRect();
-                return CalculateAverageEqual(rect.top, dataRef.current.offsetTop, 60);
-            });
+        //     children = children.filter((item) => {
+        //         let rect = item.getBoundingClientRect();
+        //         return CalculateAverageEqual(rect.top, dataRef.current.offsetTop, 60);
+        //     });
     
-            if (children.length > 0) {
-                setCurrent(children.map(e => e.id));
-            } else if (galleryState.photos.length > 0) {
-                setDate(ConvertFullDate(galleryState.photos[0].lastEditTime));
-            }
-        } catch (error) {
-            console.error(error);
-        }
+        //     if (children.length > 0) {
+        //         setCurrent(children.map(e => e.id));
+        //     } else if (galleryState.photos.length > 0) {
+        //         setDate(ConvertFullDate(galleryState.photos[0].lastEditTime));
+        //     }
+        // } catch (error) {
+        //     console.error(error);
+        // }
     }
 
     useEffect(() => {
@@ -67,29 +71,29 @@ const Photos = observer((props) => {
 
     return (
         <>
-            {galleryState.photos && galleryState.photos.length > 0 &&<div className={styles.down}>
+            {photos && photos.length > 0 && <div className={styles.down}>
                 <div className={styles.currentDate}>
                     <span className={styles.date} ref={dataRef}>{date}</span>
                     <span className={styles.location}>Yexider Cloud</span>
                 </div>
             </div>}
-            {galleryState.photos && galleryState.photos.length === 0 &&
+            {photos && photos.length === 0 &&
                 <div className={styles.placeholder}>
                     <Placeholder title='No photos or videos uploaded.' />
                 </div>}
             <Add id={null} />
             <PhotoList 
-                photos={galleryState.photos} 
+                photos={photos} 
                 scale={props.scale}
                 photoGrid={props.photoGrid}
                 forwardRef={photosWrapper}
             />
             <Sroll
                 scroll={props.scroll}
-                isHasMore={galleryState.hasMore}
-                array={galleryState.photos}
+                isHasMore={storageState.hasMorePhotos}
+                count={storageState.countPhotos}
                 callback={() => {
-                    galleryState.GetPhotos();
+                    storageState.GetItems();
                 }}
             />
         </>

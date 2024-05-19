@@ -95,13 +95,6 @@ const Layout = observer(() => {
     );
 
     storageWSContext.useSignalREffect(
-        "AddToAlbum",
-        ([file, albumId]) => {
-            galleryState.AddToAlbum(file, albumId);
-        }
-    );
-
-    storageWSContext.useSignalREffect(
         "RenameFile",
         (file) => {storageState.RenameFile(file)}
     ); 
@@ -110,11 +103,17 @@ const Layout = observer(() => {
         "DeleteFile",
         (data) => {
             storageState.DeleteFile(data);
-            galleryState.DeletePhoto(data);
         }
     );
 
     /////////////////////////////////////////////////////////////////////////////////
+
+    galleryWSContext.useSignalREffect(
+        "AddToAlbum",
+        ([file, albumId]) => {
+            galleryState.AddToAlbum(file, albumId);
+        }
+    );
 
     galleryWSContext.useSignalREffect(
         "Create",

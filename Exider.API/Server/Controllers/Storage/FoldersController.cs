@@ -54,7 +54,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
             if (id != null)
             {
-                folder = await _folderRepository.GetByIdAsync(Guid.Parse(id));
+                folder = await _folderRepository.GetByIdAsync(id);
             }
 
             if (folder != null)
@@ -95,7 +95,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
             if (folder != Guid.Empty)
             {
-                FolderModel? folderModel = await _folderRepository.GetByIdAsync(folder);
+                FolderModel? folderModel = await _folderRepository.GetByIdAsync(folder.ToString());
 
                 if (folderModel == null)
                 {
@@ -136,7 +136,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
             if (id != Guid.Empty)
             {
-                FolderModel? folderModel = await _folderRepository.GetByIdAsync(id);
+                FolderModel? folderModel = await _folderRepository.GetByIdAsync(id.ToString());
 
                 if (folderModel == null)
                 {
@@ -168,7 +168,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             IFolderRepository folderRepository,
             IUserDataRepository userDataRepository,
             Guid folderId,
-            Guid id
+            string id
         )
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
@@ -180,9 +180,9 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
             Guid ownerId = Guid.Parse(userId.Value);
 
-            if (id != Guid.Empty)
+            if (string.IsNullOrEmpty(id) == false || string.IsNullOrWhiteSpace(id))
             {
-                FolderModel? folderModel = await _folderRepository.GetByIdAsync(id);
+                FolderModel? folderModel = await _folderRepository.GetByIdAsync(id.ToString());
 
                 if (folderModel == null)
                 {
@@ -200,7 +200,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             }
 
             await fileService.DeleteFolderById
-                (fileRespository, folderRepository, id);
+                (fileRespository, folderRepository, Guid.Parse(id));
 
             await _storageHub.Clients.Group(folderId.ToString())
                 .SendAsync("DeleteFolder", id);

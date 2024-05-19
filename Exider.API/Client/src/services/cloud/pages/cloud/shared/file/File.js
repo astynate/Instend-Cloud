@@ -53,7 +53,9 @@ const File = (props) => {
               </div>
             :
               <div className={styles.file} id="loading">
-                <Loader />
+                <div className={styles.loader}>
+                  <Loader />
+                </div>
                 <span>{props.type}</span>
               </div>}
           </div>
@@ -65,7 +67,6 @@ const File = (props) => {
       </>
     );
   } else {
-
     return (
       <div 
         className={styles.wrapper} 

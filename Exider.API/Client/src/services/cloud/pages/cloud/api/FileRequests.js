@@ -73,22 +73,33 @@ export const CreateFile = async (name, type, folderId) => {
 
 //////////////////////////////////////////////////////////////////////////////////
 
-export const SendFilesAsync = async (files, folderId, error) => {
+export const SendFilesAsync = async (files, folderId) => {
     await Array.from(files).forEach(async (file) => {
-      const files = new FormData();
+        let type = null;
 
-      const queueId = await storageState.CreateLoadingFile(file.name ? file.name : null, folderId);
+        if (file.type) {
+            type = file.type.split('/');
 
-      files.append('file', file);
-      files.append('folderId', folderId ? folderId : "");
-      files.append('queueId', queueId);
+            if (type.length === 2) {
+                type = type[1];
+            } else{
+                type = null;
+            }
+        }
 
-      await instance
-        .post('/storage', files)
-        .catch(error => {
-            applicationState.AddErrorInQueue('Attention!', error.response.data);
-            storageState.DeleteLoadingFile(queueId, file.folderId);
-        });
+        const files = new FormData();
+        const queueId = await storageState.CreateLoadingFile(file.name ? file.name : null, folderId, type);
+
+        files.append('file', file);
+        files.append('folderId', folderId ? folderId : "");
+        files.append('queueId', queueId);
+
+        await instance
+            .post('/storage', files)
+            .catch(error => {
+                applicationState.AddErrorInQueue('Attention!', error.response.data);
+                storageState.DeleteLoadingFile(queueId, file.folderId);
+            });
     });
 };
 

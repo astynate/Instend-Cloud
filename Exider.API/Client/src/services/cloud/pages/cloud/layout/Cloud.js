@@ -223,7 +223,6 @@ const Cloud = observer((props) => {
           single={single}
           multiple={multiple}
         />
-      {/* </div> */}
     </div>
   )
 });

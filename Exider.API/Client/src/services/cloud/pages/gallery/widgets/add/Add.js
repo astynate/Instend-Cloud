@@ -5,7 +5,8 @@ import Create from '../../../../shared/create/Create';
 import album from './images/types/album.png';
 import image from './images/types/image.png';
 import CreateAlbum from '../../../../widgets/create-album/CreateAlbum';
-import { UploadPhotosInGallery } from '../../api/GalleryRequests';
+import { UploadPhotosInAlbum, UploadPhotosInGallery } from '../../api/GalleryRequests';
+import { SendFilesAsync, SendFilesFromEvent } from '../../../cloud/api/FileRequests';
 
 const Add = (props) => {
     const createWindow = useRef();
@@ -36,7 +37,13 @@ const Add = (props) => {
                 isOpen={isCreateOpen}
                 items={[
                     {image: album, title: "Album", callback: () => {setCreateAlbumOpen(true)}},
-                    {image: image, title: "Image", callback: () => {}, type: "upload", sendFiles: (event) => UploadPhotosInGallery(event, props.id)},
+                    {image: image, title: "Image", callback: () => {}, type: "upload", sendFiles: (event) => {
+                        if (props.id) {
+                            UploadPhotosInAlbum(event, 'Photos', props.id);
+                        } else {
+                            SendFilesFromEvent(event, 'Photos');
+                        }
+                    }},
                 ]}
             />
             <div className={styles.button} onClick={() => setOpenState(prev => !prev)} ref={createWindow}>

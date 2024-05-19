@@ -80,8 +80,10 @@ const Header = observer((props) => {
             {isOpenAccessWindow === true && 
                 <OpenAccessProcess
                     id={params.id}
+                    open={isOpenAccessWindow}
                     close={() => setOpenAccessWindowState(false)}
                     endPoint={'folders-access'}
+                    accessSaveCallback={() => {}}
                 />}
             <div className={styles.buttons}>
                 <div className={styles.buttonBlock}>

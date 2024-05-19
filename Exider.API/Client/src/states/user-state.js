@@ -1,5 +1,6 @@
 import { instance } from '../state/Interceptors';
 import { makeAutoObservable } from "mobx";
+import storageState from './storage-state';
 
 class UserState {
     isAccessibleRoute = false;
@@ -13,17 +14,17 @@ class UserState {
 
     UpdateUserData = async (location, navigate) => {
         try {
-            const response = await instance.get('/accounts');
+            await instance.get('/accounts')
+                .then(response => {
+                    this.user = response.data;
+                    this.isAuthorize = true;
+                })
+                .catch(() => {
+                    this.isAuthorize = false;
+                    navigate('/account/login');
+                });
 
-            if (response.status === 200) {
-                this.user = await response.data;
-                this.isAuthorize = true;
-            } 
-            
-            else {
-                this.isAuthorize = false;
-                navigate('/account/login');
-            }
+            await storageState.SetFolderItemsById(null);
         } 
         catch (exception) {
             this.isAuthorize = false;

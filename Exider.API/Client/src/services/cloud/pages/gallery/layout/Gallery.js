@@ -17,9 +17,11 @@ import SelectItems from '../../../shared/ui-kit/header/select-items/SelectItems.
 import sort from './images/sort.png';
 import grid from './images/grid.png';
 import AlbumView from '../pages/AlbumView/AlbumView.js';
+import storageState from '../../../../../states/storage-state';
+import FileAPI from '../../../api/FileAPI';
 
 export const GetPhotoById = async (id) => {
-  return await toJS(galleryState.photos.find(element => element.id === id));
+  return await toJS(storageState.GetSelectionByType(FileAPI.imageTypes).find(element => element.id === id));
 }
 
 const Gallery = observer((props) => {
@@ -64,21 +66,21 @@ const Gallery = observer((props) => {
   const scroll = useRef();
 
   useEffect(() => {
-    let type = PhotosSortState
-      .find(element => element.isSelected === true);
+    // let type = PhotosSortState
+    //   .find(element => element.isSelected === true);
 
-    let ordingState = SortingOrderState
-      .find(element => element.isSelected === true);
+    // let ordingState = SortingOrderState
+    //   .find(element => element.isSelected === true);
 
-    if (type && ordingState) {
-      const ordingStateId = ordingState.title === 'Accending';
+    // if (type && ordingState) {
+    //   const ordingStateId = ordingState.title === 'Accending';
 
-      if (type.title === 'Name') {
-        galleryState.SortPhotosByName(ordingStateId);
-      } else {
-        galleryState.SortPhotosByDate(ordingStateId);
-      }
-    }
+    //   if (type.title === 'Name') {
+    //     galleryState.SortPhotosByName(ordingStateId);
+    //   } else {
+    //     galleryState.SortPhotosByDate(ordingStateId);
+    //   }
+    // }
   }, [PhotosSortState, SortingOrderState]);
 
   useEffect(() => {
