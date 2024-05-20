@@ -14,6 +14,7 @@ import galleryState from '../../../states/gallery-state';
 import Information from '../shared/information/Information';
 import applicationState from '../../../states/application-state';
 import userState from '../../../states/user-state';
+import MusicPlayer from '../widgets/music-player/MusicPlayer';
 
 export const messageWSContext = createSignalRContext();
 export const storageWSContext = createSignalRContext();
@@ -212,6 +213,7 @@ const Layout = observer(() => {
                 <galleryWSContext.Provider url={"http://localhost:5000/gallery-hub"}>
                     <div className='cloud-wrapper'>
                         {isLoading && <Loader />}
+                        <MusicPlayer />
                         <Helmet>
                             <title>Yexider</title>
                         </Helmet>

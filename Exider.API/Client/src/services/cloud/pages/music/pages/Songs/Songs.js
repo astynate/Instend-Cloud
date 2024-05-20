@@ -5,8 +5,9 @@ import SongList from '../../widgets/song-list/SongList';
 import storageState from '../../../../../../states/storage-state';
 import FileAPI from '../../../../api/FileAPI';
 import Scroll from '../../../../widgets/scroll/Scroll';
+import { observer } from 'mobx-react-lite';
 
-const Songs = (props) => {
+const Songs = observer((props) => {
     return (
         <div className={styles.songs}>
             <SongInformation />
@@ -21,6 +22,6 @@ const Songs = (props) => {
             />
         </div>
     );
-}
+});
 
 export default Songs;

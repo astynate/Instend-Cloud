@@ -1,8 +1,10 @@
 import React from 'react';
 import styles from './main.module.css';
 import Song from '../../shared/song/Song';
+import musicState from '../../../../../../states/music-state';
+import { observer } from 'mobx-react-lite';
 
-const SongList = ({songs}) => {
+const SongList = observer(({songs}) => {
     return (
         <div className={styles.songList}>
             <div className={styles.songListHeader}>
@@ -21,12 +23,13 @@ const SongList = ({songs}) => {
                             key={index}
                             index={index + 1}
                             song={element}
+                            isPlaying={element.id === musicState.GetCurrentSongId() && musicState.isPlaying}
                         />
                     )
                 })}
             </div>
         </div>
     )
-}
+});
 
 export default SongList;

@@ -308,8 +308,6 @@ class StorageState {
                         }
                     }
 
-                    console.log(this.files);
-
                     if (response.data.length) {
                         count += response.data.length;
                     }
