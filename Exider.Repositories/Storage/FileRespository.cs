@@ -170,5 +170,26 @@ namespace Exider.Repositories.Storage
                     (albumLink, fileModel) => fileModel)
                 .ToArrayAsync();
         }
+
+        public async Task<object[]> GetLastFilesWithType(Guid userId, int from, int count, string[] type)
+        {
+            var result = await _context.Files.AsNoTracking()
+                .Where(x => x.OwnerId == userId && type.Contains(x.Type))
+                .Skip(from)
+                .Take(count)
+                .GroupJoin(_context.SongsMeta,
+                        file => file.Id,
+                        meta => meta.FileId,
+                        (x, y) => new { File = x, Meta = y })
+                    .SelectMany(
+                        x => x.Meta.DefaultIfEmpty(),
+                        (x, y) => new { x.File, Meta = y })
+                    .ToArrayAsync();
+
+            Array.ForEach(result, async
+                x => await x.File.SetPreview(_fileService));
+
+            return result;
+        }
     }
 }

@@ -1,16 +1,7 @@
-class StorageState {
-
-    ///////////////////////////////////////////////////////////////////////////////////////////
-
-    files = {};
-    folders = {};
-    path = [];
-    folderQueueId = 0;
-    fileQueueId = 0;
-
-    ///////////////////////////////////////////////////////////////////////////////////////////
-
+class MusicState {
     constructor() {
         makeAutoObservable(this);
     }
 }
+
+export default new MusicState();

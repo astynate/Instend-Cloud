@@ -49,6 +49,8 @@ namespace Exider.Core
 
         public static readonly string[] imageTypes = {"png", "jpg", "jpeg", "gif"};
 
+        public static readonly string[] musicTypes = {"mp3", "m4a", "wav"};
+
         public static readonly string[] documentTypes = {"doc", "docx"};
 
         public static readonly string[] systemFolders = { "Music", "Photos", "Trash" };

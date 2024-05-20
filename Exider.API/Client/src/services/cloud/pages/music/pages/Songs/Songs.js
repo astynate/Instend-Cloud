@@ -4,6 +4,7 @@ import SongInformation from '../../widgets/song-information/SongInformation';
 import SongList from '../../widgets/song-list/SongList';
 import storageState from '../../../../../../states/storage-state';
 import FileAPI from '../../../../api/FileAPI';
+import Scroll from '../../../../widgets/scroll/Scroll';
 
 const Songs = (props) => {
     return (
@@ -12,10 +13,10 @@ const Songs = (props) => {
             <SongList songs={storageState.GetSelectionByType(FileAPI.musicTypes)} />
             <Scroll
                 scroll={props.scroll}
-                isHasMore={galleryState.albums[params.id].hasMore}
-                count={galleryState.albums[params.id].photos.length}
+                isHasMore={storageState.hasMoreSongs}
+                count={storageState.countSongs}
                 callback={() => {
-                    galleryState.GetAlbumPhotos(params.id);
+                    storageState.GetItems(storageState.hasMoreSongs, storageState.countSongs, "music");
                 }}
             />
         </div>
