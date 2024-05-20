@@ -246,25 +246,29 @@ namespace Exider.Services.External.FileService
 
         public byte[] GetSongPreviewImage(string type, string path)
         {
-            string? mimeType;
-
-            if (!SongFormat.mimeTypes.ContainsKey(type.ToLower()))
+            try
             {
-                return new byte[0];
-            }
+                string? mimeType;
 
-            mimeType = SongFormat.mimeTypes[type.ToLower()];
+                if (!SongFormat.mimeTypes.ContainsKey(type.ToLower()))
+                {
+                    return new byte[0];
+                }
 
-            var file = TagLib.File.Create(path, mimeType, TagLib.ReadStyle.None);
-            var id3TagData = file.Tag;
+                mimeType = SongFormat.mimeTypes[type.ToLower()];
 
-            if (id3TagData.Pictures.Length > 0)
-            {
-                var firstPicture = id3TagData.Pictures[0];
-                var pictureData = firstPicture.Data.Data;
+                var file = TagLib.File.Create(path, mimeType, TagLib.ReadStyle.None);
+                var id3TagData = file.Tag;
 
-                return pictureData;
-            }
+                if (id3TagData.Pictures.Length > 0)
+                {
+                    var firstPicture = id3TagData.Pictures[0];
+                    var pictureData = firstPicture.Data.Data;
+
+                    return pictureData;
+                }
+            } 
+            catch { }
 
             return new byte[0];
         }

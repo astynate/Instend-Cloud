@@ -279,9 +279,9 @@ class StorageState {
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-    async GetItems(route = 'gallery', hasMore = this.hasMorePhotos, count=this.countPhotos) {
+    async GetItems(hasMore = this.hasMorePhotos, count=this.countPhotos, type='gallery') {
         await instance
-            .get(`api/${route}?from=${count}&count=${20}`)
+            .get(`api/pagination?from=${count}&count=${20}&type=${type}`)
             .then(response => {
                 if (response.data && response.data.length && response.data.length < 1) {
                     hasMore = false;
@@ -290,7 +290,11 @@ class StorageState {
         
                 runInAction(() => {
                     for (let i in response.data) {
-                        const file = response.data[i];
+                        let file = response.data[i];
+                        
+                        if (file.file !== undefined && file.meta !== undefined) {
+                            file = {...file.file, ...file.meta, strategy: 'file'}
+                        }
 
                         if (file.id && file.folderId) {
                             if (this.files[file.folderId] && this.files[file.folderId].filter) {
@@ -303,6 +307,8 @@ class StorageState {
                             }
                         }
                     }
+
+                    console.log(this.files);
 
                     if (response.data.length) {
                         count += response.data.length;

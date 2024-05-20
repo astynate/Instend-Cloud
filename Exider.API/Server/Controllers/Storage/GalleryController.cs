@@ -60,26 +60,6 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPhotos(IFileService fileService, int from, int count)
-        {
-            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
-
-            if (userId.IsFailure)
-            {
-                return BadRequest(userId.Error);
-            }
-
-            FileModel[] files = await _fileRespository.GetLastPhotoByUserIdAsync(Guid.Parse(userId.Value), from, count);
-
-            foreach (FileModel file in files)
-            {
-                await file.SetPreview(fileService);
-            }
-
-            return Ok(files);
-        }
-
-        [HttpGet]
         [Route("/api/albums")]
         public async Task<ActionResult<AlbumModel[]>> GetAlbums(IImageService imageService)
         {

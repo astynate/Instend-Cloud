@@ -10,7 +10,6 @@ import { ConvertFullDate } from '../../../../../../utils/DateHandler';
 import PhotoList from '../../shared/photo-list/PhotoList';
 import Add from '../../widgets/add/Add';
 import UserAvatar from '../../../../widgets/avatars/user-avatar/UserAvatar';
-import userState from '../../../../../../states/user-state';
 import AddUser from '../../../../widgets/avatars/add-user/AddUser';
 import LocalMenu from '../../../../shared/ui-kit/local-menu/LocalMenu';
 import Comments from '../../../../widgets/social/comments/Comments';
