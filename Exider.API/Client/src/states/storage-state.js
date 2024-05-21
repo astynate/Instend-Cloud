@@ -43,6 +43,13 @@ class StorageState {
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
+    FindFileById(id) {
+        return Object.values(this.files).flat()
+            .find(element => element.id === id);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////
+
     CreateLoadingFolder(name, folderId) {
         const folder = {
             id: null,

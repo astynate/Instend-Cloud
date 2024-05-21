@@ -1,9 +1,10 @@
 ﻿import { Link, useLocation  } from 'react-router-dom';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import './css/navigation.buttons.css';
 import './css/main.css';
 import './css/progress-bar.css';
 import './css/media-queries.css';
+import styles from './css/main.module.css';
 import logo from './images/logo/main-logo-black.svg';
 import home_passive from './images/buttons/home_passive.svg';
 import home_active from './images/buttons/home_active.svg';
@@ -22,6 +23,9 @@ import profile_active from './images/buttons/profile_active.svg';
 import { useTranslation } from 'react-i18next';
 import userState from '../../../../states/user-state';
 import { observer } from 'mobx-react-lite';
+import arrow from './images/player/arrow.png';
+import defaultCover from './images/player/default-playlist-cover.png';
+import SongQueue from './components/song-queue/SongQueue';
 
 const useIsActiveButton = (name) => 
     useIsCurrentRoute(name) ? 'active' : 'passive'
@@ -32,6 +36,7 @@ const useIsCurrentRoute = (name) =>
 const NavigationPanel = observer((props) => {
     const { user } = userState;
     const { t } = useTranslation();
+    const [isQueueOpen, setQueueOpenState] = useState(false);
 
     const occupiedPercentage = () => {
         if (user && user.occupiedSpace && user.storageSpace) {
@@ -77,10 +82,21 @@ const NavigationPanel = observer((props) => {
                 </Link>
             </div>
             <div className="progress-bar-wrapper">
+                <div className={styles.musicPlayer} onClick={() => setQueueOpenState(prev => !prev)}>
+                    <div className={styles.albumCover}>
+                        <img src={defaultCover} className={styles.cover} />
+                    </div>
+                    <div className={styles.info}>
+                        <span className={styles.songName}>Не исполняется</span>
+                        <span className={styles.artist}>Артист — Альбом</span>
+                    </div>
+                    <img src={arrow} className={styles.arrow} id={isQueueOpen ? "open" : null} />
+                </div>
                 <div className="progress-bar">
                     <div className="line" style={{width: `${occupiedPercentage()}%`}}></div>
                 </div>
             </div>
+            <SongQueue openState={isQueueOpen} />
         </div>
     )
 })

@@ -11,8 +11,12 @@ const Song = ({index, song, isPlaying, isLoading}) => {
     return (
         <div className={styles.song}>
             <div className={styles.name}>
-                <span className={styles.index}>{index}</span>
-                <div className={styles.albumCover} onClick={() => musicState.SetSongAsPlaying(song.id)}>
+                {index && <span className={styles.index}>{index}</span>}
+                <div className={styles.albumCover} onClick={() => {
+                    if (song && song.id) {
+                        musicState.SetSongAsPlaying(song.id);
+                    }
+                }}>
                     {isPlaying && <div className={styles.loader}>
                         <div className={styles.barWrapper}>
                             <div className={styles.bar}></div>
@@ -41,11 +45,11 @@ const Song = ({index, song, isPlaying, isLoading}) => {
                         />
                     }
                 </div>
-                <span className={styles.item}>{song.title ? song.title : song.name}</span>
+                <span className={styles.item}>{song && song.title ? song.title : song && song.name ? song.name : 'Not set'}</span>
             </div>
-            <span className={styles.item}>{song.artist}</span>
-            <span className={styles.item}>{song.plays}</span>
-            <span className={styles.item}>{convertFromTimespan(song.duration)}</span>
+            <span className={styles.item}>{song && song.artist}</span>
+            <span className={styles.item}>{song && song.plays}</span>
+            <span className={styles.item}>{song && song.duration && convertFromTimespan(song.duration)}</span>
         </div>
     );
 }

@@ -4,6 +4,7 @@
     user-select: none;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .left-panel[id="rolled-up"] {
