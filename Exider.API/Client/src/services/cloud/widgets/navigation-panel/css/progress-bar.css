@@ -4,10 +4,10 @@
     display: flex;
     justify-content: end;
     flex-direction: column;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 17px;
+    padding-right: 17px;
     align-items: center;
-    padding-bottom: 20%;
+    padding-bottom: 15%;
 }
 
 .progress-bar {
@@ -17,10 +17,8 @@
     background: var(--main-accent-color);
     display: flex;
     align-self: flex-end;
-    /* margin: 20% 28px; */
     border-radius: 30px;
-    overflow: hidden;
-    /* align-items: center; */
+    /* overflow: hidden; */
     justify-content: flex-start;
 }
 

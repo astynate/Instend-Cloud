@@ -15,24 +15,30 @@
     border-right: 1px solid var(--main-border-color);
     border-left: 1px solid var(--main-border-color);
     position: absolute;
-    z-index: 10;
+    z-index: 9999999999;
     padding: 20px;
     transition: 0.25s ease;
     /* box-shadow: 0px 0px 100px var(--main-background-color); */
 }
 
 .songQueue[id="open"] {
-    --song-queue-width: 400px;
+    --song-queue-width: 350px;
     opacity: 1;
     /* width: var(--song-queue-width); */
 }
 
 .title {
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 600;
     color: var(--main-font-color);
 }
 
 .player {
     margin-top: auto;
+}
+
+.queue {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 10px;
 }

@@ -3,12 +3,14 @@ using Exider.Core.Models.Storage;
 using Exider.Repositories.Storage;
 using Exider.Services.External.FileService;
 using Exider.Services.Internal.Handlers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Storage
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class PaginationController : ControllerBase
     {
         private readonly IFileRespository _fileRespository;
@@ -28,6 +30,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         }
 
         [HttpGet]
+        [Authorize]
         [Route("/api/pagination")]
         public async Task<IActionResult> GetPhotos(IFileService fileService, int from, int count, string type)
         {

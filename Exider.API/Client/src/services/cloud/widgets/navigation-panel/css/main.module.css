@@ -65,3 +65,15 @@
     height: 100%;
     width: 100%;
 }
+
+.time { 
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.time span { 
+    color: var(--main-paragraph-color);
+}

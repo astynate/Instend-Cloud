@@ -10,15 +10,18 @@ const SongQueue = observer(({openState}) => {
         <div className={styles.songQueue} id={openState ? "open" : null}>
             <div className={styles.queue}>
                 <span className={styles.title}>Queue</span>
-                {musicState.songQueue.map(element => {
-                    return (
-                        <Song 
-                            key={element.id}
-                            song={storageState.FindFileById(element.id)}
-                            isPlaying={element.id === musicState.GetCurrentSongId() && musicState.isPlaying}
-                        />
-                    );
-                })}
+                <div className={styles.songs}>
+                    {musicState.songQueue.map(element => {
+                        return (
+                            <Song 
+                                isShort={true}
+                                key={element.id}
+                                song={storageState.FindFileById(element.id)}
+                                isPlaying={element.id === musicState.GetCurrentSongId() && musicState.isPlaying}
+                            />
+                        );
+                    })}
+                </div>
             </div>
         </div>
     );

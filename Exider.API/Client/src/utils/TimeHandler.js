@@ -1,16 +1,3 @@
-export function displayTime(ticksInSecs) {
-    var ticks = ticksInSecs;
-    var hh = Math.floor(ticks / 3600);
-    var mm = Math.floor((ticks % 3600) / 60);
-    var ss = ticks % 60;
-    return pad(hh, 2) + ":" + pad(mm, 2) + ":" + pad(ss, 2);
-}
-
-export function pad(n, width) {
-    var n = n + '';
-    return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
-}
-
 export function convertFromTimespan(timeSpan) {
     if (timeSpan === '' || timeSpan === null || timeSpan === undefined) {
         return null;
@@ -34,4 +21,20 @@ export function convertFromTimespan(timeSpan) {
     } else {
         return hours + minutes + seconds;
     }
+}
+
+export function convertTicksToTime(ticks) {
+    let milliseconds = ticks / 10000;
+    let minutes = Math.floor(milliseconds / 60000);
+
+    milliseconds = milliseconds % 60000;
+    
+    let seconds = Math.floor(milliseconds / 1000);
+    let time = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+
+    return time;
+}
+
+export function convertSecondsToTicks(seconds) {
+    return seconds * 10000000;
 }

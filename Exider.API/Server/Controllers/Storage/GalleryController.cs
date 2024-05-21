@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Exider.Repositories.Account;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Storage
 {
@@ -61,6 +62,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         [HttpGet]
         [Route("/api/albums")]
+        [Authorize]
         public async Task<ActionResult<AlbumModel[]>> GetAlbums(IImageService imageService)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
@@ -80,6 +82,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             return Ok(result.Value);
         }
 
+        [Authorize]
         [HttpDelete]
         [Route("/api/albums")]
         public async Task<IActionResult> DeleteAlbum(string id)
@@ -109,6 +112,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         }
 
         [HttpPost]
+        [Authorize]
         [Route("/api/gallery/upload")]
         public async Task<IActionResult> UploadToGallery
         (
@@ -211,6 +215,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         }
 
         [HttpPost]
+        [Authorize]
         [Route("/api/albums")]
         public async Task<IActionResult> AddToAlbum(string fileId, string albumId)
         {
@@ -237,6 +242,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         }
 
         [HttpGet]
+        [Authorize]
         [Route("/api/album")]
         public async Task<IActionResult> GetAlbum(IFileService fileService, string id, int from, int count)
         {
@@ -262,6 +268,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             return Ok(files);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateAlbum
         (
@@ -309,6 +316,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> EditAlbum
         (
             IImageService imageService,

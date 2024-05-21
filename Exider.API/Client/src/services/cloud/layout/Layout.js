@@ -15,10 +15,13 @@ import Information from '../shared/information/Information';
 import applicationState from '../../../states/application-state';
 import userState from '../../../states/user-state';
 import MusicPlayer from '../widgets/music-player/MusicPlayer';
+import musicState from '../../../states/music-state';
+import { GetCurrentSong } from '../widgets/navigation-panel/NavigationPanel';
 
 export const messageWSContext = createSignalRContext();
 export const storageWSContext = createSignalRContext();
 export const galleryWSContext = createSignalRContext();
+export const layoutContext = createContext(); 
 export const imageTypes = ['png', 'jpg', 'jpeg', 'gif'];
 
 export const connectToFoldersListener = async () => {
@@ -43,6 +46,11 @@ const Layout = observer(() => {
     const [isError, setErrorState] = useState(false);
     const [errorTitle, setErrorTitle] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [song, setSong] = useState(null);
+
+    useEffect(() => {
+        setSong(GetCurrentSong());
+    }, [musicState.songQueue, musicState.currentSongIndex]);
     
     useEffect(() => {
         const setError = (title, message) => {
@@ -211,20 +219,22 @@ const Layout = observer(() => {
         <messageWSContext.Provider url={"http://localhost:5000/message-hub"}>
             <storageWSContext.Provider url={"http://localhost:5000/storage-hub"}>
                 <galleryWSContext.Provider url={"http://localhost:5000/gallery-hub"}>
-                    <div className='cloud-wrapper'>
-                        {isLoading && <Loader />}
-                        <MusicPlayer />
-                        <Helmet>
-                            <title>Yexider</title>
-                        </Helmet>
-                        <Information
-                            open={isError}
-                            close={() => setErrorState(false)}
-                            title={errorTitle}
-                            message={errorMessage}
-                        />
-                        {windowWidth > 700 ? <Desktop /> : <Mobile /> }
-                    </div>
+                    <layoutContext.Provider value={{song: song}}>
+                        <div className='cloud-wrapper'>
+                            {isLoading && <Loader />}
+                            <MusicPlayer />
+                            <Helmet>
+                                <title>Yexider</title>
+                            </Helmet>
+                            <Information
+                                open={isError}
+                                close={() => setErrorState(false)}
+                                title={errorTitle}
+                                message={errorMessage}
+                            />
+                            {windowWidth > 700 ? <Desktop /> : <Mobile /> }
+                        </div>
+                    </layoutContext.Provider>
                 </galleryWSContext.Provider>
             </storageWSContext.Provider>
         </messageWSContext.Provider>

@@ -1,10 +1,13 @@
 import { makeAutoObservable } from "mobx";
 import FileAPI from "../services/cloud/api/FileAPI";
+import storageState from "./storage-state";
 
 class MusicState {
     songQueue = []
     currentSongIndex = 0;
     isPlaying = false;
+    loadPercentage = 0;
+    time = 0;
 
     constructor() {
         makeAutoObservable(this);
@@ -35,7 +38,16 @@ class MusicState {
         this.isPlaying = true;
     }
 
-    ChangePlayState() {
+    setTime(timeValue) {
+        const isExist = this.songQueue.length > 0 && this.songQueue[this.currentSongIndex] && 
+            this.songQueue[this.currentSongIndex].id;
+ 
+        if (isExist && storageState.FindFileById(this.songQueue[this.currentSongIndex].id).durationTicks >= timeValue) {
+            this.time = timeValue;
+        }
+    }
+
+    ChangePlayingState() {
         this.isPlaying = !this.isPlaying;
     }
 
@@ -46,6 +58,14 @@ class MusicState {
 
         return null;
     }
+
+    setProgress(progress) {
+        this.loadPercentage = progress;
+    }
+
+    // SetLoadPercentage() {
+
+    // }
 }
 
 export default new MusicState();

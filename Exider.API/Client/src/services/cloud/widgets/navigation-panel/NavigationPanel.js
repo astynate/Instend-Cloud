@@ -1,5 +1,5 @@
 ﻿import { Link, useLocation  } from 'react-router-dom';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import './css/navigation.buttons.css';
 import './css/main.css';
 import './css/progress-bar.css';
@@ -24,19 +24,58 @@ import { useTranslation } from 'react-i18next';
 import userState from '../../../../states/user-state';
 import { observer } from 'mobx-react-lite';
 import arrow from './images/player/arrow.png';
-import defaultCover from './images/player/default-playlist-cover.png';
 import SongQueue from './components/song-queue/SongQueue';
+import SimpleRange from '../../shared/ui-kit/simple-range/SimpleRange';
+import musicState from '../../../../states/music-state';
+import storageState from '../../../../states/storage-state';
+import SongCover from '../../shared/ui-kit/song/song-cover/SongCover';
+import { convertFromTimespan, convertTicksToTime } from '../../../../utils/TimeHandler';
+import { layoutContext } from '../../layout/Layout';
 
-const useIsActiveButton = (name) => 
+export const useIsActiveButton = (name) => 
     useIsCurrentRoute(name) ? 'active' : 'passive'
 
-const useIsCurrentRoute = (name) => 
+export const useIsCurrentRoute = (name) => 
     useLocation()['pathname'] === '/' + name;
+
+export const GetCurrentSong = () => {
+    if (musicState.songQueue && musicState.songQueue.length > 0 && musicState.songQueue[musicState.currentSongIndex]) {
+        return storageState.FindFileById(musicState.songQueue[musicState.currentSongIndex].id);
+    }
+
+    return null;
+}
+
+export const GetSongName = (song) => {
+    if (!song) {
+        return 'Не исполняется';
+    }
+
+    if (song.title) {
+        return song.title;
+    } else {
+        return song.name;
+    }
+}
+
+export const GetSongData = (song) => {
+    if (!song) {
+        return 'Артист — Альбом';
+    }
+
+    if (song.artist) {
+        return song.artist;
+    } else {
+        return 'Артист — Альбом';
+    }
+}
 
 const NavigationPanel = observer((props) => {
     const { user } = userState;
     const { t } = useTranslation();
+    const { song } = useContext(layoutContext);
     const [isQueueOpen, setQueueOpenState] = useState(false);
+    const [isHovered, setHoveredState] = useState(false);
 
     const occupiedPercentage = () => {
         if (user && user.occupiedSpace && user.storageSpace) {
@@ -82,18 +121,43 @@ const NavigationPanel = observer((props) => {
                 </Link>
             </div>
             <div className="progress-bar-wrapper">
-                <div className={styles.musicPlayer} onClick={() => setQueueOpenState(prev => !prev)}>
-                    <div className={styles.albumCover}>
-                        <img src={defaultCover} className={styles.cover} />
+                <div 
+                    className={styles.musicPlayer} 
+                    onMouseEnter={() => setHoveredState(true)}
+                    onMouseLeave={() => setHoveredState(false)}
+                >
+                    <div className={styles.albumCover} onClick={() => musicState.ChangePlayingState()}>
+                        <SongCover 
+                            song={song}
+                            isLoading={false}
+                            isPlaying={musicState.isPlaying}
+                            isHovered={isHovered}
+                        />
                     </div>
-                    <div className={styles.info}>
-                        <span className={styles.songName}>Не исполняется</span>
-                        <span className={styles.artist}>Артист — Альбом</span>
+                    <div className={styles.info} onClick={() => setQueueOpenState(prev => !prev)}>
+                        <span className={styles.songName}>{GetSongName(song)}</span>
+                        <span className={styles.artist}>{GetSongData(song)}</span>
                     </div>
-                    <img src={arrow} className={styles.arrow} id={isQueueOpen ? "open" : null} />
+                    <img 
+                        src={arrow} 
+                        className={styles.arrow} 
+                        id={isQueueOpen ? "open" : null} 
+                        onClick={() => setQueueOpenState(prev => !prev)}
+                    />
                 </div>
                 <div className="progress-bar">
-                    <div className="line" style={{width: `${occupiedPercentage()}%`}}></div>
+                    <SimpleRange 
+                        step={1}
+                        minValue={0}
+                        maxValue={song && song.durationTicks ? song.durationTicks : 1}
+                        value={musicState.time}
+                        setValue={musicState.setTime.bind(musicState)}
+                        loadPercentage={musicState.loadPercentage}
+                    />
+                </div>
+                <div className={styles.time}>
+                    <span>{song ? convertTicksToTime(musicState.time) : '--:--'}</span>
+                    <span>{song && song.duration ? convertFromTimespan(song.duration) : '--:--'}</span>
                 </div>
             </div>
             <SongQueue openState={isQueueOpen} />
