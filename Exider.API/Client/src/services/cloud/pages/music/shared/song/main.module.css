@@ -5,9 +5,15 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr) 30px;
     user-select: none;
-    padding-right: 70px;
+    padding-right: 10px;
     padding-left: 10px;
-    border-radius: 10px;
+    border-radius: 5px;
+}
+
+.select {
+    background: var(--main-accent-color);
+    border-radius: 0;
+    transition: 0.25s ease;
 }
 
 .song:hover {
@@ -37,6 +43,7 @@
     max-width: 10ic;
     width: fit-content;
     font-size: 18px;
+    justify-content: center;
     color: var(--main-paragraph-color);
     justify-self: end;
     text-wrap: nowrap;
@@ -50,13 +57,13 @@
 }
 
 .index {
-    width: 25px;
+    width: 17px;
     color: var(--main-paragraph-color);
 }
 
 .name {
     display: flex;
-    grid-gap: 20px;
+    grid-gap: 15px;
     align-items: center;
 }
 

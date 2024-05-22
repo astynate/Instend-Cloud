@@ -62,10 +62,6 @@ class MusicState {
     setProgress(progress) {
         this.loadPercentage = progress;
     }
-
-    // SetLoadPercentage() {
-
-    // }
 }
 
 export default new MusicState();

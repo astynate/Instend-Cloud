@@ -1,5 +1,6 @@
 ﻿using NAudio.Wave;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 
 namespace Exider.Core.Models.Formats
 {
@@ -80,6 +81,41 @@ namespace Exider.Core.Models.Formats
             Plays = 0;
             RealeseDate = DateTime.Now;
             Genre = string.Join("|||", id3TagData.Genres);   
+        }
+
+        public void UpdateData(byte[] bytes, string? title, string? artist, string? album, string type, string path)
+        {
+            string? mimeType;
+
+            if (!mimeTypes.ContainsKey(type.ToLower()))
+            {
+                return;
+            }
+
+            mimeType = mimeTypes[type.ToLower()];
+
+            var file = TagLib.File.Create(path, mimeType, TagLib.ReadStyle.None);
+            var id3TagData = file.Tag;
+
+            if (id3TagData.Pictures.Length > 0)
+            {
+                id3TagData.Pictures[0].Data = bytes;
+                CoverAsBytes = bytes;
+            }
+
+            id3TagData.Title = title;
+            id3TagData.Performers = new[] { "New Artist" };
+            id3TagData.Album = "New Album";
+            id3TagData.Genres = new[] { "New Genre" };
+
+            Title = id3TagData.Title;
+            Artist = string.Join("|||", id3TagData.Performers);
+            Album = id3TagData.Album;
+            Plays = 0;
+            RealeseDate = DateTime.Now;
+            Genre = string.Join("|||", id3TagData.Genres);
+
+            file.Save();
         }
     }
 }

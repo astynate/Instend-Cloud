@@ -4,7 +4,7 @@ import styles from './main.module.css';
 import { observer } from 'mobx-react-lite';
 import musicState from '../../../../states/music-state';
 import { instance } from '../../../../state/Interceptors';
-import { convertSecondsToTicks } from '../../../../utils/TimeHandler';
+import { convertSecondsToTicks, convertTicksToSeconds, convertTicksToTime } from '../../../../utils/TimeHandler';
 
 const MusicPlayer = observer(() => {
     const { isPlaying } = musicState;
@@ -26,6 +26,19 @@ const MusicPlayer = observer(() => {
         }
     };
 
+    const isTimeInRange = (value, target, step) => {
+        return (value + step) < target || (value - step) > target;
+    }
+
+    useEffect(() => {
+        const audio = audioRef.current;
+        const newTime = convertTicksToSeconds(musicState.time);
+        
+        if (isTimeInRange(audio.currentTime, newTime, 5)) {
+            audio.currentTime = newTime;
+        }
+    }, [musicState.time]);
+
     useEffect(() => {
         if (isPlaying && audioRef.current) {
             audioRef.current.play();
@@ -40,15 +53,24 @@ const MusicPlayer = observer(() => {
                 try {
                     const response = await instance.get(`/api/music?id=${musicState.songQueue[musicState.currentSongIndex].id}`, { responseType: 'blob' });
                     if (audioRef.current) {
-                        audioRef.current.src = URL.createObjectURL(response.data);
+                        audioRef.current.pause();
+                        await new Promise(r => setTimeout(r, 300));
+                        const blob = new Blob([response.data], { type: 'audio/mpeg' });
+                        const url = URL.createObjectURL(blob);
+                        audioRef.current.src = url;
+                        audioRef.current.load();
+                        if (isPlaying) {
+                            audioRef.current.play();
+                        }
                     }
                 } catch (error) {
                     console.error(error);
                 }
             };
+            
             getMusic();
         }
-    }, [musicState.songQueue, musicState.currentSongIndex]);
+    }, [musicState.songQueue, musicState.currentSongIndex]);    
 
     return (
         <audio 

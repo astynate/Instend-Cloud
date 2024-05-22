@@ -134,16 +134,17 @@ const NavigationPanel = observer((props) => {
                             isHovered={isHovered}
                         />
                     </div>
-                    <div className={styles.info} onClick={() => setQueueOpenState(prev => !prev)}>
-                        <span className={styles.songName}>{GetSongName(song)}</span>
-                        <span className={styles.artist}>{GetSongData(song)}</span>
+                    <div className={styles.information} onClick={() => setQueueOpenState(prev => !prev)}>
+                        <div className={styles.info}>
+                            <span className={styles.songName}>{GetSongName(song)}</span>
+                            <span className={styles.artist}>{GetSongData(song)}</span>
+                        </div>
+                        <img 
+                            src={arrow} 
+                            className={styles.arrow} 
+                            id={isQueueOpen ? "open" : null} 
+                        />
                     </div>
-                    <img 
-                        src={arrow} 
-                        className={styles.arrow} 
-                        id={isQueueOpen ? "open" : null} 
-                        onClick={() => setQueueOpenState(prev => !prev)}
-                    />
                 </div>
                 <div className="progress-bar">
                     <SimpleRange 

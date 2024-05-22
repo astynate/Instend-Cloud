@@ -1,4 +1,7 @@
-﻿using Exider.Repositories.Storage;
+﻿using CSharpFunctionalExtensions;
+using Exider.Core.Models.Formats;
+using Exider.Core.Models.Storage;
+using Exider.Repositories.Storage;
 using Exider.Services.Internal.Handlers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +16,18 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IRequestHandler _requestHandler;
 
-        public MusicController(IFileRespository fileRespository, IRequestHandler requestHandler)
+        private readonly IFormatRepository<SongFormat> _songFormat;
+
+        public MusicController
+        (
+            IFileRespository fileRespository, 
+            IRequestHandler requestHandler,
+            IFormatRepository<SongFormat> songFormat
+        )
         {
             _fileRespository = fileRespository;
             _requestHandler = requestHandler;
+            _songFormat = songFormat;
         }
 
         [HttpGet]
@@ -52,6 +63,36 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             memory.Position = 0;
             
             return File(memory, "audio/mpeg", fileModel.Value.Name);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> UpdateSongMeta
+        (
+            [FromForm] IFormFile file,
+            [FromForm] Guid id,
+            [FromForm] string? title,
+            [FromForm] string? artist,
+            [FromForm] string? album
+        )
+        {
+            Result<(FileModel?, SongFormat?)> result = await _songFormat.GetByIdWithMetaData(id);
+
+            if (result.IsFailure)
+            {
+                return Conflict("Not found");
+            }
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await file.CopyToAsync(memoryStream);
+                
+                result.Value.Item2.UpdateData(memoryStream.ToArray(), title, artist, album, result.Value.Item1.Type, result.Value.Item1.Path);
+
+                await _songFormat.SaveChanges(result.Value.Item2);
+            }
+
+            return Ok(result);
         }
     }
 }

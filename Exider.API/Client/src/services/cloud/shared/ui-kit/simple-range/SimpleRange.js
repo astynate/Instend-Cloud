@@ -2,7 +2,7 @@ import { React } from 'react';
 import { Range } from 'react-range';
 import styles from './main.module.css';
 
-const SimpleRange = ({step, minValue, maxValue, value, setValue, loadPercentage}) => {
+const SimpleRange = ({step, minValue, maxValue, value, setValue, loadPercentage, isActive}) => {
     return (
         <Range
             step={step}
@@ -52,6 +52,7 @@ const SimpleRange = ({step, minValue, maxValue, value, setValue, loadPercentage}
                                 opacity: '0.34',
                                 cursor: 'pointer'
                             }}
+                            className={styles.range}
                         >
                         </div>
                     }
@@ -67,6 +68,7 @@ const SimpleRange = ({step, minValue, maxValue, value, setValue, loadPercentage}
                         ...props.style,
                         cursor: 'pointer'
                     }}
+                    id={isActive ? 'active' : null}
                 />
             )}
         />

@@ -1,6 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core;
 using Exider.Core.Models.Formats;
+using Exider.Core.Models.Storage;
+using Exider.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
 
 namespace Exider.Repositories.Storage
@@ -11,10 +13,13 @@ namespace Exider.Repositories.Storage
 
         private readonly DbSet<Format> _entities;
 
-        public FormatRepository(DatabaseContext context)
+        private readonly IFileService _fileService;
+
+        public FormatRepository(DatabaseContext context, IFileService fileService)
         {
             _context = context;
             _entities = context.Set<Format>();
+            _fileService = fileService;
         }
 
         public async Task<Result<object>> AddAsync(Guid fileId, string type, string path)
@@ -32,16 +37,46 @@ namespace Exider.Repositories.Storage
             return Result.Success(result.Value);
         }
 
-        public async Task<Result<object>> GetMetaDataAsync(Guid fileId)
+        public async Task<Result<Format?>> GetMetaDataAsync(Guid fileId)
         {
             Format? result = await _entities.FirstOrDefaultAsync(x => x.FileId == fileId);
 
             if (result == null)
             {
-                return Result.Failure("Metadata not found");
+                return Result.Failure<Format>("Metadata not found");
             }
 
             return result;
+        }
+
+        public async Task<Result<(FileModel?, Format?)>> GetByIdWithMetaData(Guid fileId)
+        {
+            var files = await _context.Files.AsNoTracking()
+                    .Where(x => x.Id == fileId)
+                    .GroupJoin(_entities,
+                        file => file.Id,
+                        meta => meta.FileId,
+                        (x, y) => new { File = x, Meta = y })
+                    .SelectMany(
+                        x => x.Meta.DefaultIfEmpty(),
+                        (x, y) => new { x.File, Meta = y })
+                    .ToArrayAsync();
+
+            if (files.Length > 0)
+            {
+                Array.ForEach(files, async
+                    x => await x.File.SetPreview(_fileService));
+
+                return Result.Success<(FileModel?, Format?)>(new(files[0].File, files[0].Meta));
+            }
+
+            return Result.Failure<(FileModel?, Format?)>("File not found");
+        }
+
+        public async Task SaveChanges(Format format)
+        {
+            _context.Entry(format).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
     }
 }

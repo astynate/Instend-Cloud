@@ -5,15 +5,16 @@ import musicState from '../../../../../../states/music-state';
 import SongCover from '../../../../shared/ui-kit/song/song-cover/SongCover';
 import { observer } from 'mobx-react-lite';
 
-const Song = observer(({index, song, isPlaying, isLoading, isShort}) => {
+const Song = observer(({index, song, isPlaying, isLoading, isShort, isSelect}) => {
     const [isHovered, setHoveredState] = useState(false);
 
     return (
         <div 
-            className={styles.song} 
+            className={`${styles.song} ${isSelect ? styles.select : ''}`} 
             id={isShort ? "short" : null}
             onMouseEnter={() => setHoveredState(true)}
             onMouseLeave={() => setHoveredState(false)}
+            data={song.id ? song.id : null}
         >
             <div className={styles.name}>
                 {index && <span className={styles.index}>{index}</span>}

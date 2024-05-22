@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import styles from './main.module.css'
+import styles from './main.module.css';
 
 const ContextMenu = (props) => {
     const wrapper = useRef(null);

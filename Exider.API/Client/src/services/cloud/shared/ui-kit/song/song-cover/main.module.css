@@ -9,6 +9,7 @@
     transition: 0.1s;
     cursor: pointer;
     image-rendering: pixelated;
+    flex-shrink: 0;
 }
 
 .albumCover:active {
@@ -22,6 +23,7 @@
     margin-top: auto;
     margin-bottom: auto;
     z-index: 99999;
+    flex-shrink: 0;
 }
 
 .playing, .loader {

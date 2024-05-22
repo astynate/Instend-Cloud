@@ -9,7 +9,6 @@ import { toJS } from 'mobx';
 import SelectBox from '../../../../shared/interaction/select-box/SelectBox';
 import { DeleteAlbums } from '../../api/AlbumRequests';
 import CreateAlbum from '../../../../widgets/create-album/CreateAlbum';
-import { useParams } from 'react-router-dom';
 
 const Albums = observer(() => {
     const wrapper = useRef();

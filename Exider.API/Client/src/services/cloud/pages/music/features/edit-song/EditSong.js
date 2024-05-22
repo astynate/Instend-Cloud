@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import styles from './main.module.css';
-import PopUpWindow from '../../shared/pop-up-window/PopUpWindow';
-import Input from '../../shared/ui-kit/input/Input';
-import TextArea from '../../shared/ui-kit/text-area/TextArea';
-import Button from '../../shared/ui-kit/button/Button';
 import upload from "./images/upload.png";
-import { instance } from '../../../../state/Interceptors';
-import { CreateAlbumRequest, UpdateAlbum } from '../../pages/gallery/api/AlbumRequests';
+import PopUpWindow from '../../../../shared/pop-up-window/PopUpWindow';
+import Button from '../../../../shared/ui-kit/button/Button';
+import Input from '../../../../shared/ui-kit/input/Input';
 
-const CreateAlbum = (props) => {
-    const [name, setName] = useState(props.isUpdate && props.album ? props.album.name: '');
-    const [description, setDescription] = useState(props.isUpdate && props.album ? props.album.description: '');
+const EditSong = (props) => {
+    const [title, setTitle] = useState(props.song && props.song.title ? props.song.title : '');
+    const [artist, setArtist] = useState(props.song && props.song.artist ? props.song.artist : '');
+    const [album, setAlbum] = useState(props.song && props.song.album ? props.song.album : '');
     const [image, setImage] = useState(null);
     const [imageAsURL, setImageAsURL] = useState(null);
 
@@ -36,15 +34,15 @@ const CreateAlbum = (props) => {
         >
             <div className={styles.createAlbum}>
                 <div className={styles.header}>
-                    <span>{props.isUpdate ? 'Edit album' : 'Create album'}</span>
+                    <span>{'Edit song'}</span>
                 </div>
                 <div className={styles.content}>
                     <div className={styles.left}>
                         <div className={styles.loadCover}>
                             {image ? (
                                 <img src={imageAsURL} className={styles.uploadedImage} />
-                            ) : props.isUpdate && props.album ? 
-                                <img src={`data:image/png;base64,${props.album.cover}`} className={styles.uploadedImage} />
+                            ) : props.song && props.song.fileAsBytes ? 
+                                <img src={`data:image/png;base64,${props.song && props.song.fileAsBytes}`} className={styles.uploadedImage} />
                             :
                                 <img src={upload} className={styles.upload} />
                             }
@@ -53,31 +51,33 @@ const CreateAlbum = (props) => {
                     </div>
                     <div className={styles.right}>
                         <div className={styles.field}>
-                            <span>Name</span>
+                            <span>Title</span>
                             <Input 
-                                placeholder="Create name"
-                                value={name}
-                                setValue={setName} 
+                                placeholder="Song title"
+                                value={title}
+                                setValue={setTitle} 
                             />
                         </div>
                         <div className={styles.field}>
-                            <span>Description</span>
-                            <TextArea 
-                                placeholder="Create description" 
-                                value={description}
-                                setValue={setDescription} 
+                            <span>Artist</span>
+                            <Input 
+                                placeholder="Artist name"
+                                value={artist}
+                                setValue={setArtist} 
+                            />
+                        </div>
+                        <div className={styles.field}>
+                            <span>Album</span>
+                            <Input 
+                                placeholder="Album name"
+                                value={album}
+                                setValue={setAlbum} 
                             />
                         </div>
                         <div className={styles.buttonWrapper}>
                             <Button 
                                 value={"Coninue"} 
                                 callback={() => {
-                                    if (props.isUpdate === true && props.album) {
-                                        UpdateAlbum(name, description, image, props.album.id);
-                                    } else {
-                                        CreateAlbumRequest(name, description, image);
-                                    }
-                                    
                                     props.close();
                                 }}
                             />
@@ -89,4 +89,4 @@ const CreateAlbum = (props) => {
     );
  };
 
-export default CreateAlbum;
+export default EditSong;

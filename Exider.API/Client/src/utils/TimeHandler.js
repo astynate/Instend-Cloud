@@ -38,3 +38,7 @@ export function convertTicksToTime(ticks) {
 export function convertSecondsToTicks(seconds) {
     return seconds * 10000000;
 }
+
+export function convertTicksToSeconds(seconds) {
+    return seconds / 10000000;
+}

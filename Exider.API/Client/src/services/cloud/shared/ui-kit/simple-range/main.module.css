@@ -4,4 +4,11 @@
     border-radius: 100%;
     background: var(--main-font-color);
     cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.thumb[id="active"] {
+    opacity: 1;
+    visibility: visible;
 }

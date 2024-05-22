@@ -4,16 +4,17 @@
     left: 200px;
     backdrop-filter: var(--main-blur-effect);
     z-index: 9999999;
-    border-radius: 15px;
+    border-radius: 10px;
     overflow: hidden;
     padding: 0px;
     display: flex;
     flex-direction: column;
     grid-gap: 5px;
-    padding: 5px;
+    padding: 4px;
     /* background: rgba(0, 0, 0, 0.3); */
     background: var(--main-accent-color);
     animation: open 0.25s ease;
+    box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.409);
 }
 
 .menuItem {
@@ -25,9 +26,9 @@
     user-select: none;
     cursor: pointer;
     padding: 12px;
-    border-radius: 10px;
+    border-radius: 7px;
     padding-left: 15px;
-    padding-right: 100px;
+    padding-right: 80px;
     align-items: center;
     grid-gap: 10px;
     transition: 0.15s ease;
