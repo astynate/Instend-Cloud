@@ -11,8 +11,8 @@ Welcome to Exider Cloud - first cloud storage with neural newtworks! It is a uni
 © Andreev 2024. Minsk, Belarus
 
 [exider]: https://github.com/astynate/Exider-Version-2.0.0
-[preview_image]: [https://github.com/astynate/Exider-Version-2.0.0/blob/master/tech-doc/images/main-logo-with-text.png](https://github.com/astynate/Yexider-Cloud/blob/master/tech-doc/images/Yexider%20%E2%80%94%20Logo.png) "Preview of Exider"
-[preview_image_url]: [https://github.com/astynate/Exider-Version-2.0.0/blob/master/tech-doc/images/main-logo-with-text.png](https://github.com/astynate/Yexider-Cloud/blob/master/tech-doc/images/Yexider%20%E2%80%94%20Logo.png)
+[preview_image]: https://github.com/astynate/Yexider-Cloud/blob/master/tech-doc/images/Yexider%20%E2%80%94%20Logo.png
+[preview_image_url]: https://github.com/astynate/Yexider-Cloud/blob/master/tech-doc/images/Yexider%20%E2%80%94%20Logo.png
 [login]: https://github.com/astynate/Exider-Server-Application/blob/master/tech-doc/images/image_2024-02-23_21-17-40.png
 [login_image_url]: https://github.com/astynate/Exider-Server-Application/blob/master/tech-doc/images/image_2024-02-23_21-17-40.png
 [profile]: https://github.com/astynate/Exider-Server-Application/blob/master/tech-doc/images/image_2024-03-04_21-39-52.png
