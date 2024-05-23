@@ -81,8 +81,17 @@
     justify-content: space-between;
     font-size: 13px;
     margin-top: 5px;
+    align-items: center;
 }
 
 .time span { 
     color: var(--main-paragraph-color);
+}
+
+.controlButton {
+    height: 13px;
+    width: 13px;
+    object-fit: contain;
+    cursor: pointer;
+    filter: var(--main-filter);
 }

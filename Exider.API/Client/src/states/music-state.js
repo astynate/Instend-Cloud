@@ -69,6 +69,46 @@ class MusicState {
             this.songQueue = this.songQueue.filter(x => x.id !== id);
         }
     }
+
+    NextRepeatState = () => {
+        if (this.repeatState + 1 >= 3) {
+            this.repeatState = 0;
+            return;
+        }
+        
+        this.repeatState++;
+    }
+
+    HandleRepeatStateOne = () => {
+        this.time = 0;
+
+        if (this.songQueue.length - 1 <= this.currentSongIndex) {
+
+            this.isPlaying = false;
+        } else {
+            this.currentSongIndex++;
+        }
+    }
+
+    HandleRepeatStateTwo = () => {
+        this.time = 0;
+
+        if (this.songQueue.length - 1 <= this.currentSongIndex) {
+            this.time = 0;
+            this.currentSongIndex = 0;
+        } else {
+            this.currentSongIndex++;
+        }
+    }
+
+    HandleRepeatStateThree = () => {
+        this.time = 0;
+    }
+
+    TurnOnNextSong = () => {
+        const callbacks = [this.HandleRepeatStateOne, this.HandleRepeatStateTwo, this.HandleRepeatStateThree];
+        callbacks[this.repeatState]();
+    }
 }
 
 export default new MusicState();

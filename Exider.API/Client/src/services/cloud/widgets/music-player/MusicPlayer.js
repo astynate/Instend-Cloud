@@ -4,6 +4,7 @@ import { observer } from 'mobx-react-lite';
 import musicState from '../../../../states/music-state';
 import { instance } from '../../../../state/Interceptors';
 import { convertSecondsToTicks, convertTicksToSeconds, convertTicksToTime } from '../../../../utils/TimeHandler';
+import storageState from '../../../../states/storage-state';
 
 const MusicPlayer = observer(() => {
     const { isPlaying } = musicState;
@@ -32,6 +33,17 @@ const MusicPlayer = observer(() => {
     useEffect(() => {
         const audio = audioRef.current;
         const newTime = convertTicksToSeconds(musicState.time);
+
+        if (audio.currentTime >= audio.duration) {
+            musicState.TurnOnNextSong();
+            audio.currentTime = 0;
+
+            if (musicState.repeatState === 2) {
+                audio.play();
+            }
+            
+            return;
+        }
         
         if (isTimeInRange(audio.currentTime, newTime, 5)) {
             audio.currentTime = newTime;

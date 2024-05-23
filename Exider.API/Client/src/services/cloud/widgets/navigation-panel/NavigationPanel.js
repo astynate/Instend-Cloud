@@ -79,6 +79,7 @@ const NavigationPanel = observer((props) => {
     const { song } = useContext(layoutContext);
     const [isQueueOpen, setQueueOpenState] = useState(false);
     const [isHovered, setHoveredState] = useState(false);
+    const repeatStates = [noRepeat, repeat, repeatSong];
 
     const occupiedPercentage = () => {
         if (user && user.occupiedSpace && user.storageSpace) {
@@ -161,9 +162,11 @@ const NavigationPanel = observer((props) => {
                 </div>
                 <div className={styles.time}>
                     <span>{song ? convertTicksToTime(musicState.time) : '--:--'}</span>
-                    <div>
-                        <img src={noRepeat} />
-                    </div>
+                    <img 
+                        src={repeatStates[musicState.repeatState]} 
+                        className={styles.controlButton}
+                        onClick={() => musicState.NextRepeatState()}
+                    />
                     <span>{song && song.duration ? convertFromTimespan(song.duration) : '--:--'}</span>
                 </div>
             </div>
