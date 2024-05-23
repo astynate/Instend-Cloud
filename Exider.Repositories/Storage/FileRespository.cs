@@ -162,11 +162,11 @@ namespace Exider.Repositories.Storage
         public async Task<FileModel[]> GetLastPhotoFromAlbum(Guid userId, Guid albumId, int from, int count)
         {
             return await _context.AlbumLinks.AsNoTracking()
-                .Where(x => x.AlbumId == albumId)
+                .Where(x => x.ItemId == albumId)
                 .Skip(from)
                 .Take(count)
                 .Join(_context.Files,
-                    albumLink => albumLink.FileId,
+                    albumLink => albumLink.LinkedItemId,
                     fileModel => fileModel.Id,
                     (albumLink, fileModel) => fileModel)
                 .ToArrayAsync();

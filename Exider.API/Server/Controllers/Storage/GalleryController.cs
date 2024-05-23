@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Exider.Repositories.Account;
 using Microsoft.AspNetCore.Authorization;
+using Exider.Repositories.Links;
+using static Exider.Core.Models.Links.AlbumLinks;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Storage
 {
@@ -27,6 +29,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         private readonly IUserDataRepository _userDataRepository;
 
         private readonly IAlbumRepository _albumRepository;
+
+        private readonly ILinkBaseRepository<AlbumLink> _linkBaseRepository;
 
         private readonly IAccessHandler _accessHandler;
 
@@ -45,6 +49,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             IHubContext<GalleryHub> galleryHub,
             IHubContext<StorageHub> storageHub,
             IUserDataRepository userDataRepository,
+            ILinkBaseRepository<AlbumLink> linkBaseRepository,
             IAccessHandler accessHandler,
             DatabaseContext context
         )
@@ -58,6 +63,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             _userDataRepository = userDataRepository;
             _accessHandler = accessHandler;
             _storageHub = storageHub;
+            _linkBaseRepository = linkBaseRepository;
         }
 
         [HttpGet]
@@ -171,7 +177,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
                         if (string.IsNullOrEmpty(albumId) == false && string.IsNullOrWhiteSpace(albumId) == false)
                         {
-                            var result = await albumRepository.UploadPhotoToAlbum(fileModel.Value, Guid.Parse(albumId));
+                            var result = await _linkBaseRepository.UploadFileToAlbum(fileModel.Value, Guid.Parse(albumId));
 
                             if (result.IsFailure)
                             {
@@ -229,7 +235,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest("Invalid album id");
             }
 
-            var result = await _albumRepository.AddPhotoToAlbum(Guid.Parse(fileId), Guid.Parse(albumId));
+            var result = await _linkBaseRepository.AddFileToAlbum(Guid.Parse(fileId), Guid.Parse(albumId));
 
             if (result.IsFailure)
             {

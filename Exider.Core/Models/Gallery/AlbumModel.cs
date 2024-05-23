@@ -1,7 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core.Models.Access;
 using Exider.Services.External.FileService;
-using Microsoft.EntityFrameworkCore.Update.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Exider.Core.Models.Gallery

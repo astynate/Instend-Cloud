@@ -8,6 +8,7 @@ using Exider.Repositories.Account;
 using Exider.Repositories.Comments;
 using Exider.Repositories.Email;
 using Exider.Repositories.Gallery;
+using Exider.Repositories.Links;
 using Exider.Repositories.Repositories;
 using Exider.Repositories.Storage;
 using Exider.Services.External.FileService;
@@ -46,6 +47,7 @@ builder.Services.AddScoped<ICommentBaseRepository, CommentBaseRepository>();
 builder.Services.AddScoped(typeof(ICommentsRepository<>), typeof(CommentsRepository<>));
 builder.Services.AddScoped(typeof(IAccessRepository<,>), typeof(AccessRepository<,>));
 builder.Services.AddScoped(typeof(IFormatRepository<>), typeof(FormatRepository<>));
+builder.Services.AddScoped(typeof(ILinkBaseRepository<>), typeof(LinkBaseRepository<>));
 
 builder.Services.AddSingleton<IValidationService, ValidationService>();
 builder.Services.AddSingleton<ITokenService, JwtService>();

@@ -2,12 +2,13 @@
 using Exider.Core;
 using Exider.Core.Dependencies.Repositories.Comments;
 using Exider.Core.Models.Comments;
+using Exider.Core.Models.Links;
 using Exider.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
 
 namespace Exider.Repositories.Comments
 {
-    public class CommentsRepository<T> : ICommentsRepository<T> where T : CommentLinkBase, ICommentLinkBase, new()
+    public class CommentsRepository<T> : ICommentsRepository<T> where T : LinkBase, ILinkBase, new()
     {
         private readonly DatabaseContext _context;
 
@@ -28,7 +29,7 @@ namespace Exider.Repositories.Comments
                 .Where(x => x.ItemId == itemId)
                 .Join(
                     _context.Comments,
-                    albumCommentLink => albumCommentLink.CommentId,
+                    albumCommentLink => albumCommentLink.LinkedItemId,
                     comment => comment.Id,
                     (albumCommentLink, comment) => new
                     {
@@ -103,14 +104,14 @@ namespace Exider.Repositories.Comments
                         return Result.Failure<CommentModel>("Attempt to add a comment failed");
                     }
 
-                    var creationResult = T.Create<T>(result.Value.Id, albumId);
+                    var creationResult = LinkBase.Create<T>(albumId, result.Value.Id);
 
                     if (creationResult.IsFailure)
                     {
                         return Result.Failure<CommentModel>("Attempt to add a comment failed");
                     }
 
-                    T? link = creationResult.Value as T;
+                    T? link = creationResult.Value;
 
                     if (link is not null)
                     {

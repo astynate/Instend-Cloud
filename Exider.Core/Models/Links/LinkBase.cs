@@ -3,32 +3,32 @@ using Exider.Core.Dependencies.Repositories.Comments;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Exider.Core.Models.Comments
+namespace Exider.Core.Models.Links
 {
-    public class CommentLinkBase : ICommentLinkBase
+    public class LinkBase : ILinkBase
     {
         [Column("id")][Key] public Guid Id { get; protected set; } = Guid.NewGuid();
         [Column("item_id")] public Guid ItemId { get; protected set; }
-        [Column("comment_id")] public Guid CommentId { get; protected set; }
+        [Column("linked_item_id")] public Guid LinkedItemId { get; protected set; }
 
-        protected CommentLinkBase() { }
+        public LinkBase() { }
 
-        public static Result<CommentLinkBase> Create<T>(Guid commentId, Guid itemId) where T : CommentLinkBase, new()
+        public static Result<T> Create<T>(Guid itemId, Guid linkedItemId) where T : LinkBase, new()
         {
-            if (commentId == Guid.Empty)
+            if (linkedItemId == Guid.Empty)
             {
-                return Result.Failure<CommentLinkBase>("Invalid comment id");
+                return Result.Failure<T>("Invalid id");
             }
 
             if (itemId == Guid.Empty)
             {
-                return Result.Failure<CommentLinkBase>("Invalid album id");
+                return Result.Failure<T>("Invalid id");
             }
 
             return new T()
             {
                 ItemId = itemId,
-                CommentId = commentId
+                LinkedItemId = linkedItemId
             };
         }
     }

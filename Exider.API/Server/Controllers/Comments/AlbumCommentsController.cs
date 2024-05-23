@@ -1,11 +1,12 @@
-﻿using Exider.Core.Models.Comments;
-using Exider.Repositories.Comments;
+﻿using Exider.Repositories.Comments;
 using Exider.Services.Internal.Handlers;
 using Exider_Version_2._0._0.Server.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using Exider.Core.Dependencies.Repositories.Account;
 using Exider.Repositories.Account;
+using Exider.Core.Models.Links;
+using static Exider.Core.Models.Links.AlbumLinks;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Comments
 {
