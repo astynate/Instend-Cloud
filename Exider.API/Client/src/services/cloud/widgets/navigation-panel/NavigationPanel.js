@@ -31,6 +31,9 @@ import storageState from '../../../../states/storage-state';
 import SongCover from '../../shared/ui-kit/song/song-cover/SongCover';
 import { convertFromTimespan, convertTicksToTime } from '../../../../utils/TimeHandler';
 import { layoutContext } from '../../layout/Layout';
+import noRepeat from './images/player/repeat/no-repeat.png';
+import repeat from './images/player/repeat/repeat.png';
+import repeatSong from './images/player/repeat/repeat-song.png';
 
 export const useIsActiveButton = (name) => 
     useIsCurrentRoute(name) ? 'active' : 'passive'
@@ -158,6 +161,9 @@ const NavigationPanel = observer((props) => {
                 </div>
                 <div className={styles.time}>
                     <span>{song ? convertTicksToTime(musicState.time) : '--:--'}</span>
+                    <div>
+                        <img src={noRepeat} />
+                    </div>
                     <span>{song && song.duration ? convertFromTimespan(song.duration) : '--:--'}</span>
                 </div>
             </div>

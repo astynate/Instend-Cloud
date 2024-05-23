@@ -7,6 +7,7 @@ class MusicState {
     currentSongIndex = 0;
     isPlaying = false;
     loadPercentage = 0;
+    repeatState = 0;
     time = 0;
 
     constructor() {
@@ -61,6 +62,12 @@ class MusicState {
 
     setProgress(progress) {
         this.loadPercentage = progress;
+    }
+
+    DeleteSong = (id) => {
+        if (id) {
+            this.songQueue = this.songQueue.filter(x => x.id !== id);
+        }
     }
 }
 

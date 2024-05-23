@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import axios from 'axios';
 import styles from './main.module.css';
 import { observer } from 'mobx-react-lite';
 import musicState from '../../../../states/music-state';
@@ -48,7 +47,10 @@ const MusicPlayer = observer(() => {
     }, [isPlaying]);
 
     useEffect(() => {
-        if (musicState.songQueue && musicState.songQueue.length > 0 && musicState.songQueue[musicState.currentSongIndex].id) {
+        if (musicState.songQueue && 
+            musicState.songQueue.length > 0 && 
+            musicState.songQueue[musicState.currentSongIndex] &&
+            musicState.songQueue[musicState.currentSongIndex].id) {
             const getMusic = async () => {
                 try {
                     const response = await instance.get(`/api/music?id=${musicState.songQueue[musicState.currentSongIndex].id}`, { responseType: 'blob' });

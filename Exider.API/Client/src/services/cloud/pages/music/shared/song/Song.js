@@ -5,8 +5,12 @@ import musicState from '../../../../../../states/music-state';
 import SongCover from '../../../../shared/ui-kit/song/song-cover/SongCover';
 import { observer } from 'mobx-react-lite';
 
-const Song = observer(({index, song, isPlaying, isLoading, isShort, isSelect}) => {
+const Song = observer(({index, song, isPlaying, isLoading, isShort, isSelect, setQueue}) => {
     const [isHovered, setHoveredState] = useState(false);
+
+    if (!song) {
+        return null;
+    }
 
     return (
         <div 
@@ -19,6 +23,9 @@ const Song = observer(({index, song, isPlaying, isLoading, isShort, isSelect}) =
             <div className={styles.name}>
                 {index && <span className={styles.index}>{index}</span>}
                 <div className={styles.albumCover} onClick={() => {
+                    if (setQueue) {
+                        setQueue();
+                    }
                     if (song && song.id) {
                         musicState.SetSongAsPlaying(song.id);
                     }

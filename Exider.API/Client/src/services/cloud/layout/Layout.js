@@ -112,6 +112,7 @@ const Layout = observer(() => {
         "DeleteFile",
         (data) => {
             storageState.DeleteFile(data);
+            musicState.DeleteSong(data);
         }
     );
 

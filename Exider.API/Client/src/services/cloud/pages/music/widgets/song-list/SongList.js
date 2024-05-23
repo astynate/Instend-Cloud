@@ -74,6 +74,7 @@ const SongList = observer(({songs}) => {
                             song={element}
                             isSelect={selectedItems.map(x => x.id).includes(element.id)}
                             isPlaying={element.id === musicState.GetCurrentSongId() && musicState.isPlaying}
+                            setQueue={() => musicState.SetSongQueue(songs)}
                         />
                     )
                 })}
@@ -87,11 +88,11 @@ const SongList = observer(({songs}) => {
                 single={single}
                 multiple={multiple}
             />
-            <EditSong 
+            {isCreateAlbumOpen && <EditSong 
                 open={isCreateAlbumOpen}
                 close={() => {setCreateAlbumOpen(false)}}
                 song={activeItems[0]}
-            />
+            />}
         </div>
     )
 });

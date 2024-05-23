@@ -9,15 +9,10 @@ namespace Exider.Core.Models.Account
     public class UserModel
     {
         [Column("id")][Key] public Guid Id { get; private set; }
-
         [Column("name")] public string Name { get; private set; } = null!;
-
         [Column("surname")] public string Surname { get; private set; } = null!;
-
         [Column("nickname")] public string Nickname { get; private set; } = null!;
-
         [Column("email")] public string Email { get; private set; } = null!;
-
         [Column("password")] public string Password { get; private set; } = null!;
 
         private UserModel() { }

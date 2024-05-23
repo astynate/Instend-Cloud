@@ -97,16 +97,17 @@ namespace Exider.Core.Models.Formats
             var file = TagLib.File.Create(path, mimeType, TagLib.ReadStyle.None);
             var id3TagData = file.Tag;
 
-            if (id3TagData.Pictures.Length > 0)
+            if (bytes.Length > 0)
             {
-                id3TagData.Pictures[0].Data = bytes;
-                CoverAsBytes = bytes;
+                TagLib.Picture[] pictures = {new TagLib.Picture()};
+                
+                pictures[0].Data = bytes;
+                id3TagData.Pictures = pictures;
             }
 
             id3TagData.Title = title;
-            id3TagData.Performers = new[] { "New Artist" };
-            id3TagData.Album = "New Album";
-            id3TagData.Genres = new[] { "New Genre" };
+            id3TagData.Performers = new[] { artist };
+            id3TagData.Album = album;
 
             Title = id3TagData.Title;
             Artist = string.Join("|||", id3TagData.Performers);

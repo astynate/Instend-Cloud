@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './main.module.css';
 import upload from "./images/upload.png";
 import PopUpWindow from '../../../../shared/pop-up-window/PopUpWindow';
 import Button from '../../../../shared/ui-kit/button/Button';
 import Input from '../../../../shared/ui-kit/input/Input';
+import { instance } from '../../../../../../state/Interceptors';
+import applicationState from '../../../../../../states/application-state';
 
 const EditSong = (props) => {
     const [title, setTitle] = useState(props.song && props.song.title ? props.song.title : '');
@@ -11,6 +13,24 @@ const EditSong = (props) => {
     const [album, setAlbum] = useState(props.song && props.song.album ? props.song.album : '');
     const [image, setImage] = useState(null);
     const [imageAsURL, setImageAsURL] = useState(null);
+
+    const UpdateSongRequest = async (song) => {
+        if (song && song.id) {
+            let form = new FormData();
+    
+            form.append('file', image);
+            form.append('id', song.id);
+            form.append('title', title);
+            form.append('artist', artist);
+            form.append('album', album);
+    
+            await instance
+                .put('/api/music/song', form)
+                .catch((error) => {
+                    applicationState.AddErrorInQueue('Attention!', 'Something went wrong.');
+                })
+        }
+    }
 
     const handleImageUpload = (event) => {
         try {
@@ -78,6 +98,7 @@ const EditSong = (props) => {
                             <Button 
                                 value={"Coninue"} 
                                 callback={() => {
+                                    UpdateSongRequest(props.song);
                                     props.close();
                                 }}
                             />
