@@ -1,5 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core.Models.Gallery;
+using Exider.Core.Models.Albums;
 using Exider.Core.Models.Storage;
 using Exider.Services.External.FileService;
 

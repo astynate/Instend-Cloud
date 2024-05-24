@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core;
-using Exider.Core.Models.Gallery;
+using Exider.Core.Models.Albums;
 using Exider.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
 

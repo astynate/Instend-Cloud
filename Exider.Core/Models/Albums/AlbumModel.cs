@@ -3,7 +3,7 @@ using Exider.Core.Models.Access;
 using Exider.Services.External.FileService;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Exider.Core.Models.Gallery
+namespace Exider.Core.Models.Albums
 {
     public class AlbumModel : AccessItemBase
     {
@@ -55,7 +55,7 @@ namespace Exider.Core.Models.Gallery
                 return Result.Success();
             }
 
-            Cover = result.Value; 
+            Cover = result.Value;
             return Result.Success();
         }
 

@@ -3,8 +3,9 @@ import album from './images/types/album.png';
 import image from './images/types/image.png';
 import CreateAlbum from '../../../../widgets/create-album/CreateAlbum';
 import Add from '../../../../shared/ui-kit/add/Add';
-import { UploadPhotosInAlbum, UploadPhotosInGallery } from '../../api/GalleryRequests';
+import { UploadPhotosInAlbum } from '../../api/GalleryRequests';
 import { SendFilesFromEvent } from '../../../cloud/api/FileRequests';
+import { CreateAlbumRequest } from '../../api/AlbumRequests';
 
 const AddInGallery = (props) => {
     const [isCreateAlbumOpen, setCreateAlbumOpen] = useState(false);
@@ -12,8 +13,14 @@ const AddInGallery = (props) => {
     return (
         <>
             {isCreateAlbumOpen && <CreateAlbum 
-                open={isCreateAlbumOpen}
-                close={() => {setCreateAlbumOpen(false)}}
+                title='Create album'
+                isOpen={isCreateAlbumOpen}
+                closeCallback={() => {setCreateAlbumOpen(false)}}
+                id={props.id}
+                callback={(name, description, image) => {
+                    CreateAlbumRequest(name, description, image);
+                    setCreateAlbumOpen(false);
+                }}
             />}
             <Add 
                 items={[

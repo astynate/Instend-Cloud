@@ -3,8 +3,7 @@ import styles from './main.module.css';
 import { observer } from 'mobx-react-lite';
 import musicState from '../../../../states/music-state';
 import { instance } from '../../../../state/Interceptors';
-import { convertSecondsToTicks, convertTicksToSeconds, convertTicksToTime } from '../../../../utils/TimeHandler';
-import storageState from '../../../../states/storage-state';
+import { convertSecondsToTicks, convertTicksToSeconds } from '../../../../utils/TimeHandler';
 
 const MusicPlayer = observer(() => {
     const { isPlaying } = musicState;

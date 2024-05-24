@@ -1,5 +1,4 @@
 ﻿using Exider.Core;
-using Exider.Core.Models.Gallery;
 using Exider.Core.Models.Storage;
 using Exider.Repositories.Gallery;
 using Exider.Repositories.Storage;
@@ -13,6 +12,7 @@ using Exider.Repositories.Account;
 using Microsoft.AspNetCore.Authorization;
 using Exider.Repositories.Links;
 using static Exider.Core.Models.Links.AlbumLinks;
+using Exider.Core.Models.Albums;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Storage
 {

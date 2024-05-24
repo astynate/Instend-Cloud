@@ -1,9 +1,9 @@
 ﻿using Exider.Core.Models.Access;
 using Exider.Core.Models.Account;
+using Exider.Core.Models.Albums;
 using Exider.Core.Models.Comments;
 using Exider.Core.Models.Email;
 using Exider.Core.Models.Formats;
-using Exider.Core.Models.Gallery;
 using Exider.Core.Models.Links;
 using Exider.Core.Models.Storage;
 using Microsoft.EntityFrameworkCore;

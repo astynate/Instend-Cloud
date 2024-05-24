@@ -3,13 +3,11 @@ import styles from './main.module.css';
 import { observer } from 'mobx-react-lite';
 import galleryState from '../../../../../../states/gallery-state';
 import Album from '../../widgets/album/Album';
-import Add from '../../widgets/add/AddInGallery';
 import { autorun } from 'mobx';
 import { toJS } from 'mobx';
 import SelectBox from '../../../../shared/interaction/select-box/SelectBox';
-import { DeleteAlbums } from '../../api/AlbumRequests';
+import { DeleteAlbums, UpdateAlbum } from '../../api/AlbumRequests';
 import CreateAlbum from '../../../../widgets/create-album/CreateAlbum';
-import { AddPhotosInAlbum } from '../../api/GalleryRequests';
 import AddInGallery from '../../widgets/add/AddInGallery';
 
 const Albums = observer(() => {
@@ -55,11 +53,18 @@ const Albums = observer(() => {
     return (
         <>        
             <AddInGallery id={null} />
-            {isCreateAlbumOpen && <CreateAlbum 
-                open={isCreateAlbumOpen}
-                close={() => {setCreateAlbumOpen(false)}}
+            {isCreateAlbumOpen && activeItems[0] && <CreateAlbum 
+                isOpen={isCreateAlbumOpen}
+                closeCallback={() => {setCreateAlbumOpen(false)}}
                 isUpdate={true}
-                album={activeItems[0]}
+                nameValue={activeItems[0].name}
+                descriptionValue={activeItems[0].description}
+                cover={activeItems[0].cover}
+                title={'Edit album'}
+                callback={(name, description, image) => {
+                    UpdateAlbum(name, description, image, activeItems[0].id);
+                    setCreateAlbumOpen(false);
+                }}
             />}
             <div className={styles.content} ref={wrapper}>
                 {Object.entries(galleryState.albums).map(([key, value]) => {

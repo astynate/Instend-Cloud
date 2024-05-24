@@ -4,7 +4,7 @@ using Exider.Core;
 using Exider.Core.Dependencies.Repositories.Account;
 using Exider.Core.Models.Access;
 using Exider.Core.Models.Account;
-using Exider.Core.Models.Gallery;
+using Exider.Core.Models.Albums;
 using Exider.Core.TransferModels;
 using Exider.Repositories.Account;
 using Exider.Repositories.Gallery;

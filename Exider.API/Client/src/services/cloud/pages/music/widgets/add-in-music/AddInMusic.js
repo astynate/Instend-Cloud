@@ -4,6 +4,7 @@ import music from './images/types/music.png';
 import CreateAlbum from '../../../../widgets/create-album/CreateAlbum';
 import Add from '../../../../shared/ui-kit/add/Add';
 import { SendFilesFromEvent } from '../../../cloud/api/FileRequests';
+import PlaylistAPI from '../../api/PlaylistRequest';
 
 const AddInMusic = (props) => {
     const [isCreateAlbumOpen, setCreateAlbumOpen] = useState(false);
@@ -11,8 +12,14 @@ const AddInMusic = (props) => {
     return (
         <>
             {isCreateAlbumOpen && <CreateAlbum 
-                open={isCreateAlbumOpen}
-                close={() => {setCreateAlbumOpen(false)}}
+                title='Create playlist'
+                isOpen={isCreateAlbumOpen}
+                closeCallback={() => {setCreateAlbumOpen(false)}}
+                id={props.id}
+                callback={(name, description, image) => {
+                    PlaylistAPI.Create(name, description, image);
+                    setCreateAlbumOpen(false);
+                }}
             />}
             <Add 
                 items={[

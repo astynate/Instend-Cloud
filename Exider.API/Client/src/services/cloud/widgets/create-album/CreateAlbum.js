@@ -5,12 +5,10 @@ import Input from '../../shared/ui-kit/input/Input';
 import TextArea from '../../shared/ui-kit/text-area/TextArea';
 import Button from '../../shared/ui-kit/button/Button';
 import upload from "./images/upload.png";
-import { instance } from '../../../../state/Interceptors';
-import { CreateAlbumRequest, UpdateAlbum } from '../../pages/gallery/api/AlbumRequests';
 
-const CreateAlbum = (props) => {
-    const [name, setName] = useState(props.isUpdate && props.album ? props.album.name: '');
-    const [description, setDescription] = useState(props.isUpdate && props.album ? props.album.description: '');
+const CreateAlbum = ({isUpdate, nameValue, descriptionValue, cover, isOpen, closeCallback, title, callback}) => {
+    const [name, setName] = useState(isUpdate && nameValue ? nameValue : '');
+    const [description, setDescription] = useState(isUpdate && descriptionValue ? descriptionValue : '');
     const [image, setImage] = useState(null);
     const [imageAsURL, setImageAsURL] = useState(null);
 
@@ -30,21 +28,21 @@ const CreateAlbum = (props) => {
 
     return (
         <PopUpWindow
-            open={props.open} 
-            close={props.close}
+            open={isOpen} 
+            close={closeCallback}
             isHeaderPositionAbsulute={true}
         >
             <div className={styles.createAlbum}>
                 <div className={styles.header}>
-                    <span>{props.isUpdate ? 'Edit album' : 'Create album'}</span>
+                    <span>{title}</span>
                 </div>
                 <div className={styles.content}>
                     <div className={styles.left}>
                         <div className={styles.loadCover}>
                             {image ? (
                                 <img src={imageAsURL} className={styles.uploadedImage} />
-                            ) : props.isUpdate && props.album ? 
-                                <img src={`data:image/png;base64,${props.album.cover}`} className={styles.uploadedImage} />
+                            ) : isUpdate ? 
+                                <img src={`data:image/png;base64,${cover}`} className={styles.uploadedImage} />
                             :
                                 <img src={upload} className={styles.upload} />
                             }
@@ -71,15 +69,7 @@ const CreateAlbum = (props) => {
                         <div className={styles.buttonWrapper}>
                             <Button 
                                 value={"Coninue"} 
-                                callback={() => {
-                                    if (props.isUpdate === true && props.album) {
-                                        UpdateAlbum(name, description, image, props.album.id);
-                                    } else {
-                                        CreateAlbumRequest(name, description, image);
-                                    }
-                                    
-                                    props.close();
-                                }}
+                                callback={() => callback(name, description, image)}
                             />
                         </div>
                     </div>
