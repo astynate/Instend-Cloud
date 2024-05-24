@@ -6,7 +6,7 @@ import galleryState from "../../../../../states/gallery-state";
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-export const CreateAlbumRequest = async (name, description, image) => {
+export const CreateAlbumRequest = async (route='/api/albums/create', name, description, image) => {
     if (name === '') {
         return;
     }
@@ -21,7 +21,7 @@ export const CreateAlbumRequest = async (name, description, image) => {
 
     await instance({
         method: 'post',
-        url: '/api/gallery',
+        url: route,
         data: form,
         headers: { 'Content-Type': 'multipart/form-data' },
     }).catch((error) => {
@@ -32,7 +32,7 @@ export const CreateAlbumRequest = async (name, description, image) => {
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-export const UpdateAlbum = async (name, description, image, id) => {
+export const UpdateAlbum = async (route, name, description, image, id) => {
     if (name === '') {
         return;
     }
@@ -46,7 +46,7 @@ export const UpdateAlbum = async (name, description, image, id) => {
 
     await instance({
         method: 'put',
-        url: '/api/gallery',
+        url: route,
         data: form,
         headers: { 'Content-Type': 'multipart/form-data' },
     }).catch((error) => {

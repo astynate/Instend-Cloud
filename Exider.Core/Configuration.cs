@@ -95,6 +95,12 @@ namespace Exider.Core
             Write
         }
 
+        public enum AlbumTypes
+        {
+            Album,
+            Playlist
+        }
+
         public static SymmetricSecurityKey GetSecurityKey()
             => new(Encoding.UTF8.GetBytes(TestEncryptionKey));
     }

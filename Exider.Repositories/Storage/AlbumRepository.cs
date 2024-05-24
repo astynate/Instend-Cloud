@@ -1,10 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core;
 using Exider.Core.Models.Albums;
+using Exider.Repositories.Gallery;
 using Exider.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
 
-namespace Exider.Repositories.Gallery
+namespace Exider.Repositories.Storage
 {
     public class AlbumRepository : IAlbumRepository
     {
@@ -15,9 +16,9 @@ namespace Exider.Repositories.Gallery
             _context = context;
         }
 
-        public async Task<Result<AlbumModel>> AddAsync(Guid ownerId, byte[] cover, string name, string? description)
+        public async Task<Result<AlbumModel>> AddAsync(Guid ownerId, byte[] cover, string name, string? description, Configuration.AlbumTypes type)
         {
-            var albumModel = AlbumModel.Create(name, description, DateTime.Now, DateTime.Now, ownerId, Configuration.AccessTypes.Private);
+            var albumModel = AlbumModel.Create(name, description, DateTime.Now, DateTime.Now, ownerId, type, Configuration.AccessTypes.Private);
 
             if (albumModel.IsFailure)
             {
@@ -32,10 +33,10 @@ namespace Exider.Repositories.Gallery
             return Result.Success(albumModel.Value);
         }
 
-        public async Task<Result<AlbumModel[]>> GetAlbums(IImageService imageService, Guid userId)
+        public async Task<Result<AlbumModel[]>> GetAlbums(IImageService imageService, Guid userId, Configuration.AlbumTypes type)
         {
-            AlbumModel[] albums =  await _context.Albums.AsNoTracking()
-                .Where(x => x.OwnerId == userId).ToArrayAsync();
+            AlbumModel[] albums = await _context.Albums.AsNoTracking()
+                .Where(x => x.OwnerId == userId && x.TypeId == type.ToString()).ToArrayAsync();
 
             foreach (AlbumModel album in albums)
             {
@@ -54,7 +55,12 @@ namespace Exider.Repositories.Gallery
             {
                 return Result.Failure<AlbumModel>("Album not found");
             }
-            
+
+            if (album.OwnerId != userId)
+            {
+                return Result.Failure<AlbumModel>("Only owners can delete an album.");
+            }
+
             int result = await _context.Albums.Where(x => x.Id == id)
                 .ExecuteDeleteAsync();
 
@@ -64,6 +70,7 @@ namespace Exider.Repositories.Gallery
             }
 
             File.Delete(album.Cover);
+            
             return Result.Success(album);
         }
 
@@ -89,6 +96,12 @@ namespace Exider.Repositories.Gallery
             await _context.SaveChangesAsync();
 
             return Result.Success();
+        }
+
+        public async Task<AlbumModel[]> GetAlbums(Guid userId)
+        {
+            return await _context.Albums.AsNoTracking()
+                .Where(x => x.OwnerId == userId).ToArrayAsync();
         }
     }
 }

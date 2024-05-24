@@ -34,6 +34,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IAccessHandler _accessHandler;
 
+        private readonly IImageService _imageService;
+
         private readonly IHubContext<GalleryHub> _galleryHub;
 
         private readonly IHubContext<StorageHub> _storageHub;
@@ -51,6 +53,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             IUserDataRepository userDataRepository,
             ILinkBaseRepository<AlbumLink> linkBaseRepository,
             IAccessHandler accessHandler,
+            IImageService imageService,
             DatabaseContext context
         )
         {
@@ -64,12 +67,10 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             _accessHandler = accessHandler;
             _storageHub = storageHub;
             _linkBaseRepository = linkBaseRepository;
+            _imageService = imageService;
         }
 
-        [HttpGet]
-        [Route("/api/albums")]
-        [Authorize]
-        public async Task<ActionResult<AlbumModel[]>> GetAlbums(IImageService imageService)
+        private async Task<ActionResult<AlbumModel[]>> GetAlbums(IImageService imageService, Configuration.AlbumTypes type)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
@@ -78,7 +79,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest(userId.Error);
             }
 
-            var result = await _albumRepository.GetAlbums(imageService, Guid.Parse(userId.Value));
+            var result = await _albumRepository.GetAlbums(imageService, Guid.Parse(userId.Value), type);
 
             if (result.IsFailure)
             {
@@ -86,6 +87,22 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             }
 
             return Ok(result.Value);
+        }
+
+        [HttpGet]
+        [Route("/api/albums")]
+        [Authorize]
+        public async Task<ActionResult<AlbumModel[]>> GetAlbumsWithDefaultType(IImageService imageService)
+        {
+            return await GetAlbums(imageService, Configuration.AlbumTypes.Album);
+        }
+
+        [HttpGet]
+        [Route("/api/playlists")]
+        [Authorize]
+        public async Task<ActionResult<AlbumModel[]>> GetAlbumsWithPlaylistType(IImageService imageService)
+        {
+            return await GetAlbums(imageService, Configuration.AlbumTypes.Playlist);
         }
 
         [Authorize]
@@ -96,21 +113,15 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
             if (userId.IsFailure)
-            {
                 return BadRequest(userId.Error);
-            }
 
             if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
-            {
                 return BadRequest("Invalid id");
-            }
 
             var result = await _albumRepository.DeleteAlbumAsync(Guid.Parse(id), Guid.Parse(userId.Value));
 
             if (result.IsFailure)
-            {
                 return BadRequest(result.Error);
-            }
 
             await _galleryHub.Clients.Group(userId.Value.ToString()).SendAsync("DeleteAlbum", id);
 
@@ -122,7 +133,6 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         [Route("/api/gallery/upload")]
         public async Task<IActionResult> UploadToGallery
         (
-            IAlbumRepository albumRepository, 
             IFileService fileService,
             IHubContext<StorageHub> storageHub,
             [FromForm] IFormFile file,
@@ -274,16 +284,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             return Ok(files);
         }
 
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> CreateAlbum
-        (
-            IImageService imageService, 
-            [FromForm] IFormFile? cover,
-            [FromForm] string? name, 
-            [FromForm] string? description,
-            [FromForm] int queueId
-        )
+        private async Task<IActionResult> CreateAlbumWithType(IImageService imageService, IFormFile? cover, string? name, string? description, int queueId, Configuration.AlbumTypes type)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
@@ -308,7 +309,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 }
             }
 
-            var result = await _albumRepository.AddAsync(Guid.Parse(userId.Value), coverAsBytes, name, description);
+            var result = await _albumRepository.AddAsync(Guid.Parse(userId.Value), coverAsBytes, name, description, type);
 
             if (result.IsFailure)
             {
@@ -319,6 +320,34 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             await _galleryHub.Clients.Group(result.Value.OwnerId.ToString()).SendAsync("Create", new object[] { result.Value, queueId });
 
             return Ok();
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("/api/albums/create")]
+        private async Task<IActionResult> CreateAlbumWithDefaultType
+        (
+            [FromForm] IFormFile? cover,
+            [FromForm] string? name,
+            [FromForm] string? description,
+            [FromForm] int queueId
+        )
+        {
+            return await CreateAlbumWithType(_imageService, cover, name, description, queueId, Configuration.AlbumTypes.Album);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("/api/playlists/create")]
+        private async Task<IActionResult> CreateAlbumWithPlaylistType
+        (
+            [FromForm] IFormFile? cover,
+            [FromForm] string? name,
+            [FromForm] string? description,
+            [FromForm] int queueId
+        )
+        {
+            return await CreateAlbumWithType(_imageService, cover, name, description, queueId, Configuration.AlbumTypes.Playlist);
         }
 
         [HttpPut]

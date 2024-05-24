@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core.Models.Access;
 using Exider.Services.External.FileService;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Exider.Core.Models.Albums
@@ -12,8 +13,21 @@ namespace Exider.Core.Models.Albums
         [Column("cover")] public string Cover { get; private set; } = Configuration.DefaultAlbumCoverPath;
         [Column("creation_time")] public DateTime CreationTime { get; private set; }
         [Column("last_edit_time")] public DateTime LastEditTime { get; private set; }
+        [Column("type")] public string TypeId { get; private set; } = Configuration.AlbumTypes.Album.ToString();
 
+        /// <summary>
+        /// Нарушение инкапсуляции обусловлено бизнес-требованиями
+        /// и необходиомстью использовать дженерики
+        /// </summary>
         public AlbumModel() { }
+
+        [NotMapped]
+        [EnumDataType(typeof(Configuration.AlbumTypes))]
+        public Configuration.AlbumTypes Type
+        {
+            get => Enum.Parse<Configuration.AlbumTypes>(TypeId);
+            set => AccessId = value.ToString();
+        }
 
         public static Result<AlbumModel> Create
         (
@@ -22,6 +36,7 @@ namespace Exider.Core.Models.Albums
             DateTime creationTime,
             DateTime lastEditTime,
             Guid ownerId,
+            Configuration.AlbumTypes type,
             Configuration.AccessTypes access
         )
         {
@@ -36,7 +51,8 @@ namespace Exider.Core.Models.Albums
                 CreationTime = creationTime,
                 LastEditTime = lastEditTime,
                 OwnerId = ownerId,
-                Access = access
+                Access = access,
+                Type = type
             };
         }
 

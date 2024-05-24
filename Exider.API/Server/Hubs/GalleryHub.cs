@@ -1,8 +1,4 @@
-﻿using Exider.Core.Models.Gallery;
-using Exider.Core.Models.Storage;
-using Exider.Repositories.Gallery;
-using Exider.Repositories.Storage;
-using Exider.Services.External.FileService;
+﻿using Exider.Repositories.Gallery;
 using Exider.Services.Internal.Handlers;
 using Microsoft.AspNetCore.SignalR;
 
@@ -14,13 +10,10 @@ namespace Exider_Version_2._0._0.Server.Hubs
 
         private readonly IRequestHandler _requestHandler;
 
-        private readonly IImageService _imageService;
-
-        public GalleryHub(IImageService imageService, IRequestHandler requestHandler, IAlbumRepository albumRepository)
+        public GalleryHub(IRequestHandler requestHandler, IAlbumRepository albumRepository)
         {
             _albumRepository = albumRepository;
             _requestHandler = requestHandler;
-            _imageService = imageService;
         }
 
         public async Task Join(string authorization)
@@ -29,14 +22,9 @@ namespace Exider_Version_2._0._0.Server.Hubs
 
             if (userId.IsFailure) return;
 
-            var albums = await _albumRepository.GetAlbums(_imageService, Guid.Parse(userId.Value));
+            var albums = await _albumRepository.GetAlbums(Guid.Parse(userId.Value));
 
-            if (albums.IsFailure)
-            {
-                return;
-            }
-
-            Array.ForEach(albums.Value, async x => await Groups
+            Array.ForEach(albums, async x => await Groups
                 .AddToGroupAsync(Context.ConnectionId, x.Id.ToString()));
 
             await Groups.AddToGroupAsync(Context.ConnectionId, userId.Value);
