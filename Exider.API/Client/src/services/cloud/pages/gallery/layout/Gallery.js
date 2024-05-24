@@ -8,7 +8,6 @@ import styles from './main.module.css';
 import Photos from '../pages/Photos/Photos';
 import Albums from '../pages/Albums/Albums';
 import Range from '../../../shared/range/Range';
-import galleryState from '../../../../../states/gallery-state';
 import { toJS } from 'mobx';
 import share from './images/share.png';
 import download from './images/download.png';

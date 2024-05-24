@@ -8,7 +8,7 @@ import Placeholder from '../../../../shared/placeholder/Placeholder';
 import Loader from '../../../../shared/loader/Loader';
 import { ConvertFullDate } from '../../../../../../utils/DateHandler';
 import PhotoList from '../../shared/photo-list/PhotoList';
-import Add from '../../widgets/add/Add';
+import Add from '../../widgets/add/AddInGallery';
 import UserAvatar from '../../../../widgets/avatars/user-avatar/UserAvatar';
 import AddUser from '../../../../widgets/avatars/add-user/AddUser';
 import LocalMenu from '../../../../shared/ui-kit/local-menu/LocalMenu';
@@ -16,6 +16,8 @@ import Comments from '../../../../widgets/social/comments/Comments';
 import Button from '../../../../shared/ui-kit/button/Button';
 import OpenAccessProcess from '../../../../process/open-access/OpenAccessProcess';
 import { DeleteComment } from '../../api/AlbumRequests';
+import { UploadPhotosInAlbum } from '../../api/GalleryRequests';
+import AddInGallery from '../../widgets/add/AddInGallery';
 
 const AlbumView = observer((props) => {
     const { albums } = galleryState;
@@ -112,7 +114,7 @@ const AlbumView = observer((props) => {
                             {'title': "Photos", 'component': 
                                 <>
                                     <div className={styles.content}>
-                                        <Add id={params.id} />
+                                        <AddInGallery id={params.id} />
                                         {!albums[params.id].photos || albums[params.id].photos.length === 0 ?
                                             <div className={styles.noImages}>
                                                 <Placeholder title="No photos uploaded" />

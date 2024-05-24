@@ -7,6 +7,7 @@ import FileAPI from '../../../../api/FileAPI';
 import Scroll from '../../../../widgets/scroll/Scroll';
 import { observer } from 'mobx-react-lite';
 import { layoutContext } from '../../../../layout/Layout';
+import AddInMusic from '../../widgets/add-in-music/AddInMusic';
 
 const Songs = observer((props) => {
     const { song } = useContext(layoutContext);
@@ -25,6 +26,7 @@ const Songs = observer((props) => {
                     storageState.GetItems(storageState.hasMoreSongs, storageState.countSongs, "music");
                 }}
             />
+            <AddInMusic />
         </div>
     );
 });

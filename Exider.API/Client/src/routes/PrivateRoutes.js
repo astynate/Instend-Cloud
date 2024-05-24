@@ -29,7 +29,7 @@ const PrivateRoutes = [
         element: <Messages />
     },
     {
-        path: '/music',
+        path: '/music/*',
         element: <Music />
     },
     {

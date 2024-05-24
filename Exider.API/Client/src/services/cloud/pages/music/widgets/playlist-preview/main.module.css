@@ -1,0 +1,58 @@
+.albumView {
+    height: auto;
+    width: 100%;
+    /* display: flex; */
+    /* grid-template-columns: 40% 70%; */
+    /* padding-right: 40px; */
+}
+
+.cover {
+    height: 100%;
+    width: 100%;
+    /* aspect-ratio: 1 / 1; */
+    object-fit: cover;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.songs {
+    width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.view {
+    position: relative;
+}
+
+.buttonWrapper {
+    right: 20px;
+    bottom: 20px;
+    position: absolute;
+    border-radius: 100%;
+    box-shadow: 0px 0px 100px rgba(0, 0, 0, 0.2);
+}
+
+.header {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.description {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+.title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--main-font-color);
+}
+
+.time {
+    font-size: 12px;
+    color: var(--main-paragraph-color);
+}

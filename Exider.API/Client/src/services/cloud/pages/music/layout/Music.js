@@ -5,6 +5,7 @@ import Search from '../../../features/search/Search';
 import Menu from '../../../widgets/menu/Menu';
 import { Route, Routes } from 'react-router-dom';
 import Songs from '../pages/Songs/Songs';
+import Playlists from '../pages/Playlists/Playlists';
 
 const Music = (props) => {
   useEffect(() => {
@@ -38,6 +39,10 @@ const Music = (props) => {
         <Route 
           path=''
           element={<Songs />} 
+        />
+        <Route 
+          path='/playlists'
+          element={<Playlists />} 
         />
       </Routes>
     </div>

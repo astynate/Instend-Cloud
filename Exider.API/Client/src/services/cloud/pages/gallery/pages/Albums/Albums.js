@@ -3,12 +3,14 @@ import styles from './main.module.css';
 import { observer } from 'mobx-react-lite';
 import galleryState from '../../../../../../states/gallery-state';
 import Album from '../../widgets/album/Album';
-import Add from '../../widgets/add/Add';
+import Add from '../../widgets/add/AddInGallery';
 import { autorun } from 'mobx';
 import { toJS } from 'mobx';
 import SelectBox from '../../../../shared/interaction/select-box/SelectBox';
 import { DeleteAlbums } from '../../api/AlbumRequests';
 import CreateAlbum from '../../../../widgets/create-album/CreateAlbum';
+import { AddPhotosInAlbum } from '../../api/GalleryRequests';
+import AddInGallery from '../../widgets/add/AddInGallery';
 
 const Albums = observer(() => {
     const wrapper = useRef();
@@ -52,7 +54,7 @@ const Albums = observer(() => {
 
     return (
         <>        
-            <Add id={null} />
+            <AddInGallery id={null} />
             {isCreateAlbumOpen && <CreateAlbum 
                 open={isCreateAlbumOpen}
                 close={() => {setCreateAlbumOpen(false)}}

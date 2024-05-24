@@ -9,9 +9,11 @@ import { ConvertDate, ConvertFullDate } from '../../../../../../utils/DateHandle
 import Placeholder from '../../../../shared/placeholder/Placeholder';
 import { toJS } from 'mobx';
 import PhotoList from '../../shared/photo-list/PhotoList';
-import Add from '../../widgets/add/Add';
+import Add from '../../widgets/add/AddInGallery';
 import storageState from '../../../../../../states/storage-state';
 import FileAPI from '../../../../api/FileAPI';
+import { SendFilesFromEvent } from '../../../cloud/api/FileRequests';
+import AddInGallery from '../../widgets/add/AddInGallery';
 
 const Photos = observer((props) => {
     const photosWrapper = useRef();
@@ -81,7 +83,7 @@ const Photos = observer((props) => {
                 <div className={styles.placeholder}>
                     <Placeholder title='No photos or videos uploaded.' />
                 </div>}
-            <Add id={null} />
+            <AddInGallery id={null} />
             <PhotoList 
                 photos={photos} 
                 scale={props.scale}
