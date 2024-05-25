@@ -1,18 +1,26 @@
 .albumView {
     height: auto;
     width: 100%;
-    /* display: flex; */
-    /* grid-template-columns: 40% 70%; */
-    /* padding-right: 40px; */
 }
 
 .cover {
     height: 100%;
     width: 100%;
-    /* aspect-ratio: 1 / 1; */
+    aspect-ratio: 1 / 1;
     object-fit: cover;
     border-radius: 5px;
     cursor: pointer;
+    user-select: none;
+    background: var(--main-accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.15s ease;
+}
+
+.cover[id="selected"] {
+    outline: 2px solid var(--main-blue-color);
+    outline-offset: 2px;
 }
 
 .songs {
@@ -26,11 +34,11 @@
 }
 
 .buttonWrapper {
-    right: 20px;
-    bottom: 20px;
+    right: 15px;
+    bottom: 15px;
     position: absolute;
     border-radius: 100%;
-    box-shadow: 0px 0px 100px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.3);
 }
 
 .header {
@@ -44,15 +52,16 @@
     flex-direction: column;
     justify-content: center;
     text-align: center;
+    padding-top: 2px;
 }
 
 .title {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--main-font-color);
 }
 
 .time {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--main-paragraph-color);
 }

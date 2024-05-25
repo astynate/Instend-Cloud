@@ -26,7 +26,7 @@ namespace Exider.Core.Models.Albums
         public Configuration.AlbumTypes Type
         {
             get => Enum.Parse<Configuration.AlbumTypes>(TypeId);
-            set => AccessId = value.ToString();
+            set => TypeId = value.ToString();
         }
 
         public static Result<AlbumModel> Create
@@ -52,7 +52,9 @@ namespace Exider.Core.Models.Albums
                 LastEditTime = lastEditTime,
                 OwnerId = ownerId,
                 Access = access,
-                Type = type
+                AccessId = access.ToString(),
+                Type = type,
+                TypeId = type.ToString()
             };
         }
 

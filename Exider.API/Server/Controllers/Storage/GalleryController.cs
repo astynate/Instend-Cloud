@@ -330,16 +330,16 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             [FromForm] IFormFile? cover,
             [FromForm] string? name,
             [FromForm] string? description,
-            [FromForm] int queueId
+            [FromForm] int queueid
         )
         {
-            return await CreateAlbumWithType(_imageService, cover, name, description, queueId, Configuration.AlbumTypes.Album);
+            return await CreateAlbumWithType(_imageService, cover, name, description, queueid, Configuration.AlbumTypes.Album);
         }
 
         [HttpPost]
         [Authorize]
         [Route("/api/playlists/create")]
-        private async Task<IActionResult> CreateAlbumWithPlaylistType
+        public async Task<IActionResult> CreateAlbumWithPlaylistType
         (
             [FromForm] IFormFile? cover,
             [FromForm] string? name,

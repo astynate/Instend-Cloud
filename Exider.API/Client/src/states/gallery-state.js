@@ -80,9 +80,9 @@ class GalleryState {
         }
     }
 
-    async GetAlbums() {
+    async GetAlbumRequest(route) {
         await instance
-            .get('/api/albums')
+            .get(route)
             .then(response => {
                 for (let i = 0; i < response.data.length; i++) {
                     if ((response.data[i].id in this.albums) === false) {
@@ -93,7 +93,15 @@ class GalleryState {
                     }
                 }
             })
+    }
+
+    async GetAlbums() {
+        this.GetAlbumRequest('/api/albums');
     } 
+
+    async GetPlaylists() {
+        this.GetAlbumRequest('/api/playlists');
+    }
 
     DeleteAlbumById(id) {
         delete this.albums[id];

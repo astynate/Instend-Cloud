@@ -32,7 +32,7 @@ export const CreateAlbumRequest = async (route='/api/albums/create', name, descr
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-export const UpdateAlbum = async (route, name, description, image, id) => {
+export const UpdateAlbum = async (name, description, image, id) => {
     if (name === '') {
         return;
     }
@@ -46,7 +46,7 @@ export const UpdateAlbum = async (route, name, description, image, id) => {
 
     await instance({
         method: 'put',
-        url: route,
+        url: '/api/gallery',
         data: form,
         headers: { 'Content-Type': 'multipart/form-data' },
     }).catch((error) => {

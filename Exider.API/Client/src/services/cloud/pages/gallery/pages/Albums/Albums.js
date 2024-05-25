@@ -67,10 +67,10 @@ const Albums = observer(() => {
                 }}
             />}
             <div className={styles.content} ref={wrapper}>
-                {Object.entries(galleryState.albums).map(([key, value]) => {
+                {Object.values(galleryState.albums).filter(element => element.typeId === 'Album').map(value => {
                         return (
                             <Album 
-                                key={key} 
+                                key={value.id} 
                                 album={value}
                                 isSelected={selectedItems[0] ? selectedItems.map(element => element.id).includes(value.id) : null}
                             />
