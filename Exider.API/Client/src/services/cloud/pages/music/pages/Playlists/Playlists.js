@@ -55,7 +55,6 @@ const Playlists = observer(() => {
     return (
         <div className={styles.content} ref={wrapper}>
             <AddInMusic />
-
             {playlists.map((element, index) => {
                     return (
                         <PlayListPreview 

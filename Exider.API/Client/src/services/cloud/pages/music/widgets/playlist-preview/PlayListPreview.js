@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styles from './main.module.css';
 import defaultCover from './images/default-playlist-cover.png';
 import PlayButton from '../../shared/ui-kit/play-button/PlayButton';
@@ -14,11 +15,13 @@ const PlayListPreview = ({id, name, time, cover, isSelected, isLoading}) => {
                     </div>
                 :
                     <div className={styles.cover} id={isSelected ? 'selected' : null}>
-                        <img 
-                            src={cover ? `data:image/png;base64,${cover}` :  defaultCover} 
-                            className={styles.cover}
-                            draggable="false"
-                        />
+                        <Link to={`/music/playlists/${id}`}>
+                            <img 
+                                src={cover ? `data:image/png;base64,${cover}` :  defaultCover} 
+                                className={styles.cover}
+                                draggable="false"
+                            />
+                        </Link>
                         <div className={styles.buttonWrapper}>
                             <PlayButton 
                                 callback={() => alert('!')}
