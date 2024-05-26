@@ -53,11 +53,3 @@
     grid-template-columns: repeat(5, 1fr);
     border-top: 1px solid var(--main-border-color);
 }
-
-.mobile-header {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    padding: 0px 2vw;
-    align-items: center;
-}

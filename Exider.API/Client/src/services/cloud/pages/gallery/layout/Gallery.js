@@ -94,7 +94,7 @@ const Gallery = observer((props) => {
         <Search />
         <div className={styles.header}>
           <div className={styles.up}>
-              <div>
+              <div className={styles.rangeWrapper}>
                 <Range
                   min={1}
                   max={5}
@@ -125,8 +125,6 @@ const Gallery = observer((props) => {
                 items={[template]}
                 states={[setTemplate]}
               />
-              <SimpleButton icon={share} />
-              <SimpleButton icon={download} />
             </div>
           </div>
         </div>

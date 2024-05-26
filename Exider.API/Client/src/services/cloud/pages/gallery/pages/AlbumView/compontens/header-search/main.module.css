@@ -1,0 +1,21 @@
+.search {
+    display: flex;
+    align-items: center;
+    grid-gap: 5px;
+    user-select: none;
+}
+
+.input {
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.icon {
+    height: 14px;
+    width: 14px;
+    filter: var(--main-filter);
+    opacity: 0.7;
+}

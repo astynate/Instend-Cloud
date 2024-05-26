@@ -2,17 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
 import Sroll from '../../../../widgets/scroll/Scroll';
 import { observer } from 'mobx-react-lite';
-import galleryState from '../../../../../../states/gallery-state';
-import { CalculateAverageEqual } from '../../../../widgets/item-list/ItemList';
 import { GetPhotoById } from '../../layout/Gallery';
 import { ConvertDate, ConvertFullDate } from '../../../../../../utils/DateHandler';
 import Placeholder from '../../../../shared/placeholder/Placeholder';
 import { toJS } from 'mobx';
 import PhotoList from '../../shared/photo-list/PhotoList';
-import Add from '../../widgets/add/AddInGallery';
 import storageState from '../../../../../../states/storage-state';
 import FileAPI from '../../../../api/FileAPI';
-import { SendFilesFromEvent } from '../../../cloud/api/FileRequests';
 import AddInGallery from '../../widgets/add/AddInGallery';
 
 const Photos = observer((props) => {

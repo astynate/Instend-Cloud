@@ -10,8 +10,9 @@ import { Delete } from '../../../cloud/api/FolderRequests';
 import Loader from '../../../../shared/loader/Loader';
 import { toJS } from 'mobx';
 import { AddPhotosInAlbum } from '../../api/GalleryRequests';
+import { observer } from 'mobx-react-lite';
 
-const PhotoList = (props) => {
+const PhotoList = observer((props) => {
     const [gridTemplateColumns, setGridTemplateColumns] = useState('repeat(auto-fill, minmax(200px, 1fr))');
     const [columnCount, setColumnCount] = useState(null);
     const [selectedItems, setSelectedItems] = useState([]);
@@ -78,11 +79,11 @@ const PhotoList = (props) => {
     }, [props.scale, props.photoGrid]);
 
     useEffect(() => {
-        const fetchDate = async () => {
+        const fetchData = async () => {
             await galleryState.GetAlbums();
         }
 
-        fetchDate();
+        fetchData();
     }, []);
 
     return (
@@ -91,7 +92,6 @@ const PhotoList = (props) => {
                 <Preview
                     close={() => setPreviewState(false)} 
                     file={activeItems[0]}
-                    // ErrorMessage={ErrorMessage}
                 />}
             <AddToAlbum
                 open={isAddToAlbumOpen}
@@ -146,6 +146,6 @@ const PhotoList = (props) => {
             />
         </div>
     );
- };
+});
 
 export default PhotoList;

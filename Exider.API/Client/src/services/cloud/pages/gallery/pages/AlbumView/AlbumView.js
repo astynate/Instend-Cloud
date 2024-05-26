@@ -6,9 +6,8 @@ import galleryState from '../../../../../../states/gallery-state';
 import Scroll from '../../../../widgets/scroll/Scroll';
 import Placeholder from '../../../../shared/placeholder/Placeholder';
 import Loader from '../../../../shared/loader/Loader';
-import { ConvertFullDate } from '../../../../../../utils/DateHandler';
+import { ConvertDate } from '../../../../../../utils/DateHandler';
 import PhotoList from '../../shared/photo-list/PhotoList';
-import Add from '../../widgets/add/AddInGallery';
 import UserAvatar from '../../../../widgets/avatars/user-avatar/UserAvatar';
 import AddUser from '../../../../widgets/avatars/add-user/AddUser';
 import LocalMenu from '../../../../shared/ui-kit/local-menu/LocalMenu';
@@ -16,8 +15,11 @@ import Comments from '../../../../widgets/social/comments/Comments';
 import Button from '../../../../shared/ui-kit/button/Button';
 import OpenAccessProcess from '../../../../process/open-access/OpenAccessProcess';
 import { DeleteComment } from '../../api/AlbumRequests';
-import { UploadPhotosInAlbum } from '../../api/GalleryRequests';
 import AddInGallery from '../../widgets/add/AddInGallery';
+import HeaderSearch from './compontens/header-search/HeaderSearch';
+import emoji from './images/emoji.png';
+import BurgerMenu from '../../../../shared/ui-kit/burger-menu/BurgerMenu';
+import Reaction from '../../../../shared/ui-kit/reaction/Reaction';
 
 const AlbumView = observer((props) => {
     const { albums } = galleryState;
@@ -62,43 +64,73 @@ const AlbumView = observer((props) => {
                             />
                             <div className={styles.control}>
                                 <div className={styles.nameWrapper}>
+                                    <span className={styles.albumDate}>{ConvertDate(albums[params.id].creationTime)}</span>
                                     <h1 className={styles.albumName}>{albums[params.id].name}</h1>
-                                    <span className={styles.albumDate}>{ConvertFullDate(albums[params.id].creationTime)}</span>
                                 </div>
-                                {albums[params.id].description && <div className={styles.descriptionWrapper}>
-                                    <span className={styles.descritpion}>{albums[params.id].description}</span>
-                                </div>}
-                                <div className={styles.people}>
+                                {albums[params.id].description && 
+                                    <div className={styles.descriptionWrapper}>
+                                        <span className={styles.descritpion}>
+                                            <span className={styles.views}>0</span> Views&nbsp;&nbsp;•&nbsp;&nbsp;<span className={styles.views}>0</span> Reactions
+                                        </span>
+                                        <span className={styles.descritpion}>{albums[params.id].description}</span>
+                                    </div>
+                                }
+                                <div className={styles.controlPanel}>
                                     <Button value="Follow" />
+                                    <img
+                                        src={emoji}
+                                        className={styles.subButton} 
+                                    />
+                                    <BurgerMenu 
+                                        items={[
+                                            {title: "astynate", callback: () => {}}
+                                        ]}
+                                    />
                                 </div>
                             </div>
                         </div>
                         <div className={styles.addition}>
-                            {isUsersLoading ? 
-                                <>
-                                    <div className={styles.avatarPlaceholder}></div>
-                                    <div className={styles.avatarPlaceholder}></div>
-                                    <div className={styles.avatarPlaceholder}></div>
-                                </>
-                            : 
-                                <>
-                                    {galleryState.albums && galleryState.albums[params.id] && galleryState.albums[params.id].users && galleryState.albums[params.id].users.map
-                                        && galleryState.albums[params.id].users.map((element, index) => {
-                                            if (element.user) {
-                                                let user = element.user;
-                                                user.avatar = element.base64Avatar;
-                                            
-                                                return (
-                                                    <UserAvatar key={index} user={user} />
-                                                )
-                                            } else {
-                                                return null;
-                                            }
-                                        })
-                                    }
-                                    <AddUser callback={() => setOpenAccessWindowState(true)} />   
-                                </>
-                            }
+                            <div className={styles.users}>
+                                {isUsersLoading ? 
+                                    <>
+                                        <div className={styles.avatarPlaceholder}></div>
+                                        <div className={styles.avatarPlaceholder}></div>
+                                        <div className={styles.avatarPlaceholder}></div>
+                                    </>
+                                : 
+                                    <>
+                                        {galleryState.albums && galleryState.albums[params.id] && galleryState.albums[params.id].users && galleryState.albums[params.id].users.map
+                                            && galleryState.albums[params.id].users.map((element, index) => {
+                                                if (element.user) {
+                                                    let user = element.user;
+                                                    user.avatar = element.base64Avatar;
+                                                
+                                                    return (
+                                                        <UserAvatar key={index} user={user} />
+                                                    )
+                                                } else {
+                                                    return null;
+                                                }
+                                            })
+                                        }
+                                        <AddUser callback={() => setOpenAccessWindowState(true)} />   
+                                    </>
+                                }
+                            </div>
+                            <div className={styles.reactions}>
+                                {/* <Reaction /> */}
+                                {/* <Reaction />
+                                <Reaction />
+                                <Reaction />
+                                <Reaction />
+                                <Reaction />
+                                <Reaction />
+                                <Reaction />
+                                <Reaction />
+                                <Reaction />
+                                <Reaction />
+                                <Reaction /> */}
+                            </div>
                         </div>
                     </div>
                     <OpenAccessProcess
@@ -112,7 +144,7 @@ const AlbumView = observer((props) => {
                     <LocalMenu 
                         items={[
                             {'title': "Photos", 'component': 
-                                <>
+                                <div className={styles.contentWrapper}>
                                     <div className={styles.content}>
                                         <AddInGallery id={params.id} />
                                         {!albums[params.id].photos || albums[params.id].photos.length === 0 ?
@@ -120,7 +152,7 @@ const AlbumView = observer((props) => {
                                                 <Placeholder title="No photos uploaded" />
                                             </div>  
                                         :
-                                            <div className={styles.photosWrapper}>
+                                            <>
                                                 <PhotoList
                                                     photos={galleryState.albums && galleryState.albums[params.id] && galleryState.albums[params.id].photos ? 
                                                         galleryState.albums[params.id].photos : []} 
@@ -128,21 +160,21 @@ const AlbumView = observer((props) => {
                                                     photoGrid={props.photoGrid}
                                                     forwardRef={wrapper}
                                                 />
-                                                <Scroll
-                                                    scroll={props.scroll}
-                                                    isHasMore={galleryState.albums[params.id].hasMore}
-                                                    count={galleryState.albums[params.id].photos.length}
-                                                    callback={() => {
-                                                        galleryState.GetAlbumPhotos(params.id);
-                                                    }}
-                                                />
-                                            </div>
+                                            </>
                                         }
+                                        <Scroll
+                                            scroll={props.scroll}
+                                            isHasMore={galleryState.albums[params.id].hasMore}
+                                            count={galleryState.albums[params.id].photos.length}
+                                            callback={async () => {
+                                                await galleryState.GetAlbumPhotos(params.id);
+                                            }}
+                                        />
                                     </div>
-                                </>
+                                </div>
                             },
                             {'title': "Comments", "component": 
-                                <>
+                                <div className={styles.contentWrapper}>
                                     <div className={styles.content}>
                                         <Comments 
                                             fetch_callback={() => galleryState.GetAlbumComments(params.id)}
@@ -153,10 +185,15 @@ const AlbumView = observer((props) => {
                                             deleteCallback={(id) => DeleteComment(id, params.id)}
                                         />
                                     </div>
-                                </>
+                                </div>
                             }
                         ]}
                         default={0}
+                        rightItems={[
+                            (<HeaderSearch 
+                                placeholder={"Search photo by name"}
+                            />)
+                        ]}
                     />
                 </>
             }

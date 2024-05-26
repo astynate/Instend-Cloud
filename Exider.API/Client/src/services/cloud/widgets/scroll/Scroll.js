@@ -1,31 +1,24 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 const Scroll = (props) => {
-    const [available, setAvailableState] = useState(true);
     const ref = useRef();
-    const isHasMoreRef = useRef(props.isHasMore);
-    const isAvailable = useRef(available);
 
     useEffect(() => {
-        isHasMoreRef.current = props.isHasMore;
-    }, [props.isHasMore]);
+        props.callback();
+    }, []);
 
     const checkScroll = async () => {
-      if (ref.current && isHasMoreRef.current === true) {
+      if (ref.current) {
         const rect = ref.current.getBoundingClientRect();
 
-        if (isAvailable.current === true && rect.top < window.innerHeight) {
-            setAvailableState(false);
+        if (rect.top < window.innerHeight) {
             await props.callback();
-            setAvailableState(true);
         }
       }
     };
   
     useEffect(() => {
-        if (isHasMoreRef && isHasMoreRef.current === true) {
-            checkScroll();
-        }
+        checkScroll();
     }, [props.count]);
 
     useEffect(() => {

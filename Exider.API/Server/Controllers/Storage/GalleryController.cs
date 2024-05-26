@@ -325,7 +325,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         [HttpPost]
         [Authorize]
         [Route("/api/albums/create")]
-        private async Task<IActionResult> CreateAlbumWithDefaultType
+        public async Task<IActionResult> CreateAlbumWithDefaultType
         (
             [FromForm] IFormFile? cover,
             [FromForm] string? name,

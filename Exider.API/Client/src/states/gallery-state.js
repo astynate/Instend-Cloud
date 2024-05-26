@@ -110,13 +110,12 @@ class GalleryState {
     async GetAlbumPhotos(id) {
         if (this.albums[id] && this.albums[id].hasMore === true) {
             const count = 15;
+            this.albums[id].hasMore = false;
 
             await instance
                 .get(`/api/album?id=${id}&from=${this.albums[id].photos.length > 0 ? this.albums[id].photos.length : 0}&count=${count}`)
                 .then(response => {
-                    if (response.data < count) {
-                        this.albums[id].hasMore = false;
-                    }
+                    this.albums[id].hasMore = response.data.length !== 0;
                     this.albums[id].photos = [...this.albums[id].photos, ...response.data];
                 })
                 .catch((error) => {
@@ -132,7 +131,7 @@ class GalleryState {
 
         if (albumId && !this.albums[albumId].comments) {
             await instance
-                .get('/api/album-comments?albumId=3a345313-255a-41a2-bac3-3aa2a31a09a1')
+                .get(`/api/album-comments?albumId=${albumId}`)
                 .then(response => {
                     this.albums[albumId].comments = response.data;
                 })

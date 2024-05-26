@@ -12,8 +12,8 @@ import cloud_passive from './images/buttons/cloud_passive.svg';
 import cloud_active from './images/buttons/cloud_active.svg';
 import messages_passive from './images/buttons/messages_passive.svg';
 import messages_active from './images/buttons/messages_active.svg';
-import profile_passive from './images/buttons/profile_passive.svg';
-import profile_active from './images/buttons/profile_active.svg';
+import gallery_passive from './images/buttons/gallery_passive.svg';
+import gallery_active from './images/buttons/gallery_active.svg';
 
 const useIsActiveButton = (name) => 
     useIsCurrentRoute(name) ? 'active' : 'passive'
@@ -42,9 +42,8 @@ const MobileNavigation = () => {
                 <img src={useIsCurrentRoute('messages') ? messages_active : messages_passive} draggable="false" alt="M" />
                 <nav>Messages</nav>
             </Link>
-            <Link to="/profile" className="navigation-button" id={useIsActiveButton('profile')}>
-                <img src={useIsCurrentRoute('profile') ? profile_active : profile_passive} draggable="false" alt="P" />
-                <nav>Profile</nav>
+            <Link to="/gallery" className="navigation-button" id={useIsActiveButton('gallery')}>
+                <img src={useIsCurrentRoute('gallery') ? gallery_active : gallery_passive} draggable="false" alt="G" />
             </Link>
         </div>
         

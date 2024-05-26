@@ -33,6 +33,15 @@ h1 {
     overflow: hidden;
 }
 
+.mobile-header {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    padding: 10px 0px;
+    align-items: center;
+    /* border-bottom: 1px solid var(--main-border-color); */
+}
+
 .service-name {
     display: flex;
     align-items: center;
@@ -40,18 +49,18 @@ h1 {
 
 .service-name h1 {
     margin: 0;
-    font-size: 18px;
+    font-size: 21px;
     font-weight: 600;
     color: var(--main-font-color);
 }
 
 .service-name h2 {
     font-weight: 500;
-    font-size: 18px;
+    font-size: 21px;
     color: var(--main-paragraph-color);
 }
 
 .service-name img {
-    height: 50px;
+    height: 60px;
     filter: var(--main-filter);
 }

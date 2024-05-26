@@ -92,9 +92,12 @@ namespace Exider.Repositories.Storage
 
             albumModel.Update(name, description);
 
-            await File.WriteAllBytesAsync(albumModel.Cover, cover);
-            await _context.SaveChangesAsync();
+            if (cover.Length > 0)
+            {
+                await File.WriteAllBytesAsync(albumModel.Cover, cover);
+            }
 
+            await _context.SaveChangesAsync();
             return Result.Success();
         }
 

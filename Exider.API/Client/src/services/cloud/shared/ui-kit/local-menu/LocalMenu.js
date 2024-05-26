@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './main.module.css';
 
-const LocalMenu = ({items, defaultValue}) => {
+const LocalMenu = ({items, defaultValue, rightItems}) => {
     const [current, setCurrent] = useState(defaultValue ? defaultValue : 0);
 
     return (
@@ -20,12 +20,21 @@ const LocalMenu = ({items, defaultValue}) => {
                             </div>
                         );
                     })}
+                    <div className={styles.right}>
+                        {rightItems && rightItems.map((element, index) => {
+                            return (
+                                <div key={index}>
+                                    {(element)}
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
             </div>
             {items && items.map && items.map((element, index) => {
                 if (element.component && index === current) {
                     return (
-                        <div key={index}>
+                        <div className={styles.wrapper} key={index}>
                             {(element.component)}
                         </div>
                     );

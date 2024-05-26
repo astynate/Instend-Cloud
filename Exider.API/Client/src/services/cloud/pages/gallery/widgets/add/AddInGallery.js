@@ -18,7 +18,7 @@ const AddInGallery = (props) => {
                 closeCallback={() => {setCreateAlbumOpen(false)}}
                 id={props.id}
                 callback={(name, description, image) => {
-                    CreateAlbumRequest(name, description, image);
+                    CreateAlbumRequest('/api/albums/create', name, description, image);
                     setCreateAlbumOpen(false);
                 }}
             />}

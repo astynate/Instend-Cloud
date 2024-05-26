@@ -11,7 +11,7 @@
     cursor: pointer;
     flex-shrink: 0;
     border: 2px solid var(--main-background-color);
-    outline: 2px solid var(--main-font-color);
+    outline: 2px solid var(--main-border-color);
 }
 
 .userAvatar img {
@@ -19,4 +19,5 @@
     width: 45%;
     object-fit: cover;
     filter: var(--main-filter);
+    opacity: 0.3;
 }
