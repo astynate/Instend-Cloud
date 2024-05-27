@@ -106,7 +106,11 @@ const PhotoList = observer((props) => {
             />
             <div className={styles.photos} id={current === 1 ? 'waterfall' : 'grid'} style={{ gridTemplateColumns, columnCount }} ref={props.forwardRef}>
                 {props.photos && props.photos.map && props.photos.map((element, index) => {
-                    if (element.isLoading === true) {
+                    if (!element) {
+                        return null;
+                    }
+
+                    if (element && element.isLoading && element.isLoading === true) {
                         return (
                             <div 
                                 key={index} 

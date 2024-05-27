@@ -9,7 +9,7 @@ import { DownloadFromResponse } from '../../../../../../utils/DownloadFromRespon
 import { Delete } from '../../../cloud/api/FolderRequests';
 import EditSong from '../../features/edit-song/EditSong';
 
-const SongList = observer(({songs}) => {
+const SongList = observer(({songs, isHeaderless}) => {
     const [activeItems, setActiveItems] = useState([]);
     const [selectedItems, setSelectedItems] = useState([]);
     const [isCreateAlbumOpen, setCreateAlbumOpen] = useState(false);
@@ -56,7 +56,7 @@ const SongList = observer(({songs}) => {
 
     return (
         <div className={styles.songList}>
-            <div className={styles.songListHeader}>
+            {!isHeaderless && <div className={styles.songListHeader}>
                 <div className={styles.name}>
                     <span className={styles.item}>#</span>
                     <span className={styles.item}>Name</span>
@@ -64,7 +64,7 @@ const SongList = observer(({songs}) => {
                 <span className={styles.item}>Album</span>
                 <span className={styles.item}>Plays</span>
                 <span className={styles.item}>Time</span>
-            </div>
+            </div>}
             <div className={styles.songs} ref={songWrapper}>
                 {songs && songs.map && songs.map((element, index) => {
                     return (

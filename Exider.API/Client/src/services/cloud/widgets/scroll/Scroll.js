@@ -2,13 +2,14 @@ import React, { useEffect, useRef } from 'react';
 
 const Scroll = (props) => {
     const ref = useRef();
+    const hasMoreRef = useRef(props.hasMore);
 
     useEffect(() => {
         props.callback();
     }, []);
 
     const checkScroll = async () => {
-      if (ref.current) {
+      if (ref.current && hasMoreRef.current === true) {
         const rect = ref.current.getBoundingClientRect();
 
         if (rect.top < window.innerHeight) {

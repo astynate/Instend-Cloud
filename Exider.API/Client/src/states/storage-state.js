@@ -290,11 +290,10 @@ class StorageState {
         await instance
             .get(`api/pagination?from=${count}&count=${20}&type=${type}`)
             .then(response => {
-                if (response.data && response.data.length && response.data.length < 1) {
+                if (response.data && response.data.length && response.data.length < 20) {
                     hasMore = false;
-                    return;
                 }
-        
+
                 runInAction(() => {
                     for (let i in response.data) {
                         let file = response.data[i];

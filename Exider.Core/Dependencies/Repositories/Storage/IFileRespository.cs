@@ -15,5 +15,6 @@ namespace Exider.Repositories.Storage
         Task<object[]> GetLastFilesWithType(Guid userId, int from, int count, string[] type);
         Task<FileModel[]> GetLastPhotoFromAlbum(Guid guid1, Guid guid2, int from, int count);
         Task<Result<FileModel>> UpdateName(Guid id, string name);
+        Task<object[]> GetLastItemsFromAlbum(Guid userId, Guid albumId, int from, int count);
     }
 }

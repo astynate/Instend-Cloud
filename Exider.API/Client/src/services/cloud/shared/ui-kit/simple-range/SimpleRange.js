@@ -8,7 +8,7 @@ const SimpleRange = ({step, minValue, maxValue, value, setValue, loadPercentage,
             step={step}
             min={minValue}
             max={maxValue}
-            values={value < maxValue ? [value] : [maxValue - 1]}
+            values={value <= maxValue ? [value] : [maxValue]}
             onChange={(values) => setValue(values[0])}
             renderTrack={({ props, children }) => (
                 <>
@@ -31,7 +31,7 @@ const SimpleRange = ({step, minValue, maxValue, value, setValue, loadPercentage,
                             position: 'absolute',
                             top: '0',
                             left: '0',
-                            width: `${value / maxValue * 100}%`,
+                            width: `${(value <= maxValue ? value : maxValue) / maxValue * 100}%`,
                             overflow: 'visible',
                             backgroundColor: 'var(--main-font-color)',
                             cursor: 'pointer'

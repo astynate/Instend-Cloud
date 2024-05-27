@@ -274,14 +274,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest(userId.Error);
             }
 
-            FileModel[] files = await _fileRespository.GetLastPhotoFromAlbum(Guid.Parse(userId.Value), Guid.Parse(id), from, count);
-
-            foreach (FileModel file in files)
-            {
-                await file.SetPreview(fileService);
-            }
-
-            return Ok(files);
+            return Ok(await _fileRespository.GetLastItemsFromAlbum(Guid.Parse(userId.Value), Guid.Parse(id), from, count));
         }
 
         private async Task<IActionResult> CreateAlbumWithType(IImageService imageService, IFormFile? cover, string? name, string? description, int queueId, Configuration.AlbumTypes type)

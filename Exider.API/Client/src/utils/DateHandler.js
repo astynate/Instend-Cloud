@@ -5,9 +5,6 @@ export const ConvertDate = (date) => {
         year: 'numeric', 
         month: 'long', 
         day: 'numeric', 
-        // hour: 'numeric', 
-        // minute: 'numeric', 
-        // timeZone: 'America/New_York' 
     };
     
     return date.toLocaleString('en-US', options);

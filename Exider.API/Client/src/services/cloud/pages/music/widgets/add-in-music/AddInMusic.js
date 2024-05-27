@@ -5,6 +5,7 @@ import CreateAlbum from '../../../../widgets/create-album/CreateAlbum';
 import Add from '../../../../shared/ui-kit/add/Add';
 import { SendFilesFromEvent } from '../../../cloud/api/FileRequests';
 import { CreateAlbumRequest } from '../../../gallery/api/AlbumRequests';
+import { UploadPhotosInAlbum } from '../../../gallery/api/GalleryRequests';
 
 const AddInMusic = (props) => {
     const [isCreateAlbumOpen, setCreateAlbumOpen] = useState(false);
@@ -26,9 +27,9 @@ const AddInMusic = (props) => {
                     {image: album, title: "Playlist", callback: () => {setCreateAlbumOpen(true)}},
                     {image: music, title: "Song", callback: () => {}, type: "upload", sendFiles: (event) => {
                         if (props.id) {
-                            // UploadPhotosInAlbum(event, 'Photos', props.id);
+                            UploadPhotosInAlbum(event, 'Music', props.id);
                         } else {
-                            SendFilesFromEvent(event, 'Photos');
+                            SendFilesFromEvent(event, 'Music');
                         }
                     }}
                 ]}

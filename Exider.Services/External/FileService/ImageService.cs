@@ -129,9 +129,13 @@ namespace Exider.Services.External.FileService
 
         public async Task<Result<string>> ReadImageAsBase64(string path)
         {
-            byte[] result = await File.ReadAllBytesAsync(path);
+            if (File.Exists(path))
+            {
+                byte[] result = await File.ReadAllBytesAsync(path);
+                return Result.Success(Convert.ToBase64String(result));
+            }
 
-            return Result.Success(Convert.ToBase64String(result));
+            return string.Empty;
         }
     }
 }

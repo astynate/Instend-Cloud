@@ -15,7 +15,7 @@ import SimpleButton from '../../../shared/ui-kit/header/simple-button/SimpleButt
 import SelectItems from '../../../shared/ui-kit/header/select-items/SelectItems.js';
 import sort from './images/sort.png';
 import grid from './images/grid.png';
-import AlbumView from '../pages/AlbumView/AlbumView.js';
+import Album from '../pages/Album/Album';
 import storageState from '../../../../../states/storage-state';
 import FileAPI from '../../../api/FileAPI';
 
@@ -61,7 +61,6 @@ const Gallery = observer((props) => {
   const [template, setTemplate] = useState(Template);
   const [PhotosSortState, setSortingTypeState] = useState(PhotosSortFunctions);
   const [SortingOrderState, setSortingOrderState] = useState(SortingOrder);
-  const [albumId, setAlbumId] = useState(null);
   const scroll = useRef();
 
   useEffect(() => {
@@ -146,8 +145,7 @@ const Gallery = observer((props) => {
             />
             <Route 
               path='/albums/:id' 
-              element={<AlbumView 
-                setAlbumId={setAlbumId}
+              element={<Album 
                 photoGrid={template} 
                 scale={scale}
                 scroll={scroll} 

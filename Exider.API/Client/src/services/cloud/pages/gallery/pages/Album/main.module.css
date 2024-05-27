@@ -1,0 +1,18 @@
+.contentWrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+}
+
+.content {
+    width: 75%;
+    margin-right: 8%;
+}
+
+.albumPlaceholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}

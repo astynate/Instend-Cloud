@@ -10,6 +10,8 @@ class GalleryState {
     albums = {};
     albumsQueueId = 0;
     albumCommentQueueId = 0;
+    isHasMoreAlbums = true;
+    isHasMorePlaylists = true;
 
     //////////////////////////////////////////////////////////////////////////////////////
 
@@ -96,30 +98,45 @@ class GalleryState {
     }
 
     async GetAlbums() {
-        this.GetAlbumRequest('/api/albums');
-    } 
+        if (!this.albums || this.isHasMoreAlbums === true) {
+            this.GetAlbumRequest('/api/albums');
+            this.isHasMoreAlbums = false;
+        }
+    }
 
     async GetPlaylists() {
-        this.GetAlbumRequest('/api/playlists');
+        if (!this.albums || this.isHasMorePlaylists === true) {
+            this.GetAlbumRequest('/api/playlists');
+            this.isHasMorePlaylists = false;
+        }
     }
 
     DeleteAlbumById(id) {
         delete this.albums[id];
     }
 
-    async GetAlbumPhotos(id) {
+    GetAlbumPhotos = async (id) => {
         if (this.albums[id] && this.albums[id].hasMore === true) {
             const count = 15;
             this.albums[id].hasMore = false;
-
             await instance
                 .get(`/api/album?id=${id}&from=${this.albums[id].photos.length > 0 ? this.albums[id].photos.length : 0}&count=${count}`)
                 .then(response => {
+                    if (!response || !response.data || !response.data.length || !response.data.length === 0) {
+                        return;
+                    }
+
                     this.albums[id].hasMore = response.data.length !== 0;
-                    this.albums[id].photos = [...this.albums[id].photos, ...response.data];
+                    this.albums[id].photos = [...response.data.map(element => {
+                        if (element && element.file && element.meta !== undefined) {
+                            return {...element.file, ...element.meta, 'strategy': 'file'};
+                        } else {
+                            return null;
+                        }
+                    }).filter(element => element !== null), ...this.albums[id].photos];
                 })
                 .catch((error) => {
-                    console.error(error);
+                    console.error(error.response.data);
                 })
         }
     }

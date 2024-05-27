@@ -1,6 +1,5 @@
 import { makeAutoObservable } from "mobx";
 import FileAPI from "../services/cloud/api/FileAPI";
-import storageState from "./storage-state";
 
 class MusicState {
     songQueue = []
@@ -16,8 +15,8 @@ class MusicState {
 
     SetSongQueue(songs) {
         if (songs && songs.filter) {
-            this.songQueue = songs.filter(element => element.type ? 
-                FileAPI.musicTypes.includes(element.type) : null);
+            this.songQueue = songs.filter(element => FileAPI
+                .musicTypes.includes(element.type));
         }
     }
 
@@ -42,9 +41,11 @@ class MusicState {
     setTime(timeValue) {
         const isExist = this.songQueue.length > 0 && this.songQueue[this.currentSongIndex] && 
             this.songQueue[this.currentSongIndex].id;
- 
-        if (isExist && storageState.FindFileById(this.songQueue[this.currentSongIndex].id).durationTicks >= timeValue) {
-            this.time = timeValue;
+
+        if (isExist) {
+            if (this.songQueue[this.currentSongIndex].durationTicks) {
+                this.time = timeValue;
+            }
         }
     }
 

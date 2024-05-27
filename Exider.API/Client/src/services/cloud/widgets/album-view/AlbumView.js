@@ -1,45 +1,26 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styles from './main.module.css';
 import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
-import galleryState from '../../../../../../states/gallery-state';
-import Scroll from '../../../../widgets/scroll/Scroll';
-import Placeholder from '../../../../shared/placeholder/Placeholder';
-import Loader from '../../../../shared/loader/Loader';
-import { ConvertDate } from '../../../../../../utils/DateHandler';
-import PhotoList from '../../shared/photo-list/PhotoList';
-import UserAvatar from '../../../../widgets/avatars/user-avatar/UserAvatar';
-import AddUser from '../../../../widgets/avatars/add-user/AddUser';
-import LocalMenu from '../../../../shared/ui-kit/local-menu/LocalMenu';
-import Comments from '../../../../widgets/social/comments/Comments';
-import Button from '../../../../shared/ui-kit/button/Button';
-import OpenAccessProcess from '../../../../process/open-access/OpenAccessProcess';
-import { DeleteComment } from '../../api/AlbumRequests';
-import AddInGallery from '../../widgets/add/AddInGallery';
-import HeaderSearch from './compontens/header-search/HeaderSearch';
+import galleryState from '../../../../states/gallery-state';
+import Loader from '../../shared/loader/Loader';
+import { ConvertDate } from '../../../../utils/DateHandler';
 import emoji from './images/emoji.png';
-import BurgerMenu from '../../../../shared/ui-kit/burger-menu/BurgerMenu';
-import Reaction from '../../../../shared/ui-kit/reaction/Reaction';
+import BurgerMenu from '../../shared/ui-kit/burger-menu/BurgerMenu';
+import UserAvatar from '../../widgets/avatars/user-avatar/UserAvatar';
+import AddUser from '../../widgets/avatars/add-user/AddUser';
+import OpenAccessProcess from '../../process/open-access/OpenAccessProcess';
+import LocalMenu from '../../shared/ui-kit/local-menu/LocalMenu';
+import Comments from '../../widgets/social/comments/Comments';
+import { DeleteComment } from '../../pages/gallery/api/AlbumRequests';
+import HeaderSearch from './compontens/header-search/HeaderSearch';
 
-const AlbumView = observer((props) => {
+const AlbumView = observer(({isSquareCover, button, uniqItems, views}) => {
     const { albums } = galleryState;
     const params = useParams();
     const wrapper = useRef();
     const [isUsersLoading, setUsersLoadingState] = useState(true);
     const [isOpenAccessWindow, setOpenAccessWindowState] = useState(false);
-
-    useEffect(() => {
-        const fetchAlbums = async () => {
-            await galleryState.GetAlbums(); 
-            await galleryState.GetAlbumPhotos(params.id);
-        };
-
-        fetchAlbums();
-    }, []);
-
-    useEffect(() => {
-        props.setAlbumId(params.id);
-    }, [params]);
 
     const accessSaveCallback = (data) => {
         if (data) {
@@ -61,6 +42,7 @@ const AlbumView = observer((props) => {
                                 src={`data:image/png;base64,${albums[params.id].cover}`} 
                                 className={styles.cover}
                                 draggable="false"
+                                id={isSquareCover ? 'square' : null}
                             />
                             <div className={styles.control}>
                                 <div className={styles.nameWrapper}>
@@ -70,13 +52,13 @@ const AlbumView = observer((props) => {
                                 {albums[params.id].description && 
                                     <div className={styles.descriptionWrapper}>
                                         <span className={styles.descritpion}>
-                                            <span className={styles.views}>0</span> Views&nbsp;&nbsp;•&nbsp;&nbsp;<span className={styles.views}>0</span> Reactions
+                                            <span className={styles.views}>{views ? views : 0}</span> Views&nbsp;&nbsp;•&nbsp;&nbsp;<span className={styles.views}>0</span> Reactions
                                         </span>
                                         <span className={styles.descritpion}>{albums[params.id].description}</span>
                                     </div>
                                 }
                                 <div className={styles.controlPanel}>
-                                    <Button value="Follow" />
+                                    {button && (button)}
                                     <img
                                         src={emoji}
                                         className={styles.subButton} 
@@ -143,36 +125,7 @@ const AlbumView = observer((props) => {
                     />
                     <LocalMenu 
                         items={[
-                            {'title': "Photos", 'component': 
-                                <div className={styles.contentWrapper}>
-                                    <div className={styles.content}>
-                                        <AddInGallery id={params.id} />
-                                        {!albums[params.id].photos || albums[params.id].photos.length === 0 ?
-                                            <div className={styles.noImages}>
-                                                <Placeholder title="No photos uploaded" />
-                                            </div>  
-                                        :
-                                            <>
-                                                <PhotoList
-                                                    photos={galleryState.albums && galleryState.albums[params.id] && galleryState.albums[params.id].photos ? 
-                                                        galleryState.albums[params.id].photos : []} 
-                                                    scale={props.scale}
-                                                    photoGrid={props.photoGrid}
-                                                    forwardRef={wrapper}
-                                                />
-                                            </>
-                                        }
-                                        <Scroll
-                                            scroll={props.scroll}
-                                            isHasMore={galleryState.albums[params.id].hasMore}
-                                            count={galleryState.albums[params.id].photos.length}
-                                            callback={async () => {
-                                                await galleryState.GetAlbumPhotos(params.id);
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                            },
+                            ...uniqItems,
                             {'title': "Comments", "component": 
                                 <div className={styles.contentWrapper}>
                                     <div className={styles.content}>
@@ -191,7 +144,7 @@ const AlbumView = observer((props) => {
                         default={0}
                         rightItems={[
                             (<HeaderSearch 
-                                placeholder={"Search photo by name"}
+                                placeholder={"Search by name"}
                             />)
                         ]}
                     />

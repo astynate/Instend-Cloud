@@ -172,6 +172,39 @@ namespace Exider.Repositories.Storage
                 .ToArrayAsync();
         }
 
+        /// <summary>
+        /// Get files with metafata and set preview
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="albumId"></param>
+        /// <param name="from"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public async Task<object[]> GetLastItemsFromAlbum(Guid userId, Guid albumId, int from, int count)
+        {
+            var result = await _context.AlbumLinks.AsNoTracking()
+                .Where(x => x.ItemId == albumId)
+                .Skip(from)
+                .Take(count)
+                .Join(_context.Files,
+                    albumLink => albumLink.LinkedItemId,
+                    fileModel => fileModel.Id,
+                    (albumLink, fileModel) => new { AlbumLink = albumLink, File = fileModel })
+                .GroupJoin(_context.SongsMeta,
+                    combined => combined.File.Id,
+                    meta => meta.FileId,
+                    (combined, meta) => new { combined.File, Meta = meta.DefaultIfEmpty() })
+                .SelectMany(
+                    combined => combined.Meta,
+                    (combined, meta) => new { combined.File, Meta = meta })
+                .ToArrayAsync();
+
+            Array.ForEach(result, async
+                x => await x.File.SetPreview(_fileService));
+
+            return result;
+        }
+
         public async Task<object[]> GetLastFilesWithType(Guid userId, int from, int count, string[] type)
         {
             var result = await _context.Files.AsNoTracking()
