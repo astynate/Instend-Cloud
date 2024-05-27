@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core;
 using Exider.Core.Models.Albums;
+using Exider.Core.Models.Links;
 using Exider.Repositories.Gallery;
 using Exider.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
@@ -70,7 +71,7 @@ namespace Exider.Repositories.Storage
             }
 
             File.Delete(album.Cover);
-            
+
             return Result.Success(album);
         }
 
@@ -105,6 +106,44 @@ namespace Exider.Repositories.Storage
         {
             return await _context.Albums.AsNoTracking()
                 .Where(x => x.OwnerId == userId).ToArrayAsync();
+        }
+
+        public async Task<Result<long>> ViewAlbumWithUserId(Guid albumId, Guid userId)
+        {
+            var isViewExistRequest = await _context.Albums
+                .Where(x => x.Id == albumId)
+                .GroupJoin(_context.ViewsLinks,
+                    albums => albums.Id,
+                    links => links.ItemId,
+                    (album, link) => new { Album = album, Link = link })
+                .ToArrayAsync();
+
+            if (isViewExistRequest.Length >= 0)
+            {
+                AlbumModel album = isViewExistRequest[0].Album;
+                AlbumViewLink[] links = isViewExistRequest[0].Link.ToArray();
+
+                if (links.Length > 0)
+                {
+                    return -1;
+                }
+
+                var link = LinkBase.Create<AlbumViewLink>(albumId, userId);
+
+                if (link.IsFailure)
+                {
+                    return Result.Failure<long>(link.Error);
+                }
+
+                album.IncrementViews();
+
+                await _context.ViewsLinks.AddAsync(link.Value);
+                await _context.SaveChangesAsync();
+                
+                return album.Views;
+            }
+
+            return -1;
         }
     }
 }

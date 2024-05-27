@@ -13,5 +13,6 @@ namespace Exider.Repositories.Gallery
         Task<Result<AlbumModel[]>> GetAlbums(IImageService imageService, Guid userId, Configuration.AlbumTypes type);
         Task<Result> UpdateAlbum(Guid id, byte[] cover, string? name, string? description);
         Task<AlbumModel[]> GetAlbums(Guid userId);
+        Task<Result<long>> ViewAlbumWithUserId(Guid albumId, Guid userId);
     }
 }

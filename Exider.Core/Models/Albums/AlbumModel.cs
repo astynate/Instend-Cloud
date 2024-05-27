@@ -14,6 +14,8 @@ namespace Exider.Core.Models.Albums
         [Column("creation_time")] public DateTime CreationTime { get; private set; }
         [Column("last_edit_time")] public DateTime LastEditTime { get; private set; }
         [Column("type")] public string TypeId { get; private set; } = Configuration.AlbumTypes.Album.ToString();
+        [Column("views")] public long Views { get; private set; } = 0;
+        [Column("reactions")] public long Reactions { get; private set; } = 0;
 
         /// <summary>
         /// Нарушение инкапсуляции обусловлено бизнес-требованиями
@@ -86,5 +88,7 @@ namespace Exider.Core.Models.Albums
 
             Description = description;
         }
+
+        public void IncrementViews() => Views++;
     }
 }

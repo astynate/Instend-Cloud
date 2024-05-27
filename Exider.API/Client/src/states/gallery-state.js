@@ -248,6 +248,14 @@ class GalleryState {
         }
     }
 
+    UpdateAlbumViews(id, views) {
+        if (this && this.albums && this.albums[id] && this.albums[id].views) {
+            this.albums[id].views = views;
+        }
+
+        console.log(this.albums[id]);
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////// 
 }
 
