@@ -1,24 +1,12 @@
 @media (max-width: 1350px) {
-    
     .left-panel {
         width: 72px;
         display: flex;
         align-items: center;
     }
 
-    .progress-bar-wrapper {
-        height: 100%;
-    }
-
     .progress-bar {
-        height: 70%;
-        width: 4px;
-    }
-
-    .line {
-        height: var(--space-occupied);
-        margin-top: auto;
-        width: 100%;
+        display: none;
     }
 
     .navigation-button:active {
@@ -28,11 +16,9 @@
     .navigation-button nav {
         display: none;
     }
-
 }
 
 @media (max-width: 700px) {
-
     #root {
         overflow: hidden;
     }
@@ -51,5 +37,4 @@
         align-items: center;
         justify-content: center;
     }
-
 }

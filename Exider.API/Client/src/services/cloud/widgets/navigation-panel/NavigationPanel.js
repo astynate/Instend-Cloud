@@ -34,6 +34,8 @@ import { layoutContext } from '../../layout/Layout';
 import noRepeat from './images/player/repeat/no-repeat.png';
 import repeat from './images/player/repeat/repeat.png';
 import repeatSong from './images/player/repeat/repeat-song.png';
+import menu from './images/player/menu.png';
+import close from './images/player/close.png';
 
 export const useIsActiveButton = (name) => 
     useIsCurrentRoute(name) ? 'active' : 'passive'
@@ -127,6 +129,7 @@ const NavigationPanel = observer((props) => {
             <div className="progress-bar-wrapper">
                 <div 
                     className={styles.musicPlayer} 
+                    id={props.isPanelRolledUp ? 'rolled-up' : null}
                     onMouseEnter={() => setHoveredState(true)}
                     onMouseLeave={() => setHoveredState(false)}
                 >
@@ -138,7 +141,7 @@ const NavigationPanel = observer((props) => {
                             isHovered={isHovered}
                         />
                     </div>
-                    <div className={styles.information} onClick={() => setQueueOpenState(prev => !prev)}>
+                    {props.isPanelRolledUp === false && <div className={styles.information} onClick={() => setQueueOpenState(prev => !prev)}>
                         <div className={styles.info}>
                             <span className={styles.songName}>{GetSongName(song)}</span>
                             <span className={styles.artist}>{GetSongData(song)}</span>
@@ -148,29 +151,71 @@ const NavigationPanel = observer((props) => {
                             className={styles.arrow} 
                             id={isQueueOpen ? "open" : null} 
                         />
+                    </div>}
+                    <div 
+                        id={props.isPanelRolledUp === true ? 'open' : 'close'}
+                        className={styles.more} 
+                        onClick={() => setQueueOpenState(prev => !prev)}
+                    >
+                        <img 
+                            src={isQueueOpen ? close : menu} 
+                            className={styles.moreImage} 
+                        />
                     </div>
                 </div>
-                <div className="progress-bar">
-                    <SimpleRange 
-                        step={1}
-                        minValue={0}
-                        maxValue={song && song.durationTicks ? song.durationTicks : 1}
-                        value={musicState.time}
-                        setValue={musicState.setTime.bind(musicState)}
-                        loadPercentage={musicState.loadPercentage}
-                    />
-                </div>
-                <div className={styles.time}>
-                    <span>{song ? convertTicksToTime(musicState.time) : '--:--'}</span>
-                    <img 
-                        src={repeatStates[musicState.repeatState]} 
-                        className={styles.controlButton}
-                        onClick={() => musicState.NextRepeatState()}
-                    />
-                    <span>{song && song.duration ? convertFromTimespan(song.duration) : '--:--'}</span>
-                </div>
+                {props.isPanelRolledUp === false &&
+                    <>
+                        <div className="progress-bar">
+                            <SimpleRange 
+                                step={1}
+                                minValue={0}
+                                maxValue={song && song.durationTicks ? song.durationTicks : 1}
+                                value={musicState.time}
+                                setValue={musicState.setTime.bind(musicState)}
+                                loadPercentage={musicState.loadPercentage}
+                            />
+                        </div>
+                        <div className={styles.time}>
+                            <span>{song ? convertTicksToTime(musicState.time) : '--:--'}</span>
+                            <img 
+                                src={repeatStates[musicState.repeatState]} 
+                                className={styles.controlButton}
+                                onClick={() => musicState.NextRepeatState()}
+                            />
+                            <span>{song && song.duration ? convertFromTimespan(song.duration) : '--:--'}</span>
+                        </div>
+                    </>
+                }
             </div>
-            <SongQueue openState={isQueueOpen} />
+            <SongQueue 
+                openState={isQueueOpen} 
+            >
+                <div className={styles.bottomPanel} id={props.isPanelRolledUp === true ? 'open' : null}>
+                    <div className={styles.infoQueue}>
+                        <span className={styles.songName}>{GetSongName(song)}</span>
+                        <span className={styles.artist}>{GetSongData(song)}</span>
+                    </div>
+                    <div className="progress-bar-queue">
+                        <SimpleRange 
+                            step={1}
+                            minValue={0}
+                            maxValue={song && song.durationTicks ? song.durationTicks : 1}
+                            value={musicState.time}
+                            setValue={musicState.setTime.bind(musicState)}
+                            loadPercentage={musicState.loadPercentage}
+                        />
+                    </div>
+                    <div className={styles.timeQueue}>
+                        <span>{song ? convertTicksToTime(musicState.time) : '--:--'}</span>
+                        <img 
+                            src={repeatStates[musicState.repeatState]} 
+                            className={styles.controlButton}
+                            onClick={() => musicState.NextRepeatState()}
+                        />
+                        <span>{song && song.duration ? convertFromTimespan(song.duration) : '--:--'}</span>
+                    </div>
+                </div>
+            </SongQueue>
         </div>
     )
 })

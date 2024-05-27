@@ -9,6 +9,11 @@
     overflow: hidden;
 }
 
+.musicPlayer[id="rolled-up"] {
+    display: flex;
+    flex-direction: column;
+}
+
 .musicPlayer:hover {
     transform: scale(101%);
 }
@@ -30,6 +35,12 @@
     display: flex;
     flex-direction: column;
     padding-left: 7px;
+}
+
+.infoQueue {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 22px;
 }
 
 .information {
@@ -84,6 +95,16 @@
     align-items: center;
 }
 
+.timeQueue {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-top: 5px;
+    align-items: center;
+    color: var(--main-paragraph-color);
+}
+
 .time span { 
     color: var(--main-paragraph-color);
 }
@@ -94,4 +115,60 @@
     object-fit: contain;
     cursor: pointer;
     filter: var(--main-filter);
+}
+
+.more {
+    margin-top: 10px;
+    padding: 5px;
+    padding-bottom: none;
+    display: none;
+    image-rendering: pixelated;
+}
+
+.more[id="open"] {
+    padding: 10px;
+    display: block;
+}
+
+.moreImage {
+    height: 20px;
+    width: 20px;
+    filter: var(--main-filter);
+}
+
+.bottomPanel {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 20px;
+    padding-bottom: 40px;
+    position: absolute;
+    display: none;
+}
+
+.bottomPanel[id="open"] {
+    display: block;
+}
+
+@media (max-width: 1350px) {
+    .musicPlayer {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .information {
+        display: none;
+    }
+
+    .time { 
+        display: none;
+    }
+    
+    .more {
+        display: block;
+    }
+
+    .bottomPanel {
+        display: block;
+    }
 }

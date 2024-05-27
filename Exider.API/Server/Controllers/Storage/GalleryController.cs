@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Exider.Repositories.Links;
 using static Exider.Core.Models.Links.AlbumLinks;
 using Exider.Core.Models.Albums;
+using Exider.Core.Models.Links;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Storage
 {
@@ -260,7 +261,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         [HttpGet]
         [Authorize]
         [Route("/api/album")]
-        public async Task<IActionResult> GetAlbum(IFileService fileService, string id, int from, int count)
+        public async Task<IActionResult> GetAlbum(string id, int from, int count)
         {
             if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
             {
@@ -272,6 +273,18 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             if (userId.IsFailure)
             {
                 return BadRequest(userId.Error);
+            }
+
+            var views = await _albumRepository.ViewAlbumWithUserId(Guid.Parse(id), Guid.Parse(userId.Value));
+
+            if (views.IsFailure)
+            {
+                return BadRequest(views.Error);
+            }
+
+            if (views.Value != -1)
+            {
+                await _galleryHub.Clients.Group(id).SendAsync("UpdateAlbumViews", new object[] { id, views.Value });
             }
 
             return Ok(await _fileRespository.GetLastItemsFromAlbum(Guid.Parse(userId.Value), Guid.Parse(id), from, count));

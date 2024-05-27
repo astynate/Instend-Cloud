@@ -4,12 +4,13 @@ import Song from '../../../../pages/music/shared/song/Song';
 import musicState from '../../../../../../states/music-state';
 import storageState from '../../../../../../states/storage-state';
 import { observer } from 'mobx-react-lite';
+import Title from '../../../../shared/ui-kit/retractable-panel/title/Title';
 
-const SongQueue = observer(({openState}) => {
+const SongQueue = observer(({openState, children}) => {
     return (
         <div className={styles.songQueue} id={openState ? "open" : null}>
             <div className={styles.queue}>
-                <span className={styles.title}>Queue</span>
+                <Title title='Queue' />
                 <div className={styles.songs}>
                     {musicState.songQueue.map(element => {
                         return (
@@ -23,6 +24,7 @@ const SongQueue = observer(({openState}) => {
                     })}
                 </div>
             </div>
+            {children}
         </div>
     );
 });

@@ -4,6 +4,7 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    visibility: hidden;
 }
 
 .songQueue {
@@ -18,19 +19,12 @@
     z-index: 9999999999;
     padding: 20px;
     transition: 0.25s ease;
-    /* box-shadow: 0px 0px 100px var(--main-background-color); */
 }
 
 .songQueue[id="open"] {
     --song-queue-width: 350px;
     opacity: 1;
-    /* width: var(--song-queue-width); */
-}
-
-.title {
-    font-size: 24px;
-    font-weight: 600;
-    color: var(--main-font-color);
+    visibility: visible;
 }
 
 .player {

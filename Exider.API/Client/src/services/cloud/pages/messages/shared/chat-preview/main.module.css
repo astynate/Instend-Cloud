@@ -1,0 +1,55 @@
+.chatPreview {
+    display: flex;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    grid-gap: 15px;
+    cursor: pointer;
+}
+
+.chatPreview:hover {
+    background: var(--main-accent-color);
+}
+
+.information {
+    height: 100%;
+    width: 100%;
+    margin-top: auto;
+    margin-bottom: auto;
+    display: flex;
+    justify-content: space-between;
+}
+
+.avatar {
+    height: 55px;
+    width: 55px;
+    border-radius: 100%;
+    background: var(--main-border-color);
+    flex-shrink: 0;
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    grid-gap: 2px;
+}
+
+.name {
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--main-font-color);
+}
+
+.lastMessage {
+    font-weight: 400;
+    font-size: 15px;
+    color: var(--main-paragraph-color);
+}
+
+.status {
+    height: 100%;
+    font-size: 14px;
+    color: var(--main-paragraph-color);
+}

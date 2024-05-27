@@ -129,7 +129,7 @@ class GalleryState {
                     this.albums[id].hasMore = response.data.length !== 0;
                     this.albums[id].photos = [...response.data.map(element => {
                         if (element && element.file && element.meta !== undefined) {
-                            return {...element.file, ...element.meta, 'strategy': 'file'};
+                            return {...element.file, ...element.meta, strategy: 'file'};
                         } else {
                             return null;
                         }
@@ -263,6 +263,14 @@ class GalleryState {
         if (this.albums[albumId] && this.albums[albumId].users) {
             delete this.albums[albumId].users;
         }
+    }
+
+    UpdateAlbumViews(id, views) {
+        if (this && this.albums && this.albums[id] && this.albums[id].views) {
+            this.albums[id].views = views;
+        }
+
+        console.log(this.albums[id]);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////// 

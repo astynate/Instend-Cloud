@@ -27,6 +27,7 @@ namespace Exider.Core
         public DbSet<Models.Access.FileAccess> FileAccess { get; set; } = null!;
         public DbSet<CommentModel> Comments { get; set; } = null!;
         public DbSet<AlbumCommentLink> AlbumCommentLinks { get; set; } = null!;
+        public DbSet<AlbumViewLink> ViewsLinks { get; set; } = null!;
         public DbSet<SongFormat> SongsMeta { get; set; } = null!;
 
         public DatabaseContext() => Database.EnsureCreated();
