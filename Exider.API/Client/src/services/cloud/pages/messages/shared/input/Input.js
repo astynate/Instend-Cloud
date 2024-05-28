@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './main.module.css';
 
-const Input = (props) => {
+const Input = ({sendMessage}) => {
     const [text, setText] = useState('');
     const textAreaRef = React.createRef();
 
@@ -19,14 +19,14 @@ const Input = (props) => {
     const handleKeyDown = (event) => {
       if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault();
-        // sendMessage();
+        sendMessageAsync();
       }
     };
   
-    // const sendMessage = () => {
-    //     setText('');
-    //     props.isSendingMessage[1](true);
-    // };
+    const sendMessageAsync = async () => {
+        await sendMessage(text);
+        setText('');
+    };
 
     return (
 

@@ -27,6 +27,13 @@
     border-radius: 100%;
     background: var(--main-border-color);
     flex-shrink: 0;
+    overflow: hidden
+}
+
+.avatarImage {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
 }
 
 .text {

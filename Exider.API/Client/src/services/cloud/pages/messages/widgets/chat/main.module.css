@@ -10,26 +10,29 @@
 
 .header {
     width: 100%;
-    height: 65px;
+    height: auto;
     display: flex;
+    padding-top: 15px;
+    padding-bottom: 15px;
     align-items: center;
-    padding-left: 12px;
+    padding-left: 15px;
+    padding-right: 15px;
     position: sticky;
     top: 0;
     left: 0;
-    padding-right: 12px;
-    border-bottom: 1px solid var(--main-border-color);
+    /* border-bottom: 1px solid var(--main-border-color); */
     justify-content: space-between;
     /* backdrop-filter: blur(10px); */
     background: var(--main-background-color);
     flex-shrink: 0;
-    z-index: 999;
+    z-index: 1;
+    user-select: none;
 }
 
 .left {
     display: flex;
     align-items: center;
-    grid-gap: 7px;
+    grid-gap: 10px;
 }
 
 .information {
@@ -38,20 +41,27 @@
 }
 
 .avatar {
-    height: 35px;
-    width: 35px;
+    height: 40px;
+    width: 40px;
     background: var(--main-font-color);
     border-radius: 100%;
+    overflow: hidden;
+    image-rendering: pixelated;
+}
+
+.avatarImage {
+    height: 100%;
+    width: 100%;
 }
 
 .name {
-    font-weight: 700;
-    font-size: 13px;
+    font-weight: 600;
+    font-size: 16px;
     color: var(--main-font-color);
 }
 
 .data {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--main-paragraph-color);
 }
 
@@ -60,8 +70,8 @@
 }
 
 .buttonImage {
-    height: 25px;
-    width: 25px;
+    height: 20px;
+    width: 20px;
     filter: var(--main-filter);
     cursor: pointer;
 }

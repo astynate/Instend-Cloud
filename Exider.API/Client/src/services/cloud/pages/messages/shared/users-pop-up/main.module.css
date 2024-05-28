@@ -1,0 +1,87 @@
+.createChat {
+    height: 400px;
+    width: 370px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.users {
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin-top: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    display: flex;
+    flex-direction: column;
+    
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: var(--pop-up-accent-color);
+        border-radius: 20px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #888;
+        border-radius: 20px;
+        border: 3px solid var(--sub-accent-color);
+    }
+}
+
+.buttonWrapper {
+    width: 100%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.user {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+    grid-gap: 10px;
+    cursor: pointer;
+}
+
+.user:hover {
+    background: var(--pop-up-accent-color);
+    border-radius: 10px;
+}
+
+.information {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.nickname {
+    color: var(--main-font-color);
+    font-weight: 600;
+}
+
+.name {
+    color: var(--main-paragraph-color);
+}
+
+.placeholder {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.placeholder span {
+    color: var(--main-font-color);
+    font-size: 18px;
+    font-weight: 600;
+}
