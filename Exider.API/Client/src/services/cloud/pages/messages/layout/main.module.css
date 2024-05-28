@@ -5,3 +5,9 @@
     grid-template-columns: 350px auto;
     width: 100%;
 }
+
+.messageGroup {
+    grid-gap: 3px;
+    display: flex;
+    flex-direction: column;
+}

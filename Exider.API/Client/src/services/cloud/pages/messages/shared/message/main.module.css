@@ -2,27 +2,21 @@
     display: flex;
     grid-gap: 10px;
     image-rendering: pixelated;
-}
-
-.avatarPlaceholder {
-    height: 45px;
-    width: 45px;
-    background: var(--main-accent-color);
-    border-radius: 100%;
-}
-
-.myAvatar {
-    height: 45px;
-    width: 45px;
-    object-fit: cover;
-    border-radius: 100%;
-    background: var(--main-accent-color);
+    height: fit-content;
+    align-items: center;
 }
 
 .avatar {
-    height: 45px;
-    width: 45px;
+    height: 30px;
+    width: 30px;
+    background: var(--main-accent-color);
+    border-radius: 100%;
     object-fit: contain;
+}
+
+.avatarPlaceholder {
+    height: 30px;
+    width: 30px;
 }
 
 .name {
@@ -32,7 +26,34 @@
 }
 
 .text {
-    font-size: 16px;
-    color: var(--main-paragraph-color);
-    margin-top: 3px;
+    font-size: 15px;
+    color: var(--main-font-color);
+}
+
+.messageText {
+    height: fit-content;
+    padding: 7px 12px;
+    /* background: var(--main-accent-color); */
+    background: var(--main-blue-color);
+    border-radius: 15px;
+    display: flex;
+    height: fit-content;
+}
+
+.first {
+    border-radius: 15px 15px 15px 5px;
+}
+
+.middle {
+    border-radius: 5px 15px 15px 5px;
+}
+
+.last {
+    border-radius: 5px 15px 15px 15px;
+}
+
+.time {
+    color: var(--main-font-color);
+    opacity: 0.8;
+    font-size: 12px;
 }

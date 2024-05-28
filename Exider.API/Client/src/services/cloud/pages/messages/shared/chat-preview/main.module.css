@@ -1,10 +1,10 @@
 .chatPreview {
     display: flex;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
     padding-top: 7px;
     padding-bottom: 7px;
-    grid-gap: 15px;
+    grid-gap: 10px;
     cursor: pointer;
 }
 
@@ -22,8 +22,8 @@
 }
 
 .avatar {
-    height: 55px;
-    width: 55px;
+    height: 50px;
+    width: 50px;
     border-radius: 100%;
     background: var(--main-border-color);
     flex-shrink: 0;
@@ -33,7 +33,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    grid-gap: 2px;
+    grid-gap: 0px;
 }
 
 .name {

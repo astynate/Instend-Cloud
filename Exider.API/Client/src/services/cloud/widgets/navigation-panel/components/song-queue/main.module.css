@@ -22,7 +22,7 @@
 }
 
 .songQueue[id="open"] {
-    --song-queue-width: 350px;
+    --song-queue-width: 280px;
     opacity: 1;
     visibility: visible;
 }

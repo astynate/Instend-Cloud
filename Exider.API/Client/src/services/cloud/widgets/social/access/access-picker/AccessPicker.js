@@ -48,7 +48,7 @@ const AccessPicker = (props) => {
                         }}
                     >
                         <img src={friends} className={styles.headerImage} />
-                        <span className={styles.title}>Only people which you choose</span>
+                        <span className={styles.title}>Only people you choose</span>
                         <img src={next} className={styles.next} />
                     </div>
                     <div 

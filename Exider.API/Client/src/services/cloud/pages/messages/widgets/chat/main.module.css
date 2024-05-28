@@ -3,4 +3,80 @@
     width: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    width: 100%;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    padding-left: 12px;
+    position: sticky;
+    top: 0;
+    left: 0;
+    padding-right: 12px;
+    border-bottom: 1px solid var(--main-border-color);
+    justify-content: space-between;
+    /* backdrop-filter: blur(10px); */
+    background: var(--main-background-color);
+    flex-shrink: 0;
+    z-index: 999;
+}
+
+.left {
+    display: flex;
+    align-items: center;
+    grid-gap: 7px;
+}
+
+.information {
+    display: flex;
+    flex-direction: column;
+}
+
+.avatar {
+    height: 35px;
+    width: 35px;
+    background: var(--main-font-color);
+    border-radius: 100%;
+}
+
+.name {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--main-font-color);
+}
+
+.data {
+    font-size: 13px;
+    color: var(--main-paragraph-color);
+}
+
+.right {
+    display: flex;
+}
+
+.buttonImage {
+    height: 25px;
+    width: 25px;
+    filter: var(--main-filter);
+    cursor: pointer;
+}
+
+.messages {
+    padding: 15px;
+    grid-gap: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.input {
+    position: sticky;
+    margin-top: auto;
+    width: 100%;
+    bottom: 0;
+    left: 0;
 }

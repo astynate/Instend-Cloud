@@ -40,7 +40,7 @@
 
 .dark-mode {
     --main-background-color: rgb(0, 0, 0);
-    --main-border-color: rgba(255, 255, 255, 0.25);
+    --main-border-color: rgba(255, 255, 255, 0.18);
     --main-accent-color: #212125;
     --main-font-color: #ffffff;
     --main-header-font-color: #161616;
