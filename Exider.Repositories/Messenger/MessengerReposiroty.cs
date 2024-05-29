@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Exider.Repositories.Messenger
 {
-    public class MessengerReposiroty
+    public class MessengerReposiroty : IMessengerReposiroty
     {
         private readonly DatabaseContext _context = null!;
 
@@ -15,9 +15,9 @@ namespace Exider.Repositories.Messenger
             _context = context;
         }
 
-        public async Task<object> GetDirects(IFileService fileService, Guid userId)
+        public async Task<MessengerTransferModel[]> GetDirects(IFileService fileService, Guid userId)
         {
-            var directs = await _context.Directs
+            MessengerTransferModel[] directs = await _context.Directs
                 .Where(direct => direct.UserId == userId || direct.OwnerId == userId)
                 .Join(_context.Users,
                     direct => (direct.OwnerId == userId ? direct.UserId : direct.OwnerId),
@@ -47,39 +47,47 @@ namespace Exider.Repositories.Messenger
                 .Join(_context.Messages,
                     prev => prev.link.LinkedItemId,
                     message => message.Id,
-                    (prev, message) => new
-                    {
-                        Direct = prev.prev.direct,
-                        Message = message,
-                        User = new UserPublic()
-                        {
-                            Id = prev.prev.user.Id,
-                            Name = prev.prev.user.Name,
-                            Surname = prev.prev.user.Surname,
-                            Nickname = prev.prev.user.Nickname,
-                            Email = prev.prev.user.Email,
-                            Avatar = prev.prev.userData.Avatar,
-                            Header = prev.prev.userData.Header,
-                            Description = prev.prev.userData.Description,
-                            StorageSpace = prev.prev.userData.StorageSpace,
-                            OccupiedSpace = prev.prev.userData.OccupiedSpace,
-                            Balance = prev.prev.userData.Balance,
-                            FriendCount = prev.prev.userData.FriendCount
-                        }
-                    })
+                    (prev, message) => 
+                        new MessengerTransferModel
+                        (
+                            prev.prev.direct, 
+                            message,
+                            new UserPublic()
+                            {
+                                Id = prev.prev.user.Id,
+                                Name = prev.prev.user.Name,
+                                Surname = prev.prev.user.Surname,
+                                Nickname = prev.prev.user.Nickname,
+                                Email = prev.prev.user.Email,
+                                Avatar = prev.prev.userData.Avatar,
+                                Header = prev.prev.userData.Header,
+                                Description = prev.prev.userData.Description,
+                                StorageSpace = prev.prev.userData.StorageSpace,
+                                OccupiedSpace = prev.prev.userData.OccupiedSpace,
+                                Balance = prev.prev.userData.Balance,
+                                FriendCount = prev.prev.userData.FriendCount
+                            }
+                        ))
                 .ToArrayAsync();
 
             foreach (var direct in directs)
             {
-                var avatar = await fileService.ReadFileAsync(direct.User.Avatar);
-
-                if (avatar.IsSuccess)
+                if (direct.userPublic.Avatar == null)
                 {
-                    direct.User.Avatar = Convert.ToBase64String(avatar.Value);
-                }
+                    direct.userPublic.Avatar = Configuration.DefaultAvatar;
+                } 
                 else
                 {
-                    direct.User.Avatar = Configuration.DefaultAvatar;
+                    var avatar = await fileService.ReadFileAsync(direct.userPublic.Avatar);
+
+                    if (avatar.IsSuccess)
+                    {
+                        direct.userPublic.Avatar = Convert.ToBase64String(avatar.Value);
+                    }
+                    else
+                    {
+                        direct.userPublic.Avatar = Configuration.DefaultAvatar;
+                    }
                 }
             }
 

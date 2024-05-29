@@ -91,7 +91,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
             if (users == null)
             {
-                return Unauthorized("User not found");
+                return Conflict("User not found");
             }
 
             return Ok(users);

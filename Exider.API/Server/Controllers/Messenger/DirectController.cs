@@ -37,10 +37,6 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
 
             var messageValue = message.Value;
 
-            _messageHub.Clients()
-
-            //_messageHub.
-
             return Ok();
         }
     }

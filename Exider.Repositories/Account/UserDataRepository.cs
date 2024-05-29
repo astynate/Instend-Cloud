@@ -125,10 +125,12 @@ namespace Exider.Repositories.Account
 
                     if (avatarReadingResult.IsFailure)
                     {
-                        return new UserPublic[0];
+                        user.Avatar = Configuration.DefaultAvatar;
                     }
-
-                    user.Avatar = Convert.ToBase64String(avatarReadingResult.Value);
+                    else
+                    {
+                        user.Avatar = Convert.ToBase64String(avatarReadingResult.Value);
+                    }
                 }
             }
 

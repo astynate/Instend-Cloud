@@ -1,12 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core.Models.Messages;
+using Exider.Core.Dependencies.Repositories.Messenger;
 using Exider.Core.Models.Messenger;
 
 namespace Exider.Repositories.Messenger
 {
-    public interface IDirectRepository
+    public interface IDirectRepository : IChatBase
     {
         Task<Result<DirectModel>> CreateNewDiret(Guid userId, Guid ownerId);
-        Task<Result<(MessageModel, DirectModel)>> SendMessage(Guid ownerId, Guid userId, string text);
     }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import styles from './main.module.css';
 import Title from '../../../../shared/ui-kit/retractable-panel/title/Title';
@@ -8,12 +8,38 @@ import PopUpList from '../../../../shared/ui-kit/pop-up-list/PopUpList';
 import UsersPopUp from '../../shared/users-pop-up/UsersPopUp';
 import { instance } from '../../../../../../state/Interceptors';
 import chatsState from '../../../../../../states/chats-state';
+import { messageWSContext } from '../../../../layout/Layout';
+import { useNavigate } from 'react-router-dom';
 
 const Chats = observer(() => {
     const [isCreateOpen, setCreateOpenState] = useState(false);
     const [isCreatePopUp, setCreatePopUpState] = useState(false);
     const [searchUsers, setSearchUsers] = useState([]);
+    const navigate = useNavigate();
     const ref = useRef();
+
+    useEffect(() => {
+        const connectToChats = async () => {
+            try {
+                while (messageWSContext.connection.state !== 'Connected') {
+                    if (messageWSContext.connection.state === 'Disconnected') {
+                        await messageWSContext.connection.start();
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+
+                await messageWSContext.connection.invoke("Join", localStorage.getItem("system_access_token"));
+                chatsState.SetConnectedState(true);
+            } catch (error) {
+                console.error('Failed to connect or join:', error);
+                chatsState.SetConnectedState(false);
+            }
+        };
+
+        if (chatsState.connected === false) {
+            connectToChats();
+        }
+    }, [messageWSContext, messageWSContext.connection]);
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -40,7 +66,13 @@ const Chats = observer(() => {
                 setSearchingState={() => {}}
                 setLoadingState={() => {}}
                 isHasSubmitButton={false}
-                userCallback={(user) => {chatsState.setDraft(user)}}
+                userCallback={(user) => {
+                    if (user.id) {
+                        navigate(`/messages/${user.id}`);
+                        chatsState.setDraft(user);
+                    }
+                    setCreatePopUpState(false);
+                }}
                 GetData={async (prefix) => {
                     await instance
                         .get(`/accounts/all/${prefix}`)
@@ -69,14 +101,25 @@ const Chats = observer(() => {
                 </div>
             </div>
             <div className={styles.chatList}>
-                {chatsState.chats.map((chat, index) => {
-                    return (
-                        <ChatPreview 
-                            key={index}
-                            chat={chat}
-                        />
-                    );
-                })}
+                {chatsState.isChatsLoaded ? 
+                    chatsState.chats.map((chat, index) => {
+                        return (
+                            <ChatPreview 
+                                key={index}
+                                chat={chat}
+                                isPlaceholder={false}
+                            />
+                        );
+                    })
+                :
+                    Array.from({length: 20}).map((_, index) => {
+                        return (
+                            <ChatPreview 
+                                key={index}
+                                isPlaceholder={true}
+                            />
+                        )
+                    })}
             </div>
         </div>
     );

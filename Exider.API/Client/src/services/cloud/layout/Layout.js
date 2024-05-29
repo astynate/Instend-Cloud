@@ -17,6 +17,7 @@ import userState from '../../../states/user-state';
 import MusicPlayer from '../widgets/music-player/MusicPlayer';
 import musicState from '../../../states/music-state';
 import { GetCurrentSong } from '../widgets/navigation-panel/NavigationPanel';
+import chatsState from '../../../states/chats-state';
 
 export const messageWSContext = createSignalRContext();
 export const storageWSContext = createSignalRContext();
@@ -185,6 +186,16 @@ const Layout = observer(() => {
         "UpdateOccupiedSpace",
         (space) => {
             userState.ChangeOccupiedSpace(space);
+        }
+    );
+
+    /////////////////////////////////////////////////////////////////////////////////
+
+    messageWSContext.useSignalREffect(
+        "GetChats",
+        (chats) => {
+            chatsState.SetChats(chats);
+            chatsState.setChatsLoadedState(true);
         }
     );
 

@@ -34,7 +34,8 @@ namespace Exider.Repositories.Messenger
         public async Task<Result<(MessageModel, DirectModel)>> SendMessage(Guid ownerId, Guid userId, string text)
         {
             DirectModel? direct = await _context.Directs.AsNoTracking()
-                .FirstOrDefaultAsync(x => IsValidDirect(x, userId, ownerId));
+                .FirstOrDefaultAsync(direct => (direct.UserId == userId && direct.OwnerId == ownerId) ||
+                   (direct.OwnerId == userId && direct.UserId == ownerId));
 
             if (direct == null)
             {

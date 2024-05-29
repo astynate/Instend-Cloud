@@ -27,7 +27,11 @@
     border-radius: 100%;
     background: var(--main-border-color);
     flex-shrink: 0;
-    overflow: hidden
+    overflow: hidden;
+}
+
+.avatar[id="placeholder"] {
+    animation: placeholder 2s ease infinite;
 }
 
 .avatarImage {
@@ -49,14 +53,41 @@
     color: var(--main-font-color);
 }
 
+.name[id="placeholder"] {
+    height: 12px;
+    width: 70px;
+    border-radius: 7px;
+    animation: placeholder 2s ease infinite;
+}
+
 .lastMessage {
     font-weight: 400;
     font-size: 15px;
     color: var(--main-paragraph-color);
 }
 
+.lastMessage[id="placeholder"] {
+    height: 12px;
+    width: 150px;
+    border-radius: 7px;
+    margin-top: 5px;
+    animation: placeholder 2s ease infinite;
+}
+
 .status {
     height: 100%;
     font-size: 14px;
     color: var(--main-paragraph-color);
+}
+
+@keyframes placeholder {
+    0% {
+        background: #ddd;
+    }
+    50% {
+        background: #777;
+    }
+    100% {
+        background: #ddd;
+    }
 }

@@ -25,7 +25,7 @@ const PrivateRoutes = [
         element: <Gallery />
     },
     {
-        path: '/messages',
+        path: '/messages/:id?',
         element: <Messages />
     },
     {

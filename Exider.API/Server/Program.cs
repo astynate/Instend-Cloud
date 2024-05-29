@@ -46,6 +46,7 @@ builder.Services.AddScoped<IFileRespository, FileRespository>();
 builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
 builder.Services.AddScoped<ICommentBaseRepository, CommentBaseRepository>();
 builder.Services.AddScoped<IDirectRepository, DirectRepository>();
+builder.Services.AddScoped<IMessengerReposiroty, MessengerReposiroty>();
 builder.Services.AddScoped(typeof(ICommentsRepository<>), typeof(CommentsRepository<>));
 builder.Services.AddScoped(typeof(IAccessRepository<,>), typeof(AccessRepository<,>));
 builder.Services.AddScoped(typeof(IFormatRepository<>), typeof(FormatRepository<>));

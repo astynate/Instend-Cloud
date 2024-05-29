@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Exider.Core.Models.Messenger
 {
+    [Table("directs")]
     public class DirectModel
     {
         [Column("id")][Key] public Guid Id { get; set; } = Guid.NewGuid();

@@ -4,8 +4,13 @@ import info from './images/header/info.png';
 import Input from '../../shared/input/Input';
 import chatsState from '../../../../../../states/chats-state';
 import { observer } from 'mobx-react-lite';
+import { messageWSContext } from '../../../../layout/Layout';
+import applicationState from '../../../../../../states/application-state';
+import { useParams } from 'react-router-dom';
 
 const Chat = observer(({children, placeholder}) => {
+    const params = useParams();
+
     return (
         <div className={styles.chat}>
             <div className={styles.header}>
@@ -39,7 +44,20 @@ const Chat = observer(({children, placeholder}) => {
                 </div>}
             <div className={styles.input}>
                 <Input 
-                    sendMessage={(message) => {}}
+                    sendMessage={(message) => {
+                        if (params.id) {
+                            try {
+                                messageWSContext.connection.invoke("SendMessage", {
+                                    id: params.id,
+                                    text: message,
+                                    userId: localStorage.getItem("system_access_token"),
+                                    type: 0
+                                });
+                            } catch {
+                                applicationState.AddErrorInQueue('Attention!', 'Something went wrong');
+                            }
+                        }
+                    }}
                 />
             </div>
         </div>

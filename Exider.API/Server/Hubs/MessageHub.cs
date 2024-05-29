@@ -1,6 +1,11 @@
-﻿using Exider.Core.Models.Storage;
+﻿using Exider.Core.Dependencies.Repositories.Messenger;
+using Exider.Core.TransferModels;
+using Exider.Core.TransferModels.Messenger;
+using Exider.Repositories.Messenger;
+using Exider.Services.External.FileService;
 using Exider.Services.Internal.Handlers;
 using Microsoft.AspNetCore.SignalR;
+using System.Net;
 
 namespace Exider_Version_2._0._0.Server.Hubs
 {
@@ -8,41 +13,68 @@ namespace Exider_Version_2._0._0.Server.Hubs
     {
         private readonly IRequestHandler _requestHandler;
 
-        public MessageHub(IRequestHandler requestHandler)
+        private readonly IMessengerReposiroty _messengerReposiroty;
+
+        private readonly IDirectRepository _directRepository;
+
+        private readonly IFileService _fileService;
+
+        private readonly IChatBase[] _chatFactory = [];
+
+        public MessageHub
+        (
+            IRequestHandler requestHandler, 
+            IMessengerReposiroty messengerReposiroty, 
+            IFileService fileService, 
+            IDirectRepository directRepository
+        )
         {
             _requestHandler = requestHandler;
+            _messengerReposiroty = messengerReposiroty;
+            _fileService = fileService;
+            _directRepository = directRepository;
+            _chatFactory = [_directRepository];
         }
 
-        public async Task SendMessage(string message)
+        public async Task SendMessage(MessageTransferModel model)
         {
-            using (HttpClient httpClient = new HttpClient())
+            var userId = _requestHandler.GetUserId(model.userId);
+
+            if (userId.IsFailure)
             {
-                try
-                {
-                    for (int i = 0; i < 3; i++)
-                    {
-                        HttpResponseMessage response = await httpClient.GetAsync($"http://localhost:8080?context={message}");
-                        response.EnsureSuccessStatusCode();
+                return;
+            }
 
-                        string responseText = await response.Content.ReadAsStringAsync();
-                        message += responseText;
+            if (model.id == Guid.Parse(userId.Value))
+            {
+                return;
+            }
 
-                        await Clients.Caller.SendAsync("ReceiveMessage", new string[] { responseText, (i == 2).ToString() });
-                    }
-                }
-                catch (HttpRequestException ex)
-                {
-                    Console.WriteLine($"An error occurred: {ex.Message}");
-                    await Clients.Caller.SendAsync("ReceiveMessage", ".");
-                }
+            if (model.type >= 0 && model.type < _chatFactory.Length)
+            {
+                await _chatFactory[model.type].SendMessage(model.id, Guid.Parse(userId.Value), model.text);
+                await Clients.Caller.SendAsync("ReceiveMessage", model.text);
             }
         }
 
-        public async Task Join(Guid chatId)
+        public async Task Join(string authorization)
         {
-                
+            var userId = _requestHandler.GetUserId(authorization);
+
+            if (userId.IsFailure)
+            {
+                return;
+            }
+
+            MessengerTransferModel[] directs = await _messengerReposiroty.GetDirects(_fileService, Guid.Parse(userId.Value));
+
+            foreach (MessengerTransferModel directory in directs)
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, directory.directModel.Id.ToString());
+            }
 
             await Groups.AddToGroupAsync(Context.ConnectionId, userId.Value);
+            await Clients.Caller.SendAsync("GetChats", new { directs });
         }
     }
 }

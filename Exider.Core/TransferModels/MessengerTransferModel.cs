@@ -6,6 +6,8 @@ namespace Exider.Core.TransferModels
 {
     public record class MessengerTransferModel 
     (
-        (DirectModel, MessageModel, UserPublic)[] directs
+        DirectModel directModel,
+        MessageModel messageModel, 
+        UserPublic userPublic
     );
 }
