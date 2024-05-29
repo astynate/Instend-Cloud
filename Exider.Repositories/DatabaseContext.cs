@@ -6,6 +6,7 @@ using Exider.Core.Models.Email;
 using Exider.Core.Models.Formats;
 using Exider.Core.Models.Links;
 using Exider.Core.Models.Messages;
+using Exider.Core.Models.Messenger;
 using Exider.Core.Models.Storage;
 using Microsoft.EntityFrameworkCore;
 using static Exider.Core.Models.Links.AlbumLinks;
@@ -30,6 +31,7 @@ namespace Exider.Core
         public DbSet<AlbumCommentLink> AlbumCommentLinks { get; set; } = null!;
         public DbSet<MessageModel> Messages { get; set; } = null!;
         public DbSet<DirectMessageLink> DirectLinks { get; set; } = null!;
+        public DbSet<DirectModel> Directs { get; set; } = null!;
         public DbSet<AlbumViewLink> ViewsLinks { get; set; } = null!;
         public DbSet<SongFormat> SongsMeta { get; set; } = null!;
 

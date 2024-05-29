@@ -1,8 +1,9 @@
 import { makeAutoObservable } from "mobx";
 
 class ChatsState {
-    chats = []
-    draft = null
+    chats = [];
+    users = [];
+    draft = null;
     currentChatIndex = -1;
 
     constructor() {
@@ -18,6 +19,7 @@ class ChatsState {
         user.type = 'draft';
         this.draft = user;
     }
+    
 }
 
 export default new ChatsState();
