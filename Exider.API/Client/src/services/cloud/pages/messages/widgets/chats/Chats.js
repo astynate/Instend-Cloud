@@ -9,12 +9,13 @@ import UsersPopUp from '../../shared/users-pop-up/UsersPopUp';
 import { instance } from '../../../../../../state/Interceptors';
 import chatsState from '../../../../../../states/chats-state';
 import { messageWSContext } from '../../../../layout/Layout';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const Chats = observer(() => {
     const [isCreateOpen, setCreateOpenState] = useState(false);
     const [isCreatePopUp, setCreatePopUpState] = useState(false);
     const [searchUsers, setSearchUsers] = useState([]);
+    const params = useParams();
     const navigate = useNavigate();
     const ref = useRef();
 
@@ -108,6 +109,7 @@ const Chats = observer(() => {
                                 key={index}
                                 chat={chat}
                                 isPlaceholder={false}
+                                isActive={chat.id === params.id}
                             />
                         );
                     })

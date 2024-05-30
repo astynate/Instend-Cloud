@@ -32,7 +32,7 @@
 
 .messageText {
     height: fit-content;
-    padding: 7px 12px;
+    padding: 6px 11px;
     /* background: var(--main-accent-color); */
     background: var(--main-blue-color);
     border-radius: 15px;
@@ -56,4 +56,5 @@
     color: var(--main-font-color);
     opacity: 0.8;
     font-size: 12px;
+    margin-left: 5px;
 }

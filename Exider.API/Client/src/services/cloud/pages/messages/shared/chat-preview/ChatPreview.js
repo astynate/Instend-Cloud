@@ -1,24 +1,26 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import styles from './main.module.css';
+import { Link } from 'react-router-dom';
 
-const ChatPreview = observer(({chat, isPlaceholder}) => {
+const ChatPreview = observer(({chat, isPlaceholder, isActive}) => {
     if (isPlaceholder === false && chat) {
         return (
-            <div className={styles.chatPreview}>
+            <Link to={`/messages/${chat.id}`} className={styles.chatPreview} id={isActive ? 'active' : null}>
                 <div className={styles.avatar}>
                     <img src={`data:image/png;base64,${chat.avatar}`} className={styles.avatarImage} />
                 </div>
                 <div className={styles.information}>
                     <div className={styles.text}>
                         <span className={styles.name}>{chat.name}</span>
-                        <span className={styles.lastMessage}></span>
+                        {chat && chat.messages && chat.messages.length > 0 &&
+                            <span className={styles.lastMessage}>{chat.messages[0].text}</span>}
                     </div>
                     <div className={styles.status}>
                         {/* <span>10:35</span> */}
                     </div>
                 </div>
-            </div>
+            </Link>
         );
     } else {
         return (

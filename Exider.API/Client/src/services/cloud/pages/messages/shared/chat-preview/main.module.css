@@ -1,11 +1,18 @@
 .chatPreview {
     display: flex;
-    padding-left: 15px;
-    padding-right: 15px;
+    margin-left: 7px;
+    margin-right: 7px;
+    padding-left: 7px;
+    padding-right: 7px;
     padding-top: 7px;
+    border-radius: 10px;
     padding-bottom: 7px;
     grid-gap: 10px;
     cursor: pointer;
+}
+
+.chatPreview[id="active"] {
+    background: var(--main-accent-color);
 }
 
 .chatPreview:hover {

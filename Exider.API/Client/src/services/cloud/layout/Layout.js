@@ -199,6 +199,13 @@ const Layout = observer(() => {
         }
     );
 
+    messageWSContext.useSignalREffect(
+        "ReceiveMessage",
+        (message) => {
+            console.log(message);
+        }
+    );
+
     /////////////////////////////////////////////////////////////////////////////////
 
     useEffect(() => {

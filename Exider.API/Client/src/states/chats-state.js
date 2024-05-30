@@ -4,7 +4,6 @@ class ChatsState {
     chats = [];
     users = [];
     draft = null;
-    currentChatIndex = -1;
     connected = false;
     isChatsLoaded = false;
 

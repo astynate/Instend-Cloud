@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Content from '../widgets/content/Content';
 import Chat from '../widgets/chat/Chat';
 import styles from './main.module.css';
@@ -6,20 +6,28 @@ import cyraAvatar from './images/cyra.png';
 import { observer } from 'mobx-react-lite';
 import Chats from '../widgets/chats/Chats';
 import chatsState from '../../../../../states/chats-state';
+import { useParams } from 'react-router-dom';
 
-const Messages = (props) => {
+const Messages = observer((props) => {
+  const params = useParams();
+  const [chat, setChat] = useState(null);
+
   useEffect(() => {
     if (props.setPanelState) {
         props.setPanelState(true);
     }
   }, [props.setPanelState]);
+
+  useEffect(() => { 
+    setChat(chatsState.chats.find(element => element.id === params.id));
+  }, [chatsState.chats, params, params.id])
   
   return (
     <Content>
       <Chats />
-      {chatsState.currentChatIndex !== -1 || chatsState.draft 
-      ? 
+      {chat ? 
         <Chat 
+          chat={chat}
           placeholder={
             <div className={styles.placeholder}>
               <h1>No messages sended</h1>
@@ -35,6 +43,6 @@ const Messages = (props) => {
       }
     </Content>
   )
-};
+});
 
-export default observer(Messages);
+export default Messages;

@@ -1,3 +1,4 @@
+import React from 'react';
 import styles from './main.module.css';
 
 const Message = ({name, text, type, avatar, position}) => {
@@ -9,9 +10,8 @@ const Message = ({name, text, type, avatar, position}) => {
                 <div className={styles.avatar}>
                     {avatar && <img 
                         src={`data:image/png;base64,${avatar}`} 
-                        // className={props.isMyMessage ? 
-                        //     styles.myAvatar : styles.avatar}
-                        // draggable='false'
+                        className={styles.avatar}
+                        draggable='false'
                     />}
                 </div>
             :
@@ -21,7 +21,7 @@ const Message = ({name, text, type, avatar, position}) => {
                 {/* <h1 className={styles.name}>{name}</h1> */}
                 <span className={styles.text}>{text}</span>
                 <div className={styles.information}>
-                    <span className={styles.time}>10:35</span>
+                    {/* <span className={styles.time}>10:35</span> */}
                 </div>
             </div>
         </div>

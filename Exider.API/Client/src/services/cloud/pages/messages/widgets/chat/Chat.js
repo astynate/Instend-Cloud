@@ -7,9 +7,21 @@ import { observer } from 'mobx-react-lite';
 import { messageWSContext } from '../../../../layout/Layout';
 import applicationState from '../../../../../../states/application-state';
 import { useParams } from 'react-router-dom';
+import { param } from 'jquery';
+import Message from '../../shared/message/Message';
+import userState from '../../../../../../states/user-state';
 
-const Chat = observer(({children, placeholder}) => {
+const Chat = observer(({chat, placeholder}) => {
     const params = useParams();
+    const { user } = userState;
+
+    const GetMessageUser = (user, id) => {
+        if (chat.id === user.id) {
+            return user;
+        } else {
+            return chatsState.users.find(user => user.id === id);
+        }
+    }
 
     return (
         <div className={styles.chat}>
@@ -17,16 +29,14 @@ const Chat = observer(({children, placeholder}) => {
                 <div className={styles.left}>
                     <div className={styles.avatar}>
                         <img 
-                            src={`data:image/png;base64,${chatsState.draft ? chatsState.draft.avatar : 
-                                chatsState.chats[chatsState.currentChatIndex].avatar}`}
+                            src={`data:image/png;base64,${chatsState.draft ? chatsState.draft.avatar : chat.avatar}`}
                             className={styles.avatarImage} 
                             draggable="false"
                         />
                     </div>
                     <div className={styles.information}>
-                        <span className={styles.name}>{chatsState.draft ? chatsState.draft.nickname : 
-                            chatsState.chats[chatsState.currentChatIndex]}</span>
-                        <span className={styles.data}></span>
+                        <span className={styles.name}>{chat.name}</span>
+                        <span className={styles.data}>last seen recently</span>
                     </div>
                 </div>
                 <div className={styles.right}>
@@ -36,12 +46,30 @@ const Chat = observer(({children, placeholder}) => {
                     />
                 </div>
             </div>
-            {chatsState.draft ?
-                (placeholder)
-            : 
+            {chatsState.draft ? 
+                (placeholder) 
+            : (
                 <div className={styles.messages}>
-                    
-                </div>}
+                    {chat.messages.map((element, index) => {
+                        const messageUser = GetMessageUser(user, element.userId);
+
+                        if (user && user.avatar) {
+                           return (
+                                <Message
+                                    key={index}
+                                    name={null}
+                                    text={element.text}
+                                    avatar={user.avatar}
+                                    type={element.id === userState.user.id ? 'My' : 'other'}
+                                    position={3}
+                                />
+                           );
+                        } else {
+                           return null;
+                        }
+                    })}
+                </div>
+            )}
             <div className={styles.input}>
                 <Input 
                     sendMessage={(message) => {
