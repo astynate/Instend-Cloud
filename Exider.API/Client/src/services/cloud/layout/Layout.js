@@ -201,8 +201,8 @@ const Layout = observer(() => {
 
     messageWSContext.useSignalREffect(
         "ReceiveMessage",
-        (message) => {
-            console.log(message);
+        ({direct, message}) => {
+            chatsState.AddMessage(direct, message);
         }
     );
 

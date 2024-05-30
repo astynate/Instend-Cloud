@@ -7,7 +7,6 @@ import { observer } from 'mobx-react-lite';
 import { messageWSContext } from '../../../../layout/Layout';
 import applicationState from '../../../../../../states/application-state';
 import { useParams } from 'react-router-dom';
-import { param } from 'jquery';
 import Message from '../../shared/message/Message';
 import userState from '../../../../../../states/user-state';
 
@@ -35,7 +34,7 @@ const Chat = observer(({chat, placeholder}) => {
                         />
                     </div>
                     <div className={styles.information}>
-                        <span className={styles.name}>{chat.name}</span>
+                        <span className={styles.name}>{chatsState.draft ? chatsState.draft.nickname : chat.name}</span>
                         <span className={styles.data}>last seen recently</span>
                     </div>
                 </div>

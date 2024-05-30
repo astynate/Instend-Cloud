@@ -13,23 +13,25 @@ class ChatsState {
 
     SetChats = (chats) => {
         if (chats.directs && chats.directs.length && chats.directs.length > 0) {
-            this.chats = chats.directs.map(element => {
-                if (element.directModel && element.messageModel && element.userPublic) {
-                    const chat = {
-                        type: 'direct',
-                        id: element.userPublic.id,
-                        name: element.userPublic.nickname,
-                        messages: [element.messageModel],
-                        avatar: element.userPublic.avatar,
-                        hasMore: true
+            this.chats = chats.directs
+                .map(element => {
+                    if (element.directModel && element.messageModel && element.userPublic) {
+                        const chat = {
+                            type: 'direct',
+                            id: element.userPublic.id,
+                            name: element.userPublic.nickname,
+                            messages: [element.messageModel],
+                            avatar: element.userPublic.avatar,
+                            hasMore: true
+                        }
+
+                        this.users = [element.userPublic, ...this.users];
+                        return chat;
                     }
 
-                    this.users = [element.userPublic, ...this.users];
-                    return chat;
-                }
-
-                return null;
-            });
+                    return null;
+                })
+                .filter(element => element !== null);
         }
     }
 
@@ -49,6 +51,12 @@ class ChatsState {
     
     SetConnectedState = (state) => {
         this.connected = state;
+    }
+
+    AddMessage(direct, message) {
+        if (this.chats.map(element => element.id).includes(direct.id) === false) {
+            this.chats = [direct, ...this.chats];
+        }
     }
 }
 

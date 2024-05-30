@@ -53,7 +53,7 @@ namespace Exider_Version_2._0._0.Server.Hubs
             if (model.type >= 0 && model.type < _chatFactory.Length)
             {
                 var result = await _chatFactory[model.type].SendMessage(model.id, Guid.Parse(userId.Value), model.text);
-                await Clients.Caller.SendAsync("ReceiveMessage", result);
+                await Clients.Group(result.Value.directModel.Id.ToString()).SendAsync("ReceiveMessage", result.Value);
             }
         }
 
@@ -74,7 +74,7 @@ namespace Exider_Version_2._0._0.Server.Hubs
             }
 
             await Groups.AddToGroupAsync(Context.ConnectionId, userId.Value);
-            await Clients.Caller.SendAsync("GetChats", new { directs });
+            await Clients.Caller.SendAsync("GetChats", directs);
         }
     }
 }

@@ -25,7 +25,7 @@ const Messages = observer((props) => {
   return (
     <Content>
       <Chats />
-      {chat ? 
+      {chat || chatsState.draft ? 
         <Chat 
           chat={chat}
           placeholder={

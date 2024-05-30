@@ -104,14 +104,18 @@ const Chats = observer(() => {
             <div className={styles.chatList}>
                 {chatsState.isChatsLoaded ? 
                     chatsState.chats.map((chat, index) => {
-                        return (
-                            <ChatPreview 
-                                key={index}
-                                chat={chat}
-                                isPlaceholder={false}
-                                isActive={chat.id === params.id}
-                            />
-                        );
+                        if (!chat || !chat.id) {
+                            return null;
+                        } else {
+                            return (
+                                <ChatPreview 
+                                    key={index}
+                                    chat={chat}
+                                    isPlaceholder={false}
+                                    isActive={chat.id === params.id}
+                                />
+                            );
+                        }
                     })
                 :
                     Array.from({length: 20}).map((_, index) => {
