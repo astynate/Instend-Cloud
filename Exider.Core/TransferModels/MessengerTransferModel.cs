@@ -7,8 +7,12 @@ namespace Exider.Core.TransferModels
     public class MessengerTransferModel
     {
         public DirectModel directModel;
+
         public MessageModel? messageModel;
+
         public UserPublic userPublic;
+
+        public bool isChatCreated = false;
 
         public MessengerTransferModel(DirectModel directModel, MessageModel? messageModel, UserPublic userPublic)
         {

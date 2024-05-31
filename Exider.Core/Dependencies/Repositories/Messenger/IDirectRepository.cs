@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core.Dependencies.Repositories.Messenger;
+using Exider.Core.Models.Messages;
 using Exider.Core.TransferModels;
 
 namespace Exider.Repositories.Messenger
@@ -7,5 +8,6 @@ namespace Exider.Repositories.Messenger
     public interface IDirectRepository : IChatBase
     {
         Task<Result<MessengerTransferModel>> CreateNewDiret(Guid userId, Guid ownerId);
+        Task<MessageModel[]> GetLastMessages(Guid destination, Guid userId, int from, int count);
     }
 }

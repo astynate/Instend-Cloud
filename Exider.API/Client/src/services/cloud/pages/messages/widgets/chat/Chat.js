@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import styles from './main.module.css';
 import info from './images/header/info.png';
 import Input from '../../shared/input/Input';
@@ -13,6 +13,7 @@ import userState from '../../../../../../states/user-state';
 const Chat = observer(({chat, placeholder}) => {
     const params = useParams();
     const { user } = userState;
+    const scrollRef = useRef();
 
     const GetMessageUser = (user, id) => {
         if (chat.id === user.id) {
@@ -22,8 +23,22 @@ const Chat = observer(({chat, placeholder}) => {
         }
     }
 
+    const HandleScroll = () => {
+        if (scrollRef && scrollRef.current) {
+            const offsetTop = scrollRef.current.getBoundingClientRect().top;
+
+            if (offsetTop > 0) {
+                chatsState.GetMessages(params.id);
+            }
+        }
+    }
+
+    useEffect(() => {
+        HandleScroll();
+    }, []);
+
     return (
-        <div className={styles.chat}>
+        <div className={styles.chat} onScroll={HandleScroll}>
             <div className={styles.header}>
                 <div className={styles.left}>
                     <div className={styles.avatar}>
@@ -49,15 +64,25 @@ const Chat = observer(({chat, placeholder}) => {
                 (placeholder) 
             : (
                 <div className={styles.messages}>
+                    <div ref={scrollRef}></div>
                     {chat.messages.map((element, index) => {
                         const messageUser = GetMessageUser(user, element.userId);
+                        let position = 3;
+
+                        // if (index === chat.messages.length - 1) {
+                        //     position = 3;
+                        // } else if (index < chat.messages.length - 1 && chat.messages[index + 1].userId === ) {
+
+                        // }
+
+                        // if (index < chat.messages.length - 1 && chat.messages[index + 1] ===)
 
                         if (user && user.avatar) {
-                           return (
+                            return (
                                 <Message
                                     key={index}
                                     name={null}
-                                    text={element.text}
+                                    text={element.Text}
                                     avatar={user.avatar}
                                     type={element.id === userState.user.id ? 'My' : 'other'}
                                     position={3}

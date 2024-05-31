@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import styles from './main.module.css';
 import { Link } from 'react-router-dom';
 
-const ChatPreview = observer(({chat, isPlaceholder, isActive}) => {
+const ChatPreview = observer(({chat, isPlaceholder, isActive}) => {    
     if (isPlaceholder === false && chat) {
         return (
             <Link to={`/messages/${chat.id}`} className={styles.chatPreview} id={isActive ? 'active' : null}>
@@ -14,7 +14,7 @@ const ChatPreview = observer(({chat, isPlaceholder, isActive}) => {
                     <div className={styles.text}>
                         <span className={styles.name}>{chat.name}</span>
                         {chat && chat.messages && chat.messages.length > 0 &&
-                            <span className={styles.lastMessage}>{chat.messages[0].text}</span>}
+                            <span className={styles.lastMessage}>{chat.messages && chat.messages.length > 0 ? chat.messages[chat.messages.length - 1].Text : null}</span>}
                     </div>
                     <div className={styles.status}>
                         {/* <span>10:35</span> */}

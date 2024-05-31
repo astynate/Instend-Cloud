@@ -48,6 +48,7 @@ const Layout = observer(() => {
     const [errorTitle, setErrorTitle] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [song, setSong] = useState(null);
+    const url = 'http://localhost:5000' // 'http://localhost:5000/message-hub'
 
     useEffect(() => {
         setSong(GetCurrentSong());
@@ -201,8 +202,12 @@ const Layout = observer(() => {
 
     messageWSContext.useSignalREffect(
         "ReceiveMessage",
-        ({direct, message}) => {
-            chatsState.AddMessage(direct, message);
+        (data) => {
+            const { directModel, messageModel, userPublic } = JSON.parse(data);
+
+            if (directModel && messageModel) {
+                chatsState.AddMessage(directModel, messageModel, userPublic);
+            }
         }
     );
 
@@ -244,9 +249,9 @@ const Layout = observer(() => {
     }, [galleryWSContext.connection]);
 
     return (
-        <messageWSContext.Provider url={"http://localhost:5000/message-hub"}>
-            <storageWSContext.Provider url={"http://localhost:5000/storage-hub"}>
-                <galleryWSContext.Provider url={"http://localhost:5000/gallery-hub"}>
+        <messageWSContext.Provider url={url + '/message-hub'}>
+            <storageWSContext.Provider url={url + '/storage-hub'}>
+                <galleryWSContext.Provider url={url + '/gallery-hub'}>
                     <layoutContext.Provider value={{song: song}}>
                         <div className='cloud-wrapper'>
                             {isLoading && <Loader />}

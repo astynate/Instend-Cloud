@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './main.module.css';
 
-const Message = ({name, text, type, avatar, position}) => {
+const Message = ({name, text, type, avatar, position, time}) => {
     const types = [styles.first, styles.middle, styles.last, styles.single];
 
     return(
@@ -21,7 +21,7 @@ const Message = ({name, text, type, avatar, position}) => {
                 {/* <h1 className={styles.name}>{name}</h1> */}
                 <span className={styles.text}>{text}</span>
                 <div className={styles.information}>
-                    {/* <span className={styles.time}>10:35</span> */}
+                    <span className={styles.time}>{time ? time : null}</span>
                 </div>
             </div>
         </div>

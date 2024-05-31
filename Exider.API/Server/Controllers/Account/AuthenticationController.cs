@@ -16,7 +16,6 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
     [Route("[controller]")]
     public class AuthenticationController : ControllerBase
     {
-
         private readonly ITokenService _tokenService;
 
         private readonly IUsersRepository _usersRepository;

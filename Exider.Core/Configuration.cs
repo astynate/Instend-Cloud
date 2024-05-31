@@ -27,7 +27,7 @@ namespace Exider.Core
 
         public static readonly string CorporateEmail = "zixe.company@gmail.com";
 
-        public static readonly string CorporatePassword = "svgb zokl oqjy jzup";
+        public static readonly string CorporatePassword = "kqzu gsig ghgn ecis";
 
         public static readonly string DefaultAvatarPath = "D:/Exider-System/default-avatar.png";
 

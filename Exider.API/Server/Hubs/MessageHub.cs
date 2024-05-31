@@ -5,6 +5,7 @@ using Exider.Repositories.Messenger;
 using Exider.Services.External.FileService;
 using Exider.Services.Internal.Handlers;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 using System.Net;
 
 namespace Exider_Version_2._0._0.Server.Hubs
@@ -53,7 +54,13 @@ namespace Exider_Version_2._0._0.Server.Hubs
             if (model.type >= 0 && model.type < _chatFactory.Length)
             {
                 var result = await _chatFactory[model.type].SendMessage(model.id, Guid.Parse(userId.Value), model.text);
-                await Clients.Group(result.Value.directModel.Id.ToString()).SendAsync("ReceiveMessage", result.Value);
+                
+                if (result.IsFailure)
+                {
+                    return;
+                }
+
+                await Clients.Group(result.Value.directModel.Id.ToString()).SendAsync("ReceiveMessage", JsonConvert.SerializeObject(result.Value));
             }
         }
 
@@ -74,7 +81,7 @@ namespace Exider_Version_2._0._0.Server.Hubs
             }
 
             await Groups.AddToGroupAsync(Context.ConnectionId, userId.Value);
-            await Clients.Caller.SendAsync("GetChats", directs);
+            await Clients.Caller.SendAsync("GetChats", JsonConvert.SerializeObject(new { directs }));
         }
     }
 }

@@ -7,6 +7,7 @@ using Exider.Core.Models.Messenger;
 using Exider.Core.TransferModels;
 using Exider.Core.TransferModels.Account;
 using Exider.Repositories.Account;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Exider.Repositories.Messenger
@@ -43,6 +44,28 @@ namespace Exider.Repositories.Messenger
             await _context.SaveChangesAsync();
 
             return new MessengerTransferModel(directModel.Value, null, user.Value);
+        }
+
+        public async Task<MessageModel[]> GetLastMessages(Guid destination, Guid userId, int from, int count)
+        {
+            return await _context.Directs.AsNoTracking()
+                .Where(direct => (direct.UserId == userId && direct.OwnerId == destination) || (direct.OwnerId == userId && direct.UserId == destination))
+                .Join(_context.DirectLinks,
+                    direct => direct.Id,
+                    link => link.ItemId,
+                    (direct, link) => new
+                    {
+                        direct,
+                        link
+                    })
+                .OrderByDescending(x => x.link.Date)
+                .Skip(from)
+                .Take(count)
+                .Join(_context.Messages,
+                    prev => prev.link.LinkedItemId,
+                    message => message.Id,
+                    (prev, message) => message)
+                .ToArrayAsync();
         }
 
         public async Task<Result<MessengerTransferModel>> SendMessage(Guid ownerId, Guid userId, string text)
@@ -82,37 +105,48 @@ namespace Exider.Repositories.Messenger
                     ))
                 .FirstOrDefaultAsync();
 
-            if (direct == null)
+            return await _context.Database.CreateExecutionStrategy().ExecuteAsync<Result<MessengerTransferModel>>(async Task<Result<MessengerTransferModel>> () =>
             {
-                var newDirect = await CreateNewDiret(userId, ownerId);
-
-                if (newDirect.IsFailure)
+                using (var transaction = _context.Database.BeginTransaction())
                 {
-                    return Result.Failure<MessengerTransferModel>(newDirect.Error);
+                    if (direct == null)
+                    {
+                        var newDirect = await CreateNewDiret(userId, ownerId);
+
+                        if (newDirect.IsFailure)
+                        {
+                            return Result.Failure<MessengerTransferModel>(newDirect.Error);
+                        }
+
+                        direct = newDirect.Value;
+                    }
+
+                    var messageModel = MessageModel.Create(text, userId);
+
+                    if (messageModel.IsFailure)
+                    {
+                        return Result.Failure<MessengerTransferModel>(messageModel.Error);
+                    }
+
+                    var link = LinkBase.Create<DirectMessageLink>(direct.directModel.Id, messageModel.Value.Id);
+
+                    if (link.IsFailure)
+                    {
+                        return Result.Failure<MessengerTransferModel>(link.Error);
+                    }
+
+                    await _context.DirectLinks.AddAsync(link.Value);
+                    await _context.SaveChangesAsync();
+
+                    await _context.Messages.AddAsync(messageModel.Value);
+                    await _context.SaveChangesAsync();
+
+                    direct.messageModel = messageModel.Value;
+                    transaction.Commit();
+
+                    return direct;
                 }
-
-                direct = newDirect.Value;
-            }
-
-            var messageModel = MessageModel.Create(text, userId);
-
-            if (messageModel.IsFailure)
-            {
-                return Result.Failure<MessengerTransferModel>(messageModel.Error);
-            }
-
-            var link = LinkBase.Create<DirectMessageLink>(direct.directModel.Id, messageModel.Value.Id);
-
-            if (link.IsFailure)
-            {
-                return Result.Failure<MessengerTransferModel>(link.Error);
-            }
-
-            await _context.Messages.AddAsync(messageModel.Value);
-            await _context.DirectLinks.AddAsync(link.Value);
-            await _context.SaveChangesAsync();
-
-            return direct;
+            });
         }
     }
 }

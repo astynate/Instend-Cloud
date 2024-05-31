@@ -75,12 +75,14 @@
 }
 
 .messages {
-    min-height: calc(100% - 140px);
+    margin-top: auto;
+    /* min-height: calc(100% - 140px); */
     padding: 15px;
     grid-gap: 15px;
     display: flex;
     flex-direction: column;
     justify-content: end;
+    overflow-y: visible;
 }
 
 .input {

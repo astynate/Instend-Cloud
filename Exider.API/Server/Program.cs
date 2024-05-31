@@ -1,8 +1,6 @@
 using Exider.Core;
 using Exider.Core.Dependencies.Repositories.Account;
-using Exider.Core.Models.Access;
 using Exider.Core.Models.Account;
-using Exider.Core.Models.Storage;
 using Exider.Dependencies.Services;
 using Exider.Repositories.Account;
 using Exider.Repositories.Comments;
@@ -25,8 +23,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy",
-        builder => builder.WithOrigins("http://localhost:44441")
+        builder => builder.WithOrigins("http://localhost:44441", "http://localhost:5000", "https://7e6a-178-163-170-212.ngrok-free.app", "https://d9e4-178-163-191-99.ngrok-free.app")
         .AllowAnyMethod()
+        .SetIsOriginAllowed(origin => true)
         .AllowAnyHeader()
         .AllowCredentials());
 });
