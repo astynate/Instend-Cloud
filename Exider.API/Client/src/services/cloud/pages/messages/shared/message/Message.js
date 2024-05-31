@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './main.module.css';
+import { ConvertDateToTime } from '../../../../../../utils/DateHandler';
 
 const Message = ({name, text, type, avatar, position, time}) => {
     const types = [styles.first, styles.middle, styles.last, styles.single];
@@ -21,7 +22,7 @@ const Message = ({name, text, type, avatar, position, time}) => {
                 {/* <h1 className={styles.name}>{name}</h1> */}
                 <span className={styles.text}>{text}</span>
                 <div className={styles.information}>
-                    <span className={styles.time}>{time ? time : null}</span>
+                    <span className={styles.time}>{time ? ConvertDateToTime(time) : null}</span>
                 </div>
             </div>
         </div>

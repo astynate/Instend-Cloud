@@ -66,10 +66,12 @@ namespace Exider.Repositories.Account
 
                 if (avatarReadingResult.IsFailure)
                 {
-                    return Result.Failure<UserPublic>("Cannon read avatar");
+                    userModel.Avatar = Configuration.DefaultAvatar;
                 }
-
-                userModel.Avatar = Convert.ToBase64String(avatarReadingResult.Value);
+                else
+                {
+                    userModel.Avatar = Convert.ToBase64String(avatarReadingResult.Value);
+                }
             }
 
             if (string.IsNullOrEmpty(userModel.Header) == false)

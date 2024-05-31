@@ -49,8 +49,12 @@ class ChatsState {
     }
 
     setDraft = (user) => {
-        user.type = 'draft';
-        this.draft = user;
+        if (user) {
+            user.type = 'draft';
+            this.draft = user;
+        } else {
+            this.draft = null;
+        }
     }
     
     SetConnectedState = (state) => {
@@ -101,6 +105,12 @@ class ChatsState {
                         });
                     }
                 });
+        }
+    }
+
+    SetDraftMessage = (message) => {
+        if (this.draft) {
+            this.draft.messages = [message];
         }
     }
 }

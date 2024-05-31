@@ -10,6 +10,17 @@ export const ConvertDate = (date) => {
     return date.toLocaleString('en-US', options);
 };
 
+export const ConvertDateToTime = (date) => {
+    date = new Date(date);
+    
+    const options = { 
+        hour: 'numeric', 
+        minute: 'numeric', 
+    };
+    
+    return date.toLocaleString('en-US', options);
+};
+
 export const ConvertFullDate = (date) => {
     date = new Date(date);
     

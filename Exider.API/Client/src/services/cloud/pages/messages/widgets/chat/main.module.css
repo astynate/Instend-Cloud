@@ -76,7 +76,6 @@
 
 .messages {
     margin-top: auto;
-    /* min-height: calc(100% - 140px); */
     padding: 15px;
     grid-gap: 15px;
     display: flex;
@@ -87,8 +86,17 @@
 
 .input {
     position: sticky;
-    margin-top: auto;
     width: 100%;
     bottom: 0;
     left: 0;
+}
+
+.inputPlaceholder {
+    height: 50px;
+    border-top: 1px solid var(--main-border-color);
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    font-size: 14px;
+    color: var(--main-paragraph-color);
 }

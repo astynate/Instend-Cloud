@@ -69,7 +69,7 @@ const Chats = observer(() => {
                 isHasSubmitButton={false}
                 userCallback={(user) => {
                     if (user.id) {
-                        navigate(`/messages/${user.id}`);
+                        navigate(`/messages`);
                         chatsState.setDraft(user);
                     }
                     setCreatePopUpState(false);

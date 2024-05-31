@@ -11,6 +11,7 @@ namespace Exider.Core.Models.Messenger
         [Column("user_id")] public Guid UserId { get; set; }
         [Column("owner_id")] public Guid OwnerId { get; set; }
         [Column("date")] public DateTime Date { get; set; } = DateTime.Now;
+        [Column("is_accepted")] public bool IsAccepted { get; set; } = false;
 
         private DirectModel() { }
 

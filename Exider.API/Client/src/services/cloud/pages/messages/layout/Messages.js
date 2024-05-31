@@ -34,6 +34,12 @@ const Messages = observer((props) => {
               <span>Send message to start communicate</span>
             </div>
           }
+          requestSended={
+            <div className={styles.placeholder}>
+              <h1>Invite sent</h1>
+              <span>Wait for a response from your interlocutor</span>
+            </div>
+          }
         />
       :
         <div className={styles.placeholder}>

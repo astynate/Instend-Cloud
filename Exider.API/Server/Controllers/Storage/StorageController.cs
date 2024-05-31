@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Exider.Repositories.Account;
 using Exider.Core.Models.Formats;
-using Exider.Repositories.Gallery;
 using Exider.Repositories.Links;
 using static Exider.Core.Models.Links.AlbumLinks;
 
