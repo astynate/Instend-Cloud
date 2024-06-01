@@ -9,6 +9,7 @@ import applicationState from '../../../../../../states/application-state';
 import { useParams } from 'react-router-dom';
 import Message from '../../shared/message/Message';
 import userState from '../../../../../../states/user-state';
+import Loader from '../../../../shared/loader/Loader';
 
 const Chat = observer(({chat, placeholder, requestSended}) => {
     const params = useParams();
@@ -70,7 +71,16 @@ const Chat = observer(({chat, placeholder, requestSended}) => {
                 <>
                     {chatsState.draft.messages ?
                         <>
-                            ({requestSended})
+                            {chatsState.draft.isLoaded ?
+                                (requestSended)
+                            :
+                                <div className={styles.loder}>
+                                    <div className={styles.sendingText}>
+                                        <h1>Sending Invite</h1>
+                                        <span>Wait a minute</span>
+                                    </div>
+                                    <Loader />
+                                </div>}
                             <div className={styles.messages}>
                                 {chatsState.draft.messages.map((element, index) => {
                                         if (user && user.avatar) {
@@ -134,7 +144,6 @@ const Chat = observer(({chat, placeholder, requestSended}) => {
                         <span>You can't send messages</span>
                     </div>
                 :
-                
                     <Input 
                         sendMessage={(message) => {
                             if (message === '' || !message) {
@@ -159,7 +168,14 @@ const Chat = observer(({chat, placeholder, requestSended}) => {
                                     Date: new Date()
                                 }
 
-                                chatsState.SetDraftMessage(messageModel);
+                                chatsState.SetDraftMessage(
+                                    messageWSContext.connection.invoke("SendMessage", {
+                                        id: chatsState.draft.id,
+                                        text: message,
+                                        userId: localStorage.getItem("system_access_token"),
+                                        type: 0
+                                    }),
+                                    messageModel);
                             }
                         }}
                     />

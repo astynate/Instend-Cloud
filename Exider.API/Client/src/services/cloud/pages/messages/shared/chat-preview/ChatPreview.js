@@ -2,6 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import styles from './main.module.css';
 import { Link } from 'react-router-dom';
+import { ConvertDateToTime } from '../../../../../../utils/DateHandler';
 
 const ChatPreview = observer(({chat, isPlaceholder, isActive}) => {    
     if (isPlaceholder === false && chat) {
@@ -17,7 +18,7 @@ const ChatPreview = observer(({chat, isPlaceholder, isActive}) => {
                             <span className={styles.lastMessage}>{chat.messages && chat.messages.length > 0 ? chat.messages[chat.messages.length - 1].Text : null}</span>}
                     </div>
                     <div className={styles.status}>
-                        {/* <span>10:35</span> */}
+                        <span>{chat.messages && chat.messages.length > 0 ? ConvertDateToTime(chat.messages[chat.messages.length - 1].Date) : null}</span>
                     </div>
                 </div>
             </Link>
@@ -31,9 +32,6 @@ const ChatPreview = observer(({chat, isPlaceholder, isActive}) => {
                     <div className={styles.text}>
                         <span className={styles.name} id="placeholder"></span>
                         <span className={styles.lastMessage} id="placeholder"></span>
-                    </div>
-                    <div className={styles.status}>
-                        {/* <span>10:35</span> */}
                     </div>
                 </div>
             </div>

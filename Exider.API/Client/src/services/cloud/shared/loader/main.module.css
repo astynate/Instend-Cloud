@@ -9,6 +9,7 @@
     position: relative;
     box-sizing: border-box;
     animation: rotation 1.25s linear infinite;
+    flex-shrink: 0;
 }
   
 @keyframes rotation {

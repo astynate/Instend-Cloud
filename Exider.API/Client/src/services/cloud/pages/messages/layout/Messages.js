@@ -40,6 +40,11 @@ const Messages = observer((props) => {
               <span>Wait for a response from your interlocutor</span>
             </div>
           }
+          sendingInvite={
+            <div className={styles.placeholder}>
+              <span>Wait for a response from your interlocutor</span>
+            </div>
+          }
         />
       :
         <div className={styles.placeholder}>

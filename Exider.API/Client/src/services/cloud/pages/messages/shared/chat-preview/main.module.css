@@ -56,7 +56,7 @@
 
 .name {
     font-weight: 500;
-    font-size: 15px;
+    font-size: 14px;
     color: var(--main-font-color);
 }
 
@@ -69,8 +69,12 @@
 
 .lastMessage {
     font-weight: 400;
-    font-size: 15px;
+    font-size: 14px;
     color: var(--main-paragraph-color);
+    max-width: 9ic;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
 }
 
 .lastMessage[id="placeholder"] {
@@ -83,7 +87,7 @@
 
 .status {
     height: 100%;
-    font-size: 14px;
+    font-size: 13px;
     color: var(--main-paragraph-color);
 }
 

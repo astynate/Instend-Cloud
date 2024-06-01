@@ -47,10 +47,10 @@ namespace Exider.Repositories.Messenger
                 .Join(_context.Messages,
                     prev => prev.link.LinkedItemId,
                     message => message.Id,
-                    (prev, message) => 
+                    (prev, message) =>
                         new MessengerTransferModel
                         (
-                            prev.prev.direct, 
+                            prev.prev.direct,
                             message,
                             new UserPublic()
                             {
@@ -75,7 +75,7 @@ namespace Exider.Repositories.Messenger
                 if (direct.userPublic.Avatar == null)
                 {
                     direct.userPublic.Avatar = Configuration.DefaultAvatar;
-                } 
+                }
                 else
                 {
                     var avatar = await fileService.ReadFileAsync(direct.userPublic.Avatar);
@@ -92,6 +92,85 @@ namespace Exider.Repositories.Messenger
             }
 
             return directs;
+        }
+
+        public async Task<MessengerTransferModel?> GetDirect(IFileService fileService, Guid id, Guid userId)
+        {
+            MessengerTransferModel? model = await _context.Directs
+                .Where(direct => (direct.UserId == userId || direct.OwnerId == userId) && direct.Id == id)
+                .Join(_context.Users,
+                    direct => (direct.OwnerId == userId ? direct.UserId : direct.OwnerId),
+                    user => user.Id,
+                    (direct, user) => new
+                    {
+                        direct,
+                        user
+                    })
+                .Join(_context.UserData,
+                    prev => prev.user.Id,
+                    userData => userData.UserId,
+                    (prev, userData) => new
+                    {
+                        prev.direct,
+                        prev.user,
+                        userData
+                    })
+                .GroupJoin(_context.DirectLinks,
+                    prev => prev.direct.Id,
+                    link => link.ItemId,
+                    (prev, links) => new
+                    {
+                        prev,
+                        link = links.OrderByDescending(l => l.Date).FirstOrDefault()
+                    })
+                .Join(_context.Messages,
+                    prev => prev.link.LinkedItemId,
+                    message => message.Id,
+                    (prev, message) =>
+                        new MessengerTransferModel
+                        (
+                            prev.prev.direct,
+                            message,
+                            new UserPublic()
+                            {
+                                Id = prev.prev.user.Id,
+                                Name = prev.prev.user.Name,
+                                Surname = prev.prev.user.Surname,
+                                Nickname = prev.prev.user.Nickname,
+                                Email = prev.prev.user.Email,
+                                Avatar = prev.prev.userData.Avatar,
+                                Header = prev.prev.userData.Header,
+                                Description = prev.prev.userData.Description,
+                                StorageSpace = prev.prev.userData.StorageSpace,
+                                OccupiedSpace = prev.prev.userData.OccupiedSpace,
+                                Balance = prev.prev.userData.Balance,
+                                FriendCount = prev.prev.userData.FriendCount
+                            }
+                        ))
+                .FirstOrDefaultAsync();
+
+            if (model != null)
+            {
+                if (model.userPublic.Avatar == null)
+                {
+                    model.userPublic.Avatar = Configuration.DefaultAvatar;
+                }
+                else
+                {
+                    var avatar = await fileService.ReadFileAsync(model.userPublic.Avatar);
+
+                    if (avatar.IsSuccess)
+                    {
+                        model.userPublic.Avatar = Convert.ToBase64String(avatar.Value);
+                    }
+                    else
+                    {
+                        model.userPublic.Avatar = Configuration.DefaultAvatar;
+                    }
+                }
+            }
+
+            return model;
         }
     }
 }

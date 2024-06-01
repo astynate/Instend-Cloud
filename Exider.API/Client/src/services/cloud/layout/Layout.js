@@ -18,6 +18,7 @@ import MusicPlayer from '../widgets/music-player/MusicPlayer';
 import musicState from '../../../states/music-state';
 import { GetCurrentSong } from '../widgets/navigation-panel/NavigationPanel';
 import chatsState from '../../../states/chats-state';
+import { useNavigate } from 'react-router-dom';
 
 export const messageWSContext = createSignalRContext();
 export const storageWSContext = createSignalRContext();
@@ -40,6 +41,21 @@ export const connectToFoldersListener = async () => {
     }
 };
 
+export const connectToDirectListener = async (id) => {
+    try {
+        while (messageWSContext.connection.state !== 'Connected') {
+            if (messageWSContext.connection.state === 'Disconnected') {
+                await messageWSContext.connection.start();
+            }
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+
+        await messageWSContext.connection.invoke("ConnectToDirect", id, localStorage.getItem("system_access_token"));
+    } catch (error) {
+        console.error('Failed to connect or join:', error);
+    }
+};
+
 const Layout = observer(() => {
     const handleLoading = () => setIsLoading(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -48,6 +64,7 @@ const Layout = observer(() => {
     const [errorTitle, setErrorTitle] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [song, setSong] = useState(null);
+    const navigate = useNavigate();
     const url = 'http://localhost:5000' // 'http://localhost:5000/message-hub'
 
     useEffect(() => {
@@ -208,6 +225,19 @@ const Layout = observer(() => {
             if (directModel && messageModel) {
                 chatsState.AddMessage(directModel, messageModel, userPublic);
             }
+
+            if (chatsState.draft && chatsState.draft.Id && userPublic.Id === chatsState.draft.id) {
+                console.log(userPublic, chatsState);
+                // navigate(`/messages/${directModel.id}`);
+                // chatsState.setDraft(null);
+            }
+        }
+    );
+
+    messageWSContext.useSignalREffect(
+        "NewConnection",
+        async (id) => {
+            await connectToDirectListener(id);
         }
     );
 

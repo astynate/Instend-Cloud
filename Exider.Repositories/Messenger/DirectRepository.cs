@@ -119,6 +119,11 @@ namespace Exider.Repositories.Messenger
                         }
 
                         direct = newDirect.Value;
+                        direct.isChatCreated = true;
+                    }
+                    else if (direct.directModel.IsAccepted == false)
+                    {
+                        return Result.Failure<MessengerTransferModel>("Invite is not accepted");
                     }
 
                     var messageModel = MessageModel.Create(text, userId);

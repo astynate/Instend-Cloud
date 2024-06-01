@@ -60,7 +60,15 @@ namespace Exider_Version_2._0._0.Server.Hubs
                     return;
                 }
 
-                await Clients.Group(result.Value.directModel.Id.ToString()).SendAsync("ReceiveMessage", JsonConvert.SerializeObject(result.Value));
+                if (result.Value.isChatCreated == true)
+                {
+                    await Clients.Group(userId.Value).SendAsync("NewConnection", result.Value.directModel.Id);
+                    await Clients.Group(model.id.ToString()).SendAsync("NewConnection", result.Value.directModel.Id);
+                }
+                else
+                {
+                    await Clients.Group(result.Value.directModel.Id.ToString()).SendAsync("ReceiveMessage", JsonConvert.SerializeObject(result.Value));
+                }
             }
         }
 
@@ -82,6 +90,26 @@ namespace Exider_Version_2._0._0.Server.Hubs
 
             await Groups.AddToGroupAsync(Context.ConnectionId, userId.Value);
             await Clients.Caller.SendAsync("GetChats", JsonConvert.SerializeObject(new { directs }));
+        }
+
+        public async Task ConnectToDirect(Guid id, string authorization)
+        {
+            var userId = _requestHandler.GetUserId(authorization);
+
+            if (userId.IsFailure)
+            {
+                return;
+            }
+
+            MessengerTransferModel? direct = await _messengerReposiroty.GetDirect(_fileService, id, Guid.Parse(userId.Value));
+
+            if (direct == null)
+            {
+                return;
+            }
+
+            await Groups.AddToGroupAsync(direct.directModel.Id.ToString(), direct.directModel.Id.ToString());
+            await Clients.Caller.SendAsync("ReceiveMessage", JsonConvert.SerializeObject(direct));
         }
     }
 }

@@ -109,10 +109,10 @@ class ChatsState {
     }
 
     SetDraftMessage = (message) => {
-        if (this.draft) {
+        if (this.draft && this.draft.id) {        
             this.draft.messages = [message];
         }
-    }
+    }    
 }
 
 export default new ChatsState();

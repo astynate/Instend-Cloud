@@ -43,27 +43,5 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
 
             return Ok(JsonConvert.SerializeObject(messages));
         }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateDirect(Guid userId, Guid ownerId, string text)
-        {
-            var direct = await _directRepository.CreateNewDiret(userId, ownerId);
-
-            if (direct.IsFailure)
-            {
-                return BadRequest(direct.Error);
-            }
-
-            var message = await _directRepository.SendMessage(ownerId, userId, text);
-
-            if (message.IsFailure)
-            {
-                return Conflict(message.Error);
-            }
-
-            var messageValue = message.Value;
-
-            return Ok();
-        }
     }
 }
