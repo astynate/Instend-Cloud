@@ -6,6 +6,7 @@
     --main-header-font-color: #c2c2c2;
     --main-header-background-color: #ffffffce;
     --main-blue-color: rgb(40, 108, 255);
+    --main-red-color: rgb(255, 44, 44);
     --main-accent-font-color: white;
     --main-paragraph-color: #777;
     --main-button-background-color: black;
@@ -46,6 +47,7 @@
     --main-header-font-color: #161616;
     --main-header-background-color: #000000ce;
     --main-blue-color: rgb(40, 108, 255);
+    --main-red-color: rgb(255, 44, 44);
     --main-accent-font-color: white;
     --main-paragraph-color: #aaa;
     --main-button-background-color: rgb(255, 255, 255);

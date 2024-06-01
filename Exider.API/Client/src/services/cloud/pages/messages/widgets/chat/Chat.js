@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
 import info from './images/header/info.png';
 import Input from '../../shared/input/Input';
@@ -11,18 +11,35 @@ import Message from '../../shared/message/Message';
 import userState from '../../../../../../states/user-state';
 import Loader from '../../../../shared/loader/Loader';
 
+export const ChangeAccessStateAsync = async (id, isAccept) => {
+    try {
+        while (messageWSContext.connection.state !== 'Connected') {
+            if (messageWSContext.connection.state === 'Disconnected') {
+                await messageWSContext.connection.start();
+            }
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+
+        await messageWSContext.connection.invoke("ChangeAccessState", id, localStorage.getItem("system_access_token"), isAccept);
+    } catch (error) {
+        console.error('Failed to connect or join:', error);
+    }
+};
+
 const Chat = observer(({chat, placeholder, requestSended}) => {
     const params = useParams();
-    const { user } = userState;
     const scrollRef = useRef();
+    const { user } = userState;
 
-    const GetMessageUser = (user, id) => {
-        if (chat.id === user.id) {
-            return user;
-        } else {
-            return chatsState.users.find(user => user.id === id);
-        }
-    }
+    const [isAvailable, setAvailbleState] = useState(!((chatsState.draft && chatsState.draft.messages && 
+        chatsState.draft.messages.length > 0) || chat && !chat.isAccepted));
+
+    useEffect(() => {
+        setAvailbleState(!((chatsState.draft && chatsState.draft.messages && 
+            chatsState.draft.messages.length > 0) || chat && !chat.isAccepted));
+
+        console.log(isAvailable);
+    }, [isAvailable, chatsState, chatsState.chats, chat, chat?.isAccepted]);
 
     useEffect(() => {
         if (params.id) {
@@ -106,43 +123,58 @@ const Chat = observer(({chat, placeholder, requestSended}) => {
                     }
                 </>
             : (
-                <div className={styles.messages}>
-                    <div ref={scrollRef}></div>
-                    {chat.messages.map((element, index) => {
-                        const messageUser = GetMessageUser(user, element.userId);
-                        let position = 3;
+                <>
+                    {isAvailable === false && user.id === chat.ownerId && (requestSended)}
+                    {isAvailable === false && user.id !== chat.ownerId && 
+                        <div className={styles.textInfo}>
+                            <h1>Request for a chat</h1>
+                            <span>If you accept, {chat && chat.name ? chat.name : null} can send you messages otherwise the chat will be deleted</span>
+                        </div>
+                    }
+                    <div className={styles.messages}>
+                        <div ref={scrollRef}></div>
+                        {chat.messages.map((element, index) => {
+                            let avatar = null;
 
-                        // if (index === chat.messages.length - 1) {
-                        //     position = 3;
-                        // } else if (index < chat.messages.length - 1 && chat.messages[index + 1].userId === ) {
+                            if (element.UserId === user.id) {
+                                avatar = user.avatar;
+                            } else {
+                                avatar = chatsState.users.find(user => user.Id === element.UserId);
+                                
+                                if (avatar) {
+                                    avatar = avatar.Avatar;
+                                }
+                            }
 
-                        // }
-
-                        // if (index < chat.messages.length - 1 && chat.messages[index + 1] ===)
-
-                        if (user && user.avatar) {
-                            return (
-                                <Message
-                                    key={index}
-                                    name={null}
-                                    text={element.Text}
-                                    avatar={user.avatar}
-                                    type={element.id === userState.user.id ? 'My' : 'other'}
-                                    position={3}
-                                    time={element.Date}
-                                />
-                           );
-                        } else {
-                           return null;
-                        }
-                    })}
-                </div>
+                            if (avatar) {
+                                return (
+                                    <Message
+                                        key={index}
+                                        name={null}
+                                        text={element.Text}
+                                        avatar={avatar}
+                                        type={element.id === userState.user.id ? 'My' : 'Other'}
+                                        position={3}
+                                        time={element.Date}
+                                    />
+                                );
+                            }
+                            return null;
+                        })}
+                    </div>
+                </>
             )}
             <div className={styles.input}>
-                {chatsState.draft && chatsState.draft.messages && chatsState.draft.messages.length > 0 ?
-                    <div className={styles.inputPlaceholder}>
-                        <span>You can't send messages</span>
-                    </div>
+                {isAvailable === false ?
+                    user.id === chat.ownerId ?
+                        <div className={styles.inputPlaceholder}>
+                            <span>You can't send messages</span>
+                        </div>
+                    :
+                        <div className={styles.inputPlaceholder}>
+                            <div className={styles.accept} onClick={() => ChangeAccessStateAsync(chat.directId, true)}>Accept</div>
+                            <div className={styles.reject} onClick={() => ChangeAccessStateAsync(chat.directId, false)}>Reject</div>
+                        </div>
                 :
                     <Input 
                         sendMessage={(message) => {

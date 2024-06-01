@@ -226,10 +226,9 @@ const Layout = observer(() => {
                 chatsState.AddMessage(directModel, messageModel, userPublic);
             }
 
-            if (chatsState.draft && chatsState.draft.Id && userPublic.Id === chatsState.draft.id) {
-                console.log(userPublic, chatsState);
-                // navigate(`/messages/${directModel.id}`);
-                // chatsState.setDraft(null);
+            if (chatsState.draft && chatsState.draft.id && userPublic.Id === chatsState.draft.id) {
+                navigate(`/messages/${userPublic.Id}`);
+                chatsState.setDraft(null);
             }
         }
     );
@@ -238,6 +237,14 @@ const Layout = observer(() => {
         "NewConnection",
         async (id) => {
             await connectToDirectListener(id);
+        }
+    );
+
+    messageWSContext.useSignalREffect(
+        "HandleAccessStateChange",
+        (data) => {
+            const { id, state } = JSON.parse(data);
+            chatsState.UpdateDirectAccessState(id, state);
         }
     );
 

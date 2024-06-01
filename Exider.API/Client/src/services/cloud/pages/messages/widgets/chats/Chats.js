@@ -103,7 +103,11 @@ const Chats = observer(() => {
             </div>
             <div className={styles.chatList}>
                 {chatsState.isChatsLoaded ? 
-                    chatsState.chats.map((chat, index) => {
+                    chatsState.chats.slice().sort((a, b) => {
+                        const lastMessageA = a.messages && a.messages.length > 0 ? a.messages[a.messages.length - 1].Date : 0;
+                        const lastMessageB = b.messages && b.messages.length > 0 ? b.messages[b.messages.length - 1].Date : 0;
+                        return new Date(lastMessageB) - new Date(lastMessageA);
+                    }).map((chat, index) => {
                         if (!chat || !chat.id) {
                             return null;
                         } else {

@@ -1,4 +1,5 @@
-﻿using Exider.Core.TransferModels;
+﻿using CSharpFunctionalExtensions;
+using Exider.Core.TransferModels;
 using Exider.Services.External.FileService;
 
 namespace Exider.Repositories.Messenger
@@ -7,5 +8,6 @@ namespace Exider.Repositories.Messenger
     {
         Task<MessengerTransferModel[]> GetDirects(IFileService fileService, Guid userId);
         Task<MessengerTransferModel?> GetDirect(IFileService fileService, Guid id, Guid userId);
+        Task<Result<bool>> ChangeAcceptState(Guid directId, Guid userId, bool isAccept);
     }
 }

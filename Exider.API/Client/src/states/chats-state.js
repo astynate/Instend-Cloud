@@ -15,7 +15,7 @@ class ChatsState {
     SetChats = (chats) => {
         chats = JSON.parse(chats);
 
-        if (chats.directs && chats.directs.length && chats.directs.length > 0) {
+        if (chats.directs && chats.directs.length && chats.directs.length >= 0) {
             this.chats = chats.directs
                 .map(element => {
                     if (element.directModel && element.messageModel && element.userPublic) {
@@ -26,10 +26,15 @@ class ChatsState {
                             name: element.userPublic.Nickname,
                             directId: element.directModel.Id,
                             messages: [element.messageModel],
+                            isAccepted: element.directModel.IsAccepted,
+                            ownerId: element.directModel.OwnerId,
                             avatar: element.userPublic.Avatar,
                         }
 
-                        this.users = [element.userPublic, ...this.users];
+                        if (this.users.map(u => u.Id).includes(element.userPublic.Id) === false) {
+                            this.users = [element.userPublic, ...this.users];
+                        }
+
                         return chat;
                     }
 
@@ -61,8 +66,27 @@ class ChatsState {
         this.connected = state;
     }
 
+    UpdateDirectAccessState = (id, state) => {
+        if (state === false) {
+            this.chats = this.chats.filter(element => {
+                if (element.directId && element.directId === id) {
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+        } else {
+            this.chats.map(element => {
+                if (element.directId && element.directId === id) {
+
+                    element.isAccepted = true;
+                }
+            });
+        }
+    }
+
     AddMessage(direct, message, userPublic) {
-        if (this.chats.map(element => element.id).includes(userPublic.Id) === false) {
+        if (this.chats.map(element => element.directId).includes(direct.Id) === false) {
             const chat = {
                 type: 'direct',
                 id: userPublic.Id,
@@ -70,17 +94,22 @@ class ChatsState {
                 messages: [message],
                 avatar: userPublic.Avatar,
                 directId: direct.Id,
+                isAccepted: direct.IsAccepted,
+                ownerId: direct.OwnerId,
                 hasMore: true
             }
 
             this.chats = [chat, ...this.chats];
-            this.chats[0].messages = [message, ...this.chats[0].messages];
         } else {
-            const chat = this.chats.find(element => element.id === userPublic.Id);
+            const chat = this.chats.find(element => element.directId === direct.Id);
 
             if (chat) {
                 chat.messages = [...chat.messages, message];
             }
+        }
+
+        if (this.users.map(u => u.Id).includes(userPublic.Id) === false) {
+            this.users = [userPublic, ...this.users];
         }
     }
 

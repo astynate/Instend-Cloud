@@ -1,4 +1,5 @@
-﻿using Exider.Core;
+﻿using CSharpFunctionalExtensions;
+using Exider.Core;
 using Exider.Core.TransferModels;
 using Exider.Core.TransferModels.Account;
 using Exider.Services.External.FileService;
@@ -171,6 +172,31 @@ namespace Exider.Repositories.Messenger
             }
 
             return model;
+        }
+
+        public async Task<Result<bool>> ChangeAcceptState(Guid directId, Guid userId, bool isAccept)
+        {
+            int result = 0;
+
+            if (isAccept)
+            {
+                result = await _context.Directs.AsNoTracking()
+                    .Where(direct => direct.Id == directId && direct.UserId == userId)
+                    .ExecuteUpdateAsync(direct => direct.SetProperty(d => d.IsAccepted, isAccept));
+            }
+            else
+            {
+                result = await _context.Directs.AsNoTracking()
+                    .Where(direct => direct.Id == directId && direct.UserId == userId)
+                    .ExecuteDeleteAsync();
+            }
+
+            if (result <= 0)
+            {
+                return Result.Failure<bool>("Chat not found");
+            }
+
+            return Result.Success(isAccept);
         }
     }
 }

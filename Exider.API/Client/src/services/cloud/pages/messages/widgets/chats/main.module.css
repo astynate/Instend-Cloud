@@ -42,6 +42,7 @@
 .chatList {
     display: flex;
     flex-direction: column;
+    grid-gap: 2px;
 }
 
 .createPopUp {

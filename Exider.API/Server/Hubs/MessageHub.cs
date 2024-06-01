@@ -1,4 +1,5 @@
-﻿using Exider.Core.Dependencies.Repositories.Messenger;
+﻿using CSharpFunctionalExtensions;
+using Exider.Core.Dependencies.Repositories.Messenger;
 using Exider.Core.TransferModels;
 using Exider.Core.TransferModels.Messenger;
 using Exider.Repositories.Messenger;
@@ -53,7 +54,7 @@ namespace Exider_Version_2._0._0.Server.Hubs
 
             if (model.type >= 0 && model.type < _chatFactory.Length)
             {
-                var result = await _chatFactory[model.type].SendMessage(model.id, Guid.Parse(userId.Value), model.text);
+                var result = await _chatFactory[model.type].SendMessage(Guid.Parse(userId.Value), model.id, model.text);
                 
                 if (result.IsFailure)
                 {
@@ -97,19 +98,32 @@ namespace Exider_Version_2._0._0.Server.Hubs
             var userId = _requestHandler.GetUserId(authorization);
 
             if (userId.IsFailure)
-            {
                 return;
-            }
 
-            MessengerTransferModel? direct = await _messengerReposiroty.GetDirect(_fileService, id, Guid.Parse(userId.Value));
+            MessengerTransferModel? direct = await _messengerReposiroty
+                .GetDirect(_fileService, id, Guid.Parse(userId.Value));
 
             if (direct == null)
-            {
                 return;
-            }
 
-            await Groups.AddToGroupAsync(direct.directModel.Id.ToString(), direct.directModel.Id.ToString());
+            await Groups.AddToGroupAsync(Context.ConnectionId, direct.directModel.Id.ToString());
             await Clients.Caller.SendAsync("ReceiveMessage", JsonConvert.SerializeObject(direct));
+        }
+
+        public async Task ChangeAccessState(Guid id, string authorization, bool isAccept)
+        {
+            var userId = _requestHandler.GetUserId(authorization);
+
+            if (userId.IsFailure)
+                return;
+
+            Result<bool> state = await _messengerReposiroty
+                .ChangeAcceptState(id, Guid.Parse(userId.Value), isAccept);
+
+            if (state.IsFailure)
+                return;
+
+            await Clients.Group(id.ToString()).SendAsync("HandleAccessStateChange", JsonConvert.SerializeObject(new { id, state = state.Value }));
         }
     }
 }

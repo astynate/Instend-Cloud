@@ -105,7 +105,7 @@ namespace Exider.Repositories.Messenger
                     ))
                 .FirstOrDefaultAsync();
 
-            return await _context.Database.CreateExecutionStrategy().ExecuteAsync<Result<MessengerTransferModel>>(async Task<Result<MessengerTransferModel>> () =>
+            return await _context.Database.CreateExecutionStrategy().ExecuteAsync(async Task<Result<MessengerTransferModel>> () =>
             {
                 using (var transaction = _context.Database.BeginTransaction())
                 {
@@ -126,7 +126,7 @@ namespace Exider.Repositories.Messenger
                         return Result.Failure<MessengerTransferModel>("Invite is not accepted");
                     }
 
-                    var messageModel = MessageModel.Create(text, userId);
+                    var messageModel = MessageModel.Create(text, ownerId);
 
                     if (messageModel.IsFailure)
                     {
