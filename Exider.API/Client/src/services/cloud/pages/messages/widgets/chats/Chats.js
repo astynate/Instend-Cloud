@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import styles from './main.module.css';
 import Title from '../../../../shared/ui-kit/retractable-panel/title/Title';
@@ -11,7 +11,7 @@ import chatsState from '../../../../../../states/chats-state';
 import { messageWSContext } from '../../../../layout/Layout';
 import { useNavigate, useParams } from 'react-router-dom';
 
-const Chats = observer(() => {
+const Chats = observer(({isMobile, setOpenState}) => {
     const [isCreateOpen, setCreateOpenState] = useState(false);
     const [isCreatePopUp, setCreatePopUpState] = useState(false);
     const [searchUsers, setSearchUsers] = useState([]);
@@ -56,7 +56,7 @@ const Chats = observer(() => {
     }, [ref]);
 
     return (
-        <div className={styles.chats}>
+        <div className={styles.chats} id={isMobile ? 'mobile' : null}>
             <UsersPopUp
                 title={"Next"}
                 open={isCreatePopUp}
@@ -69,8 +69,11 @@ const Chats = observer(() => {
                 isHasSubmitButton={false}
                 userCallback={(user) => {
                     if (user.id) {
-                        navigate(`/messages`);
-                        chatsState.setDraft(user);
+                        const result = chatsState.setDraft(user);
+                        
+                        if (result === true) {
+                            navigate(`/messages`);
+                        }
                     }
                     setCreatePopUpState(false);
                 }}
@@ -117,6 +120,7 @@ const Chats = observer(() => {
                                     chat={chat}
                                     isPlaceholder={false}
                                     isActive={chat.id === params.id}
+                                    onClick={setOpenState}
                                 />
                             );
                         }

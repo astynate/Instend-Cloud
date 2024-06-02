@@ -9,8 +9,12 @@
     z-index: 2;
 }
 
+.chats[id="mobile"] {
+    border: none;
+    width: 100vw;
+}
+
 .chats::-webkit-scrollbar {
-    /* width: 10px; */
     display: none;
 }
 

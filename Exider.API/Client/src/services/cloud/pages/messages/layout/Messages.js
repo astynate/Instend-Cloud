@@ -11,6 +11,7 @@ import { useParams } from 'react-router-dom';
 const Messages = observer((props) => {
   const params = useParams();
   const [chat, setChat] = useState(null);
+  const [isOpen, setOpenState] = useState(false);
 
   useEffect(() => {
     if (props.setPanelState) {
@@ -24,10 +25,16 @@ const Messages = observer((props) => {
   
   return (
     <Content>
-      <Chats />
+      <Chats 
+        isMobile={props.isMobile} 
+        setOpenState={() => setOpenState(true)}
+      />
       {chat || chatsState.draft ? 
         <Chat 
+          isMobile={props.isMobile}
+          isOpen={isOpen}
           chat={chat}
+          close={() => setOpenState(false)}
           placeholder={
             <div className={styles.placeholder}>
               <h1>No messages sended</h1>

@@ -4,8 +4,8 @@
     align-items: center;
     justify-content: center;
     padding: 10px 15px;
-    background: var(--main-header-background-color);
-    backdrop-filter: var(--main-blur-effect);
+    background: var(--main-background-color);
+    /* backdrop-filter: var(--main-blur-effect); */
 }
 
 .inputWrapper {

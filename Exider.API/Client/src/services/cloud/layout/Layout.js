@@ -65,7 +65,7 @@ const Layout = observer(() => {
     const [errorMessage, setErrorMessage] = useState('');
     const [song, setSong] = useState(null);
     const navigate = useNavigate();
-    const url = 'http://localhost:5000' // 'http://localhost:5000/message-hub'
+    const url = 'https://0392-46-53-242-237.ngrok-free.app' // 'http://localhost:5000/message-hub'
 
     useEffect(() => {
         setSong(GetCurrentSong());

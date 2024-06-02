@@ -35,3 +35,11 @@ export const ConvertFullDate = (date) => {
     
     return date.toLocaleString('en-US', options);
 };
+
+
+export const IsDayDiffrent = (previous, current) => {
+    previous = new Date(previous);
+    current = new Date(current);
+    
+    return (previous.getDate() - current.getDate()) !== 0;
+};

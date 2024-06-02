@@ -4,10 +4,10 @@ import styles from './main.module.css';
 import { Link } from 'react-router-dom';
 import { ConvertDateToTime } from '../../../../../../utils/DateHandler';
 
-const ChatPreview = observer(({chat, isPlaceholder, isActive}) => {    
+const ChatPreview = observer(({chat, isPlaceholder, isActive, onClick}) => {    
     if (isPlaceholder === false && chat) {
         return (
-            <Link to={`/messages/${chat.id}`} className={styles.chatPreview} id={isActive ? 'active' : null}>
+            <Link to={`/messages/${chat.id}`} className={styles.chatPreview} id={isActive ? 'active' : null} onClick={onClick}>
                 <div className={styles.avatar}>
                     <img src={`data:image/png;base64,${chat.avatar}`} className={styles.avatarImage} />
                 </div>

@@ -18,7 +18,7 @@ const Message = ({name, text, type, avatar, position, time}) => {
             :
                 <div className={styles.avatarPlaceholder}></div>
             }
-                <div className={`${styles.messageText} ${types[position]}`}>
+                <div className={`${styles.messageText} ${types[position]}`} id={type}>
                 {/* <h1 className={styles.name}>{name}</h1> */}
                 <span className={styles.text}>{text}</span>
                 <div className={styles.information}>

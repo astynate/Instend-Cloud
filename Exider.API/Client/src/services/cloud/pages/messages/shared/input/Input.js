@@ -11,6 +11,26 @@ const Input = ({sendMessage}) => {
         textAreaRef.current.style.height = scrollHeight + 'px';
     }, [text]);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (textAreaRef.current && !textAreaRef.current.contains(event.target)) {
+                textAreaRef.current.focus();
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+        
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, []);
+
+    useEffect(() => {
+        textAreaRef.current.style.height = 'inherit';
+        const scrollHeight = textAreaRef.current.scrollHeight;
+        textAreaRef.current.style.height = scrollHeight + 'px';
+    }, [text]);
+
     const handleChange = (event) => {
         setText(event.target.value);
         // props.message[1](event.target.value);
@@ -29,7 +49,6 @@ const Input = ({sendMessage}) => {
     };
 
     return (
-
         <div className={styles.wrapper}>
             {/* {props.isSendingPossible[0] === false ? 
                 <StopGeneration 

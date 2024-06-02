@@ -1,5 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import { instance } from "../state/Interceptors";
+import userState from "./user-state";
 
 class ChatsState {
     chats = [];
@@ -54,12 +55,18 @@ class ChatsState {
     }
 
     setDraft = (user) => {
-        if (user) {
-            user.type = 'draft';
-            this.draft = user;
+        if (user && userState.user && userState.user.id) {
+            if (this.chats.map(chat => chat.id).includes(user.id) || userState.user.id === user.id) {
+                return false;
+            } else {
+                user.type = 'draft';
+                this.draft = user;
+            }
         } else {
             this.draft = null;
         }
+
+        return true;
     }
     
     SetConnectedState = (state) => {
