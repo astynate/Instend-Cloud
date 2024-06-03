@@ -20,7 +20,6 @@ import PropertiesImage from './images/context-menu/properties.png';
 import DeleteImage from './images/context-menu/delete.png';
 import PopUpField from '../../../shared/pop-up-filed/PopUpField';
 import Preview from '../../../../preview/layout/Preview';
-import RightPanel from '../widgets/right-panel/RightPanel';
 import Folder from '../shared/folder/Folder';
 import PropertiesWindow from '../widgets/properties/Properties';
 import Information from '../../../shared/information/Information';

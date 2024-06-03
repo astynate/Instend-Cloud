@@ -9,5 +9,6 @@ namespace Exider.Repositories.Messenger
         Task<MessengerTransferModel[]> GetDirects(IFileService fileService, Guid userId);
         Task<MessengerTransferModel?> GetDirect(IFileService fileService, Guid id, Guid userId);
         Task<Result<bool>> ChangeAcceptState(Guid directId, Guid userId, bool isAccept);
+        Task<Result<Guid>> DeleteMessage(Guid id, Guid userId);
     }
 }

@@ -13,6 +13,8 @@ import Loader from '../../../../shared/loader/Loader';
 import { ConvertDate, IsDayDiffrent } from '../../../../../../utils/DateHandler';
 import ChatInformation from '../../features/ChatInformation';
 import back from './images/header/arrow.png';
+import SelectBox from '../../../../shared/interaction/select-box/SelectBox';
+import { instance } from '../../../../../../state/Interceptors';
 
 export const ChangeAccessStateAsync = async (id, isAccept) => {
     try {
@@ -29,16 +31,75 @@ export const ChangeAccessStateAsync = async (id, isAccept) => {
     }
 };
 
+const CopyMessageText = (items) => {
+    let text = "";
+
+    if (items && items.length > 0) {
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].Text) {
+                text += items[i].Text;
+            }
+        }
+    }
+
+    navigator.clipboard.writeText(text)
+        .catch(err => {
+            console.log('Something went wrong', err);
+        });
+}
+
+const DeleteMessages = async (items) => {
+    if (items && items.length > 0) {
+        for (let i = 0; i < items.length; i++) {
+            await instance
+                .delete(`/api/message?id=${items[i].id}`);
+        }
+    }
+}
+
 const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSended}) => {
     const params = useParams();
     const scrollRef = useRef();
+    const wrapper = useRef();
     const scrollElement = useRef();
-    const { user } = userState;
     const [isHasMore, setHaseMoreState] = useState(true);
     const [open, setOpenState] = useState(false);
+    const [activeItems, setActiveItems] = useState([]);
+    const [selectedItems, setSelectedItems] = useState([]);
+    const { user } = userState;
 
     const [isAvailable, setAvailbleState] = useState(!((chatsState.draft && chatsState.draft.messages && 
         chatsState.draft.messages.length > 0) || chat && !chat.isAccepted));
+
+    const single = [
+        [null, "Copy", () => {
+            setActiveItems(prev => {
+                CopyMessageText(prev);
+                return prev;
+            });
+        }],
+        [null, "Delete", () => {
+            setActiveItems(prev => {
+                DeleteMessages(prev);
+                return prev;
+            });
+        }],
+    ]
+    
+    const multiple = [
+        [null, "Copy", () => {
+            setActiveItems(prev => {
+                CopyMessageText(prev);
+                return prev;
+            });
+        }],
+        [null, "Delete", () => {
+            setActiveItems(prev => {
+                DeleteMessages(prev);
+                return prev;
+            });
+        }],
+    ]
 
     useEffect(() => {
         setAvailbleState(!((chatsState.draft && chatsState.draft.messages && 
@@ -85,6 +146,15 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
                 ref={scrollElement}
                 id={isMobile ? 'mobile' : null}
             >
+                {chat && chat.messages && <SelectBox
+                    selectPlace={[wrapper]}
+                    selectedItems={[selectedItems, setSelectedItems]}
+                    activeItems={[activeItems, setActiveItems]}
+                    itemsWrapper={wrapper}
+                    items={chat.messages}
+                    single={single}
+                    multiple={multiple}
+                />}
                 {chat && chat.name && chat.avatar && <ChatInformation 
                     open={open}
                     name={chat.name}
@@ -170,7 +240,7 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
                                 <span>If you accept, {chat && chat.name ? chat.name : null} can send you messages otherwise the chat will be deleted</span>
                             </div>
                         }
-                        <div className={styles.messages}>
+                        <div className={styles.messages} ref={wrapper}>
                             <div ref={scrollRef}></div>
                             {chat.messages.map((element, index) => {
                                 let avatar = null;
@@ -219,7 +289,7 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
                                     }
     
                                     return (
-                                        <div key={element.Id}>
+                                        <div key={element.Id} data={element.Id}>
                                             {date && <div className={styles.date}>
                                                 <span>{date}</span>
                                             </div>}
@@ -230,6 +300,7 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
                                                 type={element.UserId === user.id ? 'My' : 'Other'}
                                                 position={position}
                                                 time={element.Date}
+                                                isSelected={selectedItems.map(e => e.id).includes(element.id) === true}
                                             /> 
                                         </div>
                                     );

@@ -20,6 +20,8 @@ class ChatsState {
             this.chats = chats.directs
                 .map(element => {
                     if (element.directModel && element.messageModel && element.userPublic) {
+                        element.messageModel.id = element.messageModel.Id;
+
                         const chat = {
                             type: 'direct',
                             id: element.userPublic.Id,
@@ -93,6 +95,8 @@ class ChatsState {
     }
 
     AddMessage(direct, message, userPublic) {
+        message.id = message.Id;
+        
         if (this.chats.map(element => element.directId).includes(direct.Id) === false) {
             const chat = {
                 type: 'direct',
@@ -137,6 +141,7 @@ class ChatsState {
 
                     if (response.data.map && response.data.length > 0) {                    
                         response.data.map(element => {
+                            element.id = element.Id;
                             chat.messages = [element, ...chat.messages];
                         });
                     }
@@ -148,7 +153,22 @@ class ChatsState {
         if (this.draft && this.draft.id) {        
             this.draft.messages = [message];
         }
-    }    
+    }
+
+    DeleteChat = (id) => {
+        this.chats = this.chats
+            .filter(element => element.directId !== id);
+    }
+
+    DeleteMessage = (messageId, chatId) => {
+        const chat = this.chats
+            .find(element => element.directId === chatId);
+
+        if (chat && chat.messages) {
+            chat.messages = chat.messages
+                .filter(element => element.id !== messageId);
+        }
+    }
 }
 
 export default new ChatsState();

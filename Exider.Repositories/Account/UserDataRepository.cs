@@ -80,10 +80,12 @@ namespace Exider.Repositories.Account
 
                 if (headerReadingResult.IsFailure)
                 {
-                    return Result.Failure<UserPublic>("Cannon read header");
+                    userModel.Header = null;
                 }
-
-                userModel.Header = Convert.ToBase64String(headerReadingResult.Value);
+                else
+                {
+                    userModel.Header = Convert.ToBase64String(headerReadingResult.Value);
+                }
             }
 
             return Result.Success(userModel);

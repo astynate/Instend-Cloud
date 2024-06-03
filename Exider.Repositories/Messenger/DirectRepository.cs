@@ -46,6 +46,23 @@ namespace Exider.Repositories.Messenger
             return new MessengerTransferModel(directModel.Value, null, user.Value);
         }
 
+        public async Task<Result<Guid>> DeleteDirect(Guid destination, Guid userId)
+        {
+            DirectModel? direct = await _context.Directs
+                .FirstOrDefaultAsync(x => (x.UserId == userId && x.OwnerId == destination) ||
+                                          (x.OwnerId == userId && x.UserId == destination));
+
+            if (direct == null)
+            {
+                return Result.Failure<Guid>("Direct not found");
+            }
+
+            _context.Directs.Remove(direct);
+            await _context.SaveChangesAsync();
+
+            return Result.Success(direct.Id);
+        }
+
         public async Task<MessageModel[]> GetLastMessages(Guid destination, Guid userId, int from, int count)
         {
             return await _context.Directs.AsNoTracking()

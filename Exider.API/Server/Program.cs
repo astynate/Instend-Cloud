@@ -23,23 +23,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy",
-        builder => builder.WithOrigins("http://localhost:44441")
-        .AllowAnyMethod()
+        builder => builder
         .SetIsOriginAllowed(origin => true)
-        .AllowAnyHeader()
-        .AllowCredentials());
-
-    options.AddPolicy("NewPolicy",
-        builder => builder.WithOrigins("https://0392-46-53-242-237.ngrok-free.app")
         .AllowAnyMethod()
-        .SetIsOriginAllowed(origin => true)
-        .AllowAnyHeader()
-        .AllowCredentials());
-
-    options.AddPolicy("NewPolicy2",
-        builder => builder.WithOrigins("http://localhost:5000")
-        .AllowAnyMethod()
-        .SetIsOriginAllowed(origin => true)
         .AllowAnyHeader()
         .AllowCredentials());
 });
@@ -103,8 +89,6 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseCors("CorsPolicy");
-app.UseCors("NewPolicy");
-app.UseCors("NewPolicy2");
 app.UseMiddleware<LoggingMiddleware>();
 
 app.Use(async (context, next) =>

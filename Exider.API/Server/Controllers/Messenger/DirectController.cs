@@ -1,12 +1,11 @@
 ﻿using Exider.Core.Models.Messages;
 using Exider.Repositories.Messenger;
-using Exider.Services.External.FileService;
 using Exider.Services.Internal.Handlers;
 using Exider_Version_2._0._0.Server.Hubs;
-using Microsoft.AspNet.SignalR;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using OpenXmlPowerTools.Commands;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Messenger
 {
@@ -20,10 +19,16 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
         
         private readonly IRequestHandler _requestHandler;
 
-        public DirectController(IDirectRepository directRepository, IRequestHandler requestHandler)
+        public DirectController
+        (
+            IDirectRepository directRepository, 
+            IRequestHandler requestHandler,
+            IHubContext<MessageHub> messageHub
+        )
         {
             _directRepository = directRepository;
             _requestHandler = requestHandler;
+            _messageHub = messageHub;
         }
 
         [HttpGet]
@@ -42,6 +47,32 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
                 .GetLastMessages(destination, Guid.Parse(userId.Value), from, count);
 
             return Ok(JsonConvert.SerializeObject(messages));
+        }
+
+        [Authorize]
+        [HttpDelete]
+        [Route("/api/directs")]
+        public async Task<IActionResult> DeleteDirect(Guid id)
+        {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+            {
+                return BadRequest(userId.Error);
+            }
+
+            var result = await _directRepository
+                .DeleteDirect(id, Guid.Parse(userId.Value));
+
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            await _messageHub.Clients.Group(result.Value.ToString())
+                .SendAsync("DeleteDirectory", result.Value.ToString());
+        
+            return Ok();
         }
     }
 }

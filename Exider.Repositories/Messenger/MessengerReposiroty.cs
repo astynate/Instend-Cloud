@@ -3,6 +3,7 @@ using Exider.Core;
 using Exider.Core.TransferModels;
 using Exider.Core.TransferModels.Account;
 using Exider.Services.External.FileService;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Exider.Repositories.Messenger
@@ -197,6 +198,45 @@ namespace Exider.Repositories.Messenger
             }
 
             return Result.Success(isAccept);
+        }
+
+        public async Task<Result<Guid>> DeleteMessage(Guid id, Guid userId)
+        {
+            return await _context.Database.CreateExecutionStrategy().ExecuteAsync(async Task<Result<Guid>> () =>
+            {
+                using (var transaction = _context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var messagesToDelete = await _context.Messages.AsNoTracking()
+                            .Where(x => x.Id == id && x.UserId == userId)
+                            .ToListAsync();
+
+                        _context.Messages.RemoveRange(messagesToDelete);
+                        await _context.SaveChangesAsync();
+
+                        var linksToDelete = await _context.DirectLinks.AsNoTracking()
+                            .Where(link => link.LinkedItemId == id)
+                            .FirstOrDefaultAsync();
+
+                        if (linksToDelete == null)
+                        {
+                            return Result.Failure<Guid>("Not found");
+                        }
+
+                        _context.DirectLinks.Remove(linksToDelete);
+                        await _context.SaveChangesAsync();
+
+                        transaction.Commit();
+                        return Result.Success(linksToDelete.ItemId);
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        return Result.Failure<Guid>("Not found");
+                    }
+                }
+            });
         }
     }
 }
