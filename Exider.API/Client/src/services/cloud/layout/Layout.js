@@ -256,6 +256,14 @@ const Layout = observer(() => {
         }
     );
 
+    messageWSContext.useSignalREffect(
+        "HandlePinnedStateChanges",
+        (data) => {
+            const { chatId, messageId, state } = JSON.parse(data);
+            chatsState.UpdateMessagePinnedState(chatId, messageId, state);
+        }
+    );
+
     /////////////////////////////////////////////////////////////////////////////////
 
     useEffect(() => {

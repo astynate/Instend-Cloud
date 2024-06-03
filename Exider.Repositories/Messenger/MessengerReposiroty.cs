@@ -3,7 +3,6 @@ using Exider.Core;
 using Exider.Core.TransferModels;
 using Exider.Core.TransferModels.Account;
 using Exider.Services.External.FileService;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Exider.Repositories.Messenger
@@ -237,6 +236,20 @@ namespace Exider.Repositories.Messenger
                     }
                 }
             });
+        }
+
+        /// <summary>
+        /// Возможны проблемы с безопасностью
+        /// когда можно прикрепить сообщение зная только id
+        /// </summary>
+        /// <returns>Результат операции</returns>
+        public async Task<bool> ChangePinnedState(Guid messageId, bool pinnedState)
+        {
+            int result = await _context.Messages
+                .Where(x => x.Id == messageId)
+                .ExecuteUpdateAsync(x => x.SetProperty(p => p.IsPinned, pinnedState));
+
+            return result != 0;
         }
     }
 }

@@ -169,6 +169,21 @@ class ChatsState {
                 .filter(element => element.id !== messageId);
         }
     }
+
+    UpdateMessagePinnedState = (chatId, messageId, state) => {
+        const chat = this.chats
+        .find(element => element.directId === chatId);
+
+        if (chat && chat.messages) {
+            let message = chat.messages.find(element => element.id === messageId);
+
+            if (message) {
+                message.IsPinned = state;
+            }
+
+            console.log(message)
+        }   
+    }
 }
 
 export default new ChatsState();

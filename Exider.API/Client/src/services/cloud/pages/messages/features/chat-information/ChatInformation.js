@@ -1,7 +1,7 @@
 import React from "react";
 import styles from './main.module.css';
-import PopUpWindow from "../../../shared/pop-up-window/PopUpWindow";
-import PopUpItems from "../../../shared/pop-up-window/elements/items/PopUpItems";
+import PopUpWindow from "../../../../shared/pop-up-window/PopUpWindow";
+import PopUpItems from "../../../../shared/pop-up-window/elements/items/PopUpItems";
 
 const ChatInformation = ({open, close, name, avatar, title, profileAddition}) => {
     return (
