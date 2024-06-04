@@ -10,7 +10,8 @@ namespace Exider.Core.Models.Messages
         [Column("id")][Key] public Guid Id { get; private set; } = Guid.NewGuid();
         [Column("text")] public string Text { get; private set; } = string.Empty;
         [Column("user_id")] public Guid UserId { get; private set; }
-        [Column("date")] public DateTime Date { get; set; } = DateTime.Now;
+        [Column("date")] public DateTime Date { get; private set; } = DateTime.Now;
+        [Column("is_pinned")] public bool IsPinned { get; set; } = false;
 
         private MessageModel() { }
 

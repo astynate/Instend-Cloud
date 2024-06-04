@@ -21,21 +21,25 @@
 .header {
     width: 100%;
     height: auto;
-    display: flex;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    align-items: center;
     padding-left: 15px;
     padding-right: 15px;
     position: sticky;
     top: 0;
     left: 0;
-    justify-content: space-between;
     background: var(--main-header-background-color);
     backdrop-filter: var(--main-blur-effect);
     flex-shrink: 0;
+    flex-direction: column;
     z-index: 1;
     user-select: none;
+}
+
+.chatInfo {
+    display: flex;
+    align-items: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    justify-content: space-between;
 }
 
 .left {

@@ -1,6 +1,7 @@
 ﻿using Exider.Repositories.Messenger;
 using Exider.Services.Internal.Handlers;
 using Exider_Version_2._0._0.Server.Hubs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
@@ -25,6 +26,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
         }
 
         [HttpDelete]
+        [Authorize]
         public async Task<IActionResult> DeleteMessage(Guid id)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
@@ -45,6 +47,20 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
                 .SendAsync("DeleteMessage", JsonConvert.SerializeObject(new { chatId = id, messageId = result.Value }));
 
             return Ok();
+        }
+
+        [HttpPut]
+        [Authorize]
+        public async Task ChangePinnedState(Guid chatId, Guid messageId, bool state)
+        {
+            bool result = await _messengerReposiroty
+                .ChangePinnedState(messageId, state);
+
+            if (result == false)
+                return;
+
+            await _messageHub.Clients.Group(chatId.ToString()).SendAsync("HandlePinnedStateChanges",
+                JsonConvert.SerializeObject(new { chatId, messageId, state }));
         }
     }
 }

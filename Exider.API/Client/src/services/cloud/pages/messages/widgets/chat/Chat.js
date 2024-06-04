@@ -11,10 +11,11 @@ import Message from '../../shared/message/Message';
 import userState from '../../../../../../states/user-state';
 import Loader from '../../../../shared/loader/Loader';
 import { ConvertDate, IsDayDiffrent } from '../../../../../../utils/DateHandler';
-import ChatInformation from '../../features/ChatInformation';
+import ChatInformation from '../../features/chat-information/ChatInformation';
 import back from './images/header/arrow.png';
 import SelectBox from '../../../../shared/interaction/select-box/SelectBox';
 import { instance } from '../../../../../../state/Interceptors';
+import PinnedMessages from '../../features/pinned-messages/PinnedMessages';
 
 export const ChangeAccessStateAsync = async (id, isAccept) => {
     try {
@@ -57,6 +58,16 @@ const DeleteMessages = async (items) => {
     }
 }
 
+const ChangePinnedState = async (items, id) => {
+    if (items && items.length > 0) {
+        for (let i = 0; i < items.length; i++) {
+            if (id) {
+                await instance.put(`/api/message?chatId=${id}&messageId=${items[i].id}&state=${!items[i].IsPinned}`);
+            }
+        }
+    }
+}
+
 const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSended}) => {
     const params = useParams();
     const scrollRef = useRef();
@@ -66,25 +77,11 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
     const [open, setOpenState] = useState(false);
     const [activeItems, setActiveItems] = useState([]);
     const [selectedItems, setSelectedItems] = useState([]);
+    const [pinStateText, setPinStateText] = useState('Pin');
     const { user } = userState;
 
     const [isAvailable, setAvailbleState] = useState(!((chatsState.draft && chatsState.draft.messages && 
         chatsState.draft.messages.length > 0) || chat && !chat.isAccepted));
-
-    const single = [
-        [null, "Copy", () => {
-            setActiveItems(prev => {
-                CopyMessageText(prev);
-                return prev;
-            });
-        }],
-        [null, "Delete", () => {
-            setActiveItems(prev => {
-                DeleteMessages(prev);
-                return prev;
-            });
-        }],
-    ]
     
     const multiple = [
         [null, "Copy", () => {
@@ -99,7 +96,17 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
                 return prev;
             });
         }],
-    ]
+    ];
+
+    const single = [
+        [null, pinStateText, () => {
+            setActiveItems(prev => {
+                ChangePinnedState(prev, chat.directId);
+                return prev;
+            });
+        }],
+        ...multiple,
+    ];
 
     useEffect(() => {
         setAvailbleState(!((chatsState.draft && chatsState.draft.messages && 
@@ -124,17 +131,54 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
             const offsetTop = scrollRef.current.getBoundingClientRect().top;
 
             while (offsetTop > 0 && chat.hasMore === true) {
-                setHaseMoreState(false);
-                await chatsState.GetMessages(params.id);
+                const timeoutMilliseconds = 7000;
+
+                let operationCompleted = false;
+        
+                const getMessagesPromise = chatsState.GetMessages(params.id);
+    
+                const timeoutId = setTimeout(() => {
+                    operationCompleted = true;
+                    return;
+                }, timeoutMilliseconds);
+        
+                try {
+                    await getMessagesPromise;
+                    clearTimeout(timeoutId);
+                    operationCompleted = true;
+                } catch (error) {
+                    console.error('Error fetching messages:', error);
+                }
+        
+                if (operationCompleted) {
+                    setHaseMoreState(true);
+                } else {
+                    console.warn('GetMessages operation did not complete within 7 seconds');
+                }
             }
-
-            setHaseMoreState(true);
         }
-    }
-
+    };
+    
     useEffect(() => {
         HandleScroll();
     }, []);
+
+    useEffect(() => {
+        setActiveItems(prev => {
+            if (prev.length > 0) {
+                setPinStateText(prev[0].IsPinned ? 'Unpin' : 'Pin');
+            }
+            
+            return prev;
+        })
+    }, [activeItems])
+
+    let pinnedMessages = [];
+
+    if (chat.messages) {
+        pinnedMessages = chat.messages.filter(element => 
+            element.IsPinned && element.IsPinned === true)
+    }
 
     if (isMobile === true && isOpen === false) {
         return null;
@@ -166,31 +210,38 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
                     }
                 />}
                 <div className={styles.header}>
-                    <div className={styles.left} onClick={() => setOpenState(true)}>
-                        {isMobile && 
-                            <img 
-                                src={back} 
-                                className={styles.back} 
-                                onClick={close}
-                            />}
-                        <div className={styles.avatar}>
-                            <img 
-                                src={`data:image/png;base64,${chatsState.draft ? chatsState.draft.avatar : chat.avatar}`}
-                                className={styles.avatarImage} 
+                    <div className={styles.chatInfo}>
+                        <div className={styles.left} onClick={() => setOpenState(true)}>
+                            {isMobile && 
+                                <img 
+                                    src={back} 
+                                    className={styles.back} 
+                                    onClick={close}
+                                />}
+                            <div className={styles.avatar}>
+                                <img 
+                                    src={`data:image/png;base64,${chatsState.draft ? chatsState.draft.avatar : chat.avatar}`}
+                                    className={styles.avatarImage} 
+                                    draggable="false"
+                                />
+                            </div>
+                            <div className={styles.information}>
+                                <span className={styles.name}>{chatsState.draft ? chatsState.draft.nickname : chat.name}</span>
+                                <span className={styles.data}>last seen recently</span>
+                            </div>
+                        </div>
+                        <div className={styles.right}>
+                            <img src={info} 
+                                className={styles.buttonImage} 
                                 draggable="false"
+                                onClick={() => setOpenState(true)}
                             />
                         </div>
-                        <div className={styles.information}>
-                            <span className={styles.name}>{chatsState.draft ? chatsState.draft.nickname : chat.name}</span>
-                            <span className={styles.data}>last seen recently</span>
-                        </div>
                     </div>
-                    <div className={styles.right}>
-                        <img src={info} 
-                            className={styles.buttonImage} 
-                            draggable="false"
-                            onClick={() => setOpenState(true)}
-                        />
+                    <div className={styles.pinnedMessages}>
+                        {pinnedMessages && pinnedMessages.length > 0 && <PinnedMessages 
+                            items={pinnedMessages}
+                        />}
                     </div>
                 </div>
                 {chatsState.draft ? 
@@ -271,7 +322,11 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
                                             }
                                         }
                                     } else if (prevMessage && prevMessage.UserId === element.UserId) {
-                                        position = 2;
+                                        if (prevMessage && prevMessage.Date && element && element.Date && IsDayDiffrent(prevMessage.Date, element.Date) === true) {
+                                            position = 3;
+                                        } else {
+                                            position = 2;
+                                        }
                                     } else if (nextMessage && nextMessage.UserId === element.UserId) {
                                         if (nextMessage && nextMessage.Date && element && element.Date && IsDayDiffrent(nextMessage.Date, element.Date) === true) {
                                             position = 3;
@@ -289,7 +344,7 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
                                     }
     
                                     return (
-                                        <div key={element.Id} data={element.Id}>
+                                        <div key={index} data={element.Id}>
                                             {date && <div className={styles.date}>
                                                 <span>{date}</span>
                                             </div>}
