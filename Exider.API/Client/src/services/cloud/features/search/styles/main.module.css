@@ -6,9 +6,9 @@
     display: flex;
     align-items: center;
     height: 40px;
-    width: 50vw;
+    width: 40vw;
     z-index: 999999999;
-    border-bottom: 1px solid var(--main-border-color);
+    border-bottom: 1px solid var(--sub-border-color);
 }
 
 .search input {
@@ -26,14 +26,15 @@
 
 .search img {
     height: 13px;
-    opacity: 0.5;
+    opacity: 0.8;
     margin-top: 1px;
     user-select: none;
     filter: var(--main-filter);
 }
 
 .search input::placeholder {
-    color: var(--main-header-font-color);
+    /* color: var(--main-header-font-color); */
+    color: var(--main-paragraph-color);
 }
 
 

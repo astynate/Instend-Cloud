@@ -46,10 +46,14 @@ const Header = observer((props) => {
             />
             <div className={styles.header} ref={wrapper}>
                 {props.children}
-                <CommunityEditor 
+                {openCreateCommunity && <CommunityEditor 
                     open={openCreateCommunity}
                     close={() => setCreateCommunityState(false)}
-                />
+                    title={"Create community"}
+                    callback={(name, description, avatar, header) => {
+                        console.log(name, description, avatar, header);
+                    }}
+                />}
                 <div className={styles.buttons}>
                     <div className={styles.button}>
                         <img 

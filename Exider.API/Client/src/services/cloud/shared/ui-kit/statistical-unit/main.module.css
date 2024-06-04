@@ -1,0 +1,10 @@
+.statisticalUnit {
+    color: var(--main-paragraph-color);
+    display: flex;
+    grid-gap: 7px;
+}
+
+.amount {
+    font-weight: 700;
+    color: var(--main-font-color);
+}
