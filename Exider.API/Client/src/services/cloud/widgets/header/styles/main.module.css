@@ -23,32 +23,35 @@
 }
 
 .button {
-    height: 40px;
-    width: 40px;
-    background: var(--main-accent-color);
+    height: 35px;
+    width: 35px;
+    /* background: var(--main-accent-color); */
     border-radius: 100%;
     transition: 0.2s ease;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    image-rendering: -webkit-optimize-contrast;
-    overflow: hidden;
+    /* image-rendering: -webkit-optimize-contrast; */
+    position: relative;
 }
 
-.button:hover {
-    transform: scale(105%);
-    filter: brightness(95%);
+.button:hover .buttonImage {
+    /* transform: scale(105%);
+    filter: brightness(95%); */
+    opacity: 1;
 }
 
 .button:active {
-    transform: scale(95%);
-    filter: brightness(90%);
+    /* transform: scale(95%);
+    filter: brightness(90%); */
 }
 
 .buttonImage {
     height: 20px;
     filter: var(--main-filter);
+    opacity: 0.8;
+    transition: 0.25s ease;
 }
 
 .avatar {
@@ -57,6 +60,12 @@
     border-radius: 100%;
     object-fit: cover;
     outline: 1px solid var(--main-border-color);
+}
+
+.list {
+    top: 35px;
+    right: 0;
+    position: absolute;
 }
 
 @media (max-width: 700px) {

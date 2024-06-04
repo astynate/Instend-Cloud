@@ -1,6 +1,5 @@
 import React from 'react';
 import styles from './main.module.css';
-import { event } from 'jquery';
 
 const TextArea = (props) => {
     return (
