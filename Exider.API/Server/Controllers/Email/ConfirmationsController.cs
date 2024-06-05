@@ -26,7 +26,6 @@ namespace Exider_Version_2._0._0.Server.Controllers.Email
         [HttpGet("link/{link}")]
         public async Task<IActionResult> GetConfirmationByLink(string link)
         {
-
             var confirmation = await _confirmationRespository.GetByLinkAsync(link);
 
             if (confirmation.IsFailure)
@@ -35,7 +34,6 @@ namespace Exider_Version_2._0._0.Server.Controllers.Email
             }
 
             return Ok(confirmation.Value.Email);
-
         }
 
         [HttpPost]

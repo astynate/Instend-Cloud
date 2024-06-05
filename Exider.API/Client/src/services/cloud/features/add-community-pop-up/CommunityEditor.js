@@ -6,13 +6,13 @@ import TextArea from '../../shared/ui-kit/text-area/TextArea';
 import Button from '../../shared/ui-kit/button/Button';
 import image from './images/image.png';
 
-const CommunityEditor = ({open, close, title, callback}) => {
-    const [avatar, setAvatar] = useState(null);
-    const [header, setHeader] = useState(null);
-    const [avatarUrl, setAvatarUrl] = useState(null);
-    const [headerUrl, setHeaderUrl] = useState(null);
-    const [name, setName] = useState(null);
-    const [description, setDescription] = useState(null);
+const CommunityEditor = ({open, close, title, callback, avatarValue, headerValue, nameValue, descriptionValue}) => {
+    const [avatar, setAvatar] = useState(avatarValue);
+    const [header, setHeader] = useState(headerValue);
+    const [avatarUrl, setAvatarUrl] = useState(avatarValue ? `data:image/png;base64,${avatarValue}` : null);
+    const [headerUrl, setHeaderUrl] = useState(headerValue ? `data:image/png;base64,${headerValue}` : null);
+    const [name, setName] = useState(nameValue);
+    const [description, setDescription] = useState(descriptionValue);
 
     const handleImageUpload = (event, setUrl, setImage) => {
         try {
@@ -73,6 +73,7 @@ const CommunityEditor = ({open, close, title, callback}) => {
                 <div className={styles.field}>
                     <span>Name</span>
                     <Input 
+                        value={name}
                         placeholder="Set name"
                         setValue={setName}
                     />
@@ -80,6 +81,7 @@ const CommunityEditor = ({open, close, title, callback}) => {
                 <div className={styles.field}>
                     <span>Description</span>
                     <TextArea 
+                        value={description}
                         placeholder="Set description"
                         setValue={setDescription}
                     />

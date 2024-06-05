@@ -7,8 +7,6 @@ import Username from '../../features/profile/username/Username';
 import MainContentWrapper from '../../features/main-content-wrapper/MainContentWrapper';
 
 const Description = observer(({isMobile, isLoading, avatar, title, subtitle, buttons, stats}) => {
-  console.log(stats)
-
   return (
     <MainContentWrapper>
       <div className={styles.description}>
@@ -35,9 +33,9 @@ const Description = observer(({isMobile, isLoading, avatar, title, subtitle, but
         </div>
         <div className={styles.editProfile}>
           <div className={styles.navButton}>
-            {buttons.map((element, index) => {
+          {buttons.map((element, index) => {
               if (isLoading) {
-                return (<div className={styles.button} key={index} id="placeholder"></div>)
+                return (<div className={styles.button} key={index}></div>)
               } else {
                 return (
                   <div 

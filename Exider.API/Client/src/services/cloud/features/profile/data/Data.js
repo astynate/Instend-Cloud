@@ -6,7 +6,7 @@ const Data = ({isLoading, stats}) => {
     <div className={styles.data}>
         {stats && stats.map((element, index) => {
           if (isLoading) {
-            return (<div className={styles.placeholder}></div>)
+            return (<div key={index} className={styles.placeholder}></div>)
           } else {
             return (
               <div className={styles.counter} key={index}>

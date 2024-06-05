@@ -14,10 +14,11 @@ namespace Exider.Core.Models.Public
         [Column("publications")] public ulong Publications { get; private set; } = 0;
         [Column("avatar")] public string Avatar { get; private set; } = string.Empty;
         [Column("header")] public string Header { get; private set; } = string.Empty;
+        [Column("owner_id")] public Guid OwnerId { get; private set; }
 
         private CommunityModel() { }
 
-        public static Result<CommunityModel> Create(Guid id, string name, string description, string avatar, string header)
+        public static Result<CommunityModel> Create(Guid id, Guid ownerId, string name, string description, string avatar, string header)
         {
             if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
                 return Result.Failure<CommunityModel>("Name is required");
@@ -34,11 +35,34 @@ namespace Exider.Core.Models.Public
                 Name = name,
                 Description = description,
                 Avatar = avatar,
-                Header = header
+                Header = header,
+                OwnerId = ownerId
             };
         }
 
         public void SetAvatar(string str) => Avatar = str;
         public void SetHeader(string str) => Header = str;
+
+        public Result UpdateName(string? value)
+        {
+            if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
+            {
+                return Result.Failure("Name is required");
+            }
+
+            Name = value;
+            return Result.Success();
+        }
+
+        public Result UpdateDescription(string? value)
+        {
+            if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
+            {
+                return Result.Failure("Name is required");
+            }
+
+            Description = value;
+            return Result.Success();
+        }
     }
 }

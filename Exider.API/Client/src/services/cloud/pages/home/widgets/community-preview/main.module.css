@@ -8,6 +8,7 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    image-rendering: -webkit-optimize-contrast;
 }
 
 .header {
@@ -16,6 +17,7 @@
     background: var(--main-font-color);
     position: relative;
     flex-shrink: 0;
+    object-fit: cover;
 }
 
 .avatar {
@@ -29,6 +31,7 @@
     position: absolute;
     left: 15px;
     bottom: -60px;
+    object-fit: cover;
     overflow: hidden;
 }
 
