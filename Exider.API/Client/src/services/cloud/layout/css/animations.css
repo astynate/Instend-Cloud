@@ -1,0 +1,15 @@
+:root {
+    --loading-animation: loading 2s linear infinite;
+}
+
+@keyframes loading {
+    0% {
+        background: #333;
+    }
+    50% {
+        background: #777;
+    }
+    100% {
+        background: #333;
+    }
+}

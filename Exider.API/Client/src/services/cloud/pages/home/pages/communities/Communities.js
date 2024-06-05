@@ -9,7 +9,7 @@ const Communities = observer(() => {
     homeState.GetPopularCommunities();
   }, []);
   return (
-    <>
+    <div className={styles.content}>
       {homeState.communities && homeState.communities.map((element, index) => {
           return (
               <CommunityPreview 
@@ -23,7 +23,7 @@ const Communities = observer(() => {
               />
           );
       })}
-    </>
+    </div>
   )
 });
 

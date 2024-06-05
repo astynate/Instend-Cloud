@@ -12,7 +12,7 @@ import Community from '../pages/community/Community';
 const Home = observer((props) => {
   useEffect(() => {
     if (props.setPanelState) {
-        props.setPanelState(false);
+      props.setPanelState(false);
     }
   }, [props.setPanelState]);
 
@@ -34,13 +34,11 @@ const Home = observer((props) => {
           ]}
         />
       </div>
-      <div className={styles.content}>
         <Routes>
           <Route path='' element={<Communities />} />
           <Route path='/community/:id' element={<Community />} />
           <Route path='/people' element={<People />} />
         </Routes>
-      </div>
     </div>
   )
 });

@@ -8,7 +8,7 @@
     height: 40px;
     width: 40vw;
     z-index: 999999999;
-    border-bottom: 1px solid var(--sub-border-color);
+    border-bottom: 1px solid var(--search-border-color);
 }
 
 .search input {
@@ -21,28 +21,19 @@
     font-size: 16px;
     margin-left: 5px;
     font-family: 'Open Sans', sans-serif;
-    color: var(--main-header-font-color);
+    color: var(--search-font-color);
 }
 
 .search img {
     height: 13px;
-    opacity: 0.8;
+    opacity: 0.5;
     margin-top: 1px;
     user-select: none;
     filter: var(--main-filter);
 }
 
 .search input::placeholder {
-    /* color: var(--main-header-font-color); */
-    color: var(--main-paragraph-color);
-}
-
-
-@media (max-width: 1150px) {
-    .search {
-        left: 12.5%;
-        transform: translateX(0%);
-    }
+    color: var(--search-font-color);
 }
 
 @media (max-width: 700px) {

@@ -1,3 +1,11 @@
+.placeholder {
+    height: 14px;
+    width: 120px;
+    background: var(--main-accent-color);
+    animation: var(--loading-animation);
+    border-radius: 30px;
+}
+
 .data {
     display: flex;
     grid-gap: 35px;

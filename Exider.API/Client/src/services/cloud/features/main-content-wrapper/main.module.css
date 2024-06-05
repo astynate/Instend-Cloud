@@ -5,7 +5,21 @@
     justify-content: center;
 }
 
-content {
-    width: 75%;
-    margin-right: 8%;
+.content {
+    width: 65%;
+    margin-right: 13%;
+}
+
+@media (max-width: 1300px) {
+    .content {
+        width: 90%;
+        margin-right: 0%;
+    }
+}
+
+@media (max-width: 950px) {
+    .content {
+        width: 95%;
+        margin-right: 0%;
+    }
 }

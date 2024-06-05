@@ -7,5 +7,6 @@ namespace Exider.Repositories.Public
     {
         Task<Result<CommunityModel>> AddAsync(string name, string description, byte[] avatar, byte[] header);
         Task<CommunityModel[]> GetPopularCommunitiesAsync(int from, int count);
+        Task<CommunityModel?> GetCommunityById(Guid id);
     }
 }

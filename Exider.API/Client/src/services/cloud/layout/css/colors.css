@@ -38,7 +38,8 @@
     --main-create-background-color: rgba(0, 0, 0, 0.05);
     --main-create-accent-color: rgba(255, 255, 255, 0.5);
 
-    --sub-border-color: rgba(0, 0, 0, 0.15);
+    --search-border-color: rgba(0, 0, 0, 0.15);
+    --search-font-color: rgba(0, 0, 0, 0.15);
 }
 
 .dark-mode {
@@ -81,5 +82,6 @@
     --main-create-background-color: rgba(0, 0, 0, 0.65);
     --main-create-accent-color: rgba(255, 255, 255, 0.3);
 
-    --sub-border-color: rgba(255, 255, 255, 0.35);
+    --search-border-color: rgba(255, 255, 255, 0.3);
+    --search-font-color: #777777;
 }

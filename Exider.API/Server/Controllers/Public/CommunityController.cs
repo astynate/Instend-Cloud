@@ -28,6 +28,19 @@ namespace Exider_Version_2._0._0.Server.Controllers.Public
             return Ok(await _communityRepository.GetPopularCommunitiesAsync(from, count));
         }
 
+        [HttpGet]
+        [Authorize]
+        [Route("/api/[controller]/single")]
+        public async Task<IActionResult> GetCommunity(string id)
+        {
+            if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id)) 
+            {
+                BadRequest("Community not found");
+            }
+            
+            return Ok(await _communityRepository.GetCommunityById(Guid.Parse(id)));
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreateCommunity

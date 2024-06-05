@@ -1,11 +1,12 @@
 .userAvatar {
-    height: 45px;
-    width: 45px;
+    height: 42px;
+    width: 42px;
     background: var(--main-accent-color);
     border-radius: 100%;
     overflow: hidden;
     user-select: none;
     flex-shrink: 0;
+    border: 1px solid var(--main-border-color)
 }
 
 .userAvatar img {

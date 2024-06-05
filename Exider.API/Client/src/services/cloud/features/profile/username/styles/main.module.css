@@ -1,3 +1,11 @@
+.placeholder {
+    height: 30px;
+    width: 200px;
+    background: var(--main-accent-color);
+    animation: var(--loading-animation);
+    border-radius: 30px;
+}
+
 .username {
     margin: 0;
     padding: 0;

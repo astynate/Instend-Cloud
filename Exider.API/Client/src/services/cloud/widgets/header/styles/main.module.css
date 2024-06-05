@@ -10,7 +10,7 @@
     font-family: 'Open Sans', sans-serif;
     left: 0;
     background: var(--main-background-color);
-    z-index: 1;
+    z-index: 999;
 }
 
 .buttons {

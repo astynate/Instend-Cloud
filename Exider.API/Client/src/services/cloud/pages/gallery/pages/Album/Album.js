@@ -28,36 +28,32 @@ const Album = observer(({photoGrid, scale, scroll}) => {
             <AlbumView 
                 uniqItems={[
                     {'title': "Photos", 'component': 
-                        <div className={styles.contentWrapper}>
-                            <div className={styles.content}>
-                                <AddInGallery id={params.id} /> 
-                                {!albums[params.id] || !albums[params.id].photos || albums[params.id].photos.length === 0 ?
-                                    <div className={styles.noImages}>
-                                        <Placeholder title="No photos uploaded" />
-                                    </div>  
-                                :
-                                    <>
-                                        <PhotoList
-                                            photos={galleryState.albums && galleryState.albums[params.id] && galleryState.albums[params.id].photos ? 
-                                                galleryState.albums[params.id].photos : []} 
-                                            scale={scale}
-                                            photoGrid={photoGrid}
-                                            forwardRef={wrapper}
-                                        />
-                                    </>
-                                }
-                                {galleryState.albums[params.id] &&
-                                    <Scroll
-                                        scroll={scroll}
-                                        isHasMore={galleryState.albums[params.id].hasMore}
-                                        count={galleryState.albums[params.id].photos.length}
-                                        callback={async () => {
-                                            await galleryState.GetAlbumPhotos(params.id);
-                                        }}
-                                    />
-                                }
-                            </div>
-                        </div>
+                        <>
+                            <AddInGallery id={params.id} /> 
+                            {!albums[params.id] || !albums[params.id].photos || albums[params.id].photos.length === 0 ?
+                                <div className={styles.noImages}>
+                                    <Placeholder title="No photos uploaded" />
+                                </div>  
+                            :
+                                <PhotoList
+                                    photos={galleryState.albums && galleryState.albums[params.id] && galleryState.albums[params.id].photos ? 
+                                        galleryState.albums[params.id].photos : []} 
+                                    scale={scale}
+                                    photoGrid={photoGrid}
+                                    forwardRef={wrapper}
+                                />
+                            }
+                            {galleryState.albums[params.id] &&
+                                <Scroll
+                                    scroll={scroll}
+                                    isHasMore={galleryState.albums[params.id].hasMore}
+                                    count={galleryState.albums[params.id].photos.length}
+                                    callback={async () => {
+                                        await galleryState.GetAlbumPhotos(params.id);
+                                    }}
+                                />
+                            }
+                        </>
                     },
                 ]}
                 views={galleryState.albums[params.id] && galleryState.albums[params.id].views ? 

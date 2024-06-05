@@ -14,6 +14,7 @@ import LocalMenu from '../../shared/ui-kit/local-menu/LocalMenu';
 import Comments from '../../widgets/social/comments/Comments';
 import { DeleteComment } from '../../pages/gallery/api/AlbumRequests';
 import HeaderSearch from './compontens/header-search/HeaderSearch';
+import MainContentWrapper from '../../features/main-content-wrapper/MainContentWrapper';
 
 const AlbumView = observer(({isSquareCover, button, uniqItems, views}) => {
     const { albums } = galleryState;
@@ -36,85 +37,87 @@ const AlbumView = observer(({isSquareCover, button, uniqItems, views}) => {
                 </div>
             : 
                 <>
-                    <div className={styles.header}>
-                        <div className={styles.information}>
-                            <img 
-                                src={`data:image/png;base64,${albums[params.id].cover}`} 
-                                className={styles.cover}
-                                draggable="false"
-                                id={isSquareCover ? 'square' : null}
-                            />
-                            <div className={styles.control}>
-                                <div className={styles.nameWrapper}>
-                                    <span className={styles.albumDate}>{ConvertDate(albums[params.id].creationTime)}</span>
-                                    <h1 className={styles.albumName}>{albums[params.id].name}</h1>
-                                </div>
-                                {albums[params.id].description && 
-                                    <div className={styles.descriptionWrapper}>
-                                        <span className={styles.descritpion}>
-                                            <span className={styles.views}>{views ? views : 0}</span> Views&nbsp;&nbsp;•&nbsp;&nbsp;<span className={styles.views}>0</span> Reactions
-                                        </span>
-                                        <span className={styles.descritpion}>{albums[params.id].description}</span>
+                    <MainContentWrapper>
+                        <div className={styles.header}>
+                            <div className={styles.information}>
+                                <img 
+                                    src={`data:image/png;base64,${albums[params.id].cover}`} 
+                                    className={styles.cover}
+                                    draggable="false"
+                                    id={isSquareCover ? 'square' : null}
+                                />
+                                <div className={styles.control}>
+                                    <div className={styles.nameWrapper}>
+                                        <span className={styles.albumDate}>{ConvertDate(albums[params.id].creationTime)}</span>
+                                        <h1 className={styles.albumName}>{albums[params.id].name}</h1>
                                     </div>
-                                }
-                                <div className={styles.controlPanel}>
-                                    {button && (button)}
-                                    <img
-                                        src={emoji}
-                                        className={styles.subButton} 
-                                    />
-                                    <BurgerMenu 
-                                        items={[
-                                            {title: "astynate", callback: () => {}}
-                                        ]}
-                                    />
+                                    {albums[params.id].description && 
+                                        <div className={styles.descriptionWrapper}>
+                                            <span className={styles.descritpion}>
+                                                <span className={styles.views}>{views ? views : 0}</span> Views&nbsp;&nbsp;•&nbsp;&nbsp;<span className={styles.views}>0</span> Reactions
+                                            </span>
+                                            <span className={styles.descritpion}>{albums[params.id].description}</span>
+                                        </div>
+                                    }
+                                    <div className={styles.controlPanel}>
+                                        {button && (button)}
+                                        <img
+                                            src={emoji}
+                                            className={styles.subButton} 
+                                        />
+                                        <BurgerMenu 
+                                            items={[
+                                                {title: "astynate", callback: () => {}}
+                                            ]}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={styles.addition}>
+                                <div className={styles.users}>
+                                    {isUsersLoading ? 
+                                        <>
+                                            <div className={styles.avatarPlaceholder}></div>
+                                            <div className={styles.avatarPlaceholder}></div>
+                                            <div className={styles.avatarPlaceholder}></div>
+                                        </>
+                                    : 
+                                        <>
+                                            {galleryState.albums && galleryState.albums[params.id] && galleryState.albums[params.id].users && galleryState.albums[params.id].users.map
+                                                && galleryState.albums[params.id].users.map((element, index) => {
+                                                    if (element.user) {
+                                                        let user = element.user;
+                                                        user.avatar = element.base64Avatar;
+                                                    
+                                                        return (
+                                                            <UserAvatar key={index} user={user} />
+                                                        )
+                                                    } else {
+                                                        return null;
+                                                    }
+                                                })
+                                            }
+                                            <AddUser callback={() => setOpenAccessWindowState(true)} />   
+                                        </>
+                                    }
+                                </div>
+                                <div className={styles.reactions}>
+                                    {/* <Reaction /> */}
+                                    {/* <Reaction />
+                                    <Reaction />
+                                    <Reaction />
+                                    <Reaction />
+                                    <Reaction />
+                                    <Reaction />
+                                    <Reaction />
+                                    <Reaction />
+                                    <Reaction />
+                                    <Reaction />
+                                    <Reaction /> */}
                                 </div>
                             </div>
                         </div>
-                        <div className={styles.addition}>
-                            <div className={styles.users}>
-                                {isUsersLoading ? 
-                                    <>
-                                        <div className={styles.avatarPlaceholder}></div>
-                                        <div className={styles.avatarPlaceholder}></div>
-                                        <div className={styles.avatarPlaceholder}></div>
-                                    </>
-                                : 
-                                    <>
-                                        {galleryState.albums && galleryState.albums[params.id] && galleryState.albums[params.id].users && galleryState.albums[params.id].users.map
-                                            && galleryState.albums[params.id].users.map((element, index) => {
-                                                if (element.user) {
-                                                    let user = element.user;
-                                                    user.avatar = element.base64Avatar;
-                                                
-                                                    return (
-                                                        <UserAvatar key={index} user={user} />
-                                                    )
-                                                } else {
-                                                    return null;
-                                                }
-                                            })
-                                        }
-                                        <AddUser callback={() => setOpenAccessWindowState(true)} />   
-                                    </>
-                                }
-                            </div>
-                            <div className={styles.reactions}>
-                                {/* <Reaction /> */}
-                                {/* <Reaction />
-                                <Reaction />
-                                <Reaction />
-                                <Reaction />
-                                <Reaction />
-                                <Reaction />
-                                <Reaction />
-                                <Reaction />
-                                <Reaction />
-                                <Reaction />
-                                <Reaction /> */}
-                            </div>
-                        </div>
-                    </div>
+                    </MainContentWrapper>
                     <OpenAccessProcess
                         id={params.id}
                         open={isOpenAccessWindow}
@@ -127,18 +130,14 @@ const AlbumView = observer(({isSquareCover, button, uniqItems, views}) => {
                         items={[
                             ...uniqItems,
                             {'title': "Comments", "component": 
-                                <div className={styles.contentWrapper}>
-                                    <div className={styles.content}>
-                                        <Comments 
-                                            fetch_callback={() => galleryState.GetAlbumComments(params.id)}
-                                            comments={galleryState.albums[params.id].comments ? 
-                                                galleryState.albums[params.id].comments : []}
-                                            id={params.id}
-                                            setUploadingComment={galleryState.AddUploadingAlbumComment.bind(galleryState)}
-                                            deleteCallback={(id) => DeleteComment(id, params.id)}
-                                        />
-                                    </div>
-                                </div>
+                                <Comments 
+                                    fetch_callback={() => galleryState.GetAlbumComments(params.id)}
+                                    comments={galleryState.albums[params.id].comments ? 
+                                        galleryState.albums[params.id].comments : []}
+                                    id={params.id}
+                                    setUploadingComment={galleryState.AddUploadingAlbumComment.bind(galleryState)}
+                                    deleteCallback={(id) => DeleteComment(id, params.id)}
+                                />
                             }
                         ]}
                         default={0}

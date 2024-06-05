@@ -10,9 +10,8 @@
 }
 
 .header {
+    width: 100%;
     display: flex;
-    width: 75%;
-    margin-right: 8%;
     padding-top: 10px;
     padding-bottom: 10px;
 }
@@ -161,20 +160,6 @@
 .content {
     width: 75%;
     margin-right: 8%;
-}
-
-@media (max-width: 1300px) {
-    .header, .content {
-        width: 90%;
-        margin-right: 0%;
-    }
-
-    .albumName {
-        max-width: 6ic;
-        text-wrap: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
 }
 
 @media (max-width: 950px) {

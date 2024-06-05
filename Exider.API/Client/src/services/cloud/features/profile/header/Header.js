@@ -1,16 +1,23 @@
 import React from 'react';
 import styles from './styles/main.module.css';
+import MainContentWrapper from '../../main-content-wrapper/MainContentWrapper';
 
-const Header = (props) => {
-  if (props.src) {
+const Header = ({src, isLoading = false}) => {
+  if (src && isLoading === false) {
     return (
-      <div className={styles.header}>
-        <img src={`data:image/png;base64,${props.src}`}  draggable={false} /> 
-      </div>
+      <MainContentWrapper>
+        <div className={styles.header}>
+          <img src={`data:image/png;base64,${src}`}  draggable={false} /> 
+        </div>
+      </MainContentWrapper>
     );
   } else {
     return (
-      <div className={styles.header}></div>
+      <MainContentWrapper>
+        <div className={styles.header} id="loading">
+
+        </div>
+      </MainContentWrapper>
     );
   }
 };

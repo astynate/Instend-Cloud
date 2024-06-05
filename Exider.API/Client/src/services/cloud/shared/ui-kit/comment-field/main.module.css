@@ -1,4 +1,6 @@
 .commentField {
     display: flex;
     grid-gap: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--main-border-color);
 }

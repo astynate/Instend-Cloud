@@ -4,4 +4,5 @@
     background: var(--main-accent-color);
     border-radius: 20px;
     overflow: hidden;
+    border: 1px solid var(--main-border-color);
 }

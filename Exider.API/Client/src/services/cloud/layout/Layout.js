@@ -4,6 +4,7 @@ import Loader from '../widgets/loader/Loader';
 import './css/fonts.css';
 import './css/colors.css';
 import './css/main.css';
+import './css/animations.css';
 import { Helmet } from 'react-helmet';
 import Desktop from './Desktop';
 import Mobile from './Mobile';

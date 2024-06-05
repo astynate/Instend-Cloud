@@ -1,0 +1,11 @@
+.content {
+    height: auto;
+    width: 100%;
+    display: grid;
+    justify-content: center;
+    padding-top: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    grid-gap: 10px;
+    padding-right: 15px;
+    padding-bottom: 20px;
+}

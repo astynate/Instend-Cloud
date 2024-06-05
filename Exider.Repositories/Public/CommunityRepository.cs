@@ -3,7 +3,6 @@ using Exider.Core;
 using Exider.Core.Models.Public;
 using Exider.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
 
 namespace Exider.Repositories.Public
 {
@@ -67,6 +66,23 @@ namespace Exider.Repositories.Public
             await File.WriteAllBytesAsync(headerPath, header);
 
             return community.Value;
+        }
+
+        public async Task<CommunityModel?> GetCommunityById(Guid id)
+        {
+            CommunityModel? community = await _context.Communities
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (community != null)
+            {
+                var avatar = await _fileService.ReadFileAsync(community.Avatar);
+                var header = await _fileService.ReadFileAsync(community.Header);
+
+                community.SetAvatar(avatar.IsFailure ? string.Empty : Convert.ToBase64String(avatar.Value));
+                community.SetHeader(header.IsFailure ? string.Empty : Convert.ToBase64String(header.Value));
+            }
+
+            return community;
         }
     }
 }

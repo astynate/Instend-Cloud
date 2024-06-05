@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './main.module.css';
 import CommentField from '../../../shared/ui-kit/comment-field/CommentField';
 import Comment from '../../../shared/social/comment/Comment';
+import PublicationsWrapper from '../../../features/publications-wrapper/PublicationsWrapper';
 
 const Comments = ({fetch_callback, comments, id, setUploadingComment, deleteCallback}) => {
     const [isLoading, setLoadingState] = useState(false);
@@ -19,47 +20,49 @@ const Comments = ({fetch_callback, comments, id, setUploadingComment, deleteCall
     }, []);
 
     return (
-        <div className={styles.comment}>
-            <CommentField 
-                id={id} 
-                setUploadingComment={setUploadingComment.bind(this)}
-            />
-            {isLoading ? 
-                <>
-                    <Comment isLoading={true} />
-                    <Comment isLoading={true} />
-                    <Comment isLoading={true} />
-                    <Comment isLoading={true} />
-                    <Comment isLoading={true} />
-                    <Comment isLoading={true} />
-                    <Comment isLoading={true} />
-                    <Comment isLoading={true} />
-                    <Comment isLoading={true} />
-                    <Comment isLoading={true} />
-                </>
-            :
-                comments && comments.map && comments.map((element, index) => {
-                    if (element.isUploading) {
-                        return (
-                            <Comment 
-                                key={index}
-                                isUploading={true}
-                                comment={element.comment} 
-                                user={element.user} 
-                            />
-                        )
-                    } else {
-                        return (
-                            <Comment 
-                                key={element.comment.id}
-                                comment={element.comment} 
-                                user={element.user}
-                                deleteCallback={deleteCallback}
-                            />
-                        )
-                    }
-                })}
-        </div>
+        <PublicationsWrapper>
+            <div className={styles.comment}>
+                <CommentField 
+                    id={id} 
+                    setUploadingComment={setUploadingComment.bind(this)}
+                />
+                {isLoading ? 
+                    <>
+                        <Comment isLoading={true} />
+                        <Comment isLoading={true} />
+                        <Comment isLoading={true} />
+                        <Comment isLoading={true} />
+                        <Comment isLoading={true} />
+                        <Comment isLoading={true} />
+                        <Comment isLoading={true} />
+                        <Comment isLoading={true} />
+                        <Comment isLoading={true} />
+                        <Comment isLoading={true} />
+                    </>
+                :
+                    comments && comments.map && comments.map((element, index) => {
+                        if (element.isUploading) {
+                            return (
+                                <Comment 
+                                    key={index}
+                                    isUploading={true}
+                                    comment={element.comment} 
+                                    user={element.user} 
+                                />
+                            )
+                        } else {
+                            return (
+                                <Comment 
+                                    key={element.comment.id}
+                                    comment={element.comment} 
+                                    user={element.user}
+                                    deleteCallback={deleteCallback}
+                                />
+                            )
+                        }
+                    })}
+            </div>
+        </PublicationsWrapper>
     );
  };
 

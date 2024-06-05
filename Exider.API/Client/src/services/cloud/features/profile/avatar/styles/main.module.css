@@ -1,6 +1,6 @@
 .avatar {
-    height: 150px;
-    width: 150px;
+    height: 170px;
+    width: 170px;
     border-radius: 100%;
     background: var(--main-accent-color);
     position: relative;
@@ -11,6 +11,10 @@
     width: 100%;
     border-radius: 100%;
     object-fit: cover;
+}
+
+.avatar[id="loading"] {
+    animation: var(--loading-animation);
 }
 
 .status {

@@ -1,9 +1,8 @@
 import React from 'react';
-import styles from './main.module.css';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 import Description from '../../../../widgets/description/Description';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import userState from '../../../../../../states/user-state';
 
 const ProfileDescription = observer(({isMobile}) => {
@@ -21,7 +20,7 @@ const ProfileDescription = observer(({isMobile}) => {
                 stats={[
                     {title: t('cloud.profile.coins'), amount: user.balance},
                     {title: t('cloud.profile.friends'), amount: user.friendCount},
-                    {title: 'MB', amount: user.storageSpace.toFixed(1) / (1024 * 1024)}
+                    {title: 'MB', amount: (user.storageSpace / (1024 * 1024)).toFixed(0)}
                 ]}
                 buttons={[
                     {

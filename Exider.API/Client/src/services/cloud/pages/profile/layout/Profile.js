@@ -27,28 +27,29 @@ const Profile = observer((props) => {
         <Header src={user.header} />
         <ProfileDescription />
         <LocalMenu 
-            items={[
-              {title: "Publications", component: 
-                <div className={styles.contentWrapper}>
-                </div>
-              },
-              {title: "Comments", component: 
-                <PublicationsWrapper>
-                  <h1>!!!</h1>
-                </PublicationsWrapper>
-              },
-              {title: "Communities", component: 
-                <div className={styles.contentWrapper}>
-                </div>
-              }
-            ]}
-            default={0}
-            rightItems={[
-                (<HeaderSearch 
-                    placeholder={"Search by name"}
-                />)
-            ]}
-          />
+          items={[
+            {title: "Publications", component: 
+              <PublicationsWrapper>
+                <h1>!!!</h1>
+              </PublicationsWrapper>
+            },
+            {title: "Comments", component: 
+              <PublicationsWrapper>
+                <h1>!!!</h1>
+              </PublicationsWrapper>
+            },
+            {title: "Communities", component: 
+              <div className={styles.contentWrapper}>
+              </div>
+            }
+          ]}
+          default={0}
+          rightItems={[
+              (<HeaderSearch 
+                  placeholder={"Search by name"}
+              />)
+          ]}
+        />
       </div>
     </div>
   )
