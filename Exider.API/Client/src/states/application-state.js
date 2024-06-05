@@ -8,6 +8,9 @@ class ApplicationState {
     }
 
     AddErrorInQueue(title, message) {
+        if (!message) {
+            message = 'Something went wrong';
+        }
         this.errorQueue = [...this.errorQueue, [title, message]];
     }
 

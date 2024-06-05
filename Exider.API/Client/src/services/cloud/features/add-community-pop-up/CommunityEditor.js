@@ -42,12 +42,14 @@ const CommunityEditor = ({open, close, title, callback}) => {
                             draggable="false"
                         />
                     </div>
-                    {avatarUrl && <img 
-                        src={avatarUrl} 
+                    {headerUrl && <img 
+                        src={headerUrl} 
                         draggable="false"
                         className={styles.mainImage}
                     />}
-                    <input type='file' onChange={(event) => handleImageUpload(event, setAvatarUrl, setAvatar)} accept='image/*' />
+                    <input type='file' onInput={(event) => {
+                        handleImageUpload(event, setHeaderUrl, setHeader);
+                    }} accept='image/*' />
                 </div>
                 <div className={styles.field}>
                     <div className={styles.avatar}>
@@ -57,12 +59,14 @@ const CommunityEditor = ({open, close, title, callback}) => {
                                 draggable="false"
                             />
                         </div>
-                        {headerUrl && <img 
-                            src={headerUrl} 
+                        {avatarUrl && <img 
+                            src={avatarUrl} 
                             draggable="false"
                             className={styles.mainImage}
                         />}
-                        <input type='file' onChange={(event) => handleImageUpload(event, setHeaderUrl, setHeader)} accept='image/*' />
+                        <input type='file' onInput={(event) => {
+                            handleImageUpload(event, setAvatarUrl, setAvatar);
+                        }} accept='image/*' />
                     </div>
                 </div>
                 <div className={styles.divide}></div>
@@ -84,9 +88,10 @@ const CommunityEditor = ({open, close, title, callback}) => {
                     <div className={styles.button}>
                         <Button 
                             value="Next"
-                            callback={() => {
-                                if (name && avatar && header && callback) {
-                                    callback(name, description, avatar, header);
+                            callback={async () => {
+                                if (name && avatar && header && description && callback) {
+                                    await callback(name, description, avatar, header);
+                                    close();
                                 }
                             }}
                         />

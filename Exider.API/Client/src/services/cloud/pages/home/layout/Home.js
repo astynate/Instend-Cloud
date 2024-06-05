@@ -7,6 +7,7 @@ import People from '../pages/people/People';
 import { Route, Routes } from 'react-router-dom';
 import Menu from '../../../widgets/menu/Menu';
 import { observer } from 'mobx-react-lite';
+import Community from '../pages/community/Community';
 
 const Home = observer((props) => {
   useEffect(() => {
@@ -36,6 +37,7 @@ const Home = observer((props) => {
       <div className={styles.content}>
         <Routes>
           <Route path='' element={<Communities />} />
+          <Route path='/community/:id' element={<Community />} />
           <Route path='/people' element={<People />} />
         </Routes>
       </div>

@@ -2,9 +2,7 @@ import React from 'react';
 import styles from './styles/main.module.css';
 
 const Avatar = (props) => {
-
   return (
-
     <div className={styles.avatarWrapper}>
       <div className={styles.avatar}>
           {props.src ? <img src={props.src} className={styles.avatarImage} draggable="false" /> : null} 
@@ -14,7 +12,6 @@ const Avatar = (props) => {
       </div>
     </div>
   )
-
 }
 
 export default Avatar;

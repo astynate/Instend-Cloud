@@ -29,12 +29,19 @@
     position: absolute;
     left: 15px;
     bottom: -60px;
+    overflow: hidden;
+}
+
+.avatar img, .header img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
 }
 
 .partiсipants {
     position: absolute;
     right: 18px;
-    bottom: -35px;
+    bottom: -32.5px;
     color: var(--main-font-color);
 }
 
@@ -45,12 +52,13 @@
     margin-top: 40px;
     display: flex;
     flex-direction: column;
-    grid-gap: 3px;
+    /* grid-gap: 3px; */
 }
 
 .name {
     font-size: 18px;
     font-weight: 700;
+    margin-top: 5px;
     color: var(--main-font-color);
 }
 

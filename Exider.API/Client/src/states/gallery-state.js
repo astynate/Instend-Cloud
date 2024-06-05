@@ -4,7 +4,6 @@ import applicationState from './application-state';
 import { AdaptId } from './storage-state';
 
 class GalleryState {
-
     //////////////////////////////////////////////////////////////////////////////////////
 
     albums = {};
@@ -269,8 +268,6 @@ class GalleryState {
         if (this && this.albums && this.albums[id] && this.albums[id].views) {
             this.albums[id].views = views;
         }
-
-        console.log(this.albums[id]);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////// 

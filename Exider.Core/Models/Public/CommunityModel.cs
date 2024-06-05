@@ -23,10 +23,10 @@ namespace Exider.Core.Models.Public
                 return Result.Failure<CommunityModel>("Name is required");
 
             if (string.IsNullOrEmpty(avatar) || string.IsNullOrWhiteSpace(avatar))
-                return Result.Failure<CommunityModel>("Name is description");
+                return Result.Failure<CommunityModel>("Avatar is required");
 
             if (string.IsNullOrEmpty(header) || string.IsNullOrWhiteSpace(header))
-                return Result.Failure<CommunityModel>("Name is description");
+                return Result.Failure<CommunityModel>("Name is required");
 
             return new CommunityModel()
             {
@@ -37,5 +37,8 @@ namespace Exider.Core.Models.Public
                 Header = header
             };
         }
+
+        public void SetAvatar(string str) => Avatar = str;
+        public void SetHeader(string str) => Header = str;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Exider.Repositories.Public;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
 
@@ -15,11 +16,24 @@ namespace Exider_Version_2._0._0.Server.Controllers.Public
             _communityRepository = communityRepository;
         }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetPopularCommunities(int from, int count)
+        {
+            if (from >= count)
+            {
+                return BadRequest("Invalid range");
+            }
+
+            return Ok(await _communityRepository.GetPopularCommunitiesAsync(from, count));
+        }
+
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateCommunity
         (
             [FromForm] string? name,
-            [FromForm] string? descritpion,
+            [FromForm] string? description,
             [FromForm] IFormFile? avatar,
             [FromForm] IFormFile? header
         )
@@ -55,7 +69,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Public
                 return Conflict("Invalid header");
             }
 
-            var result = await _communityRepository.AddAsync(name, descritpion, avatarBytes, headerBytes);
+            var result = await _communityRepository.AddAsync(name, description, avatarBytes, headerBytes);
 
             if (result.IsFailure)
             {

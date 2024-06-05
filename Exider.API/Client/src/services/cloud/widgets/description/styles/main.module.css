@@ -1,9 +1,12 @@
 .description {
-    height: 220px;
+    height: auto;
     width: 100%;
     display: flex;
+    width: 75%;
+    margin-right: 8%;
+    padding-top: 30px;
+    padding-bottom: 30px;
     align-items: center;
-    padding: 0px 3vw;
 }
 
 .profileDescription {
@@ -13,7 +16,7 @@
     align-self: center;
     justify-content: center;
     flex-direction: column;
-    margin-left: 3vw;
+    margin-left: 2vw;
 }
 
 .editProfile {
@@ -30,17 +33,16 @@
     color: var(--main-font-color);
 }
 
-.editProfileButton {
-    margin-top: 45px;
+.button {
     border: none;
     outline: none;
-    border-radius: 10px;
+    border-radius: 30px;
     font-size: 14px;
     font-weight: 600;
     background: var(--main-accent-color);
     transform: scale(100%);
     transition: 0.15s ease;
-    padding: 10px 25px;
+    padding: 8px 22px;
     cursor: pointer;
     color: var(--main-font-color);
 }
@@ -49,14 +51,6 @@
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
-}
-
-.editProfileButton:hover {
-    transform: scale(102%);
-}
-
-.editProfileButton:active {
-    transform: scale(98%);
 }
 
 @media (max-width: 600px) {
@@ -74,9 +68,7 @@
     }
 }
 
-
 @media (max-width: 700px) {
-
     .profileDescription {
         margin-left: 7vw;
     }
@@ -88,5 +80,20 @@
     .editProfile {
         justify-content: flex-start;
         text-align: center;
+    }
+}
+
+
+@media (max-width: 1300px) {
+    .description {
+        width: 90%;
+        margin-right: 0%;
+    }
+}
+
+@media (max-width: 950px) {
+    .description {
+        width: 95%;
+        margin-right: 0%;
     }
 }

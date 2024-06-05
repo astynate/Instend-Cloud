@@ -9,6 +9,25 @@ import userState from '../../../../states/user-state';
 import ProfileModal from '../../features/modal/profile/ProfileModal';
 import PopUpList from '../../shared/ui-kit/pop-up-list/PopUpList';
 import CommunityEditor from '../../features/add-community-pop-up/CommunityEditor';
+import { instance } from '../../../../state/Interceptors';
+import applicationState from '../../../../states/application-state';
+
+const CreateCommunityRequest = async (name, description, avatar, header) => {
+    let form = new FormData();
+
+    form.append('name', name);
+    form.append('description', description);
+    form.append('avatar', avatar);
+    form.append('header', header);
+    
+    await instance.post('/api/community', form, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    }).catch(error => {
+        applicationState.AddErrorInQueue('Attention!', error.response.data);
+    });
+}
 
 const Header = observer((props) => {
     const [profilePopUpState, setProfilePopUpState] = useState(false);
@@ -51,7 +70,7 @@ const Header = observer((props) => {
                     close={() => setCreateCommunityState(false)}
                     title={"Create community"}
                     callback={(name, description, avatar, header) => {
-                        console.log(name, description, avatar, header);
+                        CreateCommunityRequest(name, description, avatar, header);
                     }}
                 />}
                 <div className={styles.buttons}>

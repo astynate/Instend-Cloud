@@ -2,23 +2,30 @@ import React from 'react';
 import styles from './main.module.css';
 import Button from '../../../../shared/ui-kit/button/Button';
 import StatisticalUnit from '../../../../shared/ui-kit/statistical-unit/StatisticalUnit';
+import { Link } from 'react-router-dom';
 
-const CommunityPreview = () => {
+const CommunityPreview = ({id, name, description, avatar, header, followers}) => {
   return (
-    <div className={styles.communityPreview}>
+    <Link 
+      to={`/community/${id}`}
+      className={styles.communityPreview}
+    >
         <div className={styles.header}>
-            <div className={styles.avatar}></div>
-            <div className={styles.partiсipants}><StatisticalUnit title="Partiсipants" amount={'-'} /></div>
+            <img src={`data:image/png;base64,${header}`} />
+            <div className={styles.avatar}>
+              <img src={`data:image/png;base64,${avatar}`} />
+            </div>
+            <div className={styles.partiсipants}><StatisticalUnit title="Followers" amount={followers} /></div>
         </div>
         <div className={styles.content}>
-            <span className={styles.name}>Name</span>
-            <span className={styles.description}>lorem adada dad a sda da  da da sd a asdasd asda sdasd asda sd</span>
+            <span className={styles.name}>{name}</span>
+            <span className={styles.description}>{description}</span>
             <div className={styles.controlPanel}>
                 <Button value="Follow" />
                 <Button value="Visit" />
             </div>
         </div>
-    </div>
+    </Link>
   )
 }
 

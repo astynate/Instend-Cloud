@@ -1,0 +1,7 @@
+.wrapper {
+    width: 100%;
+    height: auto;
+    background: var(--main-accent-color);
+    border-radius: 20px;
+    overflow: hidden;
+}

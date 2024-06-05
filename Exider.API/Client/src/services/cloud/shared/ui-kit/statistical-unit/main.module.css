@@ -1,7 +1,7 @@
 .statisticalUnit {
     color: var(--main-paragraph-color);
     display: flex;
-    grid-gap: 7px;
+    grid-gap: 5px;
 }
 
 .amount {

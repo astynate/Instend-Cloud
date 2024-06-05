@@ -7,17 +7,19 @@
 }
 
 .wrapper {
-    width: 65vw;
-    margin-left: 4vw;
-    margin-right: auto;
+    width: 100%;
+    /* margin-left: 4vw;
+    margin-right: auto; */
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 @media (max-width: 1150px) {
- 
     .wrapper {
         width: auto;
         margin-left: 3vw;
         margin-right: 3vw;
     }
-
 }

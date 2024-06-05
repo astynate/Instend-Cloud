@@ -1,0 +1,37 @@
+.header {
+    height: 220px;
+    background: var(--main-accent-color);
+    border-radius: 12px;
+    overflow: hidden;
+    width: 75%;
+    margin-right: 8%;
+    display: flex;
+    justify-content: center;
+}
+
+.header img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    image-rendering: crisp-edges;
+}
+
+@media (max-width: 1300px) {
+    .header {
+        width: 90%;
+        margin-right: 0%;
+    }
+}
+
+@media (max-width: 950px) {
+    .header {
+        width: 95%;
+        margin-right: 0%;
+    }
+}
+
+@media (max-width: 600px) {
+    .header {
+        height: 120px;
+    }   
+}
