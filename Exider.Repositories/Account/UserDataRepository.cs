@@ -97,6 +97,7 @@ namespace Exider.Repositories.Account
                 .Where(user => user.Nickname.Contains(prefix) ||
                                user.Name.Contains(prefix) ||
                                user.Surname.Contains(prefix))
+                .Take(15)
                 .Join(
                     _context.UserData,
                     user => user.Id,

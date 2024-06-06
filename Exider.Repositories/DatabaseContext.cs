@@ -33,6 +33,7 @@ namespace Exider.Core
         public DbSet<MessageModel> Messages { get; set; } = null!;
         public DbSet<DirectMessageLink> DirectLinks { get; set; } = null!;
         public DbSet<CommunityModel> Communities { get; set; } = null!;
+        public DbSet<FriendModel> Friends { get; set; } = null!;
         public DbSet<DirectModel> Directs { get; set; } = null!;
         public DbSet<AlbumViewLink> ViewsLinks { get; set; } = null!;
         public DbSet<SongFormat> SongsMeta { get; set; } = null!;

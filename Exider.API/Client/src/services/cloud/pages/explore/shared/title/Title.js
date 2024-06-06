@@ -5,6 +5,6 @@ const Title = ({value}) => {
     return (
         <h2 className={styles.title}>{value}</h2>
     );
-};
+ };
 
 export default Title;

@@ -1,0 +1,24 @@
+.explore {
+    height: 100svh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.header{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    top: 60px;
+    left: 0;
+    padding-bottom: 10px;
+    position: sticky;
+    background: var(--main-background-color);
+}
+
+.content {
+    padding-left: 30px;
+    padding-right: 30px;
+    display: flex;
+    flex-direction: column;
+    grid-gap: 15px;
+}

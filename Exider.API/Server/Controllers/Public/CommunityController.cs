@@ -2,7 +2,6 @@
 using Exider.Services.Internal.Handlers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Public
 {

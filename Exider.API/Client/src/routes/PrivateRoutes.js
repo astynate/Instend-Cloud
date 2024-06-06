@@ -1,5 +1,5 @@
 import Cloud from '../services/cloud/pages/cloud/layout/Cloud';
-import Explore from '../services/cloud/pages/explore/Explore';
+import Explore from '../services/cloud/pages/explore/layout/Explore';
 import Gallery from '../services/cloud/pages/gallery/layout/Gallery';
 import Home from '../services/cloud/pages/home/layout/Home';
 import Messages from '../services/cloud/pages/messages/layout/Messages';
@@ -20,7 +20,7 @@ const PrivateRoutes = [
         element: <Cloud />
     },
     {
-        path: '/explore',
+        path: '/explore/*',
         element: <Explore />
     },
     {

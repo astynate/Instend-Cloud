@@ -1,0 +1,59 @@
+.user {
+    height: auto;
+    width: 100%;
+    border: 1px solid var(--main-border-color);
+    /* background: var(--main-accent-color); */
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    padding-top: 20px;
+    justify-content: space-between;
+    flex-direction: column;
+    border-radius: 7px;
+    grid-gap: 5px;
+}
+
+.user:hover {
+    /* background: var(--main-accent-color); */
+}
+
+.avatar {
+    height: 100px;
+    width: 100px;
+    border-radius: 100%;
+    background: var(--main-accent-color);
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.avatar img {
+    height: 100%;
+    width: 100%;
+}
+
+.name {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.nickname {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--main-font-color);
+}
+
+.fullname {
+    font-size: 14px;
+    color: var(--main-paragraph-color);
+}
+
+.button {
+    margin-top: 10px;
+}
+
+.statistic {
+    display: flex;
+    grid-gap: 15px;
+}

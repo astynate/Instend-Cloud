@@ -39,7 +39,7 @@
     --main-create-accent-color: rgba(255, 255, 255, 0.5);
 
     --search-border-color: rgba(0, 0, 0, 0.15);
-    --search-font-color: rgba(0, 0, 0, 0.15);
+    --search-font-color: #bebebe;
 }
 
 .dark-mode {

@@ -4,6 +4,7 @@ import storageState from './storage-state';
 
 class UserState {
     isAccessibleRoute = false;
+    friends = []
     isAuthorize = false;
     isLoading = true;
     user = null;
@@ -16,10 +17,16 @@ class UserState {
         try {
             await instance.get('/accounts')
                 .then(response => {
-                    this.user = response.data;
-                    this.isAuthorize = true;
+                    if (response.data && response.data.length > 1) {
+                        this.user = response.data[0];
+                        this.friends = response.data[1];
+                        this.isAuthorize = true;
+                    } else {
+                        throw new Error("Insufficient data received");
+                    }
                 })
-                .catch(() => {
+                .catch((error) => {
+                    console.error(error);
                     this.isAuthorize = false;
                     navigate('/account/login');
                 });

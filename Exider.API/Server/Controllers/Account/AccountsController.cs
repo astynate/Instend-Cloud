@@ -8,6 +8,7 @@ using Exider.Core.TransferModels.Account;
 using Exider.Dependencies.Services;
 using Exider.Repositories.Account;
 using Exider.Repositories.Email;
+using Exider.Repositories.Public;
 using Exider.Repositories.Storage;
 using Exider.Services.External.FileService;
 using Exider.Services.Internal.Handlers;
@@ -35,6 +36,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
         private readonly IFolderRepository _folderRepository;
 
+        private readonly IFriendsRepository _friendsRepository;
+
         private readonly DatabaseContext _context;
 
         public AccountsController
@@ -45,6 +48,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
             IUserDataRepository userDataRepository,
             IImageService imageService,
             IFolderRepository folderRepository,
+            IFriendsRepository friendsRepository,
             DatabaseContext context
         )
         {
@@ -54,6 +58,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
             _userDataRepository = userDataRepository;
             _imageService = imageService;
             _folderRepository = folderRepository;
+            _friendsRepository = friendsRepository;
             _context = context;
         }
 
@@ -64,18 +69,17 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
             var getUserId = requestHandler.GetUserId(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
 
             if (getUserId.IsFailure)
-            {
                 return Unauthorized("Invalid token");
-            }
 
             var getUserResult = await _userDataRepository.GetUserAsync(Guid.Parse(getUserId.Value));
 
             if (getUserResult.IsFailure)
-            {
                 return Unauthorized("User not found");
-            }
 
-            return Ok(getUserResult.Value);
+            var friends = await _friendsRepository
+                .GetFriendsByUserId(Guid.Parse(getUserId.Value));
+
+            return Ok(new object[] { getUserResult.Value, friends });
         }
 
         [Authorize]

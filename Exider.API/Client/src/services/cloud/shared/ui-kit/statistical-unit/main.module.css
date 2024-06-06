@@ -2,9 +2,11 @@
     color: var(--main-paragraph-color);
     display: flex;
     grid-gap: 5px;
+    font-size: 14px;
 }
 
 .amount {
     font-weight: 700;
+    font-size: 14px;
     color: var(--main-font-color);
 }
