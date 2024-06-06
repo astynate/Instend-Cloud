@@ -10,7 +10,7 @@ const SongQueue = observer(({openState, children}) => {
     return (
         <div className={styles.songQueue} id={openState ? "open" : null}>
             <div className={styles.queue}>
-                <Title title='Queue' />
+                <Title value='Queue' />
                 <div className={styles.songs}>
                     {musicState.songQueue.map(element => {
                         return (

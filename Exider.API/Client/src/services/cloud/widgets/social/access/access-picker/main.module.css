@@ -1,6 +1,6 @@
 .accessPicker {
     height: auto;
-    width: 380px;
+    width: 370px;
     display: flex;
     flex-direction: column;
     user-select: none;

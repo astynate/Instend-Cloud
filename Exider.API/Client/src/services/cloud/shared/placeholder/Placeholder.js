@@ -1,9 +1,9 @@
 import React from 'react';
 import styles from './main.module.css';
 
-const Placeholder = (props) => {
+const Placeholder = ({title}) => {
     return (
-        <div className={styles.placeholder}>{props.title}</div>
+        <div className={styles.placeholder}>{title}</div>
     );
  };
 

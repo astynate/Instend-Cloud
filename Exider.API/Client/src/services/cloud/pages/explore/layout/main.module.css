@@ -5,6 +5,7 @@
 }
 
 .header{
+    height: 45px;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -16,9 +17,12 @@
 }
 
 .content {
+    height: auto;
+    width: 100%;
     padding-left: 30px;
     padding-right: 30px;
     display: flex;
     flex-direction: column;
     grid-gap: 15px;
+    position: relative;
 }

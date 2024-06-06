@@ -23,6 +23,15 @@ namespace Exider.Repositories.Public
 
         public async Task<Result<FriendModel>> SendRequestAsync(Guid userId, Guid ownerId)
         {
+            int result = await _context.Friends
+                .Where(x => (x.UserId == userId && x.OwnerId == ownerId) ||(x.OwnerId == userId && x.UserId == ownerId))
+                .ExecuteDeleteAsync();
+
+            if (result != 0) 
+            {
+                return Result.Failure<FriendModel>("0");
+            }
+
             var friend = FriendModel.Create(userId, ownerId);
 
             if (friend.IsFailure)
@@ -34,6 +43,20 @@ namespace Exider.Repositories.Public
             await _context.SaveChangesAsync();
 
             return friend.Value;
+        }
+
+        public async Task<bool> SubmitRequestAsync(Guid userId, Guid friendId)
+        {
+            int result = await _context.Friends
+                .Where(x => x.UserId == userId && x.OwnerId == friendId)
+                .ExecuteUpdateAsync(x => x.SetProperty(p => p.IsSubmited, true));
+
+            await _context.UserData
+                .Where(x => x.UserId == userId || x.UserId == friendId)
+                .ExecuteUpdateAsync(x => x.SetProperty(p => p.FriendCount, p => p.FriendCount + 1));
+
+            await _context.SaveChangesAsync();
+            return result != 0;
         }
     }
 }

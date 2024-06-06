@@ -22,6 +22,22 @@ namespace Exider_Version_2._0._0.Server.Controllers.Public
             _friendsRepository = friendsRepository;
         }
 
+        [HttpPut]
+        public async Task<IActionResult> SubmitFriendRequest(Guid id)
+        {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+                return BadRequest("Invalid user id");
+
+            bool result = await _friendsRepository.SubmitRequestAsync(Guid.Parse(userId.Value), id);
+
+            if (result == false)
+                return Conflict("User not found");
+
+            return Ok(new { userId = userId.Value, id });
+        }
+
         [HttpPost]
         public async Task<IActionResult> SendFriend(Guid id)
         {
@@ -33,14 +49,18 @@ namespace Exider_Version_2._0._0.Server.Controllers.Public
             if (id == Guid.Empty)
                 return BadRequest("User not found");
 
+            if (id == Guid.Parse(userId.Value))
+                return BadRequest("You can't send a friend request to yourself");
+
             var result = await _friendsRepository.SendRequestAsync(id, Guid.Parse(userId.Value));
 
-            if (result.IsFailure)
-            {
-                return Conflict(result.Error);
-            }
+            if (result.IsFailure && result.Error == "0")
+                return Ok(new { isRemove = true, userId = id, ownerId = userId.Value });
 
-            return Ok();
+            if (result.IsFailure)
+                return Conflict(result.Error);
+
+            return Ok(result.Value);
         }
     }
 }

@@ -15,27 +15,29 @@ const Menu = (props) => {
     }, [location]);
 
     return (
-        <div className={styles.menu}>
-            {props.items.map((element, index) => (
+        <div className={styles.menuWrapper}>
+            <div className={styles.menu}>
+                {props.items.map((element, index) => (
+                    <div 
+                        className={styles.button} 
+                        key={index} 
+                        id={location.pathname === element.route || current === index ? 'active' : 'passive'}
+                        ref={location.pathname === element.route || current === index ? pointer : null}
+                        onClick={() => setCurrent(index)}
+                    >
+                        <NavLink to={element.route}>
+                            {element.name}
+                        </NavLink>
+                    </div>
+                ))}
                 <div 
-                    className={styles.button} 
-                    key={index} 
-                    id={location.pathname === element.route || current === index ? 'active' : 'passive'}
-                    ref={location.pathname === element.route || current === index ? pointer : null}
-                    onClick={() => setCurrent(index)}
-                >
-                    <NavLink to={element.route}>
-                        {element.name}
-                    </NavLink>
-                </div>
-            ))}
-            <div 
-                className={styles.pointer}
-                style={{ 
-                    transform: `translateX(${pointerOffset}px)`,
-                    width: `${width}px`
-                }}
-            ></div>
+                    className={styles.pointer}
+                    style={{ 
+                        transform: `translateX(${pointerOffset}px)`,
+                        width: `${width}px`
+                    }}
+                ></div>
+            </div>
         </div>
     );
 };

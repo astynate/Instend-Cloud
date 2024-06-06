@@ -3,14 +3,30 @@ import styles from './main.module.css';
 import Button from '../../../../shared/ui-kit/button/Button';
 import StatisticalUnit from '../../../../shared/ui-kit/statistical-unit/StatisticalUnit';
 import { instance } from '../../../../../../state/Interceptors';
+import userState from '../../../../../../states/user-state';
+import applicationState from '../../../../../../states/application-state';
+import { observer } from 'mobx-react-lite';
 
-const User = ({id, name, nickname, avatar, coins, friends, space}) => {
-    const follow = async () => {
-        if (id) {
-            await instance.post(`/api/friends?${id}`);
-        }
+export const followUser = async (id) => {
+    if (id) {
+        await instance
+            .post(`/api/friends?id=${id}`)
+            .then(response => {
+                if (response && response.data) {
+                    if (response.data.isRemove) {
+                        userState.RemoveFriend(response.data.userId, response.data.ownerId);
+                    } else {
+                        userState.AddFriend(response.data);
+                    }
+                }
+            })
+            .catch(error => {
+                applicationState.AddErrorInQueueByError('Attention!', error);
+            });
     }
+}
 
+const User = observer(({id, name, nickname, avatar, coins, friends, space}) => {
     return (
         <div className={styles.user}>
             <div className={styles.avatar}>
@@ -36,12 +52,12 @@ const User = ({id, name, nickname, avatar, coins, friends, space}) => {
             </div>
             <div className={styles.button}>
                 <Button 
-                    value="Follow"
-                    callback={() => follow()}
+                    value={userState.IsUserInFriends(id) ? "Remove" : "Add"}
+                    callback={() => followUser(id)}
                 />
             </div> 
         </div>
     );
- };
+});
 
 export default User;

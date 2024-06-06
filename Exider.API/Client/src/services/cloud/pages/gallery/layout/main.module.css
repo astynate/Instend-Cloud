@@ -4,6 +4,7 @@
 }
 
 .header {
+    height: 50px;
     top: 60px;
     left: 0;
     position: sticky;
@@ -22,7 +23,7 @@
 .up {
     display: grid;
     align-items: center;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: 1fr auto;
 }
 
 .down {
@@ -43,6 +44,7 @@
 .buttons {
     display: flex;
     grid-gap: 20px;
+    align-items: center;
     justify-content: end;
 }
 

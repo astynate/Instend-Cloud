@@ -1,0 +1,78 @@
+.notification {
+    height: 75px;
+    width: 100%;
+    border-bottom: 1px solid var(--main-border-color);
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    grid-gap: 10px;
+    user-select: none;
+}
+
+.notification:hover {
+    background: var(--pop-up-accent-color); 
+}
+
+.avatar {
+    height: 50px;
+    width: 50px;
+    border-radius: 100%;
+    background: var(--main-font-color);
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.avatar img {
+    height: 100%;
+    width: 100%;
+}
+
+.notification[id="loading"] .avatar {
+    animation: var(--loading-animation);
+}
+
+.unread {
+    width: 5px;
+}
+
+.point {
+    height: 6px;
+    width: 6px;
+    border-radius: 100%;
+    background: var(--main-font-color);
+}
+
+.information {
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--main-font-color);
+}
+
+.text {
+    font-size: 12px;
+    color: var(--main-paragraph-color);
+}
+
+.control {
+    margin-left: auto;
+}
+
+.titlePlaceholder {
+    height: 12px;
+    width: 80px;
+    border-radius: 10px;
+    animation: var(--loading-animation);
+}
+
+.textPlaceholder {
+    height: 6px;
+    width: 125px;
+    border-radius: 10px;
+    animation: var(--loading-animation);
+}

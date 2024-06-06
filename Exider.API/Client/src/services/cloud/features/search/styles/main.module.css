@@ -23,10 +23,11 @@
     font-family: 'Open Sans', sans-serif;
     color: var(--search-font-color);
     border-bottom: 1px solid var(--search-border-color);
+    transition: 0.35s ease;
 }
 
 .search input:focus {
-    border-bottom: 1px solid var(--main-blue-color);
+    border-bottom: 1px solid var(--main-font-color);
 }
 
 .search img {

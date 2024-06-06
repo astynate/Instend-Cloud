@@ -115,7 +115,7 @@ const Chats = observer(({isMobile, setOpenState}) => {
                 }}
             />
             <div className={styles.header}>
-                <Title title='Chats' />
+                <Title value='Chats' />
                 <div className={styles.create}>
                     <img 
                         src={create}

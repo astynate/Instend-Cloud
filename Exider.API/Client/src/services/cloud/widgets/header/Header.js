@@ -11,6 +11,7 @@ import PopUpList from '../../shared/ui-kit/pop-up-list/PopUpList';
 import CommunityEditor from '../../features/add-community-pop-up/CommunityEditor';
 import { instance } from '../../../../state/Interceptors';
 import applicationState from '../../../../states/application-state';
+import Notifications from '../../features/notifications/Notifications';
 
 const CreateCommunityRequest = async (name, description, avatar, header) => {
     let form = new FormData();
@@ -36,6 +37,10 @@ const Header = observer((props) => {
     const { user } = userState;
     const wrapper = useRef();
     const profileRef = useRef();
+
+    useEffect(() => {
+        userState.SetCountNotifications();
+    }, [userState, userState.friends, userState.friends.length]);
 
     useEffect(() => {
         const handleClick = (event) => {
@@ -91,12 +96,14 @@ const Header = observer((props) => {
                         </div>
                     </div>
                     <div className={styles.button}>
+                        {userState.countNotifications > 0 && <div className={styles.hasNotifications}></div>}
                         <img 
                             src={current === 1 ? notificationsActive : notifications} 
                             className={styles.buttonImage} 
                             draggable='false' 
                             onClick={() => setCurrect(1)}
                         />
+                        {current === 1 && <Notifications />}
                     </div>
                     <div ref={profileRef} className={styles.button} onClick={() => setProfilePopUpState(prev => !prev)}>
                         <img src={`data:image/png;base64,${user.avatar}`} draggable='false' className={styles.avatar} />

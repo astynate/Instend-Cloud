@@ -14,6 +14,14 @@ class ApplicationState {
         this.errorQueue = [...this.errorQueue, [title, message]];
     }
 
+    AddErrorInQueueByError(title, error) {
+        if (error && error.response && error.response.data) {
+            this.AddErrorInQueue(title, error.response.data);
+        } else {
+            this.AddErrorInQueue(title, null);
+        }
+    }
+
     RemoveErrorFromQueue() {
         this.errorQueue  = this.errorQueue.slice(1);
     }

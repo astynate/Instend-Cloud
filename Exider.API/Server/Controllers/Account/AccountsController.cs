@@ -3,7 +3,6 @@ using Exider.Core;
 using Exider.Core.Dependencies.Repositories.Account;
 using Exider.Core.Models.Account;
 using Exider.Core.Models.Email;
-using Exider.Core.Models.Storage;
 using Exider.Core.TransferModels.Account;
 using Exider.Dependencies.Services;
 using Exider.Repositories.Account;
@@ -119,6 +118,20 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
             return Ok();
         }
 
+        [HttpGet("id/{id}")]
+        public async Task<IActionResult> GetAccountById(string id)
+        {
+            if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
+                return BadRequest("Email required");
+
+            var userModel = await _userDataRepository.GetUserAsync(Guid.Parse(id));
+
+            if (userModel.IsFailure)
+                return StatusCode(470, "User not found");
+
+            return Ok(userModel.Value);
+        }
+
         [HttpGet("nickname/{nickname}")]
         public async Task<IActionResult> GetAccountByNickname(string nickname)
         {
@@ -145,85 +158,78 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
             IEncryptionService encryptionService
         )
         {
-            try
+            return await _context.Database.CreateExecutionStrategy().ExecuteAsync(async Task<IActionResult> () =>
             {
-                return await _context.Database.CreateExecutionStrategy().ExecuteAsync(async Task<IActionResult> () =>
+                using (var transaction = _context.Database.BeginTransaction())
                 {
-                    using (var transaction = _context.Database.BeginTransaction())
+                    var userCreationResult = UserModel.Create
+                    (
+                        user.name,
+                        user.surname,
+                        user.nickname,
+                        user.email,
+                        user.password
+                    );
+
+                    if (userCreationResult.IsFailure)
                     {
-                        var userCreationResult = UserModel.Create
-                        (
-                            user.name,
-                            user.surname,
-                            user.nickname,
-                            user.email,
-                            user.password
-                        );
-
-                        if (userCreationResult.IsFailure)
-                        {
-                            return BadRequest(userCreationResult.Error);
-                        }
-
-                        await _usersRepository.AddAsync(userCreationResult.Value);
-
-                        var emailCreationResult = EmailModel.Create
-                        (
-                            userCreationResult.Value.Email,
-                            false,
-                            userCreationResult.Value.Id
-                        );
-
-                        if (emailCreationResult.IsFailure)
-                        {
-                            return BadRequest(emailCreationResult.Error);
-                        }
-
-                        await _emailRepository.AddAsync(emailCreationResult.Value);
-
-                        var confirmationCreationResult = ConfirmationModel.Create
-                        (
-                            userCreationResult.Value.Email,
-                            encryptionService.GenerateSecretCode(6),
-                            userCreationResult.Value.Id
-                        );
-
-                        if (confirmationCreationResult.IsFailure)
-                        {
-                            return BadRequest(confirmationCreationResult.Error);
-                        }
-
-                        await _confirmationRespository.AddAsync(confirmationCreationResult.Value);
-
-                        var userDataCreationResult = UserDataModel.Create(userCreationResult.Value.Id);
-
-                        if (userDataCreationResult.IsFailure)
-                        {
-                            return BadRequest(userDataCreationResult.Error);
-                        }
-
-                        await _userDataRepository.AddAsync(userDataCreationResult.Value);
-
-                        await emailService.SendEmailConfirmation(userCreationResult.Value.Email, confirmationCreationResult.Value.Code,
-                            Configuration.URL + "account/email/confirmation/" + confirmationCreationResult.Value.Link.ToString());
-
-                        var systemResult = await CreateSystemFolders(userCreationResult.Value.Id);
-
-                        if (systemResult.IsFailure)
-                        {
-                            return Conflict(systemResult.Error);
-                        }
-
-                        transaction.Commit();
-
-                        return Ok(confirmationCreationResult.Value.Link.ToString());
+                        return BadRequest(userCreationResult.Error);
                     }
-                });
-            } 
-            catch 
-            {
-                return BadRequest();
-            }
+
+                    await _usersRepository.AddAsync(userCreationResult.Value);
+
+                    var emailCreationResult = EmailModel.Create
+                    (
+                        userCreationResult.Value.Email,
+                        false,
+                        userCreationResult.Value.Id
+                    );
+
+                    if (emailCreationResult.IsFailure)
+                    {
+                        return BadRequest(emailCreationResult.Error);
+                    }
+
+                    await _emailRepository.AddAsync(emailCreationResult.Value);
+
+                    var confirmationCreationResult = ConfirmationModel.Create
+                    (
+                        userCreationResult.Value.Email,
+                        encryptionService.GenerateSecretCode(6),
+                        userCreationResult.Value.Id
+                    );
+
+                    if (confirmationCreationResult.IsFailure)
+                    {
+                        return BadRequest(confirmationCreationResult.Error);
+                    }
+
+                    await _confirmationRespository.AddAsync(confirmationCreationResult.Value);
+
+                    var userDataCreationResult = UserDataModel.Create(userCreationResult.Value.Id);
+
+                    if (userDataCreationResult.IsFailure)
+                    {
+                        return BadRequest(userDataCreationResult.Error);
+                    }
+
+                    await _userDataRepository.AddAsync(userDataCreationResult.Value);
+
+                    await emailService.SendEmailConfirmation(userCreationResult.Value.Email, confirmationCreationResult.Value.Code,
+                        Configuration.URL + "account/email/confirmation/" + confirmationCreationResult.Value.Link.ToString());
+
+                    var systemResult = await CreateSystemFolders(userCreationResult.Value.Id);
+
+                    if (systemResult.IsFailure)
+                    {
+                        return Conflict(systemResult.Error);
+                    }
+
+                    transaction.Commit();
+
+                    return Ok(confirmationCreationResult.Value.Link.ToString());
+                }
+            });
         }
 
         [HttpPut]

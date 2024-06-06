@@ -1,6 +1,6 @@
 .addToAlbum {
     height: 470px;
-    width: 400px;
+    width: 370px;
     display: grid;
     grid-template-rows: 90px auto 80px;
 }

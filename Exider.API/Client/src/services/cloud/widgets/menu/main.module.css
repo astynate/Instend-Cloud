@@ -1,3 +1,10 @@
+.menuWrapper {
+    position: fixed;
+    top: 65px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 .menu {
     height: auto;
     display: flex;
@@ -24,14 +31,12 @@
 }
 
 .button[id="active"] a {
-    /* font-weight: 700; */
     color: var(--main-font-color);
 }
 
 .pointer {
     height: 100%;
     width: 90px;
-    /* background: rgb(255, 255, 255); */
     position: absolute;
     top: 0;
     left: 0;
