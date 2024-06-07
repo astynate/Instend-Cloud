@@ -54,9 +54,10 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
         (
             ICommentsRepository<AlbumCommentLink> commentsRepository,
             IUserDataRepository usersRepository,
-            string? text,
-            string? albumId,
-            int queueId
+            [FromForm] string? text,
+            [FromForm] IFormFile[] files,
+            [FromForm] string? albumId,
+            [FromForm] int queueId
         )
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);

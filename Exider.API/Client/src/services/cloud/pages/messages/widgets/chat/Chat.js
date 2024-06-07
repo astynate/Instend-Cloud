@@ -175,7 +175,7 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
 
     let pinnedMessages = [];
 
-    if (chat.messages) {
+    if (chat && chat.messages) {
         pinnedMessages = chat.messages.filter(element => 
             element.IsPinned && element.IsPinned === true)
     }

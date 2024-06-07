@@ -1,0 +1,31 @@
+.emoji {
+    top: 30px;
+    left: 0;
+    height: auto;
+    width: auto;
+    background: var(--main-accent-color);
+    border-radius: 10px;
+    position: absolute;
+    z-index: 2;
+    filter: drop-shadow(0px 0px 50px var(--main-shadow));
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 3px;
+    padding: 3px;
+}
+
+.button {
+    font-size: 25px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 7px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.button:hover {
+    background: var(--pop-up-accent-color);
+}

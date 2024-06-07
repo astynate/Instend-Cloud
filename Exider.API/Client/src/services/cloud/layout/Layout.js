@@ -20,23 +20,38 @@ import musicState from '../../../states/music-state';
 import { GetCurrentSong } from '../widgets/navigation-panel/NavigationPanel';
 import chatsState from '../../../states/chats-state';
 import { useNavigate } from 'react-router-dom';
+import * as signalR from '@microsoft/signalr';
 
-export const messageWSContext = createSignalRContext();
-export const storageWSContext = createSignalRContext();
-export const galleryWSContext = createSignalRContext();
+const createHubConnection = (url) => {
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl(url, {
+            withCredentials: true
+        })
+        .withAutomaticReconnect()
+        .build();
+
+    connection.start().catch(err => console.error('Connection failed: ', err));
+    return connection;
+};
+
+export const messageWSContext = createSignalRContext(null);
+export const storageWSContext = createSignalRContext(null);
+export const galleryWSContext = createSignalRContext(null);
 export const layoutContext = createContext(); 
 export const imageTypes = ['png', 'jpg', 'jpeg', 'gif'];
 
 export const connectToFoldersListener = async () => {
     try {
-        while (storageWSContext.connection.state !== 'Connected') {
-            if (storageWSContext.connection.state === 'Disconnected') {
-                await storageWSContext.connection.start();
-            }
-            await new Promise(resolve => setTimeout(resolve, 1000));
-        }
+        // while (storageWSContext.connection.state !== 'Connected') {
+        //     if (storageWSContext.connection.state === 'Disconnected') {
+        //         await storageWSContext.connection.start();
+        //     }
+        //     await new Promise(resolve => setTimeout(resolve, 1000));
+        // }
 
-        await storageWSContext.connection.invoke("Join", localStorage.getItem("system_access_token"));
+        if (storageWSContext.connection.state === 'Connected') {
+            await storageWSContext.connection.invoke("Join", localStorage.getItem("system_access_token"));
+        }
     } catch (error) {
         console.error('Failed to connect or join:', error);
     }
@@ -44,14 +59,16 @@ export const connectToFoldersListener = async () => {
 
 export const connectToDirectListener = async (id) => {
     try {
-        while (messageWSContext.connection.state !== 'Connected') {
-            if (messageWSContext.connection.state === 'Disconnected') {
-                await messageWSContext.connection.start();
-            }
-            await new Promise(resolve => setTimeout(resolve, 1000));
-        }
+        // while (messageWSContext.connection.state !== 'Connected') {
+        //     if (messageWSContext.connection.state === 'Disconnected') {
+        //         await messageWSContext.connection.start();
+        //     }
+        //     await new Promise(resolve => setTimeout(resolve, 1000));
+        // }
 
-        await messageWSContext.connection.invoke("ConnectToDirect", id, localStorage.getItem("system_access_token"));
+        if (storageWSContext.connection.state === 'Connected') {
+            await messageWSContext.connection.invoke("ConnectToDirect", id, localStorage.getItem("system_access_token"));
+        }
     } catch (error) {
         console.error('Failed to connect or join:', error);
     }
@@ -66,7 +83,7 @@ const Layout = observer(() => {
     const [errorMessage, setErrorMessage] = useState('');
     const [song, setSong] = useState(null);
     const navigate = useNavigate();
-    const url = 'http://localhost:5000' // 'http://localhost:5000/message-hub'
+    const url = 'https://6826-151-249-249-179.ngrok-free.app' // 'http://localhost:5000/message-hub'
 
     useEffect(() => {
         setSong(GetCurrentSong());

@@ -4,6 +4,10 @@ import UserAvatar from '../../../widgets/avatars/user-avatar/UserAvatar';
 import { ConvertDate } from '../../../../../utils/DateHandler';
 import Loader from '../../loader/Loader';
 import BurgerMenu from '../../ui-kit/burger-menu/BurgerMenu';
+import StatisticButton from './elements/statistic-button/StatisticButton';
+import smile from './images/smile.png';
+import commentImage from './images/comment.png';
+import views from './images/view.png';
 
 const Comment = ({user, comment, isLoading, isUploading, deleteCallback}) => {
     if (user && comment) {
@@ -16,6 +20,25 @@ const Comment = ({user, comment, isLoading, isUploading, deleteCallback}) => {
                         <span className={styles.time}>{comment.date ? `· ${ConvertDate(comment.date)}` : null}</span>
                     </div>
                     <span className={styles.text}>{comment.text}</span>
+                    <div className={styles.attachments}>
+                        <div className={styles.image}></div>
+                        <div className={styles.image}></div>
+                        <div className={styles.image}></div>
+                    </div>
+                    <div className={styles.control}>
+                        <StatisticButton 
+                            image={smile} 
+                            title={"0"} 
+                        />
+                        <StatisticButton 
+                            image={commentImage}
+                            title={"0"} 
+                        />
+                        <StatisticButton 
+                            image={views}
+                            title={"0"} 
+                        />
+                    </div>
                 </div>
                 {isUploading ? 
                     <div className={styles.right}>

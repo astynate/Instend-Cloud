@@ -25,7 +25,7 @@ const Album = observer(({photoGrid, scale, scroll}) => {
 
     return (
         <>
-            <AlbumView 
+            <AlbumView
                 uniqItems={[
                     {'title': "Photos", 'component': 
                         <>
@@ -33,7 +33,7 @@ const Album = observer(({photoGrid, scale, scroll}) => {
                             {!albums[params.id] || !albums[params.id].photos || albums[params.id].photos.length === 0 ?
                                 <div className={styles.noImages}>
                                     <Placeholder title="No photos uploaded" />
-                                </div>  
+                                </div>
                             :
                                 <PhotoList
                                     photos={galleryState.albums && galleryState.albums[params.id] && galleryState.albums[params.id].photos ? 

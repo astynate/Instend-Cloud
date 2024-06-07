@@ -10,9 +10,10 @@
     margin-right: 8%;
 }
 
-.albumPlaceholder {
+.albumPlaceholder, .noImages {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 200px;
     width: 100%;
 }

@@ -1,13 +1,17 @@
 .comment {
     display: flex;
-    align-items: center;
+    align-items: start;
     grid-gap: 15px;
+    padding: 15px;
+    padding-top: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--main-border-color);
 }
 
 .information {
     display: flex;
+    width: 100%;
     grid-gap: 3px;
-    max-width: 300px;
     flex-direction: column;
 }
 
@@ -30,6 +34,7 @@
 .text {
     font-size: 16px;
     color: var(--main-font-color);
+    max-width: 300px;
 }
 
 .avatarPreview {
@@ -56,6 +61,26 @@
 
 .right {
     margin-left: auto;
+}
+
+.control {
+    width: 100%;
+    display: flex;
+    margin-top: 5px;
+    grid-gap: 5px;
+}
+
+.attachments {
+    margin-top: 10px;
+    display: flex;
+    grid-gap: 5px;
+}
+
+.image {
+    height: 250px;
+    width: 200px;
+    border-radius: 10px;
+    animation: var(--loading-animation);
 }
 
 @keyframes preview {

@@ -1,9 +1,11 @@
 .subInput {
+    max-height: 300px;
     width: 100%;
     background: none;
     border: none;
     outline: none;
-    /* border-bottom: 1px solid var(--main-border-color); */
     font-family: 'Open Sans', sans-serif;
     font-size: 15px;
+    resize: none;
+    padding-top: 10px;
 }

@@ -39,12 +39,21 @@ namespace Exider.Repositories.Storage
             AlbumModel[] albums = await _context.Albums.AsNoTracking()
                 .Where(x => x.OwnerId == userId && x.TypeId == type.ToString()).ToArrayAsync();
 
-            foreach (AlbumModel album in albums)
+            AlbumModel[] accessAlbums = await _context.AlbumAccess.AsNoTracking()
+                .Where(x => x.UserId == userId)
+                .Join(_context.Albums,
+                    access => access.ItemId,
+                    album => album.Id,
+                    (access, album) => album).ToArrayAsync();
+
+            var combinedAlbums = albums.Concat(accessAlbums);
+
+            foreach (AlbumModel album in combinedAlbums)
             {
                 await album.SetCover(imageService);
             }
 
-            return Result.Success(albums);
+            return Result.Success(combinedAlbums.ToArray());
         }
 
         public async Task<Result<AlbumModel>> DeleteAlbumAsync(Guid id, Guid userId)

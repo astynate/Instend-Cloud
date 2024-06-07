@@ -14,7 +14,7 @@
     grid-gap: 17px;
     border-radius: 10px;
     font-weight: 400;
-    transition: 0.05s ease;
+    /* transition: 0.05s ease; */
 }
 
 .navigation-button nav { 

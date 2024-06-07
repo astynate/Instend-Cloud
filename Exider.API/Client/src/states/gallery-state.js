@@ -157,10 +157,15 @@ class GalleryState {
         }
     }
 
-    async AddUploadingAlbumComment(text, user, albumId) {
+    async AddUploadingAlbumComment(text, attachments, user, albumId) {
+        if (!attachments) {
+            attachments = [];
+        }
+
         const comment = {
             comment: {
-                text
+                text,
+                attachments
             },
             user: user,
             isUploading: true,
@@ -169,13 +174,22 @@ class GalleryState {
 
         if (albumId && this.albums[albumId]) {
             this.albums[albumId].comments = [comment, ...this.albums[albumId].comments];
-
+            let form = new FormData()
+            
+            form.append('text', text);
+            form.append('albumId', albumId);
+            form.append('queueId', comment.queueId);
+            
+            for(let i = 0; i < attachments.length; i++){
+                form.append('files', attachments[i]);
+            }
+            
             await instance
-                .post(`/api/album-comments?albumId=${albumId}&text=${text}&queueId=${comment.queueId}`)
+                .post(`/api/album-comments`, form)
                 .catch(error => {
                     applicationState.AddErrorInQueue(error.response.data);
                     this.DeleteCommentByQueueId(comment.queueId, albumId);
-                })
+                })            
         }
         
         this.albumCommentQueueId++;

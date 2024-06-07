@@ -7,7 +7,7 @@ const Button = (props) => {
     useEffect(() => {
         if (props.isEnter) {
             const handleKeyDown = (event) => {
-                if (event.key === 'Enter') {
+                if (event.key === 'Enter' && !event.shiftKey) {
                     props.callback();
                 }
             };

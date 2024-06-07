@@ -1,6 +1,62 @@
 .commentField {
     display: flex;
     grid-gap: 15px;
-    padding-bottom: 15px;
+    padding: 15px;
+    padding-bottom: 5px;
     border-bottom: 1px solid var(--main-border-color);
+}
+
+.inputData {
+    width: 100%;
+}
+
+.control {
+    width: 100%;
+    display: flex;
+}
+
+.button {
+    position: relative;
+}
+
+.imagePreview {
+    height: 200px;
+    width: auto;
+    max-width: 400px;
+    object-fit: cover;
+    border-radius: 7px;
+    position: relative;
+}
+
+.images {
+    display: flex;
+    grid-gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.imageWrapper {
+    position: relative;
+}
+
+.closeButton {
+    height: 35px;
+    width: 35px;
+    border-radius: 100%;
+    background: var(--pop-up-accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.cancel {
+    height: 40%;
+    width: 40%;
+    filter: var(--main-filter);
+    image-rendering: -webkit-optimize-contrast;
 }
