@@ -1,5 +1,6 @@
 using Exider.Core;
 using Exider.Core.Dependencies.Repositories.Account;
+using Exider.Core.Dependencies.Repositories.Storage;
 using Exider.Core.Models.Account;
 using Exider.Dependencies.Services;
 using Exider.Repositories.Account;
@@ -49,8 +50,9 @@ builder.Services.AddScoped<IDirectRepository, DirectRepository>();
 builder.Services.AddScoped<IMessengerReposiroty, MessengerReposiroty>();
 builder.Services.AddScoped<ICommunityRepository, CommunityRepository>();
 builder.Services.AddScoped<IFriendsRepository, FriendsRepository>();
-builder.Services.AddScoped(typeof(ICommentsRepository<>), typeof(CommentsRepository<>));
+builder.Services.AddScoped(typeof(ICommentsRepository<,>), typeof(CommentsRepository<,>));
 builder.Services.AddScoped(typeof(IAccessRepository<,>), typeof(AccessRepository<,>));
+builder.Services.AddScoped(typeof(IAttachmentsRepository<>), typeof(AttachmentsRepository<>));
 builder.Services.AddScoped(typeof(IFormatRepository<>), typeof(FormatRepository<>));
 builder.Services.AddScoped(typeof(ILinkBaseRepository<>), typeof(LinkBaseRepository<>));
 

@@ -21,9 +21,9 @@ const Comment = ({user, comment, isLoading, isUploading, deleteCallback}) => {
                     </div>
                     <span className={styles.text}>{comment.text}</span>
                     <div className={styles.attachments}>
+                        {/* <div className={styles.image}></div>
                         <div className={styles.image}></div>
-                        <div className={styles.image}></div>
-                        <div className={styles.image}></div>
+                        <div className={styles.image}></div> */}
                     </div>
                     <div className={styles.control}>
                         <StatisticButton 

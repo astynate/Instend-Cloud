@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using Exider.Repositories.Account;
 using static Exider.Core.Models.Links.AlbumLinks;
+using Exider.Core.Dependencies.Repositories.Storage;
+using Exider.Core;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Comments
 {
@@ -14,7 +16,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
     {
         private readonly IRequestHandler _requestHandler;
 
-        private readonly ICommentsRepository<AlbumCommentLink> _commentsRepository;
+        private readonly ICommentsRepository<AlbumCommentLink, AttachmentCommentLink> _commentsRepository;
 
         private readonly ICommentBaseRepository _commentRepository;
 
@@ -23,7 +25,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
         public AlbumCommentsController
         (
             IRequestHandler requestHandler,
-            ICommentsRepository<AlbumCommentLink> commentLinkRepository,
+            ICommentsRepository<AlbumCommentLink, AttachmentCommentLink> commentLinkRepository,
             IHubContext<GalleryHub> galleryHub,
             ICommentBaseRepository commentBaseRepository
         )
@@ -52,8 +54,9 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
         [Route("/api/album-comments")]
         public async Task<IActionResult> Add
         (
-            ICommentsRepository<AlbumCommentLink> commentsRepository,
+            ICommentsRepository<AlbumCommentLink, AttachmentCommentLink> commentsRepository,
             IUserDataRepository usersRepository,
+            IAttachmentsRepository<AttachmentCommentLink> attachmentsRepository,
             [FromForm] string? text,
             [FromForm] IFormFile[] files,
             [FromForm] string? albumId,
@@ -71,7 +74,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
             if (string.IsNullOrEmpty(albumId) || string.IsNullOrWhiteSpace(albumId))
                 return BadRequest("Text is required");
 
-            var result = await commentsRepository.AddComment(text, Guid.Parse(userId.Value), Guid.Parse(albumId));
+            var result = await commentsRepository.AddComment(text, files, Guid.Parse(userId.Value), Guid.Parse(albumId));
 
             if (result.IsFailure)
                 return BadRequest(result.Error);

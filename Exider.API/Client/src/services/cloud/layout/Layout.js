@@ -20,19 +20,6 @@ import musicState from '../../../states/music-state';
 import { GetCurrentSong } from '../widgets/navigation-panel/NavigationPanel';
 import chatsState from '../../../states/chats-state';
 import { useNavigate } from 'react-router-dom';
-import * as signalR from '@microsoft/signalr';
-
-const createHubConnection = (url) => {
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl(url, {
-            withCredentials: true
-        })
-        .withAutomaticReconnect()
-        .build();
-
-    connection.start().catch(err => console.error('Connection failed: ', err));
-    return connection;
-};
 
 export const messageWSContext = createSignalRContext(null);
 export const storageWSContext = createSignalRContext(null);
@@ -40,31 +27,24 @@ export const galleryWSContext = createSignalRContext(null);
 export const layoutContext = createContext(); 
 export const imageTypes = ['png', 'jpg', 'jpeg', 'gif'];
 
-export const connectToFoldersListener = async () => {
-    try {
-        // while (storageWSContext.connection.state !== 'Connected') {
-        //     if (storageWSContext.connection.state === 'Disconnected') {
-        //         await storageWSContext.connection.start();
-        //     }
-        //     await new Promise(resolve => setTimeout(resolve, 1000));
-        // }
-
-        if (storageWSContext.connection.state === 'Connected') {
-            await storageWSContext.connection.invoke("Join", localStorage.getItem("system_access_token"));
-        }
-    } catch (error) {
-        console.error('Failed to connect or join:', error);
+export const WaitingForConnection = async (signalRContext) => {
+    while (signalRContext.connection.state === 'Connecting') {
+        await new Promise(resolve => setTimeout(resolve, 1000));
     }
-};
+
+    if (signalRContext.connection.state === 'Disconnected') {
+        try {
+            applicationState.AddErrorInQueue('Connection interrupted!', 'Perhaps you are not connected to the Internet.')
+            await signalRContext.connection.start();
+        } catch (error) {
+            applicationState.AddErrorInQueue('Connection interrupted!', 'Perhaps you are not connected to the Internet.')
+        }
+    }
+}
 
 export const connectToDirectListener = async (id) => {
     try {
-        // while (messageWSContext.connection.state !== 'Connected') {
-        //     if (messageWSContext.connection.state === 'Disconnected') {
-        //         await messageWSContext.connection.start();
-        //     }
-        //     await new Promise(resolve => setTimeout(resolve, 1000));
-        // }
+        await WaitingForConnection(storageWSContext);
 
         if (storageWSContext.connection.state === 'Connected') {
             await messageWSContext.connection.invoke("ConnectToDirect", id, localStorage.getItem("system_access_token"));
@@ -74,8 +54,31 @@ export const connectToDirectListener = async (id) => {
     }
 };
 
+export const connectToFoldersListener = async () => {
+    try {
+        await WaitingForConnection(storageWSContext);
+
+        if (storageWSContext.connection.state === 'Connected') {
+            await storageWSContext.connection.invoke("Join", localStorage.getItem("system_access_token"));
+        }
+    } catch (error) {
+        console.error('Failed to connect or join:', error);
+    }
+};
+
+export const connectToGallerySocket = async () => {
+    try {
+        await WaitingForConnection(galleryWSContext);
+
+        if (galleryWSContext.connection.state === 'Connected') {
+            await galleryWSContext.connection.invoke("Join", localStorage.getItem("system_access_token"));
+        }
+    } catch (error) {
+        console.error('Failed to connect or join:', error);
+    }
+};
+
 const Layout = observer(() => {
-    const handleLoading = () => setIsLoading(false);
     const [isLoading, setIsLoading] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [isError, setErrorState] = useState(false);
@@ -83,7 +86,7 @@ const Layout = observer(() => {
     const [errorMessage, setErrorMessage] = useState('');
     const [song, setSong] = useState(null);
     const navigate = useNavigate();
-    const url = 'https://6826-151-249-249-179.ngrok-free.app' // 'http://localhost:5000/message-hub'
+    const url = 'http://localhost:5000' // 'http://localhost:5000/message-hub'
 
     useEffect(() => {
         setSong(GetCurrentSong());
@@ -301,21 +304,6 @@ const Layout = observer(() => {
     }, [storageWSContext.connection]); 
     
     useEffect(() => {
-        const connectToGallerySocket = async () => {
-            try {
-                while (galleryWSContext.connection.state !== 'Connected') {
-                    if (galleryWSContext.connection.state === 'Disconnected') {
-                        await galleryWSContext.connection.start();
-                    }
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                }
-    
-                await galleryWSContext.connection.invoke("Join", localStorage.getItem("system_access_token"));
-            } catch (error) {
-                console.error('Failed to connect or join:', error);
-            }
-        };
-    
         connectToGallerySocket();
     }, [galleryWSContext.connection]);
 

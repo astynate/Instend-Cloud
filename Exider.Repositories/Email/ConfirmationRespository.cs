@@ -119,5 +119,4 @@ namespace Exider.Repositories.Email
             return Result.Success(confirmation);
         }
     }
-
 }
