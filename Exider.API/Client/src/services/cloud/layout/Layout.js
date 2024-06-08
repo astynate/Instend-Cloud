@@ -219,6 +219,13 @@ const Layout = observer(() => {
         }
     );
 
+    galleryWSContext.useSignalREffect(
+        "AddComment",
+        ({comment, user, albumId, queueId}) => {
+            galleryState.ReplaceLoadingComment({comment: comment, user: user}, queueId, albumId);
+        }
+    );
+
     /////////////////////////////////////////////////////////////////////////////////
 
     storageWSContext.useSignalREffect(

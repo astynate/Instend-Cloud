@@ -1,31 +1,63 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core;
+using Exider.Core.Models.Comments;
+using Exider.Core.Models.Links;
+using Exider.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
+using System.Xml.Linq;
 
 namespace Exider.Repositories.Comments
 {
-    public class CommentBaseRepository : ICommentBaseRepository
+    public class CommentBaseRepository<AttachmentLink> : ICommentBaseRepository<AttachmentLink> where AttachmentLink : LinkBase, new()
     {
         private readonly DatabaseContext _context;
 
-        public CommentBaseRepository(DatabaseContext context)
+        private readonly DbSet<AttachmentLink> _links;
+
+        private readonly IFileService _fileService;
+
+        public CommentBaseRepository(DatabaseContext context, IFileService fileService)
         {
             _context = context;
+            _links = context.Set<AttachmentLink>();
+            _fileService = fileService;
         }
 
         public async Task<Result> DeleteAsync(Guid id)
         {
-            int result = await _context.Comments
-                .Where(c => c.Id == id)
-                .ExecuteDeleteAsync();
+            CommentModel[] comments = await _context.Comments
+                .Where(c => c.Id == id).ToArrayAsync();
 
-            if (result == 0)
+            if (comments.Length == 0)
             {
                 return Result.Failure("Comment not found");
             }
 
-            await _context.SaveChangesAsync();
+            foreach (var comment in comments)
+            {
+                comment.SetAttachment(await _links
+                    .Where(x => x.ItemId == comment.Id)
+                    .Join(_context.Attachments,
+                        link => link.LinkedItemId,
+                        attachment => attachment.Id,
+                        (link, attachments) => attachments)
+                    .ToArrayAsync());
 
+                foreach (var attachment in comment.attechments)
+                {
+                    if (File.Exists(attachment.Path))
+                    {
+                        File.Delete(attachment.Path);
+                    }
+
+                    _context.Remove(attachment);
+                }
+
+                _context.Remove(comment);
+            }
+
+            await _context.SaveChangesAsync();
             return Result.Success();
         }
     }

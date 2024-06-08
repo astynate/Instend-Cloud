@@ -78,9 +78,17 @@
 
 .image {
     height: 250px;
-    width: 200px;
+    width: auto;
+    max-width: 400px;
     border-radius: 10px;
-    animation: var(--loading-animation);
+    overflow: hidden;
+    /* animation: var(--loading-animation); */
+}
+
+.image img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
 }
 
 @keyframes preview {

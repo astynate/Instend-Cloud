@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styles from './main.module.css';
 import UserAvatar from '../../../widgets/avatars/user-avatar/UserAvatar';
 import { ConvertDate } from '../../../../../utils/DateHandler';
@@ -21,9 +21,20 @@ const Comment = ({user, comment, isLoading, isUploading, deleteCallback}) => {
                     </div>
                     <span className={styles.text}>{comment.text}</span>
                     <div className={styles.attachments}>
-                        {/* <div className={styles.image}></div>
-                        <div className={styles.image}></div>
-                        <div className={styles.image}></div> */}
+                        {comment && comment.attechments && comment.attechments.map && comment.attechments.map((element, index) => {
+                            if (element.file) {
+                                return (
+                                    <div 
+                                        className={styles.image}
+                                        key={index}
+                                    >
+                                        <img src={`data:image/png;base64,${element.file}`} />
+                                    </div>
+                                )
+                            } else {
+                                return null;
+                            }
+                        })}
                     </div>
                     <div className={styles.control}>
                         <StatisticButton 

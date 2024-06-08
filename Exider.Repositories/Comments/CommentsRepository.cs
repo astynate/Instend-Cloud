@@ -8,8 +8,6 @@ using Exider.Core.Models.Storage;
 using Exider.Services.External.FileService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Exider.Repositories.Comments
 {
@@ -18,8 +16,13 @@ namespace Exider.Repositories.Comments
         where AttachmentLink : LinkBase, ILinkBase, new()
     {
         private readonly DatabaseContext _context;
+
         private readonly DbSet<CommentLink> _entities;
+
+        private readonly DbSet<AttachmentLink> _links;
+
         private readonly IFileService _fileService;
+
         private readonly IAttachmentsRepository<AttachmentLink> _attachmentsRepository;
 
         public CommentsRepository
@@ -31,10 +34,10 @@ namespace Exider.Repositories.Comments
         {
             _context = context;
             _entities = context.Set<CommentLink>();
+            _links = context.Set<AttachmentLink>();
             _fileService = fileService;
             _attachmentsRepository = attachmentsRepository;
         }
-
 
         public async Task<object[]> GetAsync(Guid itemId)
         {
@@ -71,31 +74,18 @@ namespace Exider.Repositories.Comments
                         }
                     }
                 )
-                .GroupJoin(
-                    _context.CommentAttachments,
-                    prev => prev.Comment.Id,
-                    link => link.ItemId,
-                    (prev, link) => new { prev, link }
-                )
-                .SelectMany(
-                    x => x.link.DefaultIfEmpty(),
-                    (prev, link) => new
-                    {
-                        prev.prev.Comment,
-                        prev.prev.User,
-                        Attachment = link != null ? new { link.LinkedItemId, link.ItemId } : null
-                    }
-                )
-                .GroupJoin(_context.Attachments,
-                    prev => prev.Attachment.LinkedItemId,
-                    attachment => attachment.Id,
-                    (prev, attachment) => new
-                    {
-                        prev.Comment,
-                        prev.User,
-                        attachment
-                    })
                 .ToListAsync();
+
+            foreach (var comment in comments)
+            {
+                comment.Comment.SetAttachment(await _links
+                    .Where(x => x.ItemId == comment.Comment.Id)
+                    .Join(_context.Attachments,
+                        link => link.LinkedItemId,
+                        attachment => attachment.Id,
+                        (link, attachments) => attachments)
+                    .ToArrayAsync());
+            }
 
             var result = new List<object>();
 
@@ -103,12 +93,12 @@ namespace Exider.Repositories.Comments
             {
                 var avatar = await _fileService.ReadFileAsync(comment.User.AvatarPath);
 
-                foreach (var attachment in comment.attachment)
+                foreach (var attachment in comment.Comment.attechments)
                 {
                     await attachment.SetFile(_fileService);
                 }
 
-                comment.Comment.SetAttachment(comment.attachment.ToArray());
+                comment.Comment.SetAttachment(comment.Comment.attechments.ToArray());
 
                 if (avatar.IsSuccess)
                 {

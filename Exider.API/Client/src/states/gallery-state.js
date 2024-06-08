@@ -165,7 +165,7 @@ class GalleryState {
         const comment = {
             comment: {
                 text,
-                attachments
+                attachments: attachments
             },
             user: user,
             isUploading: true,

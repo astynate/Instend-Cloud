@@ -30,6 +30,8 @@ const CommentField = ({id, setUploadingComment}) => {
         if (id && comment !== null && comment !== '') {
             await setUploadingComment(comment, images, userState.user, id);
             setComment('');
+            setImages([]);
+            setImagesUrls([]);
         }
     }
 

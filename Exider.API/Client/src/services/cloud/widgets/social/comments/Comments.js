@@ -6,7 +6,7 @@ import PublicationsWrapper from '../../../features/publications-wrapper/Publicat
 
 const Comments = ({fetch_callback, comments, id, setUploadingComment, deleteCallback}) => {
     const [isLoading, setLoadingState] = useState(false);
-    
+
     useEffect(() => {
         if (fetch_callback) {
             (async () => {

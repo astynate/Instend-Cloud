@@ -18,7 +18,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
 
         private readonly ICommentsRepository<AlbumCommentLink, AttachmentCommentLink> _commentsRepository;
 
-        private readonly ICommentBaseRepository _commentRepository;
+        private readonly ICommentBaseRepository<AttachmentCommentLink> _commentRepository;
 
         private readonly IHubContext<GalleryHub> _galleryHub;
 
@@ -27,7 +27,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
             IRequestHandler requestHandler,
             ICommentsRepository<AlbumCommentLink, AttachmentCommentLink> commentLinkRepository,
             IHubContext<GalleryHub> galleryHub,
-            ICommentBaseRepository commentBaseRepository
+            ICommentBaseRepository<AttachmentCommentLink> commentBaseRepository
         )
         {
             _requestHandler = requestHandler;
