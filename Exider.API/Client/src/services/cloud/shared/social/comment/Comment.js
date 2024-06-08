@@ -45,10 +45,10 @@ const Comment = ({user, comment, isLoading, isUploading, deleteCallback}) => {
                             image={commentImage}
                             title={"0"} 
                         />
-                        <StatisticButton 
+                        {/* <StatisticButton 
                             image={views}
                             title={"0"} 
-                        />
+                        /> */}
                     </div>
                 </div>
                 {isUploading ? 

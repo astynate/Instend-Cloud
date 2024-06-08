@@ -30,6 +30,7 @@ namespace Exider.Core
         public DbSet<Models.Access.FileAccess> FileAccess { get; set; } = null!;
         public DbSet<CommentModel> Comments { get; set; } = null!;
         public DbSet<AlbumCommentLink> AlbumCommentLinks { get; set; } = null!;
+        public DbSet<ComminityPublicationLink> ComminityPublicationLinks { get; set; } = null!;
         public DbSet<MessageModel> Messages { get; set; } = null!;
         public DbSet<DirectMessageLink> DirectLinks { get; set; } = null!;
         public DbSet<CommunityModel> Communities { get; set; } = null!;

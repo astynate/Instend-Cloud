@@ -16,6 +16,8 @@ namespace Exider.Core.Models.Public
         [Column("header")] public string Header { get; private set; } = string.Empty;
         [Column("owner_id")] public Guid OwnerId { get; private set; }
 
+        [NotMapped] public int WorldWide { get; set; } = 0;
+
         private CommunityModel() { }
 
         public static Result<CommunityModel> Create(Guid id, Guid ownerId, string name, string description, string avatar, string header)

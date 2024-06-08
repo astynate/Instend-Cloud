@@ -4,7 +4,7 @@ import CommentField from '../../../shared/ui-kit/comment-field/CommentField';
 import Comment from '../../../shared/social/comment/Comment';
 import PublicationsWrapper from '../../../features/publications-wrapper/PublicationsWrapper';
 
-const Comments = ({fetch_callback, comments, id, setUploadingComment, deleteCallback}) => {
+const Comments = ({fetch_callback, comments, id, setUploadingComment, deleteCallback, isPublicationAvailable = true, isPublications = false}) => {
     const [isLoading, setLoadingState] = useState(false);
 
     useEffect(() => {
@@ -22,10 +22,12 @@ const Comments = ({fetch_callback, comments, id, setUploadingComment, deleteCall
     return (
         <PublicationsWrapper>
             <div className={styles.comment}>
-                <CommentField 
-                    id={id} 
-                    setUploadingComment={setUploadingComment.bind(this)}
-                />
+                {isPublicationAvailable && 
+                    <CommentField 
+                        id={id} 
+                        isPublications={isPublications}
+                        setUploadingComment={setUploadingComment.bind(this)}
+                    />}
                 {isLoading ? 
                     <>
                         <Comment isLoading={true} />

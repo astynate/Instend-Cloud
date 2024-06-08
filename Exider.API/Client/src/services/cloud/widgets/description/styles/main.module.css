@@ -47,6 +47,15 @@
     text-wrap: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    border: 1px solid transparent;
+}
+
+.button:hover {
+    background: var(--pop-up-accent-color);
+}
+
+.button:active {
+    border: 1px solid var(--main-border-color);
 }
 
 .button[id="placeholder"] {

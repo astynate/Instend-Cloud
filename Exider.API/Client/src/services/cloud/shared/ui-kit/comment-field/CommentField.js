@@ -10,7 +10,7 @@ import image from './images/image.png';
 import Emoji from '../../../features/emoji/Emoji';
 import cancel from './images/cancel.png';
 
-const CommentField = ({id, setUploadingComment}) => {
+const CommentField = ({id, setUploadingComment, isPublications}) => {
     const [comment, setComment] = useState('');
     const [isEmojiOpen, setEmojiPickerState] = useState(false);
     const [images, setImages] = useState([]);
@@ -41,7 +41,7 @@ const CommentField = ({id, setUploadingComment}) => {
             <UserAvatar user={userState.user} />
             <div className={styles.inputData}>
                 <SubInput 
-                    placeholder="Type your comment" 
+                    placeholder={isPublications ? "Your publication text" : "Type your comment"}
                     text={comment}
                     setText={setComment}
                 />

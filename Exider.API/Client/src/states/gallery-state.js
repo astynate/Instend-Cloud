@@ -32,6 +32,12 @@ class GalleryState {
 
     //////////////////////////////////////////////////////////////////////////////////////
 
+    SetCommentQueueId = (id) => {
+        this.albumCommentQueueId = id;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////
+
     CreateLoadingAlbum(name) {
         const album = {
             id: null,
@@ -157,42 +163,10 @@ class GalleryState {
         }
     }
 
-    async AddUploadingAlbumComment(text, attachments, user, albumId) {
-        if (!attachments) {
-            attachments = [];
+    SetComments = (id, commets) => {
+        if (this.albums[id] && this.albums[id].comments) {
+            this.albums[id].comments = commets;
         }
-
-        const comment = {
-            comment: {
-                text,
-                attachments: attachments
-            },
-            user: user,
-            isUploading: true,
-            queueId: this.albumCommentQueueId
-        }
-
-        if (albumId && this.albums[albumId]) {
-            this.albums[albumId].comments = [comment, ...this.albums[albumId].comments];
-            let form = new FormData()
-            
-            form.append('text', text);
-            form.append('albumId', albumId);
-            form.append('queueId', comment.queueId);
-            
-            for(let i = 0; i < attachments.length; i++){
-                form.append('files', attachments[i]);
-            }
-            
-            await instance
-                .post(`/api/album-comments`, form)
-                .catch(error => {
-                    applicationState.AddErrorInQueue(error.response.data);
-                    this.DeleteCommentByQueueId(comment.queueId, albumId);
-                })            
-        }
-        
-        this.albumCommentQueueId++;
     }
 
     ReplaceLoadingComment(comment, queueId, albumId) {
@@ -252,7 +226,7 @@ class GalleryState {
         Object.entries(this.albums).forEach(([key, _]) => {
             if (this.albums[key].comments) {
                 this.albums[key].comments = this.albums[key].comments
-                    .filter(element => element.id !== id);
+                    .filter(element => element.comment.id !== id);
             }
         });
     }

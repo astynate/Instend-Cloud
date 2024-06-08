@@ -15,6 +15,7 @@ import Comments from '../../widgets/social/comments/Comments';
 import { DeleteComment } from '../../pages/gallery/api/AlbumRequests';
 import HeaderSearch from './compontens/header-search/HeaderSearch';
 import MainContentWrapper from '../../features/main-content-wrapper/MainContentWrapper';
+import { AddUploadingAlbumComment } from '../../api/CommentAPI';
 
 const AlbumView = observer(({isSquareCover, button, uniqItems, views}) => {
     const { albums } = galleryState;
@@ -135,7 +136,18 @@ const AlbumView = observer(({isSquareCover, button, uniqItems, views}) => {
                                     comments={galleryState.albums[params.id].comments ? 
                                         galleryState.albums[params.id].comments : []}
                                     id={params.id}
-                                    setUploadingComment={galleryState.AddUploadingAlbumComment.bind(galleryState)}
+                                    setUploadingComment={(comment, images, user, id) => 
+                                        AddUploadingAlbumComment(
+                                            '/api/album-comments', 
+                                            comment, 
+                                            images, 
+                                            user, 
+                                            id, 
+                                            galleryState.albums[params.id].comments,
+                                            (comments) => galleryState.SetComments.bind(galleryState)(params.id, comments),
+                                            galleryState.albumCommentQueueId,
+                                            galleryState.SetCommentQueueId.bind(galleryState)
+                                        )}
                                     deleteCallback={(id) => DeleteComment(id, params.id)}
                                 />
                             }

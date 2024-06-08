@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using Exider.Repositories.Account;
 using static Exider.Core.Models.Links.AlbumLinks;
-using Exider.Core.Dependencies.Repositories.Storage;
-using Exider.Core;
+using Exider.Core.Models.Links;
+using Exider.Core.Models.Comments;
+using Exider.Core.TransferModels.Account;
+using CSharpFunctionalExtensions;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Comments
 {
@@ -18,6 +20,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
 
         private readonly ICommentsRepository<AlbumCommentLink, AttachmentCommentLink> _commentsRepository;
 
+        private readonly ICommentsRepository<ComminityPublicationLink, AttachmentCommentLink> _publicationRepository;
+
         private readonly ICommentBaseRepository<AttachmentCommentLink> _commentRepository;
 
         private readonly IHubContext<GalleryHub> _galleryHub;
@@ -26,6 +30,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
         (
             IRequestHandler requestHandler,
             ICommentsRepository<AlbumCommentLink, AttachmentCommentLink> commentLinkRepository,
+            ICommentsRepository<ComminityPublicationLink, AttachmentCommentLink> publicationRepository,
             IHubContext<GalleryHub> galleryHub,
             ICommentBaseRepository<AttachmentCommentLink> commentBaseRepository
         )
@@ -34,6 +39,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
             _commentsRepository = commentLinkRepository;
             _galleryHub = galleryHub;
             _commentRepository = commentBaseRepository;
+            _publicationRepository = publicationRepository;
         }
 
         [HttpGet]
@@ -50,45 +56,106 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
             return Ok(result);
         }
 
+        private async Task<Result<(CommentModel, UserPublic)>> Add
+        (
+            IUserDataRepository usersRepository,
+            [FromForm] string? text,
+            [FromForm] IFormFile[] files,
+            [FromForm] string? albumId,
+            int type
+        )
+        {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+                return Result.Failure<(CommentModel, UserPublic)>(userId.Error);
+
+            if (string.IsNullOrEmpty(text) || string.IsNullOrWhiteSpace(text))
+                return Result.Failure<(CommentModel, UserPublic)>("Album not found");
+
+            if (string.IsNullOrEmpty(albumId) || string.IsNullOrWhiteSpace(albumId))
+                return Result.Failure<(CommentModel, UserPublic)>("Text is required");
+
+            Result<CommentModel> result = Result.Failure<CommentModel>("Invalid operation type");
+
+            switch (type)
+            {
+                case 0:
+                {
+                    result = await _commentsRepository.AddComment(text, files, Guid.Parse(userId.Value), Guid.Parse(albumId));
+                    break;
+                }
+                case 1:
+                {
+                    result = await _publicationRepository.AddComment(text, files, Guid.Parse(userId.Value), Guid.Parse(albumId));
+                    break;
+                }
+            }
+
+            if (result.IsFailure)
+                return Result.Failure<(CommentModel, UserPublic)>(result.Error);
+
+            var user = await usersRepository.GetUserAsync(Guid.Parse(userId.Value));
+
+            if (user.IsFailure)
+                return Result.Failure<(CommentModel, UserPublic)>(user.Error);
+
+            return (result.Value, user.Value);
+        }
+
         [HttpPost]
         [Route("/api/album-comments")]
-        public async Task<IActionResult> Add
+        public async Task<IActionResult> AddAlbumComment
         (
-            ICommentsRepository<AlbumCommentLink, AttachmentCommentLink> commentsRepository,
             IUserDataRepository usersRepository,
-            IAttachmentsRepository<AttachmentCommentLink> attachmentsRepository,
             [FromForm] string? text,
             [FromForm] IFormFile[] files,
             [FromForm] string? albumId,
             [FromForm] int queueId
         )
         {
-            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
-
-            if (userId.IsFailure)
-                return BadRequest(userId.Error);
-
-            if (string.IsNullOrEmpty(text) || string.IsNullOrWhiteSpace(text))
-                return BadRequest("Album not found");
-
-            if (string.IsNullOrEmpty(albumId) || string.IsNullOrWhiteSpace(albumId))
-                return BadRequest("Text is required");
-
-            var result = await commentsRepository.AddComment(text, files, Guid.Parse(userId.Value), Guid.Parse(albumId));
+            Result<(CommentModel, UserPublic)> result = await Add(usersRepository, text, files, albumId, 0);
 
             if (result.IsFailure)
-                return BadRequest(result.Error);
-
-            var user = await usersRepository.GetUserAsync(Guid.Parse(userId.Value));
-
-            if (user.IsFailure)
-                return BadRequest(user.Error);
+            {
+                return Conflict(result.Error);
+            }
 
             await _galleryHub.Clients.Group(albumId).SendAsync("AddComment",
                 new
                 {
-                    comment = result.Value,
-                    user = user.Value,
+                    comment = result.Value.Item1,
+                    user = result.Value.Item2,
+                    albumId,
+                    queueId
+                });
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("/api/community/publications")]
+        public async Task<IActionResult> AddCommunityPublication
+        (
+            IUserDataRepository usersRepository,
+            [FromForm] string? text,
+            [FromForm] IFormFile[] files,
+            [FromForm] string? albumId,
+            [FromForm] int queueId
+        )
+        {
+            Result<(CommentModel, UserPublic)> result = await Add(usersRepository, text, files, albumId, 1);
+
+            if (result.IsFailure)
+            {
+                return Conflict(result.Error);
+            }
+
+            await _galleryHub.Clients.Group(albumId).SendAsync("AddPublication",
+                new
+                {
+                    comment = result.Value.Item1,
+                    user = result.Value.Item2,
                     albumId,
                     queueId
                 });
@@ -98,7 +165,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
 
         [HttpDelete]
         [Route("/api/album-comments")]
-        public async Task<IActionResult> Delete(string? id, string albumId)
+        public async Task<IActionResult> Delete(string? id, string albumId, int type = 0)
         {
             if (string.IsNullOrEmpty(albumId) || string.IsNullOrWhiteSpace(albumId))
             {
@@ -117,7 +184,15 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
                 return Conflict(result.Error);
             }
 
-            await _galleryHub.Clients.Group(albumId).SendAsync("DeleteComment", new { id, albumId });
+            switch (type)
+            {
+                case 0:
+                    await _galleryHub.Clients.Group(albumId).SendAsync("DeleteComment", id);
+                    break;
+                case 1:
+                    await _galleryHub.Clients.Group(albumId).SendAsync("DeletePublication", id);
+                    break;
+            }
 
             return Ok();
         }

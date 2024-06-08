@@ -9,14 +9,55 @@ import { useNavigate, useParams } from 'react-router-dom';
 import userState from '../../../../../../states/user-state';
 import CommunityEditor from '../../../../features/add-community-pop-up/CommunityEditor';
 import applicationState from '../../../../../../states/application-state';
+import Comments from '../../../../widgets/social/comments/Comments';
+import { AddUploadingAlbumComment } from '../../../../api/CommentAPI';
+import galleryState from '../../../../../../states/gallery-state';
+import { WaitingForConnection, galleryWSContext } from '../../../../layout/Layout';
 
 const Community = ({isMobile}) => {
     const [isLoading, setLoadingState] = useState(true);
     const [community, setCommunity] = useState(null);
+    const [publications, setPublications] = useState([]);
+    const [publicationQueueId, setPublicationQueueId] = useState(0);
     const [isOwner, setIsOwnerState] = useState(false);
     const [isCommunityEditorOpen, setCommunityEditorState] = useState(false);
     const params = useParams();
     const navigate = useNavigate();
+
+    galleryWSContext.useSignalREffect(
+        "ReceivePublications",
+        (comments) => {
+            if (comments && comments.length > 0) {
+                setPublications(comments);
+            }
+        }
+    );
+
+    galleryWSContext.useSignalREffect(
+        "AddPublication",
+        ({comment, user, albumId, queueId}) => {
+            comment = {comment: comment, user: user};
+
+            if (comment && albumId === params.id) {
+                setPublications(prev => prev.map(element => {
+                    if (element.queueId === queueId){
+                        element = comment;
+                    }
+    
+                    return element;
+                }));
+            }
+        }
+    );
+
+    galleryWSContext.useSignalREffect(
+        "DeletePublication",
+        (id) => {
+            setPublications(prev =>{
+                return prev.filter(element => element.comment.id !== id);
+            })
+        }
+    );
 
     const UpdateCommunity = async (id, name, description, avatar, header) => {
         let form = new FormData();
@@ -62,6 +103,12 @@ const Community = ({isMobile}) => {
                     .catch(() => {
                         setTimeout(() => navigate('/'), 1000);
                     });
+
+                await WaitingForConnection(galleryWSContext);
+
+                if (galleryWSContext.connection.state === 'Connected') {
+                    await galleryWSContext.invoke('Connect', localStorage.getItem('system_access_token'), params.id);
+                }
             })();
         }
     }, []);
@@ -94,8 +141,8 @@ const Community = ({isMobile}) => {
                 subtitle={community && community.description ? community.description : null}
                 stats={[
                     {title: 'Followers', amount: community && community.followers ? community.followers : 0},
-                    {title: 'Publications', amount: community && community.publications ? community.publications : 0},
-                    {title: 'Worldwide', amount: 'None'},
+                    {title: 'Publications', amount: publications.length},
+                    {title: 'Worldwide',  amount: community && community.worldWide ? community.worldWide :  'None'},
                 ]}
                 buttons={[
                     {
@@ -108,17 +155,38 @@ const Community = ({isMobile}) => {
                             }
                         }
                     },
-                    {
-                        title: 'Visit server', 
-                        callback: () => {}
-                    }
+                    // {
+                    //     title: 'Visit server', 
+                    //     callback: () => {}
+                    // }
                 ]}
             />
             <LocalMenu 
                 items={[
                     {title: "Main", component: 
-                        <div>
-                            <h1></h1>
+                        <div className={styles.contentWrapper}>
+                            <Comments 
+                                isPublications={true}
+                                isPublicationAvailable={community && community.ownerId === userState.user.id}
+                                fetch_callback={() => {}}
+                                comments={publications}
+                                id={params.id}
+                                setUploadingComment={(comment, images, user, id) => 
+                                    AddUploadingAlbumComment(
+                                        '/api/community/publications', 
+                                        comment, 
+                                        images, 
+                                        user, 
+                                        id, 
+                                        publications,
+                                        setPublications,
+                                        publicationQueueId,
+                                        setPublicationQueueId
+                                    )}
+                                deleteCallback={async (id) => {
+                                    await instance.delete(`/api/album-comments?id=${id}&albumId=${params.id}&type=${1}`)
+                                }}
+                            />
                         </div>
                     },
                     {title: "Photos", component: 
@@ -126,10 +194,14 @@ const Community = ({isMobile}) => {
                             <h1></h1>
                         </div>
                     },
-                    {title: "Videos", component: 
-                        <div className={styles.contentWrapper}>
-                        </div>
-                    },
+                    // {title: "Videos", component: 
+                    //     <div className={styles.contentWrapper}>
+                    //     </div>
+                    // },
+                    // {title: "Music", component: 
+                    //     <div className={styles.contentWrapper}>
+                    //     </div>
+                    // },
                     {title: "Community", component: 
                         <div className={styles.contentWrapper}>
                         </div>

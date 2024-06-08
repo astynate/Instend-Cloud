@@ -204,9 +204,16 @@ const Layout = observer(() => {
     );
 
     galleryWSContext.useSignalREffect(
-        "UpdateAlbumViews",
-        ({id, views}) => {
-            galleryState.UpdateAlbumViews(id, views);
+        "AddComment",
+        ({comment, user, albumId, queueId}) => {
+            galleryState.ReplaceLoadingComment({comment: comment, user: user}, queueId, albumId);
+        }
+    );
+
+    galleryWSContext.useSignalREffect(
+        "DeleteComment",
+        (id) => {
+            galleryState.DeleteCommentById(id);
         }
     );
 

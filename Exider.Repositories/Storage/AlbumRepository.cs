@@ -113,8 +113,17 @@ namespace Exider.Repositories.Storage
 
         public async Task<AlbumModel[]> GetAlbums(Guid userId)
         {
-            return await _context.Albums.AsNoTracking()
+            AlbumModel[] albums = await _context.Albums.AsNoTracking()
                 .Where(x => x.OwnerId == userId).ToArrayAsync();
+
+            AlbumModel[] accessAlbums = await _context.AlbumAccess.AsNoTracking()
+                .Where(x => x.UserId == userId)
+                .Join(_context.Albums,
+                    access => access.ItemId,
+                    album => album.Id,
+                    (access, album) => album).ToArrayAsync();
+
+            return albums.Concat(accessAlbums).ToArray();
         }
 
         public async Task<Result<long>> ViewAlbumWithUserId(Guid albumId, Guid userId)
@@ -132,12 +141,7 @@ namespace Exider.Repositories.Storage
                 AlbumModel album = isViewExistRequest[0].Album;
                 AlbumViewLink[] links = isViewExistRequest[0].Link.ToArray();
 
-                if (album.OwnerId == userId)
-                {
-                    return -1;
-                }
-
-                if (links.Length > 0)
+                if (album.OwnerId == userId || links.Length > 0)
                 {
                     return -1;
                 }

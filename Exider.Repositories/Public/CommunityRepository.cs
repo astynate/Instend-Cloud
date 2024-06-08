@@ -80,6 +80,18 @@ namespace Exider.Repositories.Public
 
                 community.SetAvatar(avatar.IsFailure ? string.Empty : Convert.ToBase64String(avatar.Value));
                 community.SetHeader(header.IsFailure ? string.Empty : Convert.ToBase64String(header.Value));
+
+                var communities = await _context.Communities
+                                .OrderByDescending(x => x.Followers)
+                                .Take(100)
+                                .ToListAsync();
+
+                var index = communities.FindIndex(x => x.Id == id);
+
+                if (index >= 0)
+                {
+                    community.WorldWide = index + 1;
+                }
             }
 
             return community;
