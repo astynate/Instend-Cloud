@@ -14,17 +14,15 @@ import styles from './styles/wrapper.module.css';
 import ColorMode from '../features/color-mode/ColorMode';
 
 const Layout = () => {
-
     const { t } = useTranslation()
     const isLanguageSelect = useSelector((store) => store.isLanguageSelect);
 
     return (
-
         <div className={styles.wrapper}>
             <Helmet>
                 <title>Yexider Account</title>
             </Helmet>
-            <Header />
+            <Header name={t('account.service_name')} />
             {isLanguageSelect === false ? <Notification title={t('account.select_language')} />: null}
             <Content>
                 <Routes>
@@ -37,7 +35,6 @@ const Layout = () => {
             <ColorMode />
             <Footer />
         </div>
-        
     );
 }
 

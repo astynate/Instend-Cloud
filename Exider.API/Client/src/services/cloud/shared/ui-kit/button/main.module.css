@@ -12,4 +12,5 @@
     font-size: 14px;
     cursor: pointer;
     color: var(--main-button-font-color);
+    user-select: none;
 }

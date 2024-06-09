@@ -38,7 +38,6 @@ const Settings = observer((props) => {
     }, [props.setPanelState]);
 
     return (
-
         <div className={styles.wrapper}>
 
             {isOpen === false || props.isMobile === false ? 
@@ -68,15 +67,16 @@ const Settings = observer((props) => {
                         setCurrentSetting={setCurrentSetting}  
                         setCurrentRoute={setCurrentRoute} 
                     />
-                    <Button 
+                    {/* <Button 
                         title={t('cloud.settings.notifications.title')}
                         name={t('cloud.settings.notifications.name')}
                         path='/settings/notifications' 
                         setCurrentSetting={setCurrentSetting}
                         setCurrentRoute={setCurrentRoute}
-                    />
+                    /> */}
                 </div>
                 <div className={styles.line}></div>
+                {/* <div className={styles.line}></div>
                 <div className={styles.buttons}>
                     <Button 
                         title={t('cloud.settings.password_recovery.title')}
@@ -99,8 +99,8 @@ const Settings = observer((props) => {
                         setCurrentSetting={setCurrentSetting} 
                         setCurrentRoute={setCurrentRoute}
                     />
-                </div>
-            </div> : null}
+                </div>*/}
+            </div> : null} 
 
             {isOpen || props.isMobile === false ?
                 <div className={styles.content} id={props.isMobile ? "mobile" : "desktop"}>
@@ -163,11 +163,8 @@ const Settings = observer((props) => {
                     </Routes>
                 </div>
             </div> : null}
-        
         </div>
-
     );
-
 });
 
 export default Settings;

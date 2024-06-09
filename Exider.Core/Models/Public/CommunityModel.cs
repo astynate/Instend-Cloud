@@ -44,6 +44,8 @@ namespace Exider.Core.Models.Public
 
         public void SetAvatar(string str) => Avatar = str;
         public void SetHeader(string str) => Header = str;
+        public void IncrementFollowers() => Followers++;
+        public void DecrementFollowers() => Followers--;
 
         public Result UpdateName(string? value)
         {

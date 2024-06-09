@@ -29,6 +29,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
         private readonly IConfirmationRespository _confirmationRespository;
 
+        private readonly ICommunityRepository _communityRepository;
+
         private readonly IUserDataRepository _userDataRepository;
 
         private readonly IImageService _imageService;
@@ -48,6 +50,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
             IImageService imageService,
             IFolderRepository folderRepository,
             IFriendsRepository friendsRepository,
+            ICommunityRepository communityRepository,
             DatabaseContext context
         )
         {
@@ -59,26 +62,29 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
             _folderRepository = folderRepository;
             _friendsRepository = friendsRepository;
             _context = context;
+            _communityRepository = communityRepository;
         }
 
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetUserDataAsync(IRequestHandler requestHandler)
         {
-            var getUserId = requestHandler.GetUserId(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
+            var userId = requestHandler.GetUserId(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
 
-            if (getUserId.IsFailure)
+            if (userId.IsFailure)
                 return Unauthorized("Invalid token");
 
-            var getUserResult = await _userDataRepository.GetUserAsync(Guid.Parse(getUserId.Value));
+            var getUserResult = await _userDataRepository.GetUserAsync(Guid.Parse(userId.Value));
 
             if (getUserResult.IsFailure)
                 return Unauthorized("User not found");
 
             var friends = await _friendsRepository
-                .GetFriendsByUserId(Guid.Parse(getUserId.Value));
+                .GetFriendsByUserId(Guid.Parse(userId.Value));
 
-            return Ok(new object[] { getUserResult.Value, friends });
+            var communities = await _communityRepository.GetFollowingIds(Guid.Parse(userId.Value));
+
+            return Ok(new object[] { getUserResult.Value, friends, communities.Value });
         }
 
         [Authorize]

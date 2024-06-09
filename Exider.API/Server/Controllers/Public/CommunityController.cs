@@ -138,5 +138,28 @@ namespace Exider_Version_2._0._0.Server.Controllers.Public
 
             return Ok(result.Value);
         }
+
+        [HttpPut]
+        [Authorize]
+        [Route("/api/[controller]/followers")]
+        public async Task<IActionResult> Follow(Guid id)
+        {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+                return BadRequest("Invalid user id");
+
+            if (id == Guid.Empty)
+                return BadRequest("Invalid id");
+
+            var result = await _communityRepository.FollowAsync(id, Guid.Parse(userId.Value));
+
+            if (result.IsFailure)
+            {
+                return Conflict(result.Error);
+            }
+
+            return Ok(result.Value);
+        }
     }
 }

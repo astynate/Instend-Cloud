@@ -31,9 +31,11 @@ namespace Exider.Core
         public DbSet<CommentModel> Comments { get; set; } = null!;
         public DbSet<AlbumCommentLink> AlbumCommentLinks { get; set; } = null!;
         public DbSet<ComminityPublicationLink> ComminityPublicationLinks { get; set; } = null!;
+        public DbSet<CommunityFollowerLink> CommunityFollowers { get; set; } = null!;
         public DbSet<MessageModel> Messages { get; set; } = null!;
         public DbSet<DirectMessageLink> DirectLinks { get; set; } = null!;
         public DbSet<CommunityModel> Communities { get; set; } = null!;
+        public DbSet<UserPublicationLink> UserPublications { get; set; } = null!;
         public DbSet<FriendModel> Friends { get; set; } = null!;
         public DbSet<DirectModel> Directs { get; set; } = null!;
         public DbSet<AttachmentModel> Attachments { get; set; } = null!;

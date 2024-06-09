@@ -5,6 +5,8 @@ import Cloud from './services/cloud/layout/Layout';
 import userState from './states/user-state';
 import { observer } from 'mobx-react-lite';
 import MainLoader from './components/loader/MainLoader';
+import Main from './services/main/layout/Layout';
+import Support from './services/support/layout/Layout';
 
 const App = observer(() => {
     let navigate = useNavigate();
@@ -22,12 +24,12 @@ const App = observer(() => {
     }, []);
 
     return (
-
         (isLoading ? <MainLoader /> :
-
             <>
                 <Routes>
                     <Route path="/account/*" element={<Authorization />} />
+                    <Route path="/main" element={<Main />} />
+                    <Route path="/support" element={<Support />} />
                     <Route path="/*" element={<Cloud />} />
                     <Route path="*" element={<h1>404 - Not Found</h1>} />
                 </Routes>

@@ -6,14 +6,23 @@
     overflow-x: hidden;
 }
 
+.contentWrapper {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
 .wrapper {
     width: 100%;
-    /* margin-left: 4vw;
-    margin-right: auto; */
     flex-direction: column;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.communities {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-gap: 10px;
 }
 
 @media (max-width: 1150px) {

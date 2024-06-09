@@ -5,22 +5,61 @@ import storageState from './storage-state';
 class UserState {
     isAccessibleRoute = false;
     countNotifications = 0;
-    friends = []
+    friends = [];
+    communities = [];
+    publications = [];
     isAuthorize = false;
     isLoading = true;
     user = null;
+    publicationQueueId = 0;
 
     constructor() {
         makeAutoObservable(this);
+    }
+
+    SetPublications = (publications) => {
+        this.publications = publications;
+    }
+
+    setPublicationQueueId = (id) => {
+        this.publicationQueueId = id;
+    }
+
+    GetPublications = async () => {
+        await instance
+            .get(`/api/user-publications?id=${this.user.id}`)
+            .then(reponse => {
+                if (reponse && reponse.data && reponse.data.length && reponse.data.length > 0) {
+                    this.publications = reponse.data;
+                }
+            })
+    }
+
+    AddPublication = (comment, queueId) => {
+        if (comment) {
+            this.publications = this.publications.map(element => {
+                if (element.queueId === queueId){
+                    element = comment;
+                }
+
+                return element;
+            });
+        }
+    }
+
+    DeletePublication = (id) => {
+        this.publications = this.publications
+            .filter(element => element.comment.id !== id);
     }
 
     UpdateUserData = async (location, navigate) => {
         try {
             await instance.get('/accounts')
                 .then(response => {
-                    if (response.data && response.data.length > 1) {
+                    if (response.data && response.data.length > 2) {
                         this.user = response.data[0];
                         this.friends = response.data[1];
+                        this.communities = response.data[2];
                         this.isAuthorize = true;
                     } else {
                         throw new Error("Insufficient data received");
@@ -29,14 +68,14 @@ class UserState {
                 .catch((error) => {
                     console.error(error);
                     this.isAuthorize = false;
-                    navigate('/account/login');
+                    navigate('/main');
                 });
 
             await storageState.SetFolderItemsById(null);
         } 
         catch (exception) {
             this.isAuthorize = false;
-            navigate('/account/login');
+            navigate('/main');
         }
     }
 
@@ -105,8 +144,33 @@ class UserState {
         if (index !== -1) {
             this.friends[index].isSubmited = true;
             this.user.friendCount++;
-            // this.countNotifications--;
         }
+    }
+
+    GetCommunity = async (id) => {
+        await instance
+            .get(`/api/community/single?id=${id}`)
+            .then((response) => {
+                if (response.status === 200 && response.data && response.data.ownerId) {
+                    const index = this.communities.findIndex(c => c.id === id);
+
+                    if (index !== -1) {
+                        this.communities[index] = response.data;
+                        return true;
+                    }
+                }
+            })
+
+        return false;
+    }
+
+    AddCommunity = (community) => {
+        this.communities = [community, ...this.communities];
+    }
+
+    RemoveCommunity = (community) => {
+        this.communities = this.communities
+            .filter(element => element.id !== community.id)
     }
 }
 

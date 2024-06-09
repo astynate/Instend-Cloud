@@ -36,7 +36,7 @@ const Comment = ({user, comment, isLoading, isUploading, deleteCallback}) => {
                             }
                         })}
                     </div>
-                    <div className={styles.control}>
+                    {/* <div className={styles.control}>
                         <StatisticButton 
                             image={smile} 
                             title={"0"} 
@@ -45,11 +45,11 @@ const Comment = ({user, comment, isLoading, isUploading, deleteCallback}) => {
                             image={commentImage}
                             title={"0"} 
                         />
-                        {/* <StatisticButton 
+                        <StatisticButton 
                             image={views}
                             title={"0"} 
-                        /> */}
-                    </div>
+                        />
+                    </div> */}
                 </div>
                 {isUploading ? 
                     <div className={styles.right}>

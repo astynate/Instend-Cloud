@@ -202,10 +202,10 @@ const Community = ({isMobile}) => {
                     //     <div className={styles.contentWrapper}>
                     //     </div>
                     // },
-                    {title: "Community", component: 
-                        <div className={styles.contentWrapper}>
-                        </div>
-                    }
+                    // {title: "Community", component: 
+                    //     <div className={styles.contentWrapper}>
+                    //     </div>
+                    // }
                 ]}
                 default={0}
                 rightItems={[

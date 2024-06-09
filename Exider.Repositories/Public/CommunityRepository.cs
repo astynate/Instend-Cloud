@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core;
+using Exider.Core.Models.Links;
 using Exider.Core.Models.Public;
 using Exider.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
@@ -134,6 +135,59 @@ namespace Exider.Repositories.Public
                 community.SetHeader(Convert.ToBase64String(await File.ReadAllBytesAsync(community.Header)));
 
             return community;
+        }
+
+        public async Task<Result<bool>> FollowAsync(Guid id, Guid userId)
+        {
+            CommunityModel? model = await _context.Communities.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (model == null)
+            {
+                return Result.Failure<bool>("Community not found");
+            }
+
+            if (model != null && model.OwnerId == userId)
+            {
+                return Result.Failure<bool>("You cannot subscribe to your own community");
+            }
+
+            CommunityFollowerLink? link = await _context.CommunityFollowers
+                .FirstOrDefaultAsync(x => x.ItemId == id && x.LinkedItemId == userId);
+
+            if (link != null && model != null)
+            {
+                _context.Remove(link);
+                _context.SaveChanges();
+
+                model.DecrementFollowers();
+                await _context.SaveChangesAsync();
+                return false;
+            }
+
+            var result = LinkBase.Create<CommunityFollowerLink>(id, userId);
+
+            if (result.IsFailure)
+            {
+                return Result.Failure<bool>(result.Error);
+            }
+
+            if (model != null)
+            {
+                model.IncrementFollowers();
+
+                await _context.AddAsync(result.Value);
+                await _context.SaveChangesAsync();
+            }
+
+            return true;
+        }
+
+        public async Task<Result<object[]>> GetFollowingIds(Guid userId)
+        {
+            return await _context.CommunityFollowers
+                                 .Where(x => x.LinkedItemId == userId)
+                                 .Select(x => new { id = x.ItemId })
+                                 .ToArrayAsync();
         }
     }
 }

@@ -22,6 +22,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
 
         private readonly ICommentsRepository<ComminityPublicationLink, AttachmentCommentLink> _publicationRepository;
 
+        private readonly ICommentsRepository<UserPublicationLink, AttachmentCommentLink> _userPublicationRepository;
+
         private readonly ICommentBaseRepository<AttachmentCommentLink> _commentRepository;
 
         private readonly IHubContext<GalleryHub> _galleryHub;
@@ -32,7 +34,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
             ICommentsRepository<AlbumCommentLink, AttachmentCommentLink> commentLinkRepository,
             ICommentsRepository<ComminityPublicationLink, AttachmentCommentLink> publicationRepository,
             IHubContext<GalleryHub> galleryHub,
-            ICommentBaseRepository<AttachmentCommentLink> commentBaseRepository
+            ICommentBaseRepository<AttachmentCommentLink> commentBaseRepository,
+            ICommentsRepository<UserPublicationLink, AttachmentCommentLink> userPublicationRepository
         )
         {
             _requestHandler = requestHandler;
@@ -40,6 +43,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
             _galleryHub = galleryHub;
             _commentRepository = commentBaseRepository;
             _publicationRepository = publicationRepository;
+            _userPublicationRepository = userPublicationRepository;
         }
 
         [HttpGet]
@@ -52,6 +56,20 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
             }
 
             var result = await _commentsRepository.GetAsync(Guid.Parse(albumId));
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("/api/user-publications")]
+        public async Task<IActionResult> GetUserPublications(string? id)
+        {
+            if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest("User not found");
+            }
+
+            var result = await _userPublicationRepository.GetAsync(Guid.Parse(id));
 
             return Ok(result);
         }
@@ -88,6 +106,11 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
                 case 1:
                 {
                     result = await _publicationRepository.AddComment(text, files, Guid.Parse(userId.Value), Guid.Parse(albumId));
+                    break;
+                }
+                case 2:
+                {
+                    result = await _userPublicationRepository.AddComment(text, files, Guid.Parse(userId.Value), Guid.Parse(albumId));
                     break;
                 }
             }
@@ -163,6 +186,35 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
             return Ok();
         }
 
+        [HttpPost]
+        [Route("/api/user/publications")]
+        public async Task<IActionResult> AddUserPublication
+        (
+            IUserDataRepository usersRepository,
+            [FromForm] string? text,
+            [FromForm] IFormFile[] files,
+            [FromForm] string? albumId,
+            [FromForm] int queueId
+        )
+        {
+            Result<(CommentModel, UserPublic)> result = await Add(usersRepository, text, files, albumId, 2);
+
+            if (result.IsFailure)
+            {
+                return Conflict(result.Error);
+            }
+
+            await _galleryHub.Clients.Group(albumId).SendAsync("AddUserPublication",
+                new
+                {
+                    comment = result.Value.Item1,
+                    user = result.Value.Item2,
+                    queueId
+                });
+
+            return Ok();
+        }
+
         [HttpDelete]
         [Route("/api/album-comments")]
         public async Task<IActionResult> Delete(string? id, string albumId, int type = 0)
@@ -191,6 +243,9 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
                     break;
                 case 1:
                     await _galleryHub.Clients.Group(albumId).SendAsync("DeletePublication", id);
+                    break;
+                case 2:
+                    await _galleryHub.Clients.Group(albumId).SendAsync("DeleteUserPublication", id);
                     break;
             }
 

@@ -18,6 +18,7 @@
     position: relative;
     flex-shrink: 0;
     object-fit: cover;
+    user-select: none;
 }
 
 .avatar {
@@ -33,6 +34,11 @@
     bottom: -60px;
     object-fit: cover;
     overflow: hidden;
+    user-select: none;
+}
+
+.avatar, .header {
+    animation: var(--loading-animation);
 }
 
 .avatar img, .header img {
@@ -65,6 +71,13 @@
     color: var(--main-font-color);
 }
 
+.name[id="placeholder"] {
+    height: 18px;
+    width: 40%;
+    border-radius: 30px;
+    animation: var(--loading-animation);
+}
+
 .description {
     font-size: 14px;
     font-weight: 400;
@@ -72,6 +85,14 @@
     overflow: hidden;
     text-overflow: ellipsis;
     color: var(--main-paragraph-color);
+}
+
+.description[id="placeholder"] {
+    height: 10px;
+    width: 80%;
+    border-radius: 10px;
+    margin-top: 10px;
+    animation: var(--loading-animation);
 }
 
 .controlPanel {

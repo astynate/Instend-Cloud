@@ -8,7 +8,7 @@ const ColorMode = () => {
     useLayoutEffect(() => {
         document.getElementById('root').className = colorMode;
         localStorage.setItem('color-mode', colorMode);
-    }, [colorMode])
+    }, [colorMode]);
 
     const ChangeColorMode = () => {
         setColorMode(prev => prev === 'light-mode' ? 

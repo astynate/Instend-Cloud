@@ -32,6 +32,7 @@
     display: flex;
     user-select: none;
     cursor: pointer;
+    grid-gap: 4px;
 }
 
 .company-name {
@@ -39,8 +40,9 @@
 }
 
 .logo {
-    height: 40px;
-    width: 40px;
+    height: 20px;
+    width: 20px;
+    object-fit: contain;
     filter: var(--accounts-header-icon-filter);
 }
 

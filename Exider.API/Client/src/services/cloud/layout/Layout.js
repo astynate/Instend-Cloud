@@ -1,4 +1,4 @@
-﻿import React, { createContext, useCallback } from 'react'
+﻿import React, { createContext, useCallback, useLayoutEffect } from 'react'
 import { useState, useEffect } from 'react';
 import Loader from '../widgets/loader/Loader';
 import './css/fonts.css';
@@ -87,6 +87,12 @@ const Layout = observer(() => {
     const [song, setSong] = useState(null);
     const navigate = useNavigate();
     const url = 'http://localhost:5000' // 'http://localhost:5000/message-hub'
+
+    useLayoutEffect(() => {
+        if (userState.isAuthorize === false) {
+            navigate('/main');
+        }
+    }, [])
 
     useEffect(() => {
         setSong(GetCurrentSong());

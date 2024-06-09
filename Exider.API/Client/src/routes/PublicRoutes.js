@@ -5,7 +5,6 @@ import { PasswordRecovery } from '../services/accounts/processes/PasswordRecover
 import ValidLink from '../services/accounts/pages/confirm/ValidLink';
 import InvalidLink from '../services/accounts/pages/confirm/InvalidLink';
 
-
 const PublicRoutes = [
     {
         path: 'login',
@@ -24,5 +23,7 @@ const PublicRoutes = [
         element: <PasswordRecovery />
     }
 ];
+
+export const MainRoutes = ['main']
 
 export default PublicRoutes;

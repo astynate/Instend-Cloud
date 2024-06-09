@@ -9,7 +9,7 @@ import Settings from '../services/settings/layout/Settings';
 
 const PrivateRoutes = [
     // Potential vulnerability
-    // at gome route
+    // at home route
     {
         index: true,
         path: '/*',
@@ -42,7 +42,7 @@ const PrivateRoutes = [
     {
         path: '/settings/*',
         element: <Settings />
-    },
+    }
 ];
 
 export default PrivateRoutes;

@@ -2,31 +2,44 @@ import React from 'react';
 import styles from './main.module.css';
 import Button from '../../../../shared/ui-kit/button/Button';
 import StatisticalUnit from '../../../../shared/ui-kit/statistical-unit/StatisticalUnit';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { Follow } from '../../api/CommunityAPI';
+import userState from '../../../../../../states/user-state';
+import { observer } from 'mobx-react-lite';
 
-const CommunityPreview = ({id, name, description, avatar, header, followers}) => {
+const CommunityPreview = observer(({id, name, description, avatar, header, followers, isLoading = false}) => {
+  const navigate = useNavigate();
+
   return (
-    <Link 
-      to={`/community/${id}`}
+    <div 
       className={styles.communityPreview}
     >
-        <div className={styles.header}>
-            <img src={`data:image/png;base64,${header}`} />
-            <div className={styles.avatar}>
-              <img src={`data:image/png;base64,${avatar}`} />
+        <div className={styles.header} id={isLoading ? 'placeholder' : null}>
+            {header && <img src={`data:image/png;base64,${header}`} draggable="false" />}
+            <div className={styles.avatar} id={isLoading ? 'placeholder' : null}>
+              {avatar && <img src={`data:image/png;base64,${avatar}`} draggable="false" />}
             </div>
-            <div className={styles.partiсipants}><StatisticalUnit title="Followers" amount={followers} /></div>
+            {isLoading === false && <div className={styles.partiсipants}><StatisticalUnit title="Followers" amount={followers} /></div>}
         </div>
         <div className={styles.content}>
-            <span className={styles.name}>{name}</span>
-            <span className={styles.description}>{description}</span>
-            <div className={styles.controlPanel}>
-                <Button value="Follow" />
-                <Button value="Visit" />
-            </div>
+            <span className={styles.name} id={isLoading ? 'placeholder' : null}>{name}</span>
+            <span className={styles.description} id={isLoading ? 'placeholder' : null}>{description}</span>
+            {isLoading === false && <div className={styles.controlPanel}>
+                <Button value={userState.communities.map(element => element.id).includes(id) ? 'Unfollow' : "Follow"}
+                  callback={(event) => {
+                    event.stopPropagation();
+                    Follow(id);
+                  }}
+                />
+                <Button value="Visit" 
+                  callback={() => {
+                    navigate(`/community/${id}`);
+                  }}
+                />
+            </div>}
         </div>
-    </Link>
+    </div>
   )
-}
+});
 
 export default CommunityPreview;
