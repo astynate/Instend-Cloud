@@ -21,7 +21,8 @@ const SimpleRange = ({step, minValue, maxValue, value, setValue, loadPercentage,
                             overflow: 'visible',
                             position: 'relative',                
                             backgroundColor: 'var(--main-accent-color)',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            color: 'transparent'
                         }}
                     >
                     <div 
@@ -34,7 +35,8 @@ const SimpleRange = ({step, minValue, maxValue, value, setValue, loadPercentage,
                             width: `${(value <= maxValue ? value : maxValue) / maxValue * 100}%`,
                             overflow: 'visible',
                             backgroundColor: 'var(--main-font-color)',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            color: 'transparent'
                         }}
                     >
                     </div>
@@ -50,7 +52,8 @@ const SimpleRange = ({step, minValue, maxValue, value, setValue, loadPercentage,
                                 overflow: 'visible',
                                 backgroundColor: 'var(--main-font-color)',
                                 opacity: '0.34',
-                                cursor: 'pointer'
+                                cursor: 'pointer',
+                                color: 'transparent'
                             }}
                             className={styles.range}
                         >

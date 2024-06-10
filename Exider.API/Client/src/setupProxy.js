@@ -1,6 +1,6 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
-const target = `https://70bb-46-56-162-237.ngrok-free.app`;
+const target = `http://localhost:5000`;
 
 const context = [
     "/accounts",

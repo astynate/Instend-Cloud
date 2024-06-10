@@ -62,11 +62,13 @@ class UserState {
                         this.communities = response.data[2];
                         this.isAuthorize = true;
                     } else {
-                        throw new Error("Insufficient data received");
+                        this.isAuthorize = false;
+                        navigate('/main');
+                        // throw new Error("Insufficient data received");
                     }
                 })
                 .catch((error) => {
-                    console.error(error);
+                    console.log(error);
                     this.isAuthorize = false;
                     navigate('/main');
                 });

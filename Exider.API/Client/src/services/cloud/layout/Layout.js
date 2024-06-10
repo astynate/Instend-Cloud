@@ -20,6 +20,7 @@ import musicState from '../../../states/music-state';
 import { GetCurrentSong } from '../widgets/navigation-panel/NavigationPanel';
 import chatsState from '../../../states/chats-state';
 import { useNavigate } from 'react-router-dom';
+import * as signalR from "@microsoft/signalr";
 
 export const messageWSContext = createSignalRContext(null);
 export const storageWSContext = createSignalRContext(null);
@@ -87,17 +88,13 @@ const Layout = observer(() => {
     const [errorMessage, setErrorMessage] = useState('');
     const [song, setSong] = useState(null);
     const navigate = useNavigate();
-    const url = 'https://70bb-46-56-162-237.ngrok-free.app' // 'http://localhost:5000/message-hub'
+    const url = 'http://localhost:5000' // 'http://localhost:5000/message-hub'
 
     useLayoutEffect(() => {
         if (userState.isAuthorize === false) {
             navigate('/main');
         }
     }, [])
-
-    useEffect(() => {
-        setSong(GetCurrentSong());
-    }, [musicState.songQueue, musicState.currentSongIndex]);
     
     useEffect(() => {
         const setError = (title, message) => {

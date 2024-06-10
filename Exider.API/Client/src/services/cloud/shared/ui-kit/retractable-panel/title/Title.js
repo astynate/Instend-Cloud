@@ -1,9 +1,9 @@
 import React from 'react';
 import styles from './main.module.css';
 
-const Title = ({children}) => {
+const Title = ({value}) => {
     return (
-        <h2 className={styles.title}>{children}</h2>
+        <h2 className={styles.title}>{value}</h2>
     );
 };
 
