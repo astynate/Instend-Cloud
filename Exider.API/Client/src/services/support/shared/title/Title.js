@@ -3,8 +3,8 @@ import styles from './main.module.css';
 
 const Title = ({children}) => {
     return (
-        <h2 className={styles.title}>{children}</h2>
+        <h1 className={styles.title}>{children}</h1>
     );
-};
+ };
 
 export default Title;

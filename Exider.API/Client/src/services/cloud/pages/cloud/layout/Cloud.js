@@ -3,7 +3,6 @@ import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toJS } from 'mobx';
-import { RenameCallback } from './Callbacks';
 import { AdaptId } from '../../../../../states/storage-state';
 import { Properties } from './ContextMenuHandler';
 import { autorun } from 'mobx';
@@ -28,6 +27,9 @@ import DragFiles from '../../../features/drag-files/DragFiles';
 import Placeholder from '../../../shared/placeholder/Placeholder';
 import { SendFilesFromDragEvent } from '../api/FileRequests';
 import { Delete, RenameFolder } from '../api/FolderRequests';
+import download from './images/context-menu/download.png';
+import { instance } from '../../../../../state/Interceptors';
+import { DownloadFromResponse } from '../../../../../utils/DownloadFromResponse';
 
 const Cloud = observer((props) => {
   const navigate = useNavigate();
@@ -58,7 +60,25 @@ const Cloud = observer((props) => {
   const single = [
     [Open, "Open", () => OpenPreview(activeItems[0])],
     [Rename, "Rename", () => setRenameState(true)],
-    [PropertiesImage, "Properties", () => Properties(activeItems[0], setRightPanelState, setFolderProperties)],
+    [download, "Download", () => {
+      setActiveItems(prev => {
+        if (prev[0].id) {
+          (async () => await instance
+            .get(`/file/download?id=${prev[0].id}`, {
+                responseType: "blob"
+            })
+            .then((response) => {
+                DownloadFromResponse(response);
+            })
+            .catch((error) => {
+                console.error(error);
+                props.error('Attention!', 'Something went wrong');
+            })
+          )();
+        }
+        return prev;
+      });
+    }],
     [DeleteImage, "Delete", () => {
       setActiveItems(prev => {
         Delete(prev); return prev;
@@ -74,14 +94,16 @@ const Cloud = observer((props) => {
     }]
   ]
 
-  const OpenPreview = (file) => {
-    setSelectedItems([file]);
+  const OpenPreview = () => {
+    setActiveItems(prev => {
+        if (prev[0] && prev[0].strategy && prev[0].strategy === "file") {
+          setPreviewState(true);
+        } else if (prev[0] && prev[0].strategy && prev[0].strategy === "file") {
+          navigate(`/cloud/${prev[0].id}`);
+        }
 
-    if (file.strategy === "file") {
-      setPreviewState(true);
-    } else {
-      navigate(`/cloud/${activeItems[0].id}`);
-    }
+      return prev;
+    });
   };
 
   useEffect(() => {

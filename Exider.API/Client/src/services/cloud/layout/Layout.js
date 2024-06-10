@@ -28,18 +28,19 @@ export const layoutContext = createContext();
 export const imageTypes = ['png', 'jpg', 'jpeg', 'gif'];
 
 export const WaitingForConnection = async (signalRContext) => {
-    while (signalRContext.connection.state === 'Connecting') {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-    }
+    // while (signalRContext.connection.state === 'Connecting') {
+    //     await new Promise(resolve => setTimeout(resolve, 5000));
+    // }
 
-    if (signalRContext.connection.state === 'Disconnected') {
-        try {
-            applicationState.AddErrorInQueue('Connection interrupted!', 'Perhaps you are not connected to the Internet.')
-            await signalRContext.connection.start();
-        } catch (error) {
-            applicationState.AddErrorInQueue('Connection interrupted!', 'Perhaps you are not connected to the Internet.')
-        }
-    }
+    // if (signalRContext.connection.state === 'Disconnected') {
+    //     try {
+    //         applicationState.AddErrorInQueue('Connection interrupted!', 'Perhaps you are not connected to the Internet.')
+            // await signalRContext.connection.start();
+    //     } catch (error) {
+    //         applicationState.AddErrorInQueue('Connection interrupted!', 'Perhaps you are not connected to the Internet.')
+    //     }
+    // }
+    return;
 }
 
 export const connectToDirectListener = async (id) => {
@@ -86,7 +87,7 @@ const Layout = observer(() => {
     const [errorMessage, setErrorMessage] = useState('');
     const [song, setSong] = useState(null);
     const navigate = useNavigate();
-    const url = 'http://localhost:5000' // 'http://localhost:5000/message-hub'
+    const url = 'https://70bb-46-56-162-237.ngrok-free.app' // 'http://localhost:5000/message-hub'
 
     useLayoutEffect(() => {
         if (userState.isAuthorize === false) {

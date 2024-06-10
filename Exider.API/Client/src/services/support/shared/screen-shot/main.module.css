@@ -1,0 +1,21 @@
+.screenShot {
+    margin-top: 50px;
+    position: relative;
+}
+
+.laptop {
+    width: 400px;
+}
+
+.screen {
+    height: 217px;
+    width: 326px;
+    position: absolute;
+    background: black;
+    top: 11px;
+    left: 136px;
+    border-radius: 7px;
+    border: none;
+    outline: none;
+    object-fit: contain;
+}

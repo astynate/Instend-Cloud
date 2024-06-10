@@ -1,3 +1,10 @@
+.main {
+    height: 100svh;
+    width: 100vw;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
 .menuWrapper {
     margin-top: 40px;
     margin-bottom: 40px;
@@ -11,6 +18,8 @@
     align-items: center;
     margin-top: 100px;
     text-align: center;
+    overflow: visible;
+    justify-content: center;
 }
 
 .mainImage {

@@ -1,15 +1,11 @@
 .wrapper {
-    /* min-width: 100vh; */
     height: 100vh;
     width: 100vw;
-    /* background: rgba(25, 25, 30, 1); */
     background: rgba(30, 30, 30, 1);
     z-index: 999999999;
     top: 0;
     left: 0;
     position: fixed;
-    /* overflow-y: scroll; */
-    /* overflow-x: scroll; */
     backdrop-filter: var(--main-blur-effect);
     animation: open 0.5s ease;
 }

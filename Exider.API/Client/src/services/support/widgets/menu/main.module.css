@@ -1,5 +1,6 @@
 .menu {
     display: flex;
+    justify-content: center;
     /* grid-gap: 30px; */
 }
 
@@ -19,4 +20,8 @@
     /* background: black; */
     opacity: 1;
     /* color: white; */
+}
+
+.content {
+    margin-top: 40px;
 }

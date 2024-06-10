@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './main.module.css'
+import styles from './main.module.css';
 import PreviewButton from '../../shared/button/PreviewButton';
 import account from './images/account.png';
 import arrow from './images/arrow.png';

@@ -4,6 +4,7 @@ import Header from "../../accounts/widgets/header/Header";
 import { Helmet } from "react-helmet";
 import support from './images/support.png';
 import Menu from "../widgets/menu/Menu";
+import Cloud from "../pages/cloud/Cloud";
 
 const Support = () => {
     useLayoutEffect(() => {
@@ -24,10 +25,10 @@ const Support = () => {
                 <div className={styles.menuWrapper}>
                     <Menu 
                         items={[
-                            {title: "Cloud", },
-                            {title: "Messages"},
-                            {title: "Account"},
-                            {title: "Terms of use"},
+                            {title: "Cloud", element: <Cloud />},
+                            {title: "Messages", element: <Cloud />},
+                            {title: "Account", element: <Cloud />},
+                            {title: "Terms of use", element: <Cloud />},
                         ]}
                     />
                 </div>
