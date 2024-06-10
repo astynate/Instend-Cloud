@@ -17,3 +17,15 @@
     position: sticky;
     z-index: 1;
 }
+
+@media (max-width: 700px) {
+    .home {
+        height: calc(100vh - 60px - 50px);
+    }
+
+    .header {
+        top: 0px;
+        padding-top: 0px;
+        height: 60px;
+    }
+}

@@ -15,12 +15,12 @@ namespace Exider.Repositories.Storage
             _context = context;
         }
 
-        public async Task<FolderModel?> GetByIdAsync(string id)
+        public async Task<FolderModel?> GetByIdAsync(string id, Guid userId)
         {
             if (Configuration.systemFolders.Contains(id))
             {
                 return await _context.Folders.AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.Name == id.ToString() && x.TypeId == Configuration.FolderTypes.System.ToString());
+                    .FirstOrDefaultAsync(x => x.Name == id.ToString() && x.TypeId == Configuration.FolderTypes.System.ToString() && x.OwnerId == userId);
             }
             
             return await _context.Folders.AsNoTracking().FirstOrDefaultAsync(x => x.Id == Guid.Parse(id));

@@ -61,13 +61,13 @@ const Preview = (props) => {
                                         dangerouslySetInnerHTML={{ __html: file }}
                                     ></div>
                                 </div>}
-                            <div className={styles.footer}>
+                            {/* <div className={styles.footer}>
                                 <div className={styles.left}>
 
                                 </div>
                                 <div className={styles.center}>
                                 </div>
-                            </div>
+                            </div> */}
                         </>
                     :
                         <Placeholder title='No files selected' />

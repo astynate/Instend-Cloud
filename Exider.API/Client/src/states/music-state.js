@@ -50,7 +50,11 @@ class MusicState {
     }
 
     ChangePlayingState() {
-        this.isPlaying = !this.isPlaying;
+        if (this.songQueue.length > 0) {
+            this.isPlaying = !this.isPlaying;
+        }
+        
+        this.isPlaying = false;
     }
 
     GetCurrentSongId() {

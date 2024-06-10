@@ -37,12 +37,19 @@ namespace Exider_Version_2._0._0.Server.Controllers.Access
         [Route("/folders-access")]
         public async Task<IActionResult> GetAccess(string? id)
         {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+            {
+                return BadRequest("Invalid user id");
+            }
+
             if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
             {
                 return Ok(new object[] { Configuration.AccessTypes.Private });
             }
 
-            FolderModel? folder = await _folderRepository.GetByIdAsync(id);
+            FolderModel? folder = await _folderRepository.GetByIdAsync(id, Guid.Parse(userId.Value));
 
             if (folder is null)
             {

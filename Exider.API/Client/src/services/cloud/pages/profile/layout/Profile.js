@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import LayoutHeader from '../../../widgets/header/Header';
 import styles from './styles/main.module.css';
 import Search from '../../../features/search/Search';
@@ -8,8 +8,6 @@ import ProfileDescription from '../widgets/profile-description/ProfileDescriptio
 import Header from '../../../features/profile/header/Header';
 import HeaderSearch from '../../../widgets/album-view/compontens/header-search/HeaderSearch';
 import LocalMenu from '../../../shared/ui-kit/local-menu/LocalMenu';
-import PublicationsWrapper from '../../../features/publications-wrapper/PublicationsWrapper';
-import MainContentWrapper from '../../../features/main-content-wrapper/MainContentWrapper';
 import CommunityPreview from '../../home/widgets/community-preview/CommunityPreview';
 import { instance } from '../../../../../state/Interceptors';
 import Comments from '../../../widgets/social/comments/Comments';
@@ -43,10 +41,10 @@ const Profile = observer((props) => {
   return (
     <div className={styles.content}>
       <Search />
-      <LayoutHeader />
+      <LayoutHeader isMobile={props.isMobile} />
       <div className={styles.wrapper}>
         <Header src={user.header} />
-        <ProfileDescription />
+        <ProfileDescription isMobile={props.isMobile} />
         <LocalMenu 
           items={[
             {title: "Publications", component: 

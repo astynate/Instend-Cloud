@@ -7,6 +7,8 @@ import Menu from "../widgets/menu/Menu";
 import Cloud from "../pages/cloud/Cloud";
 import Messages from "../pages/messages/Messages";
 import Footer from "../../accounts/widgets/footer/Footer";
+import Account from "../pages/account/Account";
+import TermsOfUse from "../pages/terms-of-use/TermsOfUse";
 
 const Support = () => {
     useLayoutEffect(() => {
@@ -29,8 +31,8 @@ const Support = () => {
                         items={[
                             {title: "Cloud", element: <Cloud />},
                             {title: "Messages", element: <Messages />},
-                            {title: "Account", element: <Cloud />},
-                            {title: "Terms of use", element: <Cloud />},
+                            {title: "Account", element: <Account />},
+                            {title: "Terms of use", element: <TermsOfUse />},
                         ]}
                     />
                 </div>

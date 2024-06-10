@@ -20,27 +20,27 @@ import musicState from '../../../states/music-state';
 import { GetCurrentSong } from '../widgets/navigation-panel/NavigationPanel';
 import chatsState from '../../../states/chats-state';
 import { useNavigate } from 'react-router-dom';
-import * as signalR from "@microsoft/signalr";
+// import * as signalR from "@microsoft/signalr";
 
-export const messageWSContext = createSignalRContext(null);
-export const storageWSContext = createSignalRContext(null);
-export const galleryWSContext = createSignalRContext(null);
+export const messageWSContext = createSignalRContext();
+export const storageWSContext = createSignalRContext();
+export const galleryWSContext = createSignalRContext();
 export const layoutContext = createContext(); 
 export const imageTypes = ['png', 'jpg', 'jpeg', 'gif'];
 
 export const WaitingForConnection = async (signalRContext) => {
-    // while (signalRContext.connection.state === 'Connecting') {
-    //     await new Promise(resolve => setTimeout(resolve, 5000));
-    // }
+    while (signalRContext.connection.state === 'Connecting') {
+        await new Promise(resolve => setTimeout(resolve, 5000));
+    }
 
-    // if (signalRContext.connection.state === 'Disconnected') {
-    //     try {
-    //         applicationState.AddErrorInQueue('Connection interrupted!', 'Perhaps you are not connected to the Internet.')
-            // await signalRContext.connection.start();
-    //     } catch (error) {
-    //         applicationState.AddErrorInQueue('Connection interrupted!', 'Perhaps you are not connected to the Internet.')
-    //     }
-    // }
+    if (signalRContext.connection.state === 'Disconnected') {
+        try {
+            applicationState.AddErrorInQueue('Connection interrupted!', 'Perhaps you are not connected to the Internet.')
+            await signalRContext.connection.start();
+        } catch (error) {
+            applicationState.AddErrorInQueue('Connection interrupted!', 'Perhaps you are not connected to the Internet.')
+        }
+    }
     return;
 }
 
@@ -94,7 +94,7 @@ const Layout = observer(() => {
         if (userState.isAuthorize === false) {
             navigate('/main');
         }
-    }, [])
+    }, [userState.isAuthorize])
     
     useEffect(() => {
         const setError = (title, message) => {

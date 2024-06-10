@@ -30,7 +30,7 @@ const User = observer(({id, name, nickname, avatar, coins, friends, space}) => {
     return (
         <div className={styles.user}>
             <div className={styles.avatar}>
-                <img src={`data:image/png;base64,${avatar}`} />
+                <img src={`data:image/png;base64,${avatar}`} draggable="false" />
             </div>  
             <div className={styles.name}>
                 <h1 className={styles.nickname}>{nickname}</h1>

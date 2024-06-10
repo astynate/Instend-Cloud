@@ -32,6 +32,7 @@
 }
 
 .button {
+    width: fit-content;
     max-width: 120px;
     border: none;
     outline: none;
@@ -107,19 +108,8 @@
         justify-content: flex-start;
         text-align: center;
     }
-}
 
-
-@media (max-width: 1300px) {
-    .description {
-        width: 90%;
-        margin-right: 0%;
-    }
-}
-
-@media (max-width: 950px) {
-    .description {
-        width: 95%;
-        margin-right: 0%;
+    .button {
+        margin-top: 12px;
     }
 }

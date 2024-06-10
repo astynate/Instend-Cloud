@@ -12,10 +12,10 @@ const PreviewHeader = (props) => {
         <div className={styles.header} ref={props.forwardRef}>
             <div className={styles.buttons}>
                 <PreviewButton src={arrow} onClick={props.close} />
-                <PreviewButton 
+                {/* <PreviewButton 
                     src={account}
                     title="Open access" 
-                />
+                /> */}
             </div>
             <div className={styles.center}>
                 <h1 className={styles.name}>{props.name}</h1>
@@ -24,7 +24,7 @@ const PreviewHeader = (props) => {
             <div className={styles.buttons}>
                 <PreviewButton 
                     src={download}
-                    title="Download"
+                    title=""
                     onClick={async () => {
                         if (props.id) {
                             await instance

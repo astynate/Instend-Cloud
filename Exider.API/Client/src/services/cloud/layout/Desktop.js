@@ -16,7 +16,6 @@ const Desktop = observer(({ }) => {
         if (user === null) {
             UpdateAuthorizeState(location.pathname, navigate);
         }
-
     }, [user]);
 
     if (isAuthorize) {
@@ -29,14 +28,14 @@ const Desktop = observer(({ }) => {
                     {PrivateRoutes.map((route, index) => {
                         const { element, ...rest } = route;
                         return (
-                        <Route
-                            key={index}
-                            {...rest}
-                            element={React.cloneElement(element, { 
-                                setPanelState: setPanelState,
-                                isMobile: false
-                            })}
-                        />
+                            <Route
+                                key={index}
+                                {...rest}
+                                element={React.cloneElement(element, { 
+                                    setPanelState: setPanelState,
+                                    isMobile: false
+                                })}
+                            />
                         );
                     })}
                     </Routes>

@@ -1,10 +1,11 @@
 .gallery {
     height: 100vh;
     overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .header {
-    height: 50px;
+    height: 55px;
     top: 60px;
     left: 0;
     position: sticky;
@@ -17,7 +18,7 @@
     display: flex;
     grid-gap: 30px;
     flex-direction: column;
-    z-index: 2;
+    z-index: 1;
 }
 
 .up {
@@ -33,8 +34,9 @@
 }
 
 .content {
-    margin-top: 0px;
+    /* margin-top: 20px; */
     padding-bottom: 100px;
+    margin-right: 15px;
 }
 
 .navigation {
@@ -74,7 +76,7 @@
 
 @media (max-width: 700px) {
     .header {
-        padding-top: 10px;
+        padding-top: 5px;
         padding-bottom: 20px;
         top: 0px;
     }
@@ -90,4 +92,16 @@
     .rangeWrapper {
         display: none;
     }   
+}
+
+@media (max-width: 700px) {
+    .gallery {
+        height: calc(100vh - 60px - 50px);
+    }
+
+    .content {
+        padding-bottom: 0px;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
 }

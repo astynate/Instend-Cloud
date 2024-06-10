@@ -7,6 +7,7 @@ import ExternalLink from '../../shared/link/ExternalLink';
 import { useTranslation } from 'react-i18next';
 import HeaderMenu from './HeaderMenu';
 import YexiderLogo from './images/yexider-logo.svg';
+import { Link } from 'react-router-dom';
 
 const Header = ({name}) => {
     const { t } = useTranslation();
@@ -14,7 +15,6 @@ const Header = ({name}) => {
     const [isMenuOpen, setMenuState] = useState(false);
 
     useEffect(() => {
-
         const handleResize = () => {
             setWindowWidth(window.innerWidth);
         };
@@ -24,15 +24,14 @@ const Header = ({name}) => {
         return () => {
             window.removeEventListener('resize', handleResize);
         };
-
     }, []);
 
     return (
         <div className="header" id={isMenuOpen ? 'menu-open' : (windowWidth > 550) ? 'desktop' : 'mobile'}>
-            <div className="product-logo">
+            <Link to={'/main'} className="product-logo">
                 <img src={YexiderLogo} className="logo" alt="Logo" draggable="false" />
                 <span className="product-name"><span className="company-name">Yexider</span>&nbsp;{name}</span>
-            </div>
+            </Link>
             {(windowWidth > 550) ? (
                 <div className="links">
                     <ExternalLink logo={link} name={t('account.technical_support')} link="/support" />

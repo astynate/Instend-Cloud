@@ -38,22 +38,24 @@ const Music = (props) => {
           ]}
         />
       </div>
-      <Routes>
-        <Route 
-          path=''
-          element={<Songs />} 
-        />
-        <Route 
-          path='/playlists'
-          element={<Playlists />} 
-        />
-        <Route 
-          path='/playlists/:id'
-          element={<Playlist 
-            scroll={scroll}
-          />} 
-        />
-      </Routes>
+      <div className={styles.content}>
+        <Routes>
+          <Route 
+            path=''
+            element={<Songs />} 
+          />
+          <Route 
+            path='/playlists'
+            element={<Playlists />} 
+          />
+          <Route 
+            path='/playlists/:id'
+            element={<Playlist 
+              scroll={scroll}
+            />} 
+          />
+        </Routes>
+      </div>
     </div>
   )
 }

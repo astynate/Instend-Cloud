@@ -29,11 +29,37 @@
 
 .title {
     font-size: 48px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .subTitle {
     font-size: 18px;
     font-weight: 400;
     opacity: 0.8;
+    margin-left: 40px;
+    margin-right: 40px;
+}
+
+@media (max-width: 720px) {
+    .title {
+        font-size: 42px;
+    }
+}
+
+@media (max-width: 620px) {
+    .title {
+        font-size: 32px;
+    }
+    .subTitle {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 520px) {
+    .title {
+        font-size: 24px;
+    }
+    .subTitle {
+        font-size: 14px;
+    }
 }

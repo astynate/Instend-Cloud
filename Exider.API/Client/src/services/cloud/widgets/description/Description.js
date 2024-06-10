@@ -30,10 +30,25 @@ const Description = observer(({isMobile, isLoading, avatar, title, subtitle, but
               <h3 className={styles.name}>{subtitle}</h3>
             }
           </div>
+          {isMobile && buttons.map((element, index) => {
+              if (isLoading) {
+                return (<div className={styles.button} key={index}></div>)
+              } else {
+                return (
+                  <div 
+                    className={styles.button} 
+                    key={index}
+                    onClick={() => element.callback()}
+                  >
+                    <span>{element.title}</span>
+                  </div>
+                );
+              }
+            })}
         </div>
         <div className={styles.editProfile}>
           <div className={styles.navButton}>
-          {buttons.map((element, index) => {
+          {!isMobile && buttons.map((element, index) => {
               if (isLoading) {
                 return (<div className={styles.button} key={index}></div>)
               } else {

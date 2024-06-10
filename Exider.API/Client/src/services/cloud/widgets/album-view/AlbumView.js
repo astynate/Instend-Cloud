@@ -55,17 +55,17 @@ const AlbumView = observer(({isSquareCover, button, uniqItems, views}) => {
                                     {albums[params.id].description && 
                                         <div className={styles.descriptionWrapper}>
                                             <span className={styles.descritpion}>
-                                                <span className={styles.views}>{views ? views : 0}</span> Views&nbsp;&nbsp;•&nbsp;&nbsp;<span className={styles.views}>0</span> Reactions
+                                                <span className={styles.views}>{views ? views : 0}</span> Views
                                             </span>
                                             <span className={styles.descritpion}>{albums[params.id].description}</span>
                                         </div>
                                     }
                                     <div className={styles.controlPanel}>
                                         {button && (button)}
-                                        <img
+                                        {/* <img
                                             src={emoji}
                                             className={styles.subButton} 
-                                        />
+                                        /> */}
                                         <BurgerMenu 
                                             items={[
                                                 {title: "astynate", callback: () => {}}

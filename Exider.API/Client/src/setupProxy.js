@@ -11,7 +11,7 @@ const context = [
     "/file",
     "/folders",
     "/access",
-    "/api",
+    "/api"
 ];
 
 const onError = (err, req, resp, target) => {
@@ -23,6 +23,7 @@ module.exports = function (app) {
     proxyTimeout: 10000,
     target: target,
     onError: onError,
+    ws: true,
     secure: false,
     headers: {
       Connection: 'Keep-Alive'

@@ -1,6 +1,11 @@
 .screenShot {
+    width: fit-content;
     margin-top: 50px;
     position: relative;
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .laptop {
@@ -9,13 +14,26 @@
 
 .screen {
     height: 217px;
-    width: 326px;
+    width: 329px;
     position: absolute;
     background: black;
     top: 11px;
-    left: 136px;
+    left: 35px;
     border-radius: 7px;
     border: none;
     outline: none;
     object-fit: contain;
+}
+
+@media (max-width: 500px) {
+    .laptop {
+        width: 325px;
+    }
+    
+    .screen {
+        top: 5px;
+        left: 30px;
+        height: 185px;
+        width: 265px;
+    } 
 }

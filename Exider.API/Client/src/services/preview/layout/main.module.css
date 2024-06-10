@@ -19,14 +19,15 @@
 }
 
 .file {
-    height: calc(100vh - 55px - 40px);
+    height: calc(100vh - 55px);
     width: 100vw;
     overflow-x: hidden;
     overflow-y: scroll;
+    color-scheme: dark;
 }
 
 .file img {
-    height: calc(100vh - 55px - 40px);
+    height: calc(100vh - 55px);
     width: 100vw;
     object-fit: contain;
 }

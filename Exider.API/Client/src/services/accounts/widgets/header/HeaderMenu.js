@@ -7,7 +7,6 @@ import Menu from './images/menu.png';
 import { useTranslation } from 'react-i18next';
 
 const HeaderMenu = (props) => {
-
     const { t } = useTranslation();
 
     return (
@@ -17,12 +16,13 @@ const HeaderMenu = (props) => {
                     src={Menu} 
                     className='account-header-menu-image'
                     onClick={() => props.setMenuState(prev => !prev)}
+                    draggable="false"
                 />
             </div>
             <div className='header-menu-items' id={props.menuState ? 'open' : null}>
                 <div className="header-menu-links">
-                    <ExternalLink logo={link} name={t('account.technical_support')} link="https://google.com" />
-                    <ExternalLink logo={link} name={t('account.terms_of_use')} link="https://google.com" />
+                    <ExternalLink logo={link} name={t('account.technical_support')} link="/support" />
+                    <ExternalLink logo={link} name={t('account.terms_of_use')} link="/support" />
                 </div>
             </div>
         </>

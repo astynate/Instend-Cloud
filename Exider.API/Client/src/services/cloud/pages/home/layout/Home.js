@@ -34,11 +34,11 @@ const Home = observer((props) => {
           ]}
         />
       </div>
-        <Routes>
-          <Route path='' element={<Communities />} />
-          <Route path='/community/:id' element={<Community />} />
-          <Route path='/people' element={<People />} />
-        </Routes>
+      <Routes>
+        <Route path='' element={<Communities />} />
+        <Route path='/community/:id' element={<Community isMobile={props.isMobile} />} />
+        <Route path='/people' element={<People />} />
+      </Routes>
     </div>
   )
 });

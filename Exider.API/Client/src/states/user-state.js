@@ -17,6 +17,17 @@ class UserState {
         makeAutoObservable(this);
     }
 
+    Logout = () => {
+        this.user = null;
+        this.friends = [];
+        this.communities = [];
+        this.publications = [];
+        this.isAuthorize = false;
+        this.publicationQueueId = 0;
+        this.countNotifications = 0;
+        this.isAccessibleRoute = false;
+    }
+
     SetPublications = (publications) => {
         this.publications = publications;
     }
@@ -55,12 +66,14 @@ class UserState {
     UpdateUserData = async (location, navigate) => {
         try {
             await instance.get('/accounts')
-                .then(response => {
+                .then(async response => {
                     if (response.data && response.data.length > 2) {
                         this.user = response.data[0];
                         this.friends = response.data[1];
                         this.communities = response.data[2];
                         this.isAuthorize = true;
+
+                        await storageState.SetFolderItemsById(null);
                     } else {
                         this.isAuthorize = false;
                         navigate('/main');
@@ -72,8 +85,6 @@ class UserState {
                     this.isAuthorize = false;
                     navigate('/main');
                 });
-
-            await storageState.SetFolderItemsById(null);
         } 
         catch (exception) {
             this.isAuthorize = false;

@@ -163,15 +163,6 @@ const Cloud = observer((props) => {
             path={storageState.path && storageState.path[AdaptId(params.id)] ? 
               storageState.path[AdaptId(params.id)] : null}
           />
-          {isRenameOpen === true &&
-            <PopUpField
-              title={'Rename'}
-              text={'This field is require'}
-              field={[fileName, setFilename]}
-              open={isRenameOpen}
-              close={() => setRenameState(false)}
-              callback={async () => {await RenameFolder(fileName, activeItems[0])}}
-            />}
           <Information
             open={isError}
             close={() => setErrorState(false)}
@@ -244,6 +235,15 @@ const Cloud = observer((props) => {
           single={single}
           multiple={multiple}
         />
+        {isRenameOpen === true &&
+          <PopUpField
+            title={'Rename'}
+            text={'This field is require'}
+            field={[fileName, setFilename]}
+            open={isRenameOpen}
+            close={() => setRenameState(false)}
+            callback={async () => {await RenameFolder(fileName, activeItems[0])}}
+          />}
     </div>
   )
 });

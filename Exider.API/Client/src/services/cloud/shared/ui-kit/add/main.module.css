@@ -30,6 +30,7 @@
 .button img {
     height: 25px;
     width: 25px;
+    filter: var(--main-filter);
 }
 
 .button:hover {

@@ -27,13 +27,13 @@ const Mobile = observer(() => {
                 <Routes>
                     {PrivateRoutes.map((route, index) => {
                         const { element, ...rest } = route;
-                        return <Route 
+                        return (<Route 
                             key={index} 
                             {...rest} 
                             element={React.cloneElement(element, { 
                                 isMobile: true
                             })}
-                        />;
+                        />);
                     })}
                 </Routes>
             </div>

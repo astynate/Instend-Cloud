@@ -54,7 +54,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
             if (id != null)
             {
-                folder = await _folderRepository.GetByIdAsync(id);
+                folder = await _folderRepository.GetByIdAsync(id, Guid.Parse(userId.Value));
             }
 
             if (folder != null)
@@ -95,7 +95,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
             if (folder != Guid.Empty)
             {
-                FolderModel? folderModel = await _folderRepository.GetByIdAsync(folder.ToString());
+                FolderModel? folderModel = await _folderRepository.GetByIdAsync(folder.ToString(), Guid.Parse(userId.Value));
 
                 if (folderModel == null)
                 {
@@ -129,6 +129,13 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         [Microsoft.AspNetCore.Authorization.Authorize]
         public async Task<IActionResult> UpdateName(Guid id, Guid folderId, string name)
         {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+            {
+                return BadRequest("Invalid user id");
+            }
+
             if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
             {
                 return BadRequest("Invalid name");
@@ -136,7 +143,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
             if (id != Guid.Empty)
             {
-                FolderModel? folderModel = await _folderRepository.GetByIdAsync(id.ToString());
+                FolderModel? folderModel = await _folderRepository.GetByIdAsync(id.ToString(), Guid.Parse(userId.Value));
 
                 if (folderModel == null)
                 {
@@ -182,7 +189,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
             if (string.IsNullOrEmpty(id) == false || string.IsNullOrWhiteSpace(id))
             {
-                FolderModel? folderModel = await _folderRepository.GetByIdAsync(id.ToString());
+                FolderModel? folderModel = await _folderRepository.GetByIdAsync(id.ToString(), Guid.Parse(userId.Value));
 
                 if (folderModel == null)
                 {

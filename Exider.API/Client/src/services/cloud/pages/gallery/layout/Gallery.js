@@ -111,7 +111,7 @@ const Gallery = observer((props) => {
                   }
                 ]}
               />
-            <div className={styles.buttons}>
+            {!props.isMobile && <div className={styles.buttons}>
               <SelectItems 
                 icon={sort}
                 items={[PhotosSortState, SortingOrderState]}
@@ -121,7 +121,7 @@ const Gallery = observer((props) => {
                 items={[template]}
                 states={[setTemplate]}
               />
-            </div>
+            </div>}
           </div>
         </div>
         <div className={styles.content}>

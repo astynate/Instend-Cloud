@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import album from './images/types/album.png';
 import image from './images/types/image.png';
 import CreateAlbum from '../../../../widgets/create-album/CreateAlbum';

@@ -4,7 +4,7 @@
     overflow-x: hidden;
 }
 
-.header{
+.header {
     height: 45px;
     width: 100%;
     display: flex;
@@ -13,6 +13,7 @@
     left: 0;
     padding-bottom: 10px;
     position: sticky;
+    z-index: 1;
     background: var(--main-background-color);
 }
 
@@ -25,4 +26,17 @@
     flex-direction: column;
     grid-gap: 15px;
     position: relative;
+}
+
+@media (max-width: 700px) {
+    .explore {
+        height: calc(100vh - 60px - 50px);
+        padding-bottom: 30px;
+    }
+
+    .header {
+        top: 0px;
+        padding-top: 0px;
+        height: 60px;
+    }
 }

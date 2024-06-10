@@ -58,6 +58,7 @@
 .title {
     font-size: 15px;
     font-weight: 600;
+    margin-top: 5px;
     color: var(--main-font-color);
 }
 

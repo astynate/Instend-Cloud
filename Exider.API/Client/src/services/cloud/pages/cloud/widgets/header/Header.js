@@ -59,24 +59,6 @@ const Header = observer((props) => {
 
     return (
         <div className={styles.header}>
-            <PopUpField 
-                title={type.title}
-                text={type.text}
-                field={[name, setName]}
-                placeholder={type.placeholder}
-                close={() => setOpenState(false)}
-                open={isOpen}
-                callback={async () => {
-                    if (name === null || name === '') 
-                        return;
-
-                    if (type.type === 'folder') {
-                        CreateFolder(name, params.id);
-                    } else {
-                        CreateFile(name, type.type, params.id);
-                    }
-                }}
-            />
             {isOpenAccessWindow === true && 
                 <OpenAccessProcess
                     id={params.id}
@@ -173,6 +155,24 @@ const Header = observer((props) => {
                     )) : null}
                 </div>
             </div>
+            <PopUpField 
+                title={type.title}
+                text={type.text}
+                field={[name, setName]}
+                placeholder={type.placeholder}
+                close={() => setOpenState(false)}
+                open={isOpen}
+                callback={async () => {
+                    if (name === null || name === '') 
+                        return;
+
+                    if (type.type === 'folder') {
+                        CreateFolder(name, params.id);
+                    } else {
+                        CreateFile(name, type.type, params.id);
+                    }
+                }}
+            />
         </div>
     )
   });

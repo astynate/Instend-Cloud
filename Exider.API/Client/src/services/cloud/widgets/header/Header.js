@@ -56,18 +56,9 @@ const Header = observer((props) => {
           window.removeEventListener('click', handleClick);
         };
     }, []);
-      
-    const handleWrapperClick = (event) => {
-        event.stopPropagation();
-    };
 
     return (
         <>
-            <ProfileModal 
-                caller={profileRef} 
-                state={profilePopUpState} 
-                setState={setProfilePopUpState} 
-            />
             <div className={styles.header} ref={wrapper}>
                 {props.children}
                 {openCreateCommunity && <CommunityEditor 
@@ -105,8 +96,13 @@ const Header = observer((props) => {
                         />
                         {current === 1 && <Notifications />}
                     </div>
-                    <div ref={profileRef} className={styles.button} onClick={() => setProfilePopUpState(prev => !prev)}>
+                    <div ref={profileRef} className={styles.button} onClick={() => setCurrect(2)}>
                         <img src={`data:image/png;base64,${user.avatar}`} draggable='false' className={styles.avatar} />
+                        {current === 2 &&<ProfileModal 
+                            caller={profileRef} 
+                            state={profilePopUpState} 
+                            setState={setProfilePopUpState} 
+                        />}
                     </div>
                 </div>
             </div>

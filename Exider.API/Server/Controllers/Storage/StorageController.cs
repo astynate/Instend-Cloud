@@ -145,7 +145,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
             if (folderId != Guid.Empty)
             {
-                FolderModel? folderModel = await _folderRepository.GetByIdAsync(folderId.ToString());
+                FolderModel? folderModel = await _folderRepository.GetByIdAsync(folderId.ToString(), userId);
 
                 if (folderModel == null)
                 {
@@ -187,7 +187,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
             if (folderId != null)
             {
-                folderModel = await _folderRepository.GetByIdAsync(folderId);
+                folderModel = await _folderRepository.GetByIdAsync(folderId, userId);
 
                 if (folderModel == null)
                 {
@@ -322,7 +322,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
             if (folderId != null)
             {
-                FolderModel? folderModel = await _folderRepository.GetByIdAsync(folderId);
+                FolderModel? folderModel = await _folderRepository.GetByIdAsync(folderId, userId);
 
                 if (folderModel == null)
                 {
