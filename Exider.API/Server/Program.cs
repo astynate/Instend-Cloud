@@ -18,6 +18,7 @@ using Exider.Services.Middleware;
 using Exider_Version_2._0._0.Server.Hubs;
 using Exider_Version_2._0._0.ServerApp.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -93,7 +94,6 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseCors("CorsPolicy");
 app.UseMiddleware<LoggingMiddleware>();
 
 app.Use(async (context, next) =>
@@ -131,6 +131,7 @@ app.Use(async (context, next) =>
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseCors("CorsPolicy");
 
 app.MapControllerRoute(
     name: "default",
@@ -141,7 +142,7 @@ app.MapFallbackToFile("index.html");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapHub<MessageHub>("/message-hub");
-app.MapHub<StorageHub>("/storage-hub");
-app.MapHub<GalleryHub>("/gallery-hub");
+app.MapHub<MessageHub>("/message-hub").RequireCors("CorsPolicy");
+app.MapHub<StorageHub>("storage-hub").RequireCors("CorsPolicy");
+app.MapHub<GalleryHub>("/gallery-hub").RequireCors("CorsPolicy");
 app.Run();

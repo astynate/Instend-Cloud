@@ -10,6 +10,7 @@ import PhotoList from '../../shared/photo-list/PhotoList';
 import storageState from '../../../../../../states/storage-state';
 import FileAPI from '../../../../api/FileAPI';
 import AddInGallery from '../../widgets/add/AddInGallery';
+import { ByDate, ByName } from '../../../cloud/layout/Cloud';
 
 const Photos = observer((props) => {
     const photosWrapper = useRef();
@@ -81,7 +82,17 @@ const Photos = observer((props) => {
                 </div>}
             <AddInGallery id={null} />
             <PhotoList 
-                photos={photos} 
+                photos={photos.sort((a, b) => {
+                    if (props.sortingType === 0) {
+                      return ByDate(a, b, true)
+                    } else if (props.sortingType === 1) {
+                      return ByDate(a, b, false)
+                    } else if (props.sortingType === 2) {
+                      return ByName(a, b, true)
+                    } else if (props.sortingType === 3) {
+                      return ByName(a, b, false)
+                    }
+                })} 
                 scale={props.scale}
                 photoGrid={props.photoGrid}
                 forwardRef={photosWrapper}

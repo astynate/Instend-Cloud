@@ -31,6 +31,29 @@ import download from './images/context-menu/download.png';
 import { instance } from '../../../../../state/Interceptors';
 import { DownloadFromResponse } from '../../../../../utils/DownloadFromResponse';
 
+export const ByDate = (a, b, isAcendng) => {
+  const dateA = new Date(a.lastEditTime);
+  const dateB = new Date(b.lastEditTime);
+  return isAcendng ? dateA - dateB : dateB - dateA;
+}
+
+export const ByName = (a, b, isAcendng) => {
+  if (isAcendng) {
+      if (a.name < b.name) {
+          return -1;
+      } else if (a.name > b.name) {
+          return 1;
+      }
+  } else {
+      if (a.name > b.name) {
+          return -1;
+      } else if (a.name < b.name) {
+          return 1;
+      }
+  }
+  return 0;
+}
+
 const Cloud = observer((props) => {
   const navigate = useNavigate();
   const { user } = userState;
@@ -56,29 +79,6 @@ const Cloud = observer((props) => {
     setErrorTitle(title);
     setErrorMessage(message);
     setErrorState(true);
-  }
-
-  const ByDate = (a, b, isAcendng) => {
-    const dateA = new Date(a.lastEditTime);
-    const dateB = new Date(b.lastEditTime);
-    return isAcendng ? dateA - dateB : dateB - dateA;
-  }
-
-  const ByName = (a, b, isAcendng) => {
-    if (isAcendng) {
-        if (a.name < b.name) {
-            return -1;
-        } else if (a.name > b.name) {
-            return 1;
-        }
-    } else {
-        if (a.name > b.name) {
-            return -1;
-        } else if (a.name < b.name) {
-            return 1;
-        }
-    }
-    return 0;
   }
 
   const single = [

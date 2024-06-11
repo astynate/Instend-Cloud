@@ -56,26 +56,31 @@ const Gallery = observer((props) => {
 
   const [scale, setScale] = useState(2);
   const [template, setTemplate] = useState(Template);
+  const [sortingType, setSortingType] = useState(0);
   const [PhotosSortState, setSortingTypeState] = useState(PhotosSortFunctions);
   const [SortingOrderState, setSortingOrderState] = useState(SortingOrder);
   const scroll = useRef();
 
   useEffect(() => {
-    // let type = PhotosSortState
-    //   .find(element => element.isSelected === true);
+    let type = PhotosSortState
+      .find(element => element.isSelected === true);
 
-    // let ordingState = SortingOrderState
-    //   .find(element => element.isSelected === true);
+    let ordingState = SortingOrderState
+      .find(element => element.isSelected === true);
 
-    // if (type && ordingState) {
-    //   const ordingStateId = ordingState.title === 'Accending';
+    if (type && ordingState) {
+      const ordingStateId = ordingState.title === 'Accending';
 
-    //   if (type.title === 'Name') {
-    //     galleryState.SortPhotosByName(ordingStateId);
-    //   } else {
-    //     galleryState.SortPhotosByDate(ordingStateId);
-    //   }
-    // }
+      if (type.title !== 'Name' && ordingStateId) {
+        setSortingType(0);
+      } else if (type.title !== 'Name' && ordingStateId === false) {
+        setSortingType(1);
+      } else if (type.title === 'Name' && ordingStateId) {
+        setSortingType(2);
+      } else if (type.title === 'Name' && ordingStateId === false) {
+        setSortingType(3);
+      }
+    }
   }, [PhotosSortState, SortingOrderState]);
 
   useEffect(() => {
@@ -133,6 +138,7 @@ const Gallery = observer((props) => {
                   photoGrid={template} 
                   scale={scale}
                   scroll={scroll}
+                  sortingType={sortingType}
               />} 
             />
             <Route 

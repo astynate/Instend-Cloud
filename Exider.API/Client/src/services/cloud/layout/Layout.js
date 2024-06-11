@@ -20,7 +20,8 @@ import musicState from '../../../states/music-state';
 import { GetCurrentSong } from '../widgets/navigation-panel/NavigationPanel';
 import chatsState from '../../../states/chats-state';
 import { useNavigate } from 'react-router-dom';
-// import * as signalR from "@microsoft/signalr";
+import * as signalR from "@microsoft/signalr";
+import { HubConnectionBuilder, HttpTransportType } from '@microsoft/signalr';
 
 export const messageWSContext = createSignalRContext();
 export const storageWSContext = createSignalRContext();
@@ -88,7 +89,18 @@ const Layout = observer(() => {
     const [errorMessage, setErrorMessage] = useState('');
     const [song, setSong] = useState(null);
     const navigate = useNavigate();
-    const url = 'http://localhost:5000' // 'http://localhost:5000/message-hub'
+    const url = 'https://5ca80adffcee99.lhr.life' // 'http://localhost:5000/message-hub'
+
+    useEffect(() => {
+        // const connection = new signalR.HubConnectionBuilder()
+        //     .withUrl("https://9875-46-53-242-237.ngrok-free.app/message-hub")
+        //     .configureLogging(signalR.LogLevel.Information)
+        //     .build();
+          
+        // connection.start()
+        //     .then(() => console.log('Connected to SignalR server'))
+        //     .catch(err => console.error('Failed to connect to SignalR server', err));
+    }, []);
 
     useEffect(() => {
         setSong(GetCurrentSong());

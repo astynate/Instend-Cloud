@@ -8,7 +8,7 @@ import PopUpList from '../../../../shared/ui-kit/pop-up-list/PopUpList';
 import UsersPopUp from '../../shared/users-pop-up/UsersPopUp';
 import { instance } from '../../../../../../state/Interceptors';
 import chatsState from '../../../../../../states/chats-state';
-import { messageWSContext } from '../../../../layout/Layout';
+import { WaitingForConnection, messageWSContext } from '../../../../layout/Layout';
 import { useNavigate, useParams } from 'react-router-dom';
 import ContextMenu from '../../../../shared/context-menu/ContextMenu';
 import OkCancel from '../../../../shared/ok-cancel/OkCancel';
@@ -32,15 +32,12 @@ const Chats = observer(({isMobile, setOpenState}) => {
     useEffect(() => {
         const connectToChats = async () => {
             try {
-                while (messageWSContext.connection.state !== 'Connected') {
-                    if (messageWSContext.connection.state === 'Disconnected') {
-                        await messageWSContext.connection.start();
-                    }
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                }
+                await WaitingForConnection(messageWSContext);
 
-                await messageWSContext.connection.invoke("Join", localStorage.getItem("system_access_token"));
-                chatsState.SetConnectedState(true);
+                if (messageWSContext.connection.state === 'Connected') {
+                    await messageWSContext.connection.invoke("Join", localStorage.getItem("system_access_token"));
+                    chatsState.SetConnectedState(true);
+                }
             } catch (error) {
                 console.error('Failed to connect or join:', error);
                 chatsState.SetConnectedState(false);
