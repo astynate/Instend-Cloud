@@ -8,16 +8,28 @@ import Scroll from '../../../../widgets/scroll/Scroll';
 import { observer } from 'mobx-react-lite';
 import { layoutContext } from '../../../../layout/Layout';
 import AddInMusic from '../../widgets/add-in-music/AddInMusic';
+import musicState from '../../../../../../states/music-state';
 
 const Songs = observer((props) => {
     const { song } = useContext(layoutContext);
+    let songs = storageState.GetSelectionByType(FileAPI.musicTypes);
 
     return (
         <div className={styles.songs}>
             <SongInformation 
                 song={song}
+                callback={() => {
+                    if (songs.length > 0 && musicState.songQueue.length === 0) {
+                        musicState.SetSongQueue(songs);
+                        musicState.SetCurrentSongIndex(0);
+                    } else if (musicState.songQueue.length > 0) {
+                        musicState.ChangePlayingState();
+                    }
+                }}
             />
-            <SongList songs={storageState.GetSelectionByType(FileAPI.musicTypes)} />
+            <SongList 
+                songs={songs} 
+            />
             <Scroll
                 scroll={props.scroll}
                 isHasMore={storageState.hasMoreSongs}

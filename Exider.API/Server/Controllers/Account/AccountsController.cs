@@ -106,6 +106,20 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
             return Ok(users);
         }
 
+        [Authorize]
+        [HttpGet("popular")]
+        public async Task<IActionResult> GetUsersByPrefixAsync()
+        {
+            UserPublic[] users = await _userDataRepository.GetPopularPeople();
+
+            if (users == null)
+            {
+                return Conflict("User not found");
+            }
+
+            return Ok(users);
+        }
+
         [HttpGet("email/{email}")]
         public async Task<IActionResult> GetAccountByEmail(string email)
         {

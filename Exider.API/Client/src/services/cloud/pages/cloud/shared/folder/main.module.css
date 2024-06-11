@@ -106,7 +106,7 @@
 .filePreview {
     height: 100%;
     width: 100%;
-    background: var(--sub-accent-color);
+    background: var(--main-accent-color);
     display: flex;
     align-items: center;
     justify-content: center;

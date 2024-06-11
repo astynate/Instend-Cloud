@@ -90,6 +90,10 @@ const Layout = observer(() => {
     const navigate = useNavigate();
     const url = 'http://localhost:5000' // 'http://localhost:5000/message-hub'
 
+    useEffect(() => {
+        setSong(GetCurrentSong());
+    }, [musicState.songQueue, musicState.currentSongIndex]);
+
     useLayoutEffect(() => {
         if (userState.isAuthorize === false) {
             navigate('/main');

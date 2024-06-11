@@ -13,6 +13,10 @@ class MusicState {
         makeAutoObservable(this);
     }
 
+    SetCurrentSongIndex = (index) => {
+        this.currentSongIndex = index;
+    }
+
     SetSongQueue(songs) {
         if (songs && songs.filter) {
             this.songQueue = songs.filter(element => FileAPI
@@ -52,6 +56,7 @@ class MusicState {
     ChangePlayingState() {
         if (this.songQueue.length > 0) {
             this.isPlaying = !this.isPlaying;
+            return;
         }
         
         this.isPlaying = false;

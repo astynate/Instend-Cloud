@@ -1,6 +1,6 @@
 .playButton {
-    background: var(--main-font-color);
-    filter: var(--sub-filter);
+    background: var(--main-background-color);
+    filter: invert(100%);
     padding: 20px;
     border-radius: 100%;
     height: fit-content;
@@ -19,7 +19,7 @@
 .playButton img {
     height: 100%;
     width: 100%;
-    /* object-fit: contain; */
+    filter: var(--main-filter);
 }
 
 .playButton:hover {

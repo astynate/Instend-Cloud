@@ -85,8 +85,9 @@
 .playImage {
     height: 35%;
     width: 35%;
-    filter: var(--main-filter);
+    /* filter: var(--main-filter); */
     object-fit: contain;
+    filter: invert(100%);
 }
 
 @keyframes barAnimation {

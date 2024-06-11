@@ -8,6 +8,7 @@ namespace Exider.Repositories.Account
     {
         Task AddAsync(UserDataModel userData);
         Task<Result<UserDataModel>> DecreaseOccupiedSpace(Guid userId, double amountInBytes);
+        Task<UserPublic[]> GetPopularPeople();
         Task<Result<UserPublic>> GetUserAsync(Guid id);
         Task<UserPublic[]> GetUsersbyPrefixAsync(string prefix);
         Task<Result<UserDataModel>> IncreaseOccupiedSpace(Guid userId, double amountInBytes);

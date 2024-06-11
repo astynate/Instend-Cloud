@@ -7,7 +7,7 @@ import { observer } from 'mobx-react-lite';
 import { GetSongData, GetSongName } from '../../../../widgets/navigation-panel/NavigationPanel';
 import musicState from '../../../../../../states/music-state';
 
-const SongInformation = observer(({song}) => {
+const SongInformation = observer(({song, callback}) => {
     return (
         <div className={styles.songInformation}>
             <div className={styles.coverWrapper}>
@@ -41,7 +41,11 @@ const SongInformation = observer(({song}) => {
                 <div className={styles.playPanel}>
                     <PlayButton 
                         isPlaying={musicState.isPlaying} 
-                        callback={() => musicState.ChangePlayingState()}
+                        callback={() => {
+                            if (callback) {
+                                callback();
+                            }
+                        }}
                     />
                     <BurgerMenu 
                         items={[

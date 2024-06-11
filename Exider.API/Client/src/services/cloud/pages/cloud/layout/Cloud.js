@@ -47,6 +47,7 @@ const Cloud = observer((props) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setLoadingState] = useState(false);
   const [items, setItems] = useState([...Object.values(toJS(storageState.files)).flat(), ...Object.values(toJS(storageState.folders)).flat()]);
+  const [sortingType, setSortingType] = useState(0);
   const params = useParams();
   const selectPlaceWrapper = useRef();
   const selectPlace = useRef();
@@ -55,6 +56,29 @@ const Cloud = observer((props) => {
     setErrorTitle(title);
     setErrorMessage(message);
     setErrorState(true);
+  }
+
+  const ByDate = (a, b, isAcendng) => {
+    const dateA = new Date(a.lastEditTime);
+    const dateB = new Date(b.lastEditTime);
+    return isAcendng ? dateA - dateB : dateB - dateA;
+  }
+
+  const ByName = (a, b, isAcendng) => {
+    if (isAcendng) {
+        if (a.name < b.name) {
+            return -1;
+        } else if (a.name > b.name) {
+            return 1;
+        }
+    } else {
+        if (a.name > b.name) {
+            return -1;
+        } else if (a.name < b.name) {
+            return 1;
+        }
+    }
+    return 0;
   }
 
   const single = [
@@ -124,7 +148,8 @@ const Cloud = observer((props) => {
 
   useEffect(() => {
     const disposer = autorun(() => {
-      setItems([...Object.values(toJS(storageState.files)).flat(), ...Object.values(toJS(storageState.folders)).flat()]);
+      setItems([...Object.values(toJS(storageState.files)).flat(), 
+        ...Object.values(toJS(storageState.folders)).flat()]);
     });
 
     return () => disposer();
@@ -162,6 +187,7 @@ const Cloud = observer((props) => {
             isMobile={props.isMobile}
             path={storageState.path && storageState.path[AdaptId(params.id)] ? 
               storageState.path[AdaptId(params.id)] : null}
+            setSortingType={setSortingType}
           />
           <Information
             open={isError}
@@ -175,24 +201,49 @@ const Cloud = observer((props) => {
                 <File key={index} isPlaceholder={true} />
               ))
             : 
-              (items.filter(element => element.typeId !== '0' && element.folderId === AdaptId(params.id)).length > 0) ?
+              (items.filter(element => element.typeId !== 'System' && element.folderId === AdaptId(params.id)).length > 0) ?
                 <>
                   {folders && toJS(folders)[AdaptId(params.id)] &&
-                    toJS(folders)[AdaptId(params.id)].filter(element => element.typeId !== '0').map((element, index) => (
-                      <Folder 
-                        key={element.id != null ? element.id : index}
-                        id={element.id}
-                        isSelected={selectedItems.map(element => element.id).includes(element.id)}
-                        folder={element}
-                        name={element.name} 
-                        time={element.creationTime}
-                        onContextMenu={() => setFilename(element.name)}
-                        isLoading={element.isLoading}
-                      />
+                    toJS(folders)[AdaptId(params.id)]
+                      .filter(element => element.typeId !== 'System')
+                      .sort((a, b) => {
+                          if (sortingType === 0) {
+                            return ByDate(a, b, true)
+                          } else if (sortingType === 1) {
+                            return ByDate(a, b, false)
+                          } else if (sortingType === 2) {
+                            return ByName(a, b, true)
+                          } else if (sortingType === 3) {
+                            return ByName(a, b, false)
+                          }
+                      })
+                      .map((element, index) => (
+                        <Folder 
+                          key={element.id != null ? element.id : index}
+                          id={element.id}
+                          isSelected={selectedItems.map(element => element.id).includes(element.id)}
+                          folder={element}
+                          name={element.name} 
+                          time={element.creationTime}
+                          onContextMenu={() => setFilename(element.name)}
+                          isLoading={element.isLoading}
+                        />
                     ))
                   }
                   {files && toJS(files)[AdaptId(params.id)] &&
-                    toJS(files)[AdaptId(params.id)].map((element, index) => (
+                    toJS(files)[AdaptId(params.id)]
+                    .sort((a, b) => {
+                      if (sortingType === 0) {
+                        return ByDate(a, b, true)
+                      } else if (sortingType === 1) {
+                        return ByDate(a, b, false)
+                      } else if (sortingType === 2) {
+                        return ByName(a, b, false)
+                      } else if (sortingType === 3) {
+                        return ByName(a, b, true)
+                      }
+                    })
+                    .map((element, index) => (
                       <File
                         key={element.id ? element.id : index} 
                         name={element.name}

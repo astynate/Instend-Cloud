@@ -29,7 +29,6 @@
 
 .text {
     font-size: 15px;
-    color: white;
 }
 
 .messageText {
@@ -43,6 +42,7 @@
     margin-top: 5px;
     margin-bottom: 5px;
     user-select: none;
+    color: var(--main-font-color);
 }
 
 .message[id="selected"] .messageText {
@@ -51,6 +51,7 @@
 
 .messageText[id="My"] {
     background: var(--main-blue-color);
+    color: white;
 }
 
 .first {

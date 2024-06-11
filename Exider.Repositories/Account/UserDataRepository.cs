@@ -118,27 +118,7 @@ namespace Exider.Repositories.Account
                     }
                 ).ToArrayAsync();
 
-            foreach (var user in users)
-            {
-                if (user.Avatar == Configuration.DefaultAvatarPath)
-                {
-                    user.Avatar = Configuration.DefaultAvatar;
-                }
-                else if (string.IsNullOrEmpty(user.Avatar) == false)
-                {
-                    var avatarReadingResult = await _fileService.ReadFileAsync(user.Avatar);
-
-                    if (avatarReadingResult.IsFailure)
-                    {
-                        user.Avatar = Configuration.DefaultAvatar;
-                    }
-                    else
-                    {
-                        user.Avatar = Convert.ToBase64String(avatarReadingResult.Value);
-                    }
-                }
-            }
-
+            await SetAvatarAsync(users);
             return users;
         }
 
@@ -196,6 +176,60 @@ namespace Exider.Repositories.Account
             
             await _context.SaveChangesAsync();
             return Result.Success(user);
+        }
+
+        public async Task<UserPublic[]> GetPopularPeople()
+        {
+            UserPublic[] users = await _context.UserData
+                .AsNoTracking()
+                .OrderByDescending(x => x.FriendCount)
+                .Take(15)
+                .Join(
+                    _context.Users,
+                    user => user.UserId,
+                    data => data.Id,
+                    (data, user) => new UserPublic
+                    {
+                        Id = user.Id,
+                        Name = user.Name,
+                        Surname = user.Surname,
+                        Nickname = user.Nickname,
+                        Email = user.Email,
+                        Avatar = data.Avatar,
+                        Header = data.Header,
+                        Description = data.Description,
+                        StorageSpace = data.StorageSpace,
+                        Balance = data.Balance,
+                        FriendCount = data.FriendCount
+                    })
+                .ToArrayAsync();
+
+            await SetAvatarAsync(users);
+            return users;
+        }
+
+        private async Task SetAvatarAsync(UserPublic[] users)
+        {
+            foreach (var user in users)
+            {
+                if (user.Avatar == Configuration.DefaultAvatarPath)
+                {
+                    user.Avatar = Configuration.DefaultAvatar;
+                }
+                else if (string.IsNullOrEmpty(user.Avatar) == false)
+                {
+                    var avatarReadingResult = await _fileService.ReadFileAsync(user.Avatar);
+
+                    if (avatarReadingResult.IsFailure)
+                    {
+                        user.Avatar = Configuration.DefaultAvatar;
+                    }
+                    else
+                    {
+                        user.Avatar = Convert.ToBase64String(avatarReadingResult.Value);
+                    }
+                }
+            }
         }
     }
 }

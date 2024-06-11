@@ -128,17 +128,16 @@ const Header = observer((props) => {
             {isSortMenuOpen === true ?
                 <ContextMenu 
                     items={[
-                        [null, "Ascending by name", () => storageState.SortByNameAsending(params.id)],
-                        [null, "Descending by name", () => storageState.SortByNameDesending(params.id)],
-                        [null, "New ones first", () => storageState.SortByDateAsending(params.id)],
-                        [null, "Old ones first", () => storageState.SortByDateDesending(params.id)]
+                        [null, "Ascending by name", () => {props.setSortingType(0); setSortMenuState(false);} ],
+                        [null, "Descending by name", () => {props.setSortingType(1); setSortMenuState(false);}],
+                        [null, "New ones first", () => {props.setSortingType(2); setSortMenuState(false);}],
+                        [null, "Old ones first", () => {props.setSortingType(3); setSortMenuState(false);}]
                     ]}
                     position={sortMenuPosition}
                     close={() => setSortMenuState(false)}
                     isContextMenu={false}
                 /> : null}
                 {(props.path && props.path.length > 0) ?
-
                         <h1 className={styles.title}>{props.path[props.path.length - 1].name}</h1>
                     :
                         <h1 className={styles.title}>Welcome back, {props.name}!</h1>  
