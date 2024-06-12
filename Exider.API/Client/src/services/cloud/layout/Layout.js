@@ -20,8 +20,7 @@ import musicState from '../../../states/music-state';
 import { GetCurrentSong } from '../widgets/navigation-panel/NavigationPanel';
 import chatsState from '../../../states/chats-state';
 import { useNavigate } from 'react-router-dom';
-import * as signalR from "@microsoft/signalr";
-import { HubConnectionBuilder, HttpTransportType } from '@microsoft/signalr';
+import Disconnected from '../features/disconnected/Disconnected';
 
 export const messageWSContext = createSignalRContext();
 export const storageWSContext = createSignalRContext();
@@ -31,18 +30,18 @@ export const imageTypes = ['png', 'jpg', 'jpeg', 'gif'];
 
 export const WaitingForConnection = async (signalRContext) => {
     while (signalRContext.connection.state === 'Connecting') {
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        applicationState.SetConnectionState(1);
+        await new Promise(resolve => setTimeout(resolve, 2000));
     }
 
     if (signalRContext.connection.state === 'Disconnected') {
-        try {
-            applicationState.AddErrorInQueue('Connection interrupted!', 'Perhaps you are not connected to the Internet.')
-            await signalRContext.connection.start();
-        } catch (error) {
-            applicationState.AddErrorInQueue('Connection interrupted!', 'Perhaps you are not connected to the Internet.')
-        }
+        applicationState.SetConnectionState(2);
+        
+        await signalRContext.connection.start();
+        await WaitingForConnection(signalRContext);
     }
-    return;
+
+    applicationState.SetConnectionState(0);
 }
 
 export const connectToDirectListener = async (id) => {
@@ -89,18 +88,7 @@ const Layout = observer(() => {
     const [errorMessage, setErrorMessage] = useState('');
     const [song, setSong] = useState(null);
     const navigate = useNavigate();
-    const url = 'https://5ca80adffcee99.lhr.life' // 'http://localhost:5000/message-hub'
-
-    useEffect(() => {
-        // const connection = new signalR.HubConnectionBuilder()
-        //     .withUrl("https://9875-46-53-242-237.ngrok-free.app/message-hub")
-        //     .configureLogging(signalR.LogLevel.Information)
-        //     .build();
-          
-        // connection.start()
-        //     .then(() => console.log('Connected to SignalR server'))
-        //     .catch(err => console.error('Failed to connect to SignalR server', err));
-    }, []);
+    const url = 'http://localhost:5000' // 'http://localhost:5000/message-hub'
 
     useEffect(() => {
         setSong(GetCurrentSong());
@@ -110,7 +98,7 @@ const Layout = observer(() => {
         if (userState.isAuthorize === false) {
             navigate('/main');
         }
-    }, [userState.isAuthorize])
+    }, [userState.isAuthorize]);
     
     useEffect(() => {
         const setError = (title, message) => {
@@ -352,13 +340,14 @@ const Layout = observer(() => {
                             <Helmet>
                                 <title>Yexider</title>
                             </Helmet>
+                            {applicationState.connectionState !== 0 && <Disconnected />}
+                            {windowWidth > 700 ? <Desktop /> : <Mobile />}
                             <Information
                                 open={isError}
                                 close={() => setErrorState(false)}
                                 title={errorTitle}
                                 message={errorMessage}
                             />
-                            {windowWidth > 700 ? <Desktop /> : <Mobile /> }
                         </div>
                     </layoutContext.Provider>
                 </galleryWSContext.Provider>

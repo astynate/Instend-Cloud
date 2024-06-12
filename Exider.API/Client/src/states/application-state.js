@@ -2,9 +2,14 @@ import { makeAutoObservable } from "mobx";
 
 class ApplicationState {
     errorQueue = [];
+    connectionState = 0;
 
     constructor() {
         makeAutoObservable(this);
+    }
+
+    SetConnectionState(state) {
+        this.connectionState = state;
     }
 
     AddErrorInQueue(title, message) {

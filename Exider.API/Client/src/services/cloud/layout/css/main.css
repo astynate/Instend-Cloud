@@ -23,6 +23,7 @@ h1 {
 .cloud-wrapper {
     display: flex;
     flex-wrap: nowrap;
+    flex-direction: column;
     height: 100dvh;
     width: 100dvw;
 }
@@ -31,6 +32,11 @@ h1 {
     height: 100%;
     width: 100%;
     overflow: hidden;
+}
+
+.wrapper {
+    height: 100%;
+    display: flex;
 }
 
 .mobile-header {

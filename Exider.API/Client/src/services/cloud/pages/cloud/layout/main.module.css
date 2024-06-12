@@ -1,5 +1,5 @@
 .wrapper {
-    height: 100%;
+    height: calc(100vh - var(--disconnected-height));
     width: 100%;
     display: flex;
     flex-direction: column;

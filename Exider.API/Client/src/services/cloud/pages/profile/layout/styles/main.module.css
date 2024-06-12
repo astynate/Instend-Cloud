@@ -1,5 +1,5 @@
 .content {
-    height: 100svh;
+    height: calc(100vh - var(--disconnected-height));
     width: 100%;
     overflow-y: scroll;
     overflow-x: hidden;

@@ -1,5 +1,5 @@
 .chats {
-    height: 100vh;
+    height: calc(100vh - var(--disconnected-height));
     width: 280px;
     border-right: 1px solid var(--main-border-color);
     user-select: none;

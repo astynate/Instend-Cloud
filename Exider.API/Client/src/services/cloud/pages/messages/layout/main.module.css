@@ -1,5 +1,5 @@
 .wrapper {
-    height: 100%;
+    height: calc(100vh - var(--disconnected-height));
     overflow: hidden;
     display: grid;
     grid-template-columns: 350px auto;

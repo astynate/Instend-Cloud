@@ -1,0 +1,30 @@
+.disconnected {
+    height: 15px;
+    background: red;
+    /* border-bottom: 1px solid var(--main-border-color); */
+    width: calc(100vw);
+    /* position: fixed; */
+    /* top: 2px;
+    left: 2px; */
+    /* border-radius: 5px; */
+    z-index: 999;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    color: white;
+    font-size: 10px;
+    align-items: center;
+    flex-shrink: 0;
+    grid-gap: 5px;
+    font-weight: 600;
+}
+
+.disconnected[id="connecting"] {
+    background: rgb(0, 119, 255);
+}
+
+.image {
+    height: 13px;
+    width: 13px;
+    filter: invert(100%);
+}

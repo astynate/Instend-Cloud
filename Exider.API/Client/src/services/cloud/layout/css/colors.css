@@ -41,6 +41,8 @@
 
     --search-border-color: rgba(0, 0, 0, 0.15);
     --search-font-color: #bebebe;
+
+    --disconnected-height: 15px;
 }
 
 .dark-mode {
