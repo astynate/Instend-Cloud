@@ -32,8 +32,8 @@ import { instance } from '../../../../../state/Interceptors';
 import { DownloadFromResponse } from '../../../../../utils/DownloadFromResponse';
 
 export const ByDate = (a, b, isAcendng) => {
-  const dateA = new Date(a.lastEditTime);
-  const dateB = new Date(b.lastEditTime);
+  const dateA = new Date(a.creationTime);
+  const dateB = new Date(b.creationTime);
   return isAcendng ? dateA - dateB : dateB - dateA;
 }
 
@@ -207,13 +207,13 @@ const Cloud = observer((props) => {
                     toJS(folders)[AdaptId(params.id)]
                       .filter(element => element.typeId !== 'System')
                       .sort((a, b) => {
-                          if (sortingType === 0) {
+                          if (sortingType === 3) {
                             return ByDate(a, b, true)
-                          } else if (sortingType === 1) {
-                            return ByDate(a, b, false)
                           } else if (sortingType === 2) {
+                            return ByDate(a, b, false)
+                          } else if (sortingType === 1) {
                             return ByName(a, b, true)
-                          } else if (sortingType === 3) {
+                          } else if (sortingType === 0) {
                             return ByName(a, b, false)
                           }
                       })
@@ -233,14 +233,14 @@ const Cloud = observer((props) => {
                   {files && toJS(files)[AdaptId(params.id)] &&
                     toJS(files)[AdaptId(params.id)]
                     .sort((a, b) => {
-                      if (sortingType === 0) {
+                      if (sortingType === 3) {
                         return ByDate(a, b, true)
-                      } else if (sortingType === 1) {
-                        return ByDate(a, b, false)
                       } else if (sortingType === 2) {
-                        return ByName(a, b, false)
-                      } else if (sortingType === 3) {
+                        return ByDate(a, b, false)
+                      } else if (sortingType === 1) {
                         return ByName(a, b, true)
+                      } else if (sortingType === 0) {
+                        return ByName(a, b, false)
                       }
                     })
                     .map((element, index) => (

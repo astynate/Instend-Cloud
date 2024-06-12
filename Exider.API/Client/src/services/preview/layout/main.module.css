@@ -1,13 +1,15 @@
 .wrapper {
     height: 100vh;
     width: 100vw;
-    background: rgba(30, 30, 30, 1);
+    background: rgba(30, 30, 30, 0.7);
+    /* background: black; */
     z-index: 999999999;
     top: 0;
     left: 0;
     position: fixed;
-    backdrop-filter: var(--main-blur-effect);
+    /* backdrop-filter: var(--main-blur-effect); */
     animation: open 0.5s ease;
+    --height: 55px;
 }
 
 .preview {
@@ -19,15 +21,23 @@
 }
 
 .file {
-    height: calc(100vh - 55px);
+    height: calc(100svh - var(--height));
     width: 100vw;
     overflow-x: hidden;
     overflow-y: scroll;
     color-scheme: dark;
+    color: white;
 }
 
 .file img {
-    height: calc(100vh - 55px);
+    height: calc(100svh - var(--height));
+    width: 100vw;
+    object-fit: contain;
+}
+
+
+.file video {
+    height: calc(100svh - var(--height));
     width: 100vw;
     object-fit: contain;
 }

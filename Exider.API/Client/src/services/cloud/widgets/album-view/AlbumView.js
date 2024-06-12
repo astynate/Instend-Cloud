@@ -16,8 +16,9 @@ import { DeleteComment } from '../../pages/gallery/api/AlbumRequests';
 import HeaderSearch from './compontens/header-search/HeaderSearch';
 import MainContentWrapper from '../../features/main-content-wrapper/MainContentWrapper';
 import { AddUploadingAlbumComment } from '../../api/CommentAPI';
+import applicationState from '../../../../states/application-state';
 
-const AlbumView = observer(({isSquareCover, button, uniqItems, views}) => {
+const AlbumView = observer(({isSquareCover, button, uniqItems, views, isMobile}) => {
     const { albums } = galleryState;
     const params = useParams();
     const wrapper = useRef();
@@ -61,7 +62,7 @@ const AlbumView = observer(({isSquareCover, button, uniqItems, views}) => {
                                         </div>
                                     }
                                     <div className={styles.controlPanel}>
-                                        {button && (button)}
+                                        {applicationState.isMobile === false && button && (button)}
                                         {/* <img
                                             src={emoji}
                                             className={styles.subButton} 
@@ -98,23 +99,12 @@ const AlbumView = observer(({isSquareCover, button, uniqItems, views}) => {
                                                     }
                                                 })
                                             }
-                                            <AddUser callback={() => setOpenAccessWindowState(true)} />   
+                                            <AddUser callback={() => setOpenAccessWindowState(true)} />
+                                            <div className={styles.buttons}>
+                                                {applicationState.isMobile === true && button && (button)}   
+                                            </div>
                                         </>
                                     }
-                                </div>
-                                <div className={styles.reactions}>
-                                    {/* <Reaction /> */}
-                                    {/* <Reaction />
-                                    <Reaction />
-                                    <Reaction />
-                                    <Reaction />
-                                    <Reaction />
-                                    <Reaction />
-                                    <Reaction />
-                                    <Reaction />
-                                    <Reaction />
-                                    <Reaction />
-                                    <Reaction /> */}
                                 </div>
                             </div>
                         </div>

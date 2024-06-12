@@ -111,6 +111,7 @@ namespace Exider.Services.External.FileService
             {
                 { Configuration.documentTypes, WordToHTML },
                 { Configuration.imageTypes, ImageToHtml },
+                { Configuration.videoTypes, VideoToHtml },
                 { new string[] {"pdf"}, PdfToHtml },
             };
 
@@ -129,9 +130,15 @@ namespace Exider.Services.External.FileService
         {
             byte[] byteArray = File.ReadAllBytes(path);
 
+            if (byteArray == null || byteArray.Length == 0)
+            {
+                return "";
+            }
+
             using (MemoryStream memoryStream = new MemoryStream())
             {
                 memoryStream.Write(byteArray, 0, byteArray.Length);
+                memoryStream.Position = 0;
 
                 using (WordprocessingDocument doc = WordprocessingDocument.Open(memoryStream, true))
                 {
@@ -139,15 +146,18 @@ namespace Exider.Services.External.FileService
                     {
                         PageTitle = "None"
                     };
-                    XElement html = OpenXmlPowerTools.HtmlConverter.ConvertToHtml(doc, settings);
 
-                    return html.ToStringNewLineOnAttributes();
+                    XElement html = HtmlConverter.ConvertToHtml(doc, settings);
+                    return html.ToString();
                 }
             }
         }
 
         private string ImageToHtml(string path)
             => $"<img src=\"data:image/png;base64,{Convert.ToBase64String(File.ReadAllBytes(path))}\">";
+
+        private string VideoToHtml(string path)
+            => $"<video controls><source type=\"video/mp4\" src=\"data:image/png;base64,{Convert.ToBase64String(File.ReadAllBytes(path))}\"</video>";
 
         private string PdfToHtml(string path)
         {
@@ -156,7 +166,7 @@ namespace Exider.Services.External.FileService
 
             for (int i = 1; i <= reader.NumberOfPages; i++)
             {
-                iTextSharp.text.pdf.parser.LocationTextExtractionStrategy strategy = new LocationTextExtractionStrategy();
+                LocationTextExtractionStrategy strategy = new LocationTextExtractionStrategy();
                 string currentText = PdfTextExtractor.GetTextFromPage(reader, i, strategy);
 
                 currentText = Encoding.UTF8.GetString(Encoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(currentText)));

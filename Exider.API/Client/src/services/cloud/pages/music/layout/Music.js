@@ -42,7 +42,7 @@ const Music = (props) => {
         <Routes>
           <Route 
             path=''
-            element={<Songs />} 
+            element={<Songs isMobile={props.isMobile} />} 
           />
           <Route 
             path='/playlists'
@@ -52,6 +52,7 @@ const Music = (props) => {
             path='/playlists/:id'
             element={<Playlist 
               scroll={scroll}
+              isMobile={props.isMobile}
             />} 
           />
         </Routes>

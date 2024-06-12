@@ -41,8 +41,6 @@
 
     --search-border-color: rgba(0, 0, 0, 0.15);
     --search-font-color: #bebebe;
-
-    --disconnected-height: 15px;
 }
 
 .dark-mode {
@@ -88,4 +86,8 @@
 
     --search-border-color: rgba(255, 255, 255, 0.3);
     --search-font-color: #777777;
+}
+
+.cloud-wrapper {
+    --disconnected-height: 15px;
 }

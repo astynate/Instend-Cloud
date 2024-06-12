@@ -5,6 +5,7 @@ import userState from '../../../states/user-state';
 import PrivateRoutes from '../../../routes/PrivateRoutes';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Disconnected from '../features/disconnected/Disconnected';
+import applicationState from '../../../states/application-state';
 
 const Desktop = observer(({ }) => {
     const { user, UpdateAuthorizeState, isAuthorize } = userState;
@@ -18,6 +19,10 @@ const Desktop = observer(({ }) => {
             UpdateAuthorizeState(location.pathname, navigate);
         }
     }, [user]);
+
+    useEffect(() => {
+        applicationState.setIsMobile(false);
+    }, []);
 
     if (isAuthorize) {
         return (

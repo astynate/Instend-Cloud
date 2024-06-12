@@ -323,18 +323,18 @@ const Layout = observer(() => {
     
     useEffect(() => {
         connectToFoldersListener();
-    }, [storageWSContext.connection]); 
+    }, [storageWSContext.connection]);
     
     useEffect(() => {
         connectToGallerySocket();
-    }, [galleryWSContext.connection]);
+    }, [galleryWSContext.connection, galleryWSContext.connection?.state]);
 
     return (
         <messageWSContext.Provider url={url + '/message-hub'}>
             <storageWSContext.Provider url={url + '/storage-hub'}>
                 <galleryWSContext.Provider url={url + '/gallery-hub'}>
                     <layoutContext.Provider value={{song: song}}>
-                        <div className='cloud-wrapper'>
+                        <div className='cloud-wrapper' style={{'--disconnected-height': applicationState.connectionState === 0 ? '0px' : '15px'}}>
                             {isLoading && <Loader />}
                             <MusicPlayer />
                             <Helmet>

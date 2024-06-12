@@ -7,9 +7,11 @@
     position: sticky;
     top: 0;
     left: 0;
-    background: rgba(30, 30, 30, 1);
-    backdrop-filter: blur(10px) brightness(10%);
-    background: rgba(218, 218, 218, 0.2);
+    /* background: rgba(30, 30, 30, 1); */
+    /* backdrop-filter: blur(10px) brightness(10%); */
+    /* background: rgba(218, 218, 218, 0.2); */
+    /* background: black; */
+    /* border-bottom: 1px solid var(--main-border-color); */
     z-index: 1;
     user-select: none;
 }

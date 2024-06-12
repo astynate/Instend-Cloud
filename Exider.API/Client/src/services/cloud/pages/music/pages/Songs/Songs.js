@@ -16,19 +16,21 @@ const Songs = observer((props) => {
 
     return (
         <div className={styles.songs}>
-            <SongInformation 
+            {!props.isMobile && <SongInformation 
                 song={song}
                 callback={() => {
                     if (songs.length > 0 && musicState.songQueue.length === 0) {
                         musicState.SetSongQueue(songs);
                         musicState.SetCurrentSongIndex(0);
+                        musicState.ChangePlayingState();
                     } else if (musicState.songQueue.length > 0) {
                         musicState.ChangePlayingState();
                     }
                 }}
-            />
+            />}
             <SongList 
                 songs={songs} 
+                isMobile={props.isMobile}
             />
             <Scroll
                 scroll={props.scroll}

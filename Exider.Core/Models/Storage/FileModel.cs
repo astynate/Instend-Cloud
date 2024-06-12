@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core.Models.Access;
 using Exider.Services.External.FileService;
+using NReco.VideoConverter;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Exider.Core.Models.Storage
@@ -61,6 +62,7 @@ namespace Exider.Core.Models.Storage
             {
                 { Configuration.imageTypes, PngHandler },
                 { Configuration.documentTypes, DocumentHandlerAsync },
+                { Configuration.videoTypes, VideoHandler },
                 { new string[] { "pdf" }, PdfHandlerAsync },
                 { new string[] { "mp3" }, MP3Handler },
             };
@@ -94,5 +96,16 @@ namespace Exider.Core.Models.Storage
 
         private async Task MP3Handler(IFileService fileService)
             => FileAsBytes = fileService.GetSongPreviewImage(Type.ToLower(), Path);
+
+        private async Task VideoHandler(IFileService fileService)
+        {
+            FFMpegConverter ffMpeg = new FFMpegConverter();
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                ffMpeg.GetVideoThumbnail(Path, ms, 1);
+                FileAsBytes = ms.ToArray();
+            }
+        }
     }
 }

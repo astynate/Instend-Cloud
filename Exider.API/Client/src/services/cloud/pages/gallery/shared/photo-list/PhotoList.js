@@ -11,6 +11,7 @@ import Loader from '../../../../shared/loader/Loader';
 import { toJS } from 'mobx';
 import { AddPhotosInAlbum } from '../../api/GalleryRequests';
 import { observer } from 'mobx-react-lite';
+import applicationState from '../../../../../../states/application-state';
 
 const PhotoList = observer((props) => {
     const [gridTemplateColumns, setGridTemplateColumns] = useState('repeat(auto-fill, minmax(200px, 1fr))');
@@ -104,7 +105,7 @@ const PhotoList = observer((props) => {
                 }}
                 albums={galleryState.albums}
             />
-            <div className={styles.photos} id={current === 1 ? 'waterfall' : 'grid'} style={{ gridTemplateColumns, columnCount }} ref={props.forwardRef}>
+            <div className={styles.photos} id={current === 1 ? 'waterfall' : 'grid'} style={{ gridTemplateColumns: applicationState.isMobile ? 'repeat(auto-fill, minmax(100px, 1fr))' :  gridTemplateColumns, columnCount }} ref={props.forwardRef}>
                 {props.photos && props.photos.map && props.photos.map((element, index) => {
                     if (!element) {
                         return null;

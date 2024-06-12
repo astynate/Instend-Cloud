@@ -171,7 +171,7 @@ namespace Exider.Repositories.Storage
         }
 
         /// <summary>
-        /// Get files with metafata and set preview
+        /// Get files with metadata and set preview
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="albumId"></param>

@@ -162,6 +162,10 @@
     margin-right: 8%;
 }
 
+.buttons {
+    margin-left: auto;
+}
+
 @media (max-width: 950px) {
     .header, .content {
         width: 95%;
@@ -194,12 +198,41 @@
     .album {
         display: flex;
         flex-direction: column;
-        grid-gap: 30px;
+        grid-gap: 10px;
         width: 100%;
         margin-left: auto;
         margin-right: auto;
         align-items: center;
         margin-top: 0px;
+    }
+
+    .cover {
+        width: 170px;
+        flex-shrink: 0;
+    }
+
+    .cover[id="square"] {
+        width: 170px;
+        flex-shrink: 0;
+    }
+
+    .header {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .addition {
+        width: 100%;
+        margin-left: 0;
+        justify-content: start;
+        flex-direction: row;
+    }
+
+    .users {
+        width: 100%;
+        margin-top: 15px;
+        flex-direction: row;
+        align-items: center;
     }
 }
 

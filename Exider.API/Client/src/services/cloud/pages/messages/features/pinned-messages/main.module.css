@@ -41,10 +41,11 @@
 }
 
 .messageText {
-    max-width: 100%;
+    max-width: 80ic;
     text-overflow: ellipsis;
     overflow: hidden;
     font-size: 14px;
+    text-wrap: nowrap;
     color: var(--main-paragraph-color);
 }
 

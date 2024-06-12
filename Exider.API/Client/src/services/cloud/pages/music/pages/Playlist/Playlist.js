@@ -13,7 +13,7 @@ import musicState from '../../../../../../states/music-state';
 import SongList from '../../widgets/song-list/SongList';
 import { toJS } from 'mobx';
 
-const Playlist = observer(({scroll}) => {
+const Playlist = observer(({scroll, isMobile}) => {
     const params = useParams();
     const { albums } = galleryState;
 
@@ -28,6 +28,7 @@ const Playlist = observer(({scroll}) => {
     return (
         <>
             <AlbumView 
+                isMobile={isMobile}
                 isSquareCover={true}
                 uniqItems={[
                     {'title': "Music", 'component': 

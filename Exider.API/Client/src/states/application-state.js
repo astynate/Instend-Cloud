@@ -3,6 +3,7 @@ import { makeAutoObservable } from "mobx";
 class ApplicationState {
     errorQueue = [];
     connectionState = 0;
+    isMobile = false;
 
     constructor() {
         makeAutoObservable(this);
@@ -37,6 +38,10 @@ class ApplicationState {
 
     GetCountErrors() {
         return this.errorQueue.length;
+    }
+
+    setIsMobile(state) {
+        this.isMobile = state;
     }
 }
 

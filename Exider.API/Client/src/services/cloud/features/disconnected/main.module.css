@@ -28,3 +28,11 @@
     width: 13px;
     filter: invert(100%);
 }
+
+@media (max-width: 700px) {
+    .disconnected {
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+}

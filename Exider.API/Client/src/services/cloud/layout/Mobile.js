@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import MobileNavigation from '../widgets/navigation-panel/MobileNavigation';
 import logo from '../widgets/navigation-panel/images/logo/main-logo-black.svg';
 import PrivateRoutes from '../../../routes/PrivateRoutes';
@@ -7,9 +7,14 @@ import './css/main.css';
 import styles from './css/mobile.module.css';
 import { observer } from 'mobx-react-lite';
 import userState from '../../../states/user-state';
+import applicationState from '../../../states/application-state';
 
 const Mobile = observer(() => {
     const { user } = userState;
+    
+    useEffect(() => {
+        applicationState.setIsMobile(true);
+    }, []);
 
     return (
         <>

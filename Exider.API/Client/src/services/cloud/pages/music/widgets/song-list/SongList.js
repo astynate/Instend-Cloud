@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styles from './main.module.css';
 import Song from '../../shared/song/Song';
 import musicState from '../../../../../../states/music-state';
@@ -8,8 +8,9 @@ import { instance } from '../../../../../../state/Interceptors';
 import { DownloadFromResponse } from '../../../../../../utils/DownloadFromResponse';
 import { Delete } from '../../../cloud/api/FolderRequests';
 import EditSong from '../../features/edit-song/EditSong';
+import applicationState from '../../../../../../states/application-state';
 
-const SongList = observer(({songs, isHeaderless}) => {
+const SongList = observer(({songs, isHeaderless, isMobile}) => {
     const [activeItems, setActiveItems] = useState([]);
     const [selectedItems, setSelectedItems] = useState([]);
     const [isCreateAlbumOpen, setCreateAlbumOpen] = useState(false);
@@ -56,7 +57,7 @@ const SongList = observer(({songs, isHeaderless}) => {
 
     return (
         <div className={styles.songList}>
-            {!isHeaderless && <div className={styles.songListHeader}>
+            {!isHeaderless && !isMobile && <div className={styles.songListHeader}>
                 <div className={styles.name}>
                     <span className={styles.item}>#</span>
                     <span className={styles.item}>Name</span>
@@ -70,11 +71,12 @@ const SongList = observer(({songs, isHeaderless}) => {
                     return (
                         <Song 
                             key={index}
-                            index={index + 1}
+                            index={applicationState.isMobile ? null : index + 1}
                             song={element}
                             isSelect={selectedItems.map(x => x.id).includes(element.id)}
                             isPlaying={element.id === musicState.GetCurrentSongId() && musicState.isPlaying}
                             setQueue={() => musicState.SetSongQueue(songs)}
+                            isShort={isMobile}
                         />
                     )
                 })}

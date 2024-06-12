@@ -5,3 +5,9 @@
     padding: 40px;
     padding-top: 0;
 }
+
+@media (max-width: 700px) {
+    .songs {
+        padding: 5px;
+    }
+}

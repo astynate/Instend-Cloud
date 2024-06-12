@@ -55,3 +55,9 @@
     right: -10px;
     top: 35px;
 }
+
+@media (max-width: 700px) {
+    .header {
+        padding-top: 0;
+    }
+}
