@@ -19,7 +19,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         private readonly Dictionary<string, string[]> Types = new Dictionary<string, string[]>
         {
-            {"gallery", Configuration.imageTypes},
+            {"gallery", Configuration.imageTypes.Concat(Configuration.videoTypes).ToArray()},
             {"music", Configuration.musicTypes}
         };
 

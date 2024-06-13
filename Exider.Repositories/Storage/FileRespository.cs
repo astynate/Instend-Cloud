@@ -223,5 +223,25 @@ namespace Exider.Repositories.Storage
 
             return result;
         }
+
+        public async Task<object[]> GetFilesByPrefix(Guid userId, string prefix)
+        {
+            var result = await _context.Files.AsNoTracking()
+                .Where(x => x.OwnerId == userId && x.Name.ToLower().Contains(prefix.ToLower()))
+                .Take(6)
+                .GroupJoin(_context.SongsMeta,
+                        file => file.Id,
+                        meta => meta.FileId,
+                        (x, y) => new { File = x, Meta = y })
+                    .SelectMany(
+                        x => x.Meta.DefaultIfEmpty(),
+                        (x, y) => new { x.File, Meta = y })
+                    .ToArrayAsync();
+
+            Array.ForEach(result, async
+                x => await x.File.SetPreview(_fileService));
+
+            return result;
+        }
     }
 }

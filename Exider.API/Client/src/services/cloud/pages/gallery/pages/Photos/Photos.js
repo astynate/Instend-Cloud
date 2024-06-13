@@ -18,7 +18,7 @@ const Photos = observer((props) => {
     const [current, setCurrent] = useState([]);
     const dataRef = useRef();
     
-    let photos = storageState.GetSelectionByType(FileAPI.imageTypes);
+    let photos = storageState.GetSelectionByType([...FileAPI.videoTypes, ...FileAPI.imageTypes]);
 
     useEffect(() => {
         const fetchPhotos = async () => {

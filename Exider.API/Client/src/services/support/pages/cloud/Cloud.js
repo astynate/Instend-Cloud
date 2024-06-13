@@ -44,6 +44,8 @@ const Cloud = () => {
                         <h4>Документы</h4>
                         <ol style={{'margin-left': '17px'}}>
                             <li>PDF</li>
+                            <li>DOC</li>
+                            <li>DOCX</li>
                         </ol>
                     </div>
                 </Paragraph>

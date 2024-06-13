@@ -14,6 +14,8 @@ using System.Text;
 using Exider.Repositories.Storage;
 using System.IO.Compression;
 using Exider.Core.Models.Formats;
+using Mammoth;
+using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace Exider.Services.External.FileService
 {
@@ -29,19 +31,19 @@ namespace Exider.Services.External.FileService
             {
                 if (string.IsNullOrEmpty(path) || string.IsNullOrWhiteSpace(path))
                 {
-                    return Result.Failure<byte[]>("Invalid path");
+                    return CSharpFunctionalExtensions.Result.Failure<byte[]>("Invalid path");
                 }
 
                 if (File.Exists(path) == false)
                 {
-                    return Result.Failure<byte[]>("File not found");
+                    return CSharpFunctionalExtensions.Result.Failure<byte[]>("File not found");
                 }
 
                 return await File.ReadAllBytesAsync(path);
             }
             catch (Exception)
             {
-                return Result.Failure<byte[]>("Cannot read fileToWrite");
+                return CSharpFunctionalExtensions.Result.Failure<byte[]>("Cannot read fileToWrite");
             }
             finally
             {
@@ -104,7 +106,7 @@ namespace Exider.Services.External.FileService
         {
             if (fileModel.Type == null)
             {
-                return Result.Failure<string>("Can't handle this file type");
+                return CSharpFunctionalExtensions.Result.Failure<string>("Can't handle this file type");
             }
 
             Dictionary<string[], Configuration.ConvertToHtml> actions = new Dictionary<string[], Configuration.ConvertToHtml>
@@ -120,44 +122,28 @@ namespace Exider.Services.External.FileService
 
             if (handler.Value == null)
             {
-                return Result.Failure<string>("Can't handle this file type");
+                return CSharpFunctionalExtensions.Result.Failure<string>("Can't handle this file type");
             }
 
-            return Result.Success(handler.Value(fileModel.Path));
+            return CSharpFunctionalExtensions.Result.Success(handler.Value(fileModel.Path));
         }
 
         public string WordToHTML(string path)
         {
-            byte[] byteArray = File.ReadAllBytes(path);
+            var converter = new DocumentConverter();
+            var result = converter.ConvertToHtml(path);
+            StringBuilder html = new StringBuilder("<div class=document>");
+            html.AppendLine(result.Value);
+            html.AppendLine("</div>");
 
-            if (byteArray == null || byteArray.Length == 0)
-            {
-                return "";
-            }
-
-            using (MemoryStream memoryStream = new MemoryStream())
-            {
-                memoryStream.Write(byteArray, 0, byteArray.Length);
-                memoryStream.Position = 0;
-
-                using (WordprocessingDocument doc = WordprocessingDocument.Open(memoryStream, true))
-                {
-                    HtmlConverterSettings settings = new HtmlConverterSettings()
-                    {
-                        PageTitle = "None"
-                    };
-
-                    XElement html = HtmlConverter.ConvertToHtml(doc, settings);
-                    return html.ToString();
-                }
-            }
+            return html.ToString();
         }
 
         private string ImageToHtml(string path)
             => $"<img src=\"data:image/png;base64,{Convert.ToBase64String(File.ReadAllBytes(path))}\">";
 
         private string VideoToHtml(string path)
-            => $"<video controls><source type=\"video/mp4\" src=\"data:image/png;base64,{Convert.ToBase64String(File.ReadAllBytes(path))}\"</video>";
+            => $"<video controls autoplay><source type=\"video/mp4\" src=\"data:image/png;base64,{Convert.ToBase64String(File.ReadAllBytes(path))}\"</video>";
 
         private string PdfToHtml(string path)
         {
@@ -170,7 +156,9 @@ namespace Exider.Services.External.FileService
                 string currentText = PdfTextExtractor.GetTextFromPage(reader, i, strategy);
 
                 currentText = Encoding.UTF8.GetString(Encoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(currentText)));
+                output.WriteLine("<div class=document>");
                 output.WriteLine(currentText);
+                output.WriteLine("</div>");
             }
 
             reader.Close();

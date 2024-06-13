@@ -98,6 +98,26 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         [HttpGet]
         [Authorize]
+        [Route("/api/files/{prefix}")]
+        public async Task<ActionResult> GetFileByPrevix(IRequestHandler requestHandler, string prefix)
+        {
+            if (string.IsNullOrEmpty(prefix) || string.IsNullOrWhiteSpace(prefix))
+            {
+                return BadRequest("Invalid prefix");
+            }
+
+            var userId = requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+            {
+                return BadRequest(userId.Error);
+            }
+
+            return Ok(await _fileRespository.GetFilesByPrefix(Guid.Parse(userId.Value), prefix));
+        }
+
+        [HttpGet]
+        [Authorize]
         [Route("/file/download")]
         public async Task<ActionResult> Download(IFileService fileService, string? id)
         {

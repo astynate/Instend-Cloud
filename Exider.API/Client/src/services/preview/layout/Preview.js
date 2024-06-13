@@ -4,6 +4,7 @@ import PreviewHeader from '../widgets/header/Header';
 import { instance } from '../../../state/Interceptors';
 import { ConvertFullDate } from '../../../utils/DateHandler';
 import { Placeholder } from 'reactstrap';
+import './document.css';
 import { toJS } from 'mobx';
 
 const Preview = (props) => {

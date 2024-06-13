@@ -8,6 +8,7 @@ import exploreState from '../../../../../../states/explore-state';
 import { ConvertBytesToMb } from '../../../../../../utils/handlers/StorageSpaceHandler';
 import userState from '../../../../../../states/user-state';
 import Placeholder from '../../../../shared/placeholder/Placeholder';
+import File from '../../../cloud/shared/file/File';
 
 const All = observer(() => {
     if (exploreState.users.length > 0) {
@@ -32,6 +33,25 @@ const All = observer(() => {
                         } else {
                             return null;
                         }
+                    })}
+                </ExploreItems>
+                <Title value="Files" />
+                <ExploreItems>
+                    {exploreState.files.map((element, index) => {
+                        return (
+                            <File
+                                key={element.id ? element.id : index} 
+                                name={element.name}
+                                file={element}
+                                time={element.lastEditTime}
+                                image={element.fileAsBytes == "" ? null : element.fileAsBytes}
+                                type={element.type}
+                                isLoading={element.isLoading}
+                                isSelected={false}
+                                onClick={() => {}}
+                                onContextMenu={() => {}}
+                            />
+                        );
                     })}
                 </ExploreItems>
             </>

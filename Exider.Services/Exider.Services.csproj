@@ -25,6 +25,7 @@
     <PackageReference Include="Aspose.Words" Version="24.3.0" />
     <PackageReference Include="Ghostscript.NET" Version="1.2.3.1" />
     <PackageReference Include="iTextSharp" Version="5.5.13.3" />
+    <PackageReference Include="Mammoth" Version="1.4.0" />
     <PackageReference Include="Microsoft.Office.Interop.Word" Version="15.0.4797.1004" />
     <PackageReference Include="NAudio.WaveFormRenderer" Version="2.0.0" />
     <PackageReference Include="NReco.VideoConverter" Version="1.2.1" />

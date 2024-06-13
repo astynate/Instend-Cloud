@@ -18,6 +18,7 @@ const Search = () => {
             timerId = setTimeout(async () => {
                 setAvailable(false);
                 await exploreState.GetUsers(prefix);
+                await exploreState.GetFiles(prefix);
                 setAvailable(true);
             }, 700);
         }
