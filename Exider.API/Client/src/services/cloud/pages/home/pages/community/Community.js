@@ -11,17 +11,17 @@ import CommunityEditor from '../../../../features/add-community-pop-up/Community
 import applicationState from '../../../../../../states/application-state';
 import Comments from '../../../../widgets/social/comments/Comments';
 import { AddUploadingAlbumComment } from '../../../../api/CommentAPI';
-import galleryState from '../../../../../../states/gallery-state';
 import { WaitingForConnection, galleryWSContext } from '../../../../layout/Layout';
+import { Follow } from '../../api/CommunityAPI';
+import { observer } from 'mobx-react-lite';
+import homeState from '../../../../../../states/home-state';
 
-const Community = ({isMobile}) => {
+const Community = observer(({isMobile}) => {
     const [isLoading, setLoadingState] = useState(true);
-    const [community, setCommunity] = useState(null);
-    const [publications, setPublications] = useState([]);
-    const [publicationQueueId, setPublicationQueueId] = useState(0);
     const [isOwner, setIsOwnerState] = useState(false);
     const [isCommunityEditorOpen, setCommunityEditorState] = useState(false);
     const params = useParams();
+    const { community, publications, publicationQueueId, setPublications, setCommunity, setPublicationQueueId } = homeState;
     const navigate = useNavigate();
 
     galleryWSContext.useSignalREffect(
@@ -39,7 +39,8 @@ const Community = ({isMobile}) => {
             comment = {comment: comment, user: user};
 
             if (comment && albumId === params.id) {
-                setPublications(prev => prev.map(element => {
+
+                setPublications(publications.map(element => {
                     if (element.queueId === queueId){
                         element = comment;
                     }
@@ -146,12 +147,15 @@ const Community = ({isMobile}) => {
                 ]}
                 buttons={[
                     {
-                        title: isOwner ? 'Edit' : 'Follow', 
+                        title: isOwner ? 'Edit' : userState.communities.map(c => c.id)
+                            .includes(community && community.id ? community.id : null) ?  'Unfollow' : 'Follow', 
                         callback: () => {
                             if (isOwner) {
                                 setCommunityEditorState(true);
                             } else {
-
+                                if (community && community.id) {
+                                    Follow(community.id);
+                                }
                             }
                         }
                     },
@@ -216,6 +220,6 @@ const Community = ({isMobile}) => {
             />
         </div>
     );
-};
+});
 
 export default Community;
