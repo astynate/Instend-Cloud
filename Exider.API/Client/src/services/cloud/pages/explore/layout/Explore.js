@@ -26,7 +26,7 @@ const Explore = (props) => {
               'route': '/explore'
             }, 
             {
-              'name': 'People', 
+              'name': 'Friends', 
               'route': '/explore/people'
             }
           ]}

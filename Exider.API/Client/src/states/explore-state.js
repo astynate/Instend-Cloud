@@ -26,7 +26,7 @@ class ExploreState {
             .get(`/api/files/${prefix}`)
             .then(response => {
                 if (response.data && response.data.length) {
-                    this.files = response.data[1].map(file => 
+                    this.files = response.data.map(file => 
                     {
                         if (file.file !== undefined && file.meta !== undefined) {
                             return {...file.file, ...file.meta, strategy: 'file'}
