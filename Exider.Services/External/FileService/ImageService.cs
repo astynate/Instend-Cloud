@@ -28,7 +28,7 @@ namespace Exider.Services.External.FileService
             return false;
         }
 
-        private byte[] ResizeImageToBase64(byte[] inputImage, int width)
+        public byte[] ResizeImageToBase64(byte[] inputImage, int maxSize)
         {
             try
             {
@@ -36,20 +36,18 @@ namespace Exider.Services.External.FileService
                 {
                     using (Image originalImage = Image.FromStream(originalStream))
                     {
-                        int maxWidth = 256;
-                        int maxHeight = 256;
                         int newWidth;
                         int newHeight;
 
                         if (originalImage.Width > originalImage.Height)
                         {
-                            newWidth = maxWidth;
-                            newHeight = (int)(originalImage.Height * maxWidth / (double)originalImage.Width);
+                            newWidth = maxSize;
+                            newHeight = (int)(originalImage.Height * maxSize / (double)originalImage.Width);
                         }
                         else
                         {
-                            newHeight = maxHeight;
-                            newWidth = (int)(originalImage.Width * maxHeight / (double)originalImage.Height);
+                            newHeight = maxSize;
+                            newWidth = (int)(originalImage.Width * maxSize / (double)originalImage.Height);
                         }
 
                         using (Bitmap newImage = new Bitmap(originalImage, new Size(newWidth, newHeight)))

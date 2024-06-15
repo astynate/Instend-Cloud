@@ -21,6 +21,7 @@ const PhotoList = observer((props) => {
     const [activeItems, setActiveItems] = useState([]);
     const [isAddToAlbumOpen, setAddToAlbumState] = useState(false);
     const [current, setCurrent] = useState(0);
+    const [curentIndex, setCurrentIndex] = useState(0);
 
     const single = [
         [null, "Open", () => {setPreviewState(true)}],
@@ -92,7 +93,8 @@ const PhotoList = observer((props) => {
             {isPreview && 
                 <Preview
                     close={() => setPreviewState(false)} 
-                    file={activeItems[0]}
+                    files={props.photos}
+                    index={curentIndex}
                 />}
             <AddToAlbum
                 open={isAddToAlbumOpen}
@@ -105,7 +107,12 @@ const PhotoList = observer((props) => {
                 }}
                 albums={galleryState.albums}
             />
-            <div className={styles.photos} id={current === 1 ? 'waterfall' : 'grid'} style={{ gridTemplateColumns: applicationState.isMobile ? 'repeat(auto-fill, minmax(100px, 1fr))' :  gridTemplateColumns, columnCount }} ref={props.forwardRef}>
+            <div 
+                className={styles.photos} 
+                id={current === 1 ? 'waterfall' : 'grid'} 
+                style={{ gridTemplateColumns: applicationState.isMobile ? 'repeat(auto-fill, minmax(100px, 1fr))' :  gridTemplateColumns, columnCount }} 
+                ref={props.forwardRef}
+            >
                 {props.photos && props.photos.map && props.photos.map((element, index) => {
                     if (!element) {
                         return null;
@@ -128,6 +135,7 @@ const PhotoList = observer((props) => {
                                 key={index} 
                                 className={styles.photoWrapper} 
                                 data={element.id}
+                                onContextMenu={() => setCurrentIndex(index)}
                             >
                                 <img 
                                     src={`data:image/png;base64,${element.fileAsBytes}`}

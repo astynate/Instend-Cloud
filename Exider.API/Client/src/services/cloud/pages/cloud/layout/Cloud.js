@@ -65,6 +65,7 @@ const Cloud = observer((props) => {
   const [activeItems, setActiveItems] = useState([]);
   const [isPreview, setPreviewState] = useState(false);
   const [isRightPanelOpen, setRightPanelState] = useState(false);
+  const [indexState, setIndexState] = useState(0);
   const [isError, setErrorState] = useState(false);
   const [errorTitle, setErrorTitle] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -82,7 +83,7 @@ const Cloud = observer((props) => {
   }
 
   const single = [
-    [Open, "Open", () => OpenPreview(activeItems[0])],
+    [Open, "Open", () => OpenPreview()],
     [Rename, "Rename", () => setRenameState(true)],
     [download, "Download", () => {
       setActiveItems(prev => {
@@ -96,7 +97,6 @@ const Cloud = observer((props) => {
             })
             .catch((error) => {
                 console.error(error);
-                props.error('Attention!', 'Something went wrong');
             })
           )();
         }
@@ -158,17 +158,25 @@ const Cloud = observer((props) => {
   return (
     <div className={styles.wrapper} ref={selectPlaceWrapper}>
       {props.isMobile === false && 
-        <>
-          <Header>
-            <Search />
-          </Header>
-        </>
+        <Header>
+          <Search />
+        </Header>
       }
       {isPreview && 
         <Preview
           close={() => setPreviewState(false)} 
-          file={activeItems[0]}
-          ErrorMessage={ErrorMessage}
+          files={toJS(files)[AdaptId(params.id)].sort((a, b) => {
+            if (sortingType === 3) {
+              return ByDate(a, b, true)
+            } else if (sortingType === 2) {
+              return ByDate(a, b, false)
+            } else if (sortingType === 1) {
+              return ByName(a, b, true)
+            } else if (sortingType === 0) {
+              return ByName(a, b, false)
+            }
+          })}
+          index={indexState}
         />}
       <DragFiles 
         items={[
@@ -180,59 +188,31 @@ const Cloud = observer((props) => {
           }},
         ]}
       />
-      {/* <div className={styles.wrapper}> */}
-        {/* <div className={styles.contentWrapper} ref={selectPlaceWrapper}> */}
-          <CloudHeader
-            name={user.nickname}
-            isMobile={props.isMobile}
-            path={storageState.path && storageState.path[AdaptId(params.id)] ? 
-              storageState.path[AdaptId(params.id)] : null}
-            setSortingType={setSortingType}
-          />
-          <Information
-            open={isError}
-            close={() => setErrorState(false)}
-            title={errorTitle}
-            message={errorMessage}
-          />
-          <div className={styles.content} ref={selectPlace}>
-            {isLoading ? 
-              Array.from({ length: 4 }).map((_, index) => (
-                <File key={index} isPlaceholder={true} />
-              ))
-            : 
-              (items.filter(element => element.typeId !== 'System' && element.folderId === AdaptId(params.id)).length > 0) ?
-                <>
-                  {folders && toJS(folders)[AdaptId(params.id)] &&
-                    toJS(folders)[AdaptId(params.id)]
-                      .filter(element => element.typeId !== 'System')
-                      .sort((a, b) => {
-                          if (sortingType === 3) {
-                            return ByDate(a, b, true)
-                          } else if (sortingType === 2) {
-                            return ByDate(a, b, false)
-                          } else if (sortingType === 1) {
-                            return ByName(a, b, true)
-                          } else if (sortingType === 0) {
-                            return ByName(a, b, false)
-                          }
-                      })
-                      .map((element, index) => (
-                        <Folder 
-                          key={element.id != null ? element.id : index}
-                          id={element.id}
-                          isSelected={selectedItems.map(element => element.id).includes(element.id)}
-                          folder={element}
-                          name={element.name} 
-                          time={element.creationTime}
-                          onContextMenu={() => setFilename(element.name)}
-                          isLoading={element.isLoading}
-                        />
-                    ))
-                  }
-                  {files && toJS(files)[AdaptId(params.id)] &&
-                    toJS(files)[AdaptId(params.id)]
-                    .sort((a, b) => {
+      <CloudHeader
+        name={user.nickname}
+        isMobile={props.isMobile}
+        path={storageState.path && storageState.path[AdaptId(params.id)] ? 
+          storageState.path[AdaptId(params.id)] : null}
+        setSortingType={setSortingType}
+      />
+      <Information
+        open={isError}
+        close={() => setErrorState(false)}
+        title={errorTitle}
+        message={errorMessage}
+      />
+      <div className={styles.content} ref={selectPlace}>
+        {isLoading ? 
+          Array.from({ length: 4 }).map((_, index) => (
+            <File key={index} isPlaceholder={true} />
+          ))
+        : 
+          (items.filter(element => element.typeId !== 'System' && element.folderId === AdaptId(params.id)).length > 0) ?
+            <>
+              {folders && toJS(folders)[AdaptId(params.id)] &&
+                toJS(folders)[AdaptId(params.id)]
+                  .filter(element => element.typeId !== 'System')
+                  .sort((a, b) => {
                       if (sortingType === 3) {
                         return ByDate(a, b, true)
                       } else if (sortingType === 2) {
@@ -242,59 +222,88 @@ const Cloud = observer((props) => {
                       } else if (sortingType === 0) {
                         return ByName(a, b, false)
                       }
-                    })
-                    .map((element, index) => (
-                      <File
-                        key={element.id ? element.id : index} 
-                        name={element.name}
-                        file={element}
-                        time={element.lastEditTime}
-                        image={element.fileAsBytes == "" ? null : element.fileAsBytes}
-                        type={element.type}
-                        isLoading={element.isLoading}
-                        isSelected={selectedItems.map(element => element.id).includes(element.id)}
-                        onClick={() => OpenPreview(element)}
-                        onContextMenu={() => setFilename(element.name)}
-                      />
-                    ))
+                  })
+                  .map((element, index) => (
+                    <Folder 
+                      key={element.id != null ? element.id : index}
+                      id={element.id}
+                      isSelected={selectedItems.map(element => element.id).includes(element.id)}
+                      folder={element}
+                      name={element.name} 
+                      time={element.creationTime}
+                      onContextMenu={() => setFilename(element.name)}
+                      isLoading={element.isLoading}
+                    />
+                ))
+              }
+              {files && toJS(files)[AdaptId(params.id)] &&
+                toJS(files)[AdaptId(params.id)]
+                .sort((a, b) => {
+                  if (sortingType === 3) {
+                    return ByDate(a, b, true)
+                  } else if (sortingType === 2) {
+                    return ByDate(a, b, false)
+                  } else if (sortingType === 1) {
+                    return ByName(a, b, true)
+                  } else if (sortingType === 0) {
+                    return ByName(a, b, false)
                   }
-                </>
-              : 
-                <div className={styles.placeholder}>
-                  <Placeholder title="No collections uploaded." />
-                </div>
-            }
-          </div>
-        {/* </div> */}
-        {/* {isRightPanelOpen === true && 
-          <RightPanel 
-            file={selectedItems} 
-            close={() => setRightPanelState(false)} 
-          />} */}
-        {isFolderProperties === true &&
-          <PropertiesWindow 
-            file={selectedItems[0]}
-            close={() => setFolderProperties(false)} 
-            items={[]}
-          />}
-        <SelectBox
-          selectPlace={[selectPlaceWrapper, selectPlace]}
-          selectedItems={[selectedItems, setSelectedItems]}
-          activeItems={[activeItems, setActiveItems]}
-          itemsWrapper={selectPlace}
-          items={items}
-          single={single}
-          multiple={multiple}
-        />
-        {isRenameOpen === true &&
-          <PopUpField
-            title={'Rename'}
-            text={'This field is require'}
-            field={[fileName, setFilename]}
-            open={isRenameOpen}
-            close={() => setRenameState(false)}
-            callback={async () => {await RenameFolder(fileName, activeItems[0])}}
-          />}
+                })
+                .map((element, index) => (
+                  <File
+                    key={element.id ? element.id : index} 
+                    name={element.name}
+                    file={element}
+                    time={element.lastEditTime}
+                    image={element.fileAsBytes == "" ? null : element.fileAsBytes}
+                    type={element.type}
+                    isLoading={element.isLoading}
+                    isSelected={selectedItems.map(element => element.id).includes(element.id)}
+                    onClick={() => OpenPreview()}
+                    onContextMenu={() => {
+                      setFilename(element.name);
+                      setIndexState(index);
+                    }}
+                  />
+                ))
+              }
+            </>
+          : 
+            <div className={styles.placeholder}>
+              <Placeholder title="No collections uploaded." />
+            </div>
+        }
+      </div>
+    {/* </div> */}
+    {/* {isRightPanelOpen === true && 
+      <RightPanel 
+        file={selectedItems} 
+        close={() => setRightPanelState(false)} 
+      />} */}
+    {isFolderProperties === true &&
+      <PropertiesWindow 
+        file={selectedItems[0]}
+        close={() => setFolderProperties(false)} 
+        items={[]}
+      />}
+    <SelectBox
+      selectPlace={[selectPlaceWrapper, selectPlace]}
+      selectedItems={[selectedItems, setSelectedItems]}
+      activeItems={[activeItems, setActiveItems]}
+      itemsWrapper={selectPlace}
+      items={items}
+      single={single}
+      multiple={multiple}
+    />
+    {isRenameOpen === true &&
+      <PopUpField
+        title={'Rename'}
+        text={'This field is require'}
+        field={[fileName, setFilename]}
+        open={isRenameOpen}
+        close={() => setRenameState(false)}
+        callback={async () => {await RenameFolder(fileName, activeItems[0])}}
+      />}
     </div>
   )
 });

@@ -13,10 +13,13 @@ namespace Exider.Repositories.Public
 
         private readonly IFileService _fileService = null!;
 
-        public CommunityRepository(DatabaseContext context, IFileService fileService)
+        private readonly IImageService _imageService = null!;
+
+        public CommunityRepository(DatabaseContext context, IFileService fileService, IImageService imageService)
         {
             _context = context;
             _fileService = fileService;
+            _imageService = imageService;
         }
 
         public async Task<CommunityModel[]> GetPopularCommunitiesAsync(int from, int count)
@@ -33,8 +36,11 @@ namespace Exider.Repositories.Public
                 var avatar = await _fileService.ReadFileAsync(community.Avatar);
                 var header = await _fileService.ReadFileAsync(community.Header);
 
-                community.SetAvatar(avatar.IsFailure ? string.Empty : Convert.ToBase64String(avatar.Value));
-                community.SetHeader(header.IsFailure ? string.Empty : Convert.ToBase64String(header.Value));
+                community.SetAvatar(avatar.IsFailure ? string.Empty : 
+                    Convert.ToBase64String(_imageService.ResizeImageToBase64(avatar.Value, 170)));
+                
+                community.SetHeader(header.IsFailure ? string.Empty : 
+                    Convert.ToBase64String(_imageService.ResizeImageToBase64(header.Value, 350)));
             }
 
             return communities;
@@ -79,8 +85,11 @@ namespace Exider.Repositories.Public
                 var avatar = await _fileService.ReadFileAsync(community.Avatar);
                 var header = await _fileService.ReadFileAsync(community.Header);
 
-                community.SetAvatar(avatar.IsFailure ? string.Empty : Convert.ToBase64String(avatar.Value));
-                community.SetHeader(header.IsFailure ? string.Empty : Convert.ToBase64String(header.Value));
+                community.SetAvatar(avatar.IsFailure ? string.Empty :
+                    Convert.ToBase64String(_imageService.ResizeImageToBase64(avatar.Value, 170)));
+
+                community.SetHeader(header.IsFailure ? string.Empty :
+                    Convert.ToBase64String(_imageService.ResizeImageToBase64(header.Value, 350)));
 
                 var communities = await _context.Communities
                                 .OrderByDescending(x => x.Followers)

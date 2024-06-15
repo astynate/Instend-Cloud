@@ -13,10 +13,13 @@ namespace Exider.Repositories.Account
 
         private readonly IFileService _fileService = null!;
 
-        public UserDataRepository(DatabaseContext context, IFileService fileService)
+        private readonly IImageService _imageService = null!;
+
+        public UserDataRepository(DatabaseContext context, IFileService fileService, IImageService imageService)
         {
             _context = context;
             _fileService = fileService;
+            _imageService = imageService;
         }
 
         public async Task AddAsync(UserDataModel userData)
@@ -88,6 +91,9 @@ namespace Exider.Repositories.Account
                 }
             }
 
+            userModel.Avatar = Convert.ToBase64String(_imageService.ResizeImageToBase64(Convert.FromBase64String(userModel.Avatar), 170));
+            userModel.Header = Convert.ToBase64String(_imageService.ResizeImageToBase64(Convert.FromBase64String(userModel.Header), 250));
+
             return Result.Success(userModel);
         }
 
@@ -119,6 +125,7 @@ namespace Exider.Repositories.Account
                 ).ToArrayAsync();
 
             await SetAvatarAsync(users);
+
             return users;
         }
 
@@ -229,6 +236,8 @@ namespace Exider.Repositories.Account
                         user.Avatar = Convert.ToBase64String(avatarReadingResult.Value);
                     }
                 }
+
+                user.Avatar = Convert.ToBase64String(_imageService.ResizeImageToBase64(Convert.FromBase64String(user.Avatar), 100));
             }
         }
     }

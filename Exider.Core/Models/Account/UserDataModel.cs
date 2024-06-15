@@ -57,5 +57,14 @@ namespace Exider.Core.Models.Account
 
             return Result.Success();
         }
+        public Result IncrementFriendCount(double amountInBytes)
+        {
+            if (amountInBytes > 0 && OccupiedSpace >= amountInBytes)
+            {
+                OccupiedSpace -= amountInBytes;
+            }
+
+            return Result.Success();
+        }
     }
 }

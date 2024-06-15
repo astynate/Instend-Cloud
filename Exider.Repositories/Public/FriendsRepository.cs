@@ -24,11 +24,15 @@ namespace Exider.Repositories.Public
         public async Task<Result<FriendModel>> SendRequestAsync(Guid userId, Guid ownerId)
         {
             int result = await _context.Friends
-                .Where(x => (x.UserId == userId && x.OwnerId == ownerId) ||(x.OwnerId == userId && x.UserId == ownerId))
+                .Where(x => (x.UserId == userId && x.OwnerId == ownerId) || (x.OwnerId == userId && x.UserId == ownerId))
                 .ExecuteDeleteAsync();
 
             if (result != 0) 
             {
+                await _context.UserData
+                    .Where(x => (x.UserId == userId || x.UserId == ownerId))
+                    .ExecuteUpdateAsync(s => s.SetProperty(p => p.FriendCount, p => p.FriendCount - 1 >= 0 ? p.FriendCount - 1 : 0));
+
                 return Result.Failure<FriendModel>("0");
             }
 
