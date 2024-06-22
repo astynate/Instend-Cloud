@@ -33,7 +33,7 @@ namespace Exider_Version_2._0._0.ServerApp.Services
                 throw new ArgumentException(nameof(template));
             }
 
-            MailAddress sender = new MailAddress(Configuration.CorporateEmail, "Exider Security");
+            MailAddress sender = new MailAddress(Configuration.CorporateEmail, "Yexider Security System");
             MailAddress recipient = new MailAddress(email);
             MailMessage mail = new MailMessage(sender, recipient);
 
