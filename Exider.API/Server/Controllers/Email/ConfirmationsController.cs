@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Email
 {
-
     [ApiController]
     [Route("[controller]")]
     public class ConfirmationsController : ControllerBase
@@ -44,7 +43,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Email
             if (confirmation.IsFailure)
                 return BadRequest(confirmation.Error);
 
-            if (confirmation.Value.Code != code)
+            if (confirmation.Value.Code.ToLower() != code.ToLower())
                 return BadRequest("Incorrect code");
 
             try

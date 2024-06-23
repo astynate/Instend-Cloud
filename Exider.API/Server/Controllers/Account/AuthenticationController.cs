@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Account
 {
-
     [ApiController]
     [Route("[controller]")]
     public class AuthenticationController : ControllerBase
