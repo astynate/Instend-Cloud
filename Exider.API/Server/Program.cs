@@ -103,7 +103,13 @@ app.Use(async (context, next) =>
 
     ITokenService tokenService = context.RequestServices.GetRequiredService<ITokenService>();
 
-    if (!string.IsNullOrEmpty(accessToken) && !string.IsNullOrEmpty(refreshToken) && tokenService.IsTokenAlive(accessToken) == false)
+    if 
+    (
+        string.IsNullOrEmpty(accessToken) == false && 
+        string.IsNullOrEmpty(refreshToken) == false && 
+        tokenService.IsTokenValid(accessToken) == true && 
+        tokenService.IsTokenAlive(accessToken) == false
+    )
     {
         ISessionsRepository sessionsRepository = context.RequestServices.GetRequiredService<ISessionsRepository>();
 
