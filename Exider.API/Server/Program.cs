@@ -18,7 +18,6 @@ using Exider.Services.Middleware;
 using Exider_Version_2._0._0.Server.Hubs;
 using Exider_Version_2._0._0.ServerApp.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);

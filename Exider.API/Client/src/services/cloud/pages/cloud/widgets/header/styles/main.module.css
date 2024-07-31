@@ -19,9 +19,9 @@
 }
 
 .title {
-    font-size: 22px;
+    font-size: 24px;
     color: var(--main-font-color);
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .pathWrapper {
@@ -39,7 +39,8 @@
 }
 
 .path {
-    font-size: 14px;
+    font-size: 15px;
+    font-weight: 400;
     color: var(--main-paragraph-color);
 }
 

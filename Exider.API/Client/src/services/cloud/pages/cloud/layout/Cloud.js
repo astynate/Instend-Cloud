@@ -15,7 +15,6 @@ import CloudHeader, { sendFiles, sendFilesAsync } from '../widgets/header/Header
 import File from '../shared/file/File';
 import Open from './images/context-menu/open.png';
 import Rename from './images/context-menu/rename.png';
-import PropertiesImage from './images/context-menu/properties.png';
 import DeleteImage from './images/context-menu/delete.png';
 import PopUpField from '../../../shared/pop-up-filed/PopUpField';
 import Preview from '../../../../preview/layout/Preview';
@@ -207,9 +206,9 @@ const Cloud = observer((props) => {
             <File key={index} isPlaceholder={true} />
           ))
         : 
-          (items.filter(element => element.typeId !== 'System' && element.folderId === AdaptId(params.id)).length > 0) ?
+          (items.filter(element => element.typeId !== 'System' || !element.typeId && element.folderId === AdaptId(params.id)).length > 0) ?
             <>
-              {folders && toJS(folders)[AdaptId(params.id)] &&
+              {!props.isCollectionsHiden && folders && toJS(folders)[AdaptId(params.id)] &&
                 toJS(folders)[AdaptId(params.id)]
                   .filter(element => element.typeId !== 'System')
                   .sort((a, b) => {
@@ -236,7 +235,7 @@ const Cloud = observer((props) => {
                     />
                 ))
               }
-              {files && toJS(files)[AdaptId(params.id)] &&
+              {!props.isFilesHiden && files && toJS(files)[AdaptId(params.id)] &&
                 toJS(files)[AdaptId(params.id)]
                 .sort((a, b) => {
                   if (sortingType === 3) {

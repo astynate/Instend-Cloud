@@ -88,7 +88,7 @@ const Layout = observer(() => {
     const [errorMessage, setErrorMessage] = useState('');
     const [song, setSong] = useState(null);
     const navigate = useNavigate();
-    const url = 'http://localhost:5000' // 'http://localhost:5000/message-hub'
+    const url = 'http://192.168.1.63:5000' // 'http://localhost:5000/message-hub'
 
     useEffect(() => {
         setSong(GetCurrentSong());

@@ -20,6 +20,14 @@ const PrivateRoutes = [
         element: <Cloud />
     },
     {
+        path: '/cloud/collections/:id?',
+        element: <Cloud isFilesHiden={true} />
+    },
+    {
+        path: '/cloud/files/:id?',
+        element: <Cloud isCollectionsHiden={true} />
+    },
+    {
         path: '/explore/*',
         element: <Explore />
     },

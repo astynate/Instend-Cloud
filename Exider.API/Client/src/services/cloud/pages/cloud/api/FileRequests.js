@@ -95,7 +95,12 @@ export const SendFilesAsync = async (files, folderId) => {
         files.append('queueId', queueId);
 
         await instance
-            .post('/storage', files)
+            .post('/storage', files, {
+                onUploadProgress: (progressEvent) => {
+                    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    storageState.SetLoadingFilePerscentage(queueId, percentCompleted);
+                },
+            })
             .catch(error => {
                 applicationState.AddErrorInQueue('Attention!', error.response.data);
                 storageState.DeleteLoadingFile(queueId, file.folderId);

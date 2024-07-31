@@ -190,6 +190,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         [HttpPost]
         [Authorize]
+        [RequestSizeLimit(10L * 1024L * 1024L * 1024L)]
+        [RequestFormLimits(MultipartBodyLengthLimit = 10L * 1024L * 1024L * 1024L)]
         public async Task<ActionResult<Guid>> UploadFiles
         (
             [FromForm] IFormFile file, 

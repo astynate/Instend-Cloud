@@ -1,7 +1,6 @@
 import { instance } from '../state/Interceptors';
 import { makeAutoObservable, runInAction, toJS } from "mobx";
 import applicationState from './application-state';
-import FileAPI from '../services/cloud/api/FileAPI';
 
 export const GuidEmpthy = '00000000-0000-0000-0000-000000000000';
 
@@ -179,6 +178,7 @@ class StorageState {
             name: name,
             isLoading: true,
             strategy: 'loadingFile',
+            perscentage: 0,
             folderId: folderId,
             type: type
         }
@@ -201,7 +201,16 @@ class StorageState {
         });
 
         return file.queueId;
-    }    
+    }
+
+    SetLoadingFilePerscentage(queueId, perscentage) {
+        const object = Object.values(this.files).flat()
+            .find(element => element.queueId == queueId);
+
+        if (object && object.perscentage !== null && object.perscentage !== undefined) {
+            object.perscentage = perscentage;
+        }
+    }
 
     ReplaceLoadingFile(file, queueId) {
         if (file && file.folderId) {

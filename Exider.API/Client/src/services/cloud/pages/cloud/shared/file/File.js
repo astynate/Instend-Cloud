@@ -2,6 +2,8 @@ import React, { useLayoutEffect, useState } from 'react';
 import styles from './main.module.css';
 import { ConvertDate } from '../../../../../../utils/DateHandler';
 import Loader from '../../../../shared/loader/Loader';
+import { CircularProgress } from '@mui/joy';
+import { Observer } from 'mobx-react-lite';
 
 const File = (props) => {
   const [aspectRatio, setAspectRatio] = useState(1);
@@ -54,9 +56,16 @@ const File = (props) => {
             :
               <div className={styles.file} id="loading">
                 <div className={styles.loader}>
-                  <Loader />
+                  <CircularProgress 
+                    value={props.file && props.file.perscentage !== undefined && props.file.perscentage !== null ? props.file.perscentage : 20}
+                    sx={{
+                      "--CircularProgress-trackThickness": "3px",
+                      "--CircularProgress-progressThickness": "3px",
+                      "--CircularProgress-size": "30px"
+                    }}
+                  />
                 </div>
-                <span>{props.type}</span>
+                {/* <span>{props.type}</span> */}
               </div>}
           </div>
           <div className={styles.description}>

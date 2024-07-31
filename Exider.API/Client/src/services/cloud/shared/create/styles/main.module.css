@@ -3,7 +3,6 @@
     width: fit-content;
     /* position: absolute; */
     border-radius: 21px;
-    display: flex;
     /* grid-template-columns: repeat(4, 1fr); */
     max-width: 456px;
     flex-wrap: wrap;
@@ -16,12 +15,14 @@
     transition: 0.25s ease;
     opacity: 0;
     visibility: hidden;
+    display: none;
     transform: scale(80%);
 }
 
 .wrapper[id="open"] {
     opacity: 1;
     visibility: visible;
+    display: flex;
     transform: scale(100%);
 }
 
