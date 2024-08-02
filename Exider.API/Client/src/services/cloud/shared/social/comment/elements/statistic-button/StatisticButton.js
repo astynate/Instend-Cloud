@@ -7,7 +7,7 @@ const StatisticButton = ({image, title, callback}) => {
             className={styles.statisticButton}
             onClick={callback}
         >
-            <img src={image} />
+            <img src={image} draggable="false" />
             {title && <span>{title}</span>}
         </div>
     );

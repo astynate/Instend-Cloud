@@ -13,13 +13,22 @@ namespace Exider.Repositories.Storage
 
         private readonly IFileService _fileService;
 
+        private readonly IPreviewService _previewService;
+
         private readonly IUserDataRepository _userDataRepository;
 
-        public FileRespository(DatabaseContext context, IFileService fileService, IUserDataRepository userDataRepository)
+        public FileRespository
+        (
+            DatabaseContext context, 
+            IFileService fileService, 
+            IUserDataRepository userDataRepository, 
+            IPreviewService previewService
+        )
         {
             _context = context;
             _fileService = fileService;
             _userDataRepository = userDataRepository;
+            _previewService = previewService;
         }
 
         public async Task<Result<FileModel>> GetByIdAsync(Guid id) => await _context.Files.AsNoTracking()
@@ -79,7 +88,7 @@ namespace Exider.Repositories.Storage
             }
 
             Array.ForEach(files, async
-                x => await x.SetPreview(_fileService));
+                x => await x.SetPreview(_previewService));
 
             return files;
         }
@@ -98,7 +107,7 @@ namespace Exider.Repositories.Storage
                     .ToArrayAsync();
 
             Array.ForEach(files, async
-                x => await x.File.SetPreview(_fileService));
+                x => await x.File.SetPreview(_previewService));
 
             return files;
         }
@@ -198,7 +207,7 @@ namespace Exider.Repositories.Storage
                 .ToArrayAsync();
 
             Array.ForEach(result, async
-                x => await x.File.SetPreview(_fileService));
+                x => await x.File.SetPreview(_previewService));
 
             return result;
         }
@@ -219,7 +228,7 @@ namespace Exider.Repositories.Storage
                     .ToArrayAsync();
 
             Array.ForEach(result, async
-                x => await x.File.SetPreview(_fileService));
+                x => await x.File.SetPreview(_previewService));
 
             return result;
         }
@@ -239,7 +248,7 @@ namespace Exider.Repositories.Storage
                     .ToArrayAsync();
 
             Array.ForEach(result, async
-                x => await x.File.SetPreview(_fileService));
+                x => await x.File.SetPreview(_previewService));
 
             return result;
         }

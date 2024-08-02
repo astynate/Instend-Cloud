@@ -134,7 +134,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         [Route("/api/gallery/upload")]
         public async Task<IActionResult> UploadToGallery
         (
-            IFileService fileService,
+            IPreviewService previewService,
             IHubContext<StorageHub> storageHub,
             [FromForm] IFormFile file,
             [FromForm] string? albumId,
@@ -183,7 +183,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                                 await file.CopyToAsync(fileStream);
                             }
 
-                            await fileModel.Value.SetPreview(fileService);
+                            await fileModel.Value.SetPreview(previewService);
                         }
 
                         if (string.IsNullOrEmpty(albumId) == false && string.IsNullOrWhiteSpace(albumId) == false)

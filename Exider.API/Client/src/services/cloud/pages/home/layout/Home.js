@@ -8,6 +8,7 @@ import { Route, Routes } from 'react-router-dom';
 import Menu from '../../../widgets/menu/Menu';
 import { observer } from 'mobx-react-lite';
 import Community from '../pages/community/Community';
+import MainContentWrapper from '../../../features/main-content-wrapper/MainContentWrapper';
 
 const Home = observer((props) => {
   useEffect(() => {
@@ -34,11 +35,13 @@ const Home = observer((props) => {
           ]}
         />
       </div>
-      <Routes>
-        <Route path='' element={<Communities />} />
-        <Route path='/community/:id' element={<Community isMobile={props.isMobile} />} />
-        <Route path='/people' element={<People />} />
-      </Routes>
+      <MainContentWrapper>
+        <Routes>
+          <Route path='' element={<Communities />} />
+          <Route path='/community/:id' element={<Community isMobile={props.isMobile} />} />
+          <Route path='/people' element={<People />} />
+        </Routes>
+      </MainContentWrapper>
     </div>
   )
 });

@@ -94,6 +94,9 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
             if (string.IsNullOrEmpty(albumId) || string.IsNullOrWhiteSpace(albumId))
                 return Result.Failure<(CommentModel, UserPublic)>("Text is required");
 
+            if (files.Length > 9)
+                return Result.Failure<(CommentModel, UserPublic)>("Maximum attechment count is 9");
+
             Result<CommentModel> result = Result.Failure<CommentModel>("Invalid operation type");
 
             switch (type)

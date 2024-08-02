@@ -1,21 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
-using Spire.Doc;
-using System.Drawing.Imaging;
-using Spire.Doc.Documents;
-using System.Drawing;
-using System.Xml.Linq;
-using DocumentFormat.OpenXml.Packaging;
-using OpenXmlPowerTools;
 using Exider.Core;
 using Exider.Core.Models.Storage;
-using iTextSharp.text.pdf.parser;
-using iTextSharp.text.pdf;
-using System.Text;
 using Exider.Repositories.Storage;
 using System.IO.Compression;
-using Exider.Core.Models.Formats;
-using Mammoth;
-using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace Exider.Services.External.FileService
 {
@@ -30,139 +17,21 @@ namespace Exider.Services.External.FileService
             try
             {
                 if (string.IsNullOrEmpty(path) || string.IsNullOrWhiteSpace(path))
-                {
-                    return CSharpFunctionalExtensions.Result.Failure<byte[]>("Invalid path");
-                }
+                    return Result.Failure<byte[]>("Invalid path");
 
                 if (File.Exists(path) == false)
-                {
-                    return CSharpFunctionalExtensions.Result.Failure<byte[]>("File not found");
-                }
+                    return Result.Failure<byte[]>("File not found");
 
                 return await File.ReadAllBytesAsync(path);
             }
             catch (Exception)
             {
-                return CSharpFunctionalExtensions.Result.Failure<byte[]>("Cannot read fileToWrite");
+                return Result.Failure<byte[]>("Cannot read fileToWrite");
             }
             finally
             {
                 _semaphoreSlim.Release();
             }
-        }
-
-        public byte[] GetWordDocumentPreviewImage(string path)
-        {
-            try
-            {
-                Document document = new Document();
-
-                document.LoadFromFile(path);
-
-                Image image = document.SaveToImages(0, ImageType.Bitmap);
-
-                byte[] byteArray;
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    image.Save(stream, ImageFormat.Png);
-                    byteArray = stream.ToArray();
-                }
-
-                return byteArray;
-            }
-            catch
-            {
-                return new byte[0];
-            }
-        }
-
-        public byte[] GetPdfPreviewImage(string path)
-        {
-            try
-            {
-                Spire.Pdf.PdfDocument pdfDocument = new Spire.Pdf.PdfDocument();
-
-                pdfDocument.LoadFromFile(path);
-
-                Image image = pdfDocument.SaveAsImage(0);
-
-                byte[] byteArray;
-
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    image.Save(stream, ImageFormat.Png);
-                    byteArray = stream.ToArray();
-                }
-
-                return byteArray;
-            }
-            catch
-            {
-                return new byte[0];
-            }
-        }
-
-        public Result<string> GetFileAsHTMLBase64String(FileModel fileModel)
-        {
-            if (fileModel.Type == null)
-            {
-                return CSharpFunctionalExtensions.Result.Failure<string>("Can't handle this file type");
-            }
-
-            Dictionary<string[], Configuration.ConvertToHtml> actions = new Dictionary<string[], Configuration.ConvertToHtml>
-            {
-                { Configuration.documentTypes, WordToHTML },
-                { Configuration.imageTypes, ImageToHtml },
-                { Configuration.videoTypes, VideoToHtml },
-                { new string[] {"pdf"}, PdfToHtml },
-            };
-
-            KeyValuePair<string[], Configuration.ConvertToHtml> handler = 
-                actions.FirstOrDefault(pair => pair.Key.Contains(fileModel.Type.ToLower()));
-
-            if (handler.Value == null)
-            {
-                return CSharpFunctionalExtensions.Result.Failure<string>("Can't handle this file type");
-            }
-
-            return CSharpFunctionalExtensions.Result.Success(handler.Value(fileModel.Path));
-        }
-
-        public string WordToHTML(string path)
-        {
-            var converter = new DocumentConverter();
-            var result = converter.ConvertToHtml(path);
-            StringBuilder html = new StringBuilder("<div class=document>");
-            html.AppendLine(result.Value);
-            html.AppendLine("</div>");
-
-            return html.ToString();
-        }
-
-        private string ImageToHtml(string path)
-            => $"<img src=\"data:image/png;base64,{Convert.ToBase64String(File.ReadAllBytes(path))}\">";
-
-        private string VideoToHtml(string path)
-            => $"<video controls autoplay><source type=\"video/mp4\" src=\"data:image/png;base64,{Convert.ToBase64String(File.ReadAllBytes(path))}\"</video>";
-
-        private string PdfToHtml(string path)
-        {
-            PdfReader reader = new PdfReader(path);
-            StringWriter output = new StringWriter();
-
-            for (int i = 1; i <= reader.NumberOfPages; i++)
-            {
-                LocationTextExtractionStrategy strategy = new LocationTextExtractionStrategy();
-                string currentText = PdfTextExtractor.GetTextFromPage(reader, i, strategy);
-
-                currentText = Encoding.UTF8.GetString(Encoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(currentText)));
-                output.WriteLine("<div class=document>");
-                output.WriteLine(currentText);
-                output.WriteLine("</div>");
-            }
-
-            reader.Close();
-            return output.ToString();
         }
 
         private async Task DeleteFolderContent
@@ -187,17 +56,18 @@ namespace Exider.Services.External.FileService
         (
             IFileRespository fileRespository,
             IFolderRepository folderRepository,
+            IPreviewService preview,
             Guid id
         )
         {
             await DeleteFolderContent(folderRepository, fileRespository, id);
 
             FolderModel[] folders = await folderRepository
-                .GetFoldersByFolderId(this, Guid.Empty, id);
+                .GetFoldersByFolderId(preview, Guid.Empty, id);
 
             foreach (FolderModel folder in folders)
             {
-                await DeleteFolderById(fileRespository, folderRepository, folder.Id);
+                await DeleteFolderById(fileRespository, folderRepository, preview, folder.Id);
             }
         }
 
@@ -237,38 +107,6 @@ namespace Exider.Services.External.FileService
             return "application/" + systemType;
         }
 
-        public async Task WriteFileAsync(string path, byte[] file)
-        {
-            await File.WriteAllBytesAsync(path, file);
-        }
-
-        public byte[] GetSongPreviewImage(string type, string path)
-        {
-            try
-            {
-                string? mimeType;
-
-                if (!SongFormat.mimeTypes.ContainsKey(type.ToLower()))
-                {
-                    return new byte[0];
-                }
-
-                mimeType = SongFormat.mimeTypes[type.ToLower()];
-
-                var file = TagLib.File.Create(path, mimeType, TagLib.ReadStyle.None);
-                var id3TagData = file.Tag;
-
-                if (id3TagData.Pictures.Length > 0)
-                {
-                    var firstPicture = id3TagData.Pictures[0];
-                    var pictureData = firstPicture.Data.Data;
-
-                    return pictureData;
-                }
-            } 
-            catch { }
-
-            return new byte[0];
-        }
+        public async Task WriteFileAsync(string path, byte[] file) => await File.WriteAllBytesAsync(path, file);
     }
 }

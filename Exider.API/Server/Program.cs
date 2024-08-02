@@ -57,6 +57,7 @@ builder.Services.AddScoped(typeof(IFormatRepository<>), typeof(FormatRepository<
 builder.Services.AddScoped(typeof(ILinkBaseRepository<>), typeof(LinkBaseRepository<>));
 
 builder.Services.AddSingleton<IValidationService, ValidationService>();
+builder.Services.AddSingleton<IPreviewService, PreviewService>();
 builder.Services.AddSingleton<ITokenService, JwtService>();
 builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 builder.Services.AddSingleton<IEmailService, EmailService>();

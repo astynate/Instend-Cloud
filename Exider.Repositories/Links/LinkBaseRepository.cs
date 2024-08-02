@@ -13,13 +13,16 @@ namespace Exider.Repositories.Links
 
         private readonly IFileService _fileService = null!;
 
+        private readonly IPreviewService _previewService = null!;
+
         private readonly DbSet<Link> _entities = null!;
 
-        public LinkBaseRepository(DatabaseContext context, IFileService fileService)
+        public LinkBaseRepository(DatabaseContext context, IFileService fileService, IPreviewService previewService)
         {
             _context = context;
             _fileService = fileService;
             _entities = context.Set<Link>();
+            _previewService = previewService;
         }
 
         public async Task<Result<FileModel>> AddFileToAlbum(Guid itemId, Guid linkedItemId)
@@ -46,7 +49,7 @@ namespace Exider.Repositories.Links
                 return Result.Failure<FileModel>(result.Error);
             }
 
-            await file.SetPreview(_fileService);
+            await file.SetPreview(_previewService);
 
             await _entities.AddAsync(result.Value);
             await _context.SaveChangesAsync();

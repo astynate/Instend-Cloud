@@ -254,7 +254,7 @@ const Cloud = observer((props) => {
                     name={element.name}
                     file={element}
                     time={element.lastEditTime}
-                    image={element.fileAsBytes == "" ? null : element.fileAsBytes}
+                    image={element.preview == "" ? null : element.preview}
                     type={element.type}
                     isLoading={element.isLoading}
                     isSelected={selectedItems.map(element => element.id).includes(element.id)}

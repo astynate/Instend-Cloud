@@ -57,7 +57,7 @@ namespace Exider.Core
 
         public static readonly string[] systemFolders = { "Music", "Photos", "Trash" };
 
-        public delegate Task HandleFileCover(IFileService fileService);
+        public delegate Task<byte[]> HandleFileCover((string type, string path) parameters);
 
         public delegate string ConvertToHtml(string path);
 

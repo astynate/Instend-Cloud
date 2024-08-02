@@ -56,7 +56,7 @@ namespace Exider.Repositories.Storage
             return Result.Success(folderCreationResult.Value);
         }
 
-        public async Task<FolderModel[]> GetFoldersByFolderId(IFileService fileService, Guid userId, Guid folderId)
+        public async Task<FolderModel[]> GetFoldersByFolderId(IPreviewService previewService, Guid userId, Guid folderId)
         {
             FolderModel[] folders;
 
@@ -73,7 +73,7 @@ namespace Exider.Repositories.Storage
 
             foreach (var folder in folders)
             {
-                await folder.SetPreviewAsync(fileService, await _context.Files.AsNoTracking().Take(4)
+                await folder.SetPreviewAsync(previewService, await _context.Files.AsNoTracking().Take(4)
                     .Where(x => x.FolderId == folder.Id).ToListAsync());
             }
 

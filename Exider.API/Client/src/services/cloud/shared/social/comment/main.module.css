@@ -1,40 +1,42 @@
 .comment {
     display: flex;
-    align-items: start;
-    grid-gap: 15px;
-    padding: 15px;
+    /* align-items: start; */
+    flex-direction: column;
+    grid-gap: 5px;
+    /* padding: 15px; */
     padding-top: 10px;
     padding-bottom: 10px;
     border-bottom: 1px solid var(--main-border-color);
 }
 
-.information {
+.header {
     display: flex;
     width: 100%;
-    grid-gap: 3px;
-    flex-direction: column;
+    grid-gap: 8px;
 }
 
 .nameWrapper {
     display: flex;
-    grid-gap: 5px;
+    grid-gap: 0px;
+    flex-direction: column;
 }
 
 .name {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     color: var(--main-font-color);
 }
 
 .time {
-    font-size: 14px;
+    font-size: 12px;
     color: var(--main-paragraph-color);
 }
 
 .text {
-    font-size: 16px;
+    font-size: 14px;
     color: var(--main-font-color);
     max-width: 300px;
+    /* margin-top: 25px; */
 }
 
 .avatarPreview {
@@ -63,6 +65,10 @@
     margin-left: auto;
 }
 
+.postContent {
+    width: 100%;
+}
+
 .control {
     width: 100%;
     display: flex;
@@ -71,25 +77,64 @@
 }
 
 .attachments {
-    margin-top: 10px;
+    width: 100%;
+    margin-top: 5px;
     display: flex;
     grid-gap: 5px;
 }
 
+/* ============================================== */
+
 .image {
     height: 250px;
     width: auto;
-    max-width: 400px;
+    /* max-width: 400px; */
     border-radius: 10px;
     overflow: hidden;
-    /* animation: var(--loading-animation); */
+    cursor: pointer;
+    transition: 0.2s ease;
 }
+
+/* ============================================== */
+
+.attachments[id="view-type-1"] .image {
+    height: auto;
+    width: 100%;
+    /* display: block; */
+    /* grid-gap: 5px; */
+}
+
+/* ============================================== */
+
+.attachments[id="view-type-2"] {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+/* ============================================== */
+
+.attachments[id="view-type-3"] {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* ============================================== */
 
 .image img {
     height: 100%;
     width: 100%;
     object-fit: cover;
 }
+
+/* .image:hover {
+    transform: scale(101%);
+}
+
+.image:active {
+    transform: scale(99%);
+} */
+
+/* ============================================== */
 
 @keyframes preview {
     0% {
@@ -104,3 +149,5 @@
         background: #bbb;
     }
 }
+
+/* ============================================== */

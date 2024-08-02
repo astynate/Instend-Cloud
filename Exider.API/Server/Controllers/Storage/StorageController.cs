@@ -33,7 +33,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IHubContext<StorageHub> _storageHub;
 
-        private readonly IFileService _fileService;
+        private readonly IPreviewService _previewService;
 
         private readonly IFormatRepository<SongFormat> _songFormatRepository;
 
@@ -43,22 +43,22 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             IFileRespository fileRespository,
             IFolderRepository folderRepository,
             IHubContext<StorageHub> storageHub,
-            IFileService fileService,
             IAccessHandler accessHandler,
             ILinkBaseRepository<AlbumLink> linkBaseRepository,
             IUserDataRepository userDataRepository,
-            IFormatRepository<SongFormat> songFormatRepository
+            IFormatRepository<SongFormat> songFormatRepository,
+            IPreviewService previewService
         )
         {
             _context = context;
             _fileRespository = fileRespository;
             _folderRepository = folderRepository;
             _storageHub = storageHub;
-            _fileService = fileService;
             _accessHandler = accessHandler;
             _userDataRespository = userDataRepository;
             _songFormatRepository = songFormatRepository;
             _linkBaseRepository = linkBaseRepository;
+            _previewService = previewService;
         }
 
         [HttpGet]
@@ -86,11 +86,11 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest(available.Error);
             }
 
-            var file = fileService.GetFileAsHTMLBase64String(fileModel.Value);
+            var file = await fileService.ReadFileAsync(fileModel.Value.Path);
 
             if (file.IsFailure)
             {
-                return BadRequest(file.Error);
+                return Conflict(file.Error);
             }
 
             return Ok(file.Value);
@@ -182,7 +182,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             }
 
             object[] files = await _fileRespository.GetByFolderIdWithMetaData(userId, folderId);
-            FolderModel[] folders = await _folderRepository.GetFoldersByFolderId(fileService, userId, folderId);
+            FolderModel[] folders = await _folderRepository.GetFoldersByFolderId(_previewService, userId, folderId);
             FolderModel[] path = await _folderRepository.GetShortPath(folderId);
 
             return Ok(new object[] { folders, files, path });
@@ -197,7 +197,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             [FromForm] IFormFile file, 
             [FromForm] string? folderId,
             [FromForm] int queueId,
-            IRequestHandler requestHandler
+            IRequestHandler requestHandler,
+            IPreviewService previewService
         )
         {
             var idResult = requestHandler.GetUserId(Request.Headers["Authorization"]);
@@ -256,7 +257,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
                     if (file.Length > 0)
                     {
-                        await fileModel.Value.SetPreview(_fileService);
+                        await fileModel.Value.SetPreview(previewService);
                     }
 
                     var increaseResult = await _userDataRespository.IncreaseOccupiedSpace(ownerId, file.Length);
@@ -286,6 +287,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             [FromForm] int queueId,
             [FromForm] string? albumId,
             IRequestHandler requestHandler,
+            IPreviewService previewService,
             IHubContext<GalleryHub> galleryHub
         )
         {
@@ -294,7 +296,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest("Album not found");
             }
 
-            ActionResult<Guid> uploadedFile = await UploadFiles(file, folderId, queueId, requestHandler);
+            ActionResult<Guid> uploadedFile = await UploadFiles(file, folderId, queueId, requestHandler, previewService);
 
             if (uploadedFile.Result is OkObjectResult okObjectResult)
             {

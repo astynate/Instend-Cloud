@@ -18,7 +18,7 @@ const CommentField = ({id, setUploadingComment, isPublications}) => {
 
     const handleFileChange = (event) => {
         if (event.target.files.length > 0) {
-            const filesArray = Array.from(event.target.files).slice(0, 3);
+            const filesArray = Array.from(event.target.files).slice(0, 9);
             setImages(filesArray);
 
             const filesUrls = filesArray.map((file) => URL.createObjectURL(file));

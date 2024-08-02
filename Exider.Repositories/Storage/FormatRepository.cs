@@ -15,11 +15,14 @@ namespace Exider.Repositories.Storage
 
         private readonly IFileService _fileService;
 
-        public FormatRepository(DatabaseContext context, IFileService fileService)
+        private readonly IPreviewService _previewService;
+
+        public FormatRepository(DatabaseContext context, IFileService fileService, IPreviewService previewService)
         {
             _context = context;
             _entities = context.Set<Format>();
             _fileService = fileService;
+            _previewService = previewService;
         }
 
         public async Task<Result<object>> AddAsync(Guid fileId, string type, string path)
@@ -65,7 +68,7 @@ namespace Exider.Repositories.Storage
             if (files.Length > 0)
             {
                 Array.ForEach(files, async
-                    x => await x.File.SetPreview(_fileService));
+                    x => await x.File.SetPreview(_previewService));
 
                 return Result.Success<(FileModel?, Format?)>(new(files[0].File, files[0].Meta));
             }

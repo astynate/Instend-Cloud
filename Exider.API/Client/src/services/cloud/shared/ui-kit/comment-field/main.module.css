@@ -1,7 +1,7 @@
 .commentField {
     display: flex;
     grid-gap: 15px;
-    padding: 15px;
+    /* padding: 15px; */
     padding-bottom: 5px;
     border-bottom: 1px solid var(--main-border-color);
 }
@@ -17,6 +17,7 @@
 
 .button {
     position: relative;
+    user-select: none;
 }
 
 .imagePreview {

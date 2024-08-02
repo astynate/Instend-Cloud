@@ -12,7 +12,7 @@ export function convertFromTimespan(timeSpan) {
         return null;
     }
 
-    hours = time[0] === '00' ? null : `${minutes[0]}:`;
+    hours = time[0] === '00' ? null : `${time[0]}:`;
     minutes = time[1] + ':';
     seconds = time[2].split('.')[0];
 
@@ -24,13 +24,24 @@ export function convertFromTimespan(timeSpan) {
 }
 
 export function convertTicksToTime(ticks) {
+    let hours = null;
     let milliseconds = ticks / 10000;
     let minutes = Math.floor(milliseconds / 60000);
 
     milliseconds = milliseconds % 60000;
     
     let seconds = Math.floor(milliseconds / 1000);
-    let time = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+
+    if (minutes > 60) {
+        hours =  Math.floor(minutes / 60);
+        minutes = Math.floor(minutes % 60);
+    }
+
+    const formatString = (value) => {
+        return value ? (value < 10 ? "0" : "") + value : "00";
+    }
+
+    let time = (hours ? formatString(hours) + ':' : "") + formatString(minutes) + ":" + formatString(seconds);
 
     return time;
 }

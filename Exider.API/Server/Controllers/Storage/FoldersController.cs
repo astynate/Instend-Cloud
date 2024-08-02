@@ -174,6 +174,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             IFileRespository fileRespository,
             IFolderRepository folderRepository,
             IUserDataRepository userDataRepository,
+            IPreviewService preview,
             Guid folderId,
             string id
         )
@@ -207,7 +208,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             }
 
             await fileService.DeleteFolderById
-                (fileRespository, folderRepository, Guid.Parse(id));
+                (fileRespository, folderRepository, preview, Guid.Parse(id));
 
             await _storageHub.Clients.Group(folderId.ToString())
                 .SendAsync("DeleteFolder", id);

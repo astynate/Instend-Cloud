@@ -72,11 +72,11 @@ namespace Exider.Core.Models.Storage
             });
         }
 
-        public async Task SetPreviewAsync (IFileService fileService, List<FileModel> preview)
+        public async Task SetPreviewAsync (IPreviewService previewService, List<FileModel> preview)
         {
             foreach (var item in preview)
             {
-                await item.SetPreview(fileService);
+                await item.SetPreview(previewService);
             }
 
             Preview = preview;

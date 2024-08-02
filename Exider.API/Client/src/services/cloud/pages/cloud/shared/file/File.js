@@ -3,7 +3,6 @@ import styles from './main.module.css';
 import { ConvertDate } from '../../../../../../utils/DateHandler';
 import Loader from '../../../../shared/loader/Loader';
 import { CircularProgress } from '@mui/joy';
-import { Observer } from 'mobx-react-lite';
 
 const File = (props) => {
   const [aspectRatio, setAspectRatio] = useState(1);
