@@ -1,27 +1,62 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
 import PreviewHeader from '../widgets/header/Header';
-import { instance } from '../../../state/Interceptors';
 import { ConvertFullDate } from '../../../utils/DateHandler';
 import { Placeholder } from 'reactstrap';
-import { toJS } from 'mobx';
 import right from './images/right.png';
 import './document.css';
+import { PreviewImage } from '../widgets/files/PreviewImage/PreviewImage';
+import { PreviewDocument } from '../widgets/files/DocumentPreview/PreviewDocument';
+import { PreviewVideo } from '../widgets/files/PreviewVideo/PreviewVideo';
 
-const Preview = ({close, files, index}) => {
-    const [isLoading, setLoadingState] = useState(true);
-    const [file, setFile] = useState(null);
-    const [scaleFactor, setScaleFactor] = useState(100);
+const Preview = ({close, files, index, fullFileLoadEndpoint, partialFileLoadEndpoint, additionalParams = {}}) => {
     const [currentIndex, setCurrentIndex] = useState(index);
-    const [errorMessage, setErrorMessage] = useState(null);
-    const fileRef = useRef();
+    const domain = "http://192.168.1.63:5000";
+    
+    const fileTypeHandlers = [
+        {
+            types: ['png', 'jpg', 'jpeg', 'gif'], 
+            object: <PreviewImage 
+                key={files[currentIndex].id + "preview"} 
+                endpoint={fullFileLoadEndpoint}
+                domain={domain}
+                file={files[currentIndex]} 
+                additionalParams={additionalParams}
+            />
+        },
+        {
+            types: ['docx', 'doc', 'pdf', 'ppt', 'xls', 'pptx', 'xlsx'], 
+            object: <PreviewDocument 
+                key={files[currentIndex].id + "preview"} 
+                endpoint={fullFileLoadEndpoint}
+                domain={domain}
+                file={files[currentIndex]} 
+                additionalParams={additionalParams}
+            />
+        },
+        {
+            types: ['mp4', 'mov', 'mpeg-4'], 
+            object: <PreviewVideo 
+                key={files[currentIndex].id + "preview"}
+                endpoint={partialFileLoadEndpoint}
+                domain={domain}
+                file={files[currentIndex]} 
+                additionalParams={additionalParams}
+            />
+        }
+    ]
 
-    useEffect(() => {
-        try {
-            let firstChild = fileRef.current.querySelector('*');
-            firstChild.style.transform = `scale(${scaleFactor}%)`;
-        } catch { }
-    }, [scaleFactor]);
+    const getFileHandler = (type) => {
+        const handler = fileTypeHandlers.find((handlerObj) =>
+            handlerObj.types.includes(type.toLowerCase())
+        );
+    
+        if (handler) {
+            return handler.object;
+        }
+
+        return null;
+    };
 
     const UpdateIndex = (value) => {
         setCurrentIndex(prev => {
@@ -30,76 +65,43 @@ const Preview = ({close, files, index}) => {
         })
     }    
 
-    useEffect(() => {
-        const GetFile = async () => {;
-            const fileAsJs = toJS(files[currentIndex]);
-            setLoadingState(true);
-
-            if (fileAsJs && fileAsJs.strategy !== 'folder') {
-                await instance
-                    .get(`/file?id=${fileAsJs.id}`)
-                    .then((response) => {
-                        setFile(response.data);
-                        setErrorMessage(null);
-                        setLoadingState(false);
-                    })
-                    .catch((error) => {
-                        setErrorMessage(error.response.data ? error.response.data : 'File type is not support');
-                        setLoadingState(false);
-                    });
-            }
-        };
-
-        GetFile();
-    }, [currentIndex]);
-
-    return (
-        <div className={styles.wrapper}>            
-                <>
-                    <div 
-                        className={styles.navigateButton} 
-                        onClick={() => UpdateIndex(-1)}
-                    >
-                        <img src={right} />
-                    </div>
-                    <div 
-                        className={styles.navigateButton} 
-                        id="right" 
-                        onClick={() => UpdateIndex(1)}
-                    >
-                        <img src={right} />
-                    </div>
-                    <PreviewHeader 
-                        name={files[currentIndex] ? files[currentIndex].name : 'File not select'}
-                        time={files[currentIndex] ? ConvertFullDate(files[currentIndex].lastEditTime) : null}
-                        close={close}
-                        id={files[currentIndex] ? files[currentIndex].id : null}
-                        error={() => {}}
-                    />
-                    {files[currentIndex] ? 
-                        <>
-                            {isLoading ?
-                                <div className={styles.loader}></div>
-                            :   
-                                <div className={styles.preview}>
-                                    {file && !errorMessage ? 
-                                        <div 
-                                            className={styles.file} ref={fileRef} 
-                                            dangerouslySetInnerHTML={{ __html: file }}
-                                        ></div>
-                                    :
-                                        <span className={styles.error}>{errorMessage}</span>
-                                    }
-                                </div>}
-                        </>
-                    :
-                        <div className={styles.placeholder}>
-                            <Placeholder title='No files selected' />
-                        </div>
-                    }
-                </>
-        </div>
-    );
+    if (files[currentIndex]) {
+        return (
+            <div className={styles.wrapper}>            
+                <div 
+                    className={styles.navigateButton} 
+                    onClick={() => UpdateIndex(-1)}
+                >
+                    <img src={right} draggable="false" />
+                </div>
+                <div 
+                    className={styles.navigateButton} 
+                    id="right" 
+                    onClick={() => UpdateIndex(1)}
+                >
+                    <img src={right} draggable="false" />
+                </div>
+                <PreviewHeader 
+                    name={files[currentIndex].lastEditTime ? files[currentIndex].name : null}
+                    time={files[currentIndex].lastEditTime ? ConvertFullDate(files[currentIndex].lastEditTime) : null}
+                    close={close}
+                    id={files[currentIndex].id}
+                    error={() => {}}
+                />
+                {getFileHandler(files[currentIndex].type) && <div className={styles.preview}>
+                    {getFileHandler(files[currentIndex].type)}
+                </div>}
+            </div>
+        );
+    } else {
+        return (
+            <div className={styles.wrapper}>
+                <div className={styles.placeholder}>
+                    <Placeholder title='No files selected' />
+                </div>
+            </div>
+        );
+    }
  };
 
 export default Preview;

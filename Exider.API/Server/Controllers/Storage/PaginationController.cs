@@ -32,7 +32,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
         [HttpGet]
         [Authorize]
         [Route("/api/pagination")]
-        public async Task<IActionResult> GetPhotos(IFileService fileService, int from, int count, string type)
+        public async Task<IActionResult> GetPhotos(int from, int count, string type)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 

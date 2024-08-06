@@ -1,9 +1,16 @@
 .button {
     display: flex;
+    height: 37px;
+    width: 37px;
+    display: flex;
+    justify-content: center;
+    border-radius: 100%;
     align-items: center;
-    grid-gap: 7px;
+    /* grid-gap: 7px; */
     cursor: pointer;
     opacity: 0.8;
+    background: rgba(255, 255, 255, 0.25);
+    transition: 0.25s ease;
 }
 
 .button img {
@@ -14,4 +21,8 @@
 .button span {
     font-size: 14px;
     color: white;
+}
+
+.button:hover {
+    opacity: 1;
 }

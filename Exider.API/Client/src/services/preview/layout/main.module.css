@@ -1,7 +1,7 @@
 .wrapper {
     height: 100vh;
     width: 100vw;
-    background: rgba(30, 30, 30, 0.7);
+    background: rgba(0, 0, 0, 0.95);
     z-index: 999999999;
     top: 0;
     left: 0;
@@ -43,34 +43,10 @@
     object-fit: contain;
 }
 
-
 .file video {
     height: calc(100svh - var(--height));
     width: 100vw;
     object-fit: contain;
-}
-
-.loader {
-    height: 50px;
-    width: 50px;
-    border-top: 4px solid white;
-    border-bottom: 4px solid white;
-    border-left: 4px solid white;
-    border-right: 4px solid transparent;
-    border-radius: 100%;
-    position: fixed;
-    top: calc(50% - 25px);
-    left: calc(50% - 25px);
-    animation: loader 1.25s ease infinite;
-}
-
-@keyframes loader {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
 }
 
 @keyframes open {
@@ -85,21 +61,21 @@
 }
 
 .navigateButton {
-    height: 50px;
+    height: calc(100vh - var(--height));
     width: 50px;
     position: fixed;
-    background: #6f6f6f;
+    background: rgb(25, 25, 25);
     z-index: 999;
-    top: 50%;
-    left: 30px;
-    border-radius: 7px;
-    transform: translateY(-50%);
+    top: var(--height);
+    left: 0;
+    /* border-radius: 7px; */
     cursor: pointer;
     opacity: 0;
     transition: 0.25s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+    user-select: none;
 }
 
 .navigateButton:hover {
@@ -107,8 +83,8 @@
 }
 
 .navigateButton img {
-    height: 80%;
-    width: 80%;
+    height: 40px;
+    width: 40px;
     filter: invert(100%);
     transform: rotate(180deg);
 }
@@ -119,7 +95,7 @@
 
 .navigateButton[id="right"] {
     left: auto;
-    right: 30px;
+    right: 0;
 }
 
 .placeholder {

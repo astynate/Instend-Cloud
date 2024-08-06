@@ -212,6 +212,15 @@ class StorageState {
         }
     }
 
+    SetFileBytes(id, bytes) {
+        const object = Object.values(this.files).flat()
+            .find(element => element.id == id);
+
+        if (object && object.fileAsBytes !== null && object.fileAsBytes !== undefined) {
+            object.fileAsBytes = bytes;
+        }
+    }
+
     ReplaceLoadingFile(file, queueId) {
         if (file && file.folderId) {
             file.strategy = 'file';

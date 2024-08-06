@@ -71,6 +71,19 @@
     animation: fileAnimation 2s ease infinite;
 }
 
+.placeholder {
+    height: 100%;
+    width: 100%;
+    aspect-ratio: 1/1;
+    background: #ddd;
+    color: rgba(57, 136, 255, 0.897);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 0;
+}
+
 @keyframes fileAnimation {
     0% {
         opacity: 0.3;

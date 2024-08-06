@@ -32,7 +32,7 @@ namespace Exider.Services.Internal.Handlers
             _userDataRepository = userDataRepository;
         }
 
-        public async Task<Result> GetAccessStateAsync(FileModel file, Configuration.Abilities operation, string bearer)
+        public async Task<Result> GetAccessStateAsync(FileModel file, Configuration.Abilities operation, string? bearer)
         {
             var userId = _requestHandler.GetUserId(bearer);
 

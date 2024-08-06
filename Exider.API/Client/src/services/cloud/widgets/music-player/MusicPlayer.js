@@ -25,29 +25,29 @@ const MusicPlayer = observer(() => {
         }
     };
 
-    // const isTimeInRange = (value, target, step) => {
-    //     return (value + step) < target || (value - step) > target;
-    // }
+    const isTimeInRange = (value, target, step) => {
+        return (value + step) < target || (value - step) > target;
+    }
 
-    // useEffect(() => {
-    //     const audio = audioRef.current;
-    //     const newTime = convertTicksToSeconds(musicState.time);
+    useEffect(() => {
+        const audio = audioRef.current;
+        const newTime = convertTicksToSeconds(musicState.time);
 
-    //     if (audio.currentTime >= audio.duration) {
-    //         musicState.TurnOnNextSong();
-    //         audio.currentTime = 0;
+        if (audio && audio.currentTime >= audio.duration) {
+            musicState.TurnOnNextSong();
+            audio.currentTime = 0;
 
-    //         if (musicState.repeatState === 2) {
-    //             audio.play();
-    //         }
+            if (musicState.repeatState === 2) {
+                audio.play();
+            }
             
-    //         return;
-    //     }
+            return;
+        }
         
-    //     if (isTimeInRange(audio.currentTime, newTime, 5)) {
-    //         audio.currentTime = newTime;
-    //     }
-    // }, [musicState.time]);
+        if (audio && isTimeInRange(audio.currentTime, newTime, 5)) {
+            audio.currentTime = newTime;
+        }
+    }, [musicState.time]);
 
     useEffect(() => {
         if (isPlaying && audioRef.current) {
@@ -56,46 +56,24 @@ const MusicPlayer = observer(() => {
             audioRef.current.pause();
         }
     }, [isPlaying]);
-
-    // useEffect(() => {
-    //     if (musicState.songQueue && 
-    //         musicState.songQueue.length > 0 && 
-    //         musicState.songQueue[musicState.currentSongIndex] &&
-    //         musicState.songQueue[musicState.currentSongIndex].id) {
-    //         const getMusic = async () => {
-    //             try {
-    //                 const response = await instance.get(`/api/music?id=${musicState.songQueue[musicState.currentSongIndex].id}`, { responseType: 'blob' });
-                    
-    //                 if (audioRef.current) {
-    //                     audioRef.current.pause();
-    //                     await new Promise(r => setTimeout(r, 300));
-    //                     const blob = new Blob([response.data], { type: 'audio/mpeg' });
-    //                     const url = URL.createObjectURL(blob);
-    //                     audioRef.current.src = url;
-    //                     audioRef.current.load();
-    //                     if (isPlaying) {
-    //                         audioRef.current.play();
-    //                     }
-    //                 }
-    //             } catch (error) {
-    //                 console.error(error);
-    //             }
-    //         };
-            
-    //         getMusic();
-    //     }
-    // }, [musicState.songQueue, musicState.currentSongIndex]);    
+    
+    useEffect(() => {
+        if (isPlaying && audioRef.current) {
+            audioRef.current.play();
+        }
+    }, [musicState.songQueue, musicState.currentSongIndex]);
 
     return (
         musicState.songQueue.length > 0 && 
         <audio 
+            key={musicState.songQueue[musicState.currentSongIndex].id}
             ref={audioRef} 
             className={styles.player} 
             controls 
             onTimeUpdate={handleTimeUpdate}
             onProgress={handleProgress}
         >
-            <source src={`http://192.168.1.63:5000/api/music?id=${musicState.songQueue[musicState.currentSongIndex].id}`} />
+            <source src={`http://192.168.1.63:5000/api/storage/file?id=${musicState.songQueue[musicState.currentSongIndex].id}&token=${localStorage.getItem('system_access_token')}`} />
         </audio>
     );
 });

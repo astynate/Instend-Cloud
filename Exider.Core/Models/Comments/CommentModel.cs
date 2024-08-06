@@ -13,10 +13,6 @@ namespace Exider.Core.Models.Comments
         [Column("date")] public DateTime Date { get; private set; } = DateTime.Now;
         [Column("owner_id")] public Guid OwnerId { get; private set; }
 
-        /// <summary>
-        /// No mapped values
-        /// For client only
-        /// </summary>
         [NotMapped] public AttachmentModel[] attechments { get; set; } = new AttachmentModel[0];
 
         private CommentModel() { }

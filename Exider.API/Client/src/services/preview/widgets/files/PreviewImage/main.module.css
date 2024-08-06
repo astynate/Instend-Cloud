@@ -1,0 +1,18 @@
+.previewImage {
+    height: calc(100svh - var(--height));
+    width: 100vw;
+    object-fit: contain;
+    image-rendering: pixelated;
+    filter: blur(10px);
+}
+
+.preview, .image {
+    height: calc(100svh - var(--height));
+    width: 100vw;
+    object-fit: contain;
+}
+
+.preview {
+    filter: blur(60px);
+    image-rendering: pixelated;
+}

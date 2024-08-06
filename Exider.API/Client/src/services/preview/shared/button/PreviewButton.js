@@ -4,7 +4,7 @@ import styles from './main.module.css';
 const PreviewButton = (props) => {
     return (
         <div className={styles.button} onClick={props.onClick}>
-            <img src={props.src} />
+            <img src={props.src} draggable="false" />
             <span>{props.title}</span>
         </div>
     );

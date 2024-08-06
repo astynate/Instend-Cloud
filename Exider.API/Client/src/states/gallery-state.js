@@ -22,6 +22,7 @@ class GalleryState {
 
     AddToAlbum(photo, albumId) {
         photo.strategy = 'file';
+        photo.preview = photo.fileAsBytes;
 
         runInAction(() => {
             if (albumId !== null && albumId !== '' && this.albums[albumId] && this.albums[albumId].photos) {
@@ -132,9 +133,10 @@ class GalleryState {
                     }
 
                     this.albums[id].hasMore = response.data.length !== 0;
+
                     this.albums[id].photos = [...response.data.map(element => {
                         if (element && element.file && element.meta !== undefined) {
-                            return {...element.file, ...element.meta, strategy: 'file'};
+                            return {...element.file, ...element.meta, strategy: 'file', preview: element.file.fileAsBytes};
                         } else {
                             return null;
                         }

@@ -63,41 +63,6 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         [HttpGet]
         [Authorize]
-        [Route("/file")]
-        public async Task<ActionResult> GetFile(IFileService fileService, string? id)
-        {
-            if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
-            {
-                return BadRequest("Invalid file id");
-            }
-
-            var fileModel = await _fileRespository.GetByIdAsync(Guid.Parse(id));
-
-            if (fileModel.IsFailure)
-            {
-                return BadRequest("File not found");
-            }
-
-            var available = await _accessHandler.GetAccessStateAsync(fileModel.Value, 
-                Configuration.Abilities.Read, Request.Headers["Authorization"]);
-
-            if (available.IsFailure)
-            {
-                return BadRequest(available.Error);
-            }
-
-            var file = await fileService.ReadFileAsync(fileModel.Value.Path);
-
-            if (file.IsFailure)
-            {
-                return Conflict(file.Error);
-            }
-
-            return Ok(file.Value);
-        }
-
-        [HttpGet]
-        [Authorize]
         [Route("/api/files/{prefix}")]
         public async Task<ActionResult> GetFileByPrevix(IRequestHandler requestHandler, string prefix)
         {
@@ -182,6 +147,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             }
 
             object[] files = await _fileRespository.GetByFolderIdWithMetaData(userId, folderId);
+            
             FolderModel[] folders = await _folderRepository.GetFoldersByFolderId(_previewService, userId, folderId);
             FolderModel[] path = await _folderRepository.GetShortPath(folderId);
 

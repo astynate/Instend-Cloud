@@ -23,6 +23,9 @@ namespace Exider.Repositories.Storage
             _fileService = fileService;
         }
 
+        public async Task<AttachmentModel?> GetByIdAsync(Guid id) 
+            => await _context.Attachments.FirstOrDefaultAsync(x => x.Id == id);
+
         public async Task<Result<AttachmentModel>> AddAsync(byte[] file, string name, string? type, long size, Guid userId, Guid itemId)
         {
             var result = AttachmentModel.Create(name, type, size, userId);
@@ -42,6 +45,7 @@ namespace Exider.Repositories.Storage
             await _context.SaveChangesAsync();
 
             await _fileService.WriteFileAsync(result.Value.Path, file);
+            
             return result.Value;
         }
     }

@@ -57,7 +57,7 @@ const AccessPicker = (props) => {
                         onClick={() => props.access[1](2)}
                     >
                         <img src={link} className={styles.headerImage} />
-                        <span className={styles.title}>Everybody who have link</span>
+                        <span className={styles.title}>Everybody who has a link</span>
                         <div className={styles.select}></div>
                     </div>
                 </>}

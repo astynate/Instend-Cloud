@@ -1,9 +1,7 @@
 .comment {
     display: flex;
-    /* align-items: start; */
     flex-direction: column;
     grid-gap: 5px;
-    /* padding: 15px; */
     padding-top: 10px;
     padding-bottom: 10px;
     border-bottom: 1px solid var(--main-border-color);
@@ -12,7 +10,9 @@
 .header {
     display: flex;
     width: 100%;
-    grid-gap: 8px;
+    grid-gap: 10px;
+    /* padding-left: 10px; */
+    /* padding-right: 10px; */
 }
 
 .nameWrapper {
@@ -32,11 +32,20 @@
     color: var(--main-paragraph-color);
 }
 
+.postContent {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 10px;
+}
+
 .text {
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 500;
     color: var(--main-font-color);
-    max-width: 300px;
-    /* margin-top: 25px; */
+    /* margin-left: 10px; */
+    width: calc(100% - 20px);
+    /* border-bottom: 1px solid var(--main-border-color); */
+    padding-bottom: 10px;
 }
 
 .avatarPreview {
@@ -72,7 +81,7 @@
 .control {
     width: 100%;
     display: flex;
-    margin-top: 5px;
+    margin-left: 5px;
     grid-gap: 5px;
 }
 
@@ -80,16 +89,18 @@
     width: 100%;
     margin-top: 5px;
     display: flex;
-    grid-gap: 5px;
+    grid-gap: 2px;
+    border-radius: 10px;
+    overflow: hidden;
+    image-rendering: pixelated;
 }
 
 /* ============================================== */
 
 .image {
-    height: 250px;
-    width: auto;
-    /* max-width: 400px; */
-    border-radius: 10px;
+    height: 100%;
+    aspect-ratio: 1.25 / 1;
+    width: 100%;
     overflow: hidden;
     cursor: pointer;
     transition: 0.2s ease;
@@ -100,8 +111,6 @@
 .attachments[id="view-type-1"] .image {
     height: auto;
     width: 100%;
-    /* display: block; */
-    /* grid-gap: 5px; */
 }
 
 /* ============================================== */
@@ -115,7 +124,15 @@
 
 .attachments[id="view-type-3"] {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.attachments[id="view-type-3"] .image {
+    aspect-ratio: 1.7 / 1;
+}
+
+.attachments[id="view-type-3"] .image:first-child {
+    grid-row: span 2;
 }
 
 /* ============================================== */
@@ -125,14 +142,6 @@
     width: 100%;
     object-fit: cover;
 }
-
-/* .image:hover {
-    transform: scale(101%);
-}
-
-.image:active {
-    transform: scale(99%);
-} */
 
 /* ============================================== */
 

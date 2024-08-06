@@ -24,6 +24,10 @@ class MusicState {
         }
     }
 
+    setPlayingState(state) {
+        this.isPlaying = state;
+    }
+
     SetSongAsPlaying(id) {
         const index = this.songQueue.findIndex(element => element.id === id);
 

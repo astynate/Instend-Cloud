@@ -4,8 +4,6 @@ using Exider.Core.Models.Comments;
 using Exider.Core.Models.Links;
 using Exider.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
-using System.IO;
-using System.Xml.Linq;
 
 namespace Exider.Repositories.Comments
 {
@@ -15,13 +13,10 @@ namespace Exider.Repositories.Comments
 
         private readonly DbSet<AttachmentLink> _links;
 
-        private readonly IFileService _fileService;
-
-        public CommentBaseRepository(DatabaseContext context, IFileService fileService)
+        public CommentBaseRepository(DatabaseContext context)
         {
             _context = context;
             _links = context.Set<AttachmentLink>();
-            _fileService = fileService;
         }
 
         public async Task<Result> DeleteAsync(Guid id)

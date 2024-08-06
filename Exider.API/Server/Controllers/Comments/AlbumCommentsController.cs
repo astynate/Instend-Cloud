@@ -55,7 +55,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
                 return BadRequest("Album not found");
             }
 
-            var result = await _commentsRepository.GetAsync(Guid.Parse(albumId));
+            var result = await _commentsRepository.GetLastCommentsAsync(Guid.Parse(albumId), DateTime.Now, 10);
 
             return Ok(result);
         }
@@ -69,7 +69,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
                 return BadRequest("User not found");
             }
 
-            var result = await _userPublicationRepository.GetAsync(Guid.Parse(id));
+            var result = await _userPublicationRepository.GetLastCommentsAsync(Guid.Parse(id), DateTime.Now, 10);
 
             return Ok(result);
         }

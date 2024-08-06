@@ -15,7 +15,7 @@ namespace Exider.Core.Models.Storage
         [Column("size")] public long Size { get; private set; } = 0;
         [Column("userId")] public Guid UserId { get; private set; }
 
-        [NotMapped] public byte[] File { get; set; } = new byte[0];
+        [NotMapped] public byte[] Preview { get; set; } = new byte[0];
 
         private AttachmentModel() { }
 
@@ -44,17 +44,16 @@ namespace Exider.Core.Models.Storage
             };
         }
 
-        public async Task<Result> SetFile(IFileService fileService)
+        public async Task<Result> SetFile(IPreviewService previewService)
         {
-            var result = await fileService.ReadFileAsync(Path);
+            var result = await previewService.GetPreview(Type, Path);
 
             if (result.IsFailure)
             {
                 return result;
             }
 
-            File = result.Value;
-            return Result.Success();
+            Preview = result.Value; return Result.Success();
         }
     }
 }

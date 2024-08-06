@@ -155,10 +155,10 @@ namespace Exider.Repositories.Public
                 return Result.Failure<bool>("Community not found");
             }
 
-            if (model != null && model.OwnerId == userId)
-            {
-                return Result.Failure<bool>("You cannot subscribe to your own community");
-            }
+            //if (model != null && model.OwnerId == userId)
+            //{
+            //    return Result.Failure<bool>("You cannot subscribe to your own community");
+            //}
 
             CommunityFollowerLink? link = await _context.CommunityFollowers
                 .FirstOrDefaultAsync(x => x.ItemId == id && x.LinkedItemId == userId);
@@ -196,6 +196,13 @@ namespace Exider.Repositories.Public
             return await _context.CommunityFollowers
                                  .Where(x => x.LinkedItemId == userId)
                                  .Select(x => new { id = x.ItemId })
+                                 .ToArrayAsync();
+        }
+
+        public async Task<Result<CommunityFollowerLink[]>> GetFollowingCommunities(Guid userId)
+        {
+            return await _context.CommunityFollowers
+                                 .Where(x => x.LinkedItemId == userId)
                                  .ToArrayAsync();
         }
     }

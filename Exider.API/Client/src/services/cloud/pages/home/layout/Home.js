@@ -9,6 +9,7 @@ import Menu from '../../../widgets/menu/Menu';
 import { observer } from 'mobx-react-lite';
 import Community from '../pages/community/Community';
 import MainContentWrapper from '../../../features/main-content-wrapper/MainContentWrapper';
+import News from '../pages/news/News';
 
 const Home = observer((props) => {
   useEffect(() => {
@@ -25,8 +26,12 @@ const Home = observer((props) => {
         <Menu 
           items={[
             {
-              'name': 'Communities', 
+              'name': 'News', 
               'route': '/'
+            },
+            {
+              'name': 'Communities', 
+              'route': '/communities'
             }, 
             {
               'name': 'Top users', 
@@ -35,13 +40,12 @@ const Home = observer((props) => {
           ]}
         />
       </div>
-      <MainContentWrapper>
-        <Routes>
-          <Route path='' element={<Communities />} />
-          <Route path='/community/:id' element={<Community isMobile={props.isMobile} />} />
-          <Route path='/people' element={<People />} />
-        </Routes>
-      </MainContentWrapper>
+      <Routes>
+        <Route path='' element={<News />} />
+        <Route path='/communities' element={<Communities />} />
+        <Route path='/community/:id' element={<Community isMobile={props.isMobile} />} />
+        <Route path='/people' element={<People />} />
+      </Routes>
     </div>
   )
 });

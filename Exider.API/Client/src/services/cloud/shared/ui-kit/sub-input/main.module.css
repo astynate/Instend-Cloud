@@ -9,5 +9,5 @@
     resize: none;
     padding-top: 10px;
     /* background: red; */
-    /* border-bottom: 1px solid var(--main-border-color); */
+    border-bottom: 1px solid var(--main-border-color);
 }

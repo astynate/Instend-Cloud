@@ -14,24 +14,46 @@ const CommentField = ({id, setUploadingComment, isPublications}) => {
     const [comment, setComment] = useState('');
     const [isEmojiOpen, setEmojiPickerState] = useState(false);
     const [images, setImages] = useState([]);
-    const [imagesUrls, setImagesUrls] = useState([]);
+    const [video, setVideo] = useState(null);
+    const validFormats = ['audio', 'video', 'image'];
+
+    const getFileType = (file) => {
+        return file && file.type ? file.type.split('/')[0] : null;
+    }
 
     const handleFileChange = (event) => {
         if (event.target.files.length > 0) {
-            const filesArray = Array.from(event.target.files).slice(0, 9);
-            setImages(filesArray);
+            let files = Array.from(event.target.files).filter(file => {
+                return validFormats.includes(getFileType(file));
+            });
 
-            const filesUrls = filesArray.map((file) => URL.createObjectURL(file));
-            setImagesUrls(filesUrls);
+            if (files.length > 0) {
+                let videoFile = files.find(file => {
+                    return getFileType(file) === 'video';
+                });
+
+                if (videoFile !== null && videoFile !== undefined) {
+                    setVideo(videoFile);
+                } else {
+                    console.log(files)
+                    const filesArray = Array.from(files).slice(0, 9);
+                    setImages(filesArray);
+                }
+            }
         }
     };
 
     const sendComment = async () => {
         if (id && comment !== null && comment !== '') {
-            await setUploadingComment(comment, images, userState.user, id);
+            const commetValue = comment;
+            const imagesValue = images;
+            const videoValue = video;
+
             setComment('');
             setImages([]);
-            setImagesUrls([]);
+            setVideo(null);
+
+            await setUploadingComment(commetValue, [...imagesValue, videoValue], userState.user, id);
         }
     }
 
@@ -46,7 +68,21 @@ const CommentField = ({id, setUploadingComment, isPublications}) => {
                     setText={setComment}
                 />
                 <div className={styles.images}>
-                    {imagesUrls.map((url, index) => (
+                    {video != null &&
+                        <div className={styles.imageWrapper}>
+                            <div 
+                                className={styles.closeButton}
+                                onClick={() => {
+                                    setVideo(null);
+                                }}
+                            >
+                                <img src={cancel} className={styles.cancel} />
+                            </div>
+                            <video controls>
+                                <source src={URL.createObjectURL(video)} type="video/mp4" />
+                            </video>
+                        </div>}
+                    {images.map((url, index) => (
                         <div className={styles.imageWrapper} key={index}>
                             <div 
                                 className={styles.closeButton}
@@ -54,16 +90,12 @@ const CommentField = ({id, setUploadingComment, isPublications}) => {
                                     const newImages = [...images];
                                     newImages.splice(index, 1);
                                     setImages(newImages);
-                            
-                                    const newImagesUrls = [...imagesUrls];
-                                    newImagesUrls.splice(index, 1);
-                                    setImagesUrls(newImagesUrls);
                                 }}
                             >
                                 <img src={cancel} className={styles.cancel} />
                             </div>
                             <img 
-                                src={url} 
+                                src={URL.createObjectURL(url)} 
                                 className={styles.imagePreview}
                                 draggable="false"
                             />

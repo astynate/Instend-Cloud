@@ -1,9 +1,13 @@
 .commentField {
     display: flex;
-    grid-gap: 15px;
-    /* padding: 15px; */
+    grid-gap: 10px;
+    padding-left: 10px;
+    padding-top: 10px;
     padding-bottom: 5px;
-    border-bottom: 1px solid var(--main-border-color);
+    /* margin-bottom: 10px; */
+    padding-right: 10px;
+    border: 1px solid var(--main-border-color);
+    border-radius: 10px;
 }
 
 .inputData {
@@ -38,6 +42,12 @@
 
 .imageWrapper {
     position: relative;
+}
+
+.imageWrapper video {
+    height: 200px;
+    width: auto;
+    border-radius: 7px;
 }
 
 .closeButton {

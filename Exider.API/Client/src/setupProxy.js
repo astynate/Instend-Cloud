@@ -1,6 +1,6 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
-const target = `http://192.168.1.63:5000`;
+const target = 'http://192.168.1.63:5000';
 
 const context = [
     "/accounts",
@@ -27,7 +27,7 @@ module.exports = function (app) {
     secure: false,
     headers: {
       Connection: 'Keep-Alive'
-    }
+    },
   });
 
   app.use(appProxy);

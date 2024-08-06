@@ -41,8 +41,8 @@ export const AddUploadingAlbumComment = async (
         await instance
             .post(route, form)
             .catch(error => {
-                applicationState.AddErrorInQueue(error.response.data);
                 DeleteCommentByQueueId(comment.queueId, itemId);
+                // applicationState.AddErrorInQueue(error.response.data);
             })
     }
     
@@ -50,5 +50,5 @@ export const AddUploadingAlbumComment = async (
 }
 
 export const DeleteCommentByQueueId = async () => {
-
+    
 }

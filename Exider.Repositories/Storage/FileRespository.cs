@@ -11,8 +11,6 @@ namespace Exider.Repositories.Storage
     {
         private readonly DatabaseContext _context = null!;
 
-        private readonly IFileService _fileService;
-
         private readonly IPreviewService _previewService;
 
         private readonly IUserDataRepository _userDataRepository;
@@ -20,13 +18,11 @@ namespace Exider.Repositories.Storage
         public FileRespository
         (
             DatabaseContext context, 
-            IFileService fileService, 
             IUserDataRepository userDataRepository, 
             IPreviewService previewService
         )
         {
             _context = context;
-            _fileService = fileService;
             _userDataRepository = userDataRepository;
             _previewService = previewService;
         }

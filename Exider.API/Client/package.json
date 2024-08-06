@@ -23,6 +23,7 @@
     "mobx-react-lite": "^4.0.5",
     "oidc-client": "^1.11.5",
     "react": "^18.2.0",
+    "react-doc-viewer": "^0.1.14",
     "react-dom": "^18.2.0",
     "react-drag-drop-files": "^2.3.10",
     "react-easy-crop": "^5.0.5",

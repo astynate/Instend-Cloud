@@ -131,19 +131,29 @@ const PhotoList = observer((props) => {
                         );
                     } else {
                         return (
-                            <div 
-                                key={index} 
-                                className={styles.photoWrapper} 
-                                data={element.id}
-                                onContextMenu={() => setCurrentIndex(index)}
-                            >
-                                <img 
-                                    src={`data:image/png;base64,${element.fileAsBytes}`}
-                                    draggable="false"
-                                    id={selectedItems.map(element => element.id !== null ? element.id : [])
-                                        .includes(element.id ? element.id : null) === true ? 'active' : 'passive'}
-                                />
-                            </div>
+                            element.preview || element.fileAsBytes ? 
+                                <div 
+                                    key={element.id} 
+                                    className={styles.photoWrapper} 
+                                    data={element.id}
+                                    onContextMenu={() => setCurrentIndex(index)}
+                                >
+                                    <img 
+                                        src={`data:image/png;base64,${element.fileAsBytes ? element.fileAsBytes : element.preview}`}
+                                        draggable="false"
+                                        id={selectedItems.map(element => element.id !== null ? element.id : [])
+                                            .includes(element.id ? element.id : null) === true ? 'active' : 'passive'}
+                                    />
+                                </div>
+                            : 
+                                <div
+                                    key={element.id} 
+                                    className={styles.placeholder} 
+                                    data={element.id}
+                                    onContextMenu={() => setCurrentIndex(index)}
+                                >
+                                    <p>{element.type ? element.type : "Image"}</p>
+                                </div>
                         )
                     }
                 })}

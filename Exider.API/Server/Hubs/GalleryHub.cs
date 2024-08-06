@@ -3,7 +3,6 @@ using Exider.Repositories.Comments;
 using Exider.Repositories.Gallery;
 using Exider.Services.Internal.Handlers;
 using Microsoft.AspNetCore.SignalR;
-using Newtonsoft.Json;
 using static Exider.Core.Models.Links.AlbumLinks;
 
 namespace Exider_Version_2._0._0.Server.Hubs
@@ -50,7 +49,7 @@ namespace Exider_Version_2._0._0.Server.Hubs
 
             if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id)) return;
 
-            var publications = await _publicationRepository.GetAsync(Guid.Parse(id));
+            var publications = await _publicationRepository.GetLastCommentsAsync(Guid.Parse(id), DateTime.Now, 10);
 
             if (publications == null) return;
 

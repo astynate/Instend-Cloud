@@ -4,14 +4,13 @@ import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toJS } from 'mobx';
 import { AdaptId } from '../../../../../states/storage-state';
-import { Properties } from './ContextMenuHandler';
 import { autorun } from 'mobx';
 import storageState from '../../../../../states/storage-state';
 import userState from '../../../../../states/user-state';
 import Search from '../../../features/search/Search';
 import Header from '../../../widgets/header/Header';
 import styles from './main.module.css';
-import CloudHeader, { sendFiles, sendFilesAsync } from '../widgets/header/Header';
+import CloudHeader from '../widgets/header/Header';
 import File from '../shared/file/File';
 import Open from './images/context-menu/open.png';
 import Rename from './images/context-menu/rename.png';
@@ -63,7 +62,6 @@ const Cloud = observer((props) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [activeItems, setActiveItems] = useState([]);
   const [isPreview, setPreviewState] = useState(false);
-  const [isRightPanelOpen, setRightPanelState] = useState(false);
   const [indexState, setIndexState] = useState(0);
   const [isError, setErrorState] = useState(false);
   const [errorTitle, setErrorTitle] = useState('');
@@ -176,6 +174,8 @@ const Cloud = observer((props) => {
             }
           })}
           index={indexState}
+          fullFileLoadEndpoint={'/api/files/full'}
+          partialFileLoadEndpoint={'/api/files/stream'}
         />}
       <DragFiles 
         items={[
@@ -273,12 +273,6 @@ const Cloud = observer((props) => {
             </div>
         }
       </div>
-    {/* </div> */}
-    {/* {isRightPanelOpen === true && 
-      <RightPanel 
-        file={selectedItems} 
-        close={() => setRightPanelState(false)} 
-      />} */}
     {isFolderProperties === true &&
       <PropertiesWindow 
         file={selectedItems[0]}

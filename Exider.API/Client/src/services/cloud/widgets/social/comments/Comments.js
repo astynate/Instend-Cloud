@@ -4,20 +4,31 @@ import CommentField from '../../../shared/ui-kit/comment-field/CommentField';
 import Comment from '../../../shared/social/comment/Comment';
 import PublicationsWrapper from '../../../features/publications-wrapper/PublicationsWrapper';
 
-const Comments = ({fetch_callback, comments, id, setUploadingComment, deleteCallback, isPublicationAvailable = true, isPublications = false}) => {
+const Comments = (
+    {
+        fetch_callback, 
+        comments, 
+        id, 
+        setUploadingComment, 
+        deleteCallback, 
+        isPublicationAvailable = true, 
+        isPublications = false,
+        type = 0
+    }) => {
+
     const [isLoading, setLoadingState] = useState(false);
 
-    useEffect(() => {
-        if (fetch_callback) {
-            (async () => {
-                setLoadingState(true);
-                await fetch_callback();
-                setLoadingState(false);
-            })();
-        } else {
-            setLoadingState(false);
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (fetch_callback) {
+    //         (async () => {
+    //             setLoadingState(true);
+    //             await fetch_callback();
+    //             setLoadingState(false);
+    //         })();
+    //     } else {
+    //         setLoadingState(false);
+    //     }
+    // }, []);
 
     return (
         <PublicationsWrapper>

@@ -1,4 +1,6 @@
-﻿using Exider.Services.External.FileService;
+﻿using CSharpFunctionalExtensions;
+using Exider.Core.Models.Storage;
+using Exider.Services.External.FileService;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -57,9 +59,13 @@ namespace Exider.Core
 
         public static readonly string[] systemFolders = { "Music", "Photos", "Trash" };
 
+        public static readonly string[] postAvailableTypes = imageTypes.Concat(videoTypes).ToArray();
+
         public delegate Task<byte[]> HandleFileCover((string type, string path) parameters);
 
         public delegate string ConvertToHtml(string path);
+
+        public delegate Task<Result<AttachmentModel>> GetAttachmentDelegate(Guid itemId, Guid attachmentId);
 
         public enum Months
         {
