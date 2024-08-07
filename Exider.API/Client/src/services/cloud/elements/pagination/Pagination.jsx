@@ -1,15 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
 
-const Pagination = ({fetchRequest}) => {
+const Pagination = ({fetchRequest = () => {}, isHasMore = false, placeholder = <div></div>}) => {
     const paginationRef = useRef();
     const [isProcessing, setProcessingState] = useState(false);
-    const [isAvailable, setAvailableState] = useState(true);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => {
-                if (entry.isIntersecting && fetchRequest && isProcessing === false && isAvailable) {
+                if (entry.isIntersecting && fetchRequest && isProcessing === false && isHasMore) {
                     (async function fetch() { 
                         setProcessingState(true);
                         await fetchRequest();
@@ -36,12 +35,14 @@ const Pagination = ({fetchRequest}) => {
     }, []);
 
     return (
-        isAvailable &&
+        isHasMore ?
             <div ref={paginationRef} className={styles.pagination}>
                 <div className={styles.dot}></div>
                 <div className={styles.dot}></div>
                 <div className={styles.dot}></div>
             </div>
+        :
+            placeholder
     );
 }
 

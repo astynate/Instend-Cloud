@@ -1,0 +1,44 @@
+.placeholder {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+.title {
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.information {
+    font-size: 14px;
+    color: var(--main-paragraph-color);
+    font-weight: 400;
+}
+
+.imageWrapper {
+    height: 65px;
+    width: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--sub-accent-color);
+    border-radius: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+}
+
+.image {
+    height: 25px;
+    width: 25px;
+    filter: var(--sub-filter);
+}
+
+.border {
+    border-top: 1px solid var(--main-border-color);
+}

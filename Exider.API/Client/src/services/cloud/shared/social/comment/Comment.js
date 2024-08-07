@@ -5,13 +5,15 @@ import { ConvertDate } from '../../../../../utils/DateHandler';
 import Loader from '../../loader/Loader';
 import BurgerMenu from '../../ui-kit/burger-menu/BurgerMenu';
 import StatisticButton from './elements/statistic-button/StatisticButton';
-import smile from './images/smile.png';
+import save from './images/save.png';
 import commentImage from './images/comment.png';
 import views from './images/view.png';
+import like from './images/like.png';
 import Preview from '../../../../preview/layout/Preview';
 import FileAPI from '../../../api/FileAPI';
 import { PreviewVideo } from '../../../../preview/widgets/files/PreviewVideo/PreviewVideo';
 import Base64Handler from '../../../../../utils/handlers/Base64Handler';
+import statistic from './images/statistics.png';
 
 const Comment = ({user, comment, isLoading, isUploading, deleteCallback, type = 0}) => {
     const [isPreviewOpen, setPreviewState] = useState(false);
@@ -117,20 +119,40 @@ const Comment = ({user, comment, isLoading, isUploading, deleteCallback, type = 
                                 }
                             })}
                     </div> : null}
-                    <span className={styles.text}>{comment.text}</span>
+                    <div className={styles.textWrapper}>
+                        {comment.text.split('\r\n').map((part, index) => (
+                            <>
+                                <span 
+                                    key={index = "text"}
+                                    className={styles.text}
+                                >{part}</span>
+
+                            </>
+                        ))}
+                    </div>
                     <div className={styles.control}>
-                        <StatisticButton 
-                            image={smile} 
-                            title={"0"} 
-                        />
-                        <StatisticButton 
-                            image={commentImage}
-                            title={"0"} 
-                        />
-                        <StatisticButton 
-                            image={views}
-                            title={"0"} 
-                        />
+                        <div className={styles.left}>
+                            <StatisticButton 
+                                image={like} 
+                                title={`${comment.likes} Likes`} 
+                            />
+                            <div className={styles.border}></div>
+                            <StatisticButton 
+                                image={commentImage}
+                                title={`${comment.comments} Comments`} 
+                            />
+                            <div className={styles.border}></div>
+                            <StatisticButton 
+                                image={statistic}
+                                title={`${comment.views} Views`} 
+                            />
+                        </div>
+                        <div className={styles.left}>
+                            <StatisticButton 
+                                image={save}
+                                // title={"Save in storage"} 
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

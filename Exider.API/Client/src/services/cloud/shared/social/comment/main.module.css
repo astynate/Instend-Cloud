@@ -35,17 +35,19 @@
 .postContent {
     display: flex;
     flex-direction: column;
-    grid-gap: 10px;
+}
+
+.textWrapper {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 .text {
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--main-font-color);
-    /* margin-left: 10px; */
     width: calc(100% - 20px);
-    /* border-bottom: 1px solid var(--main-border-color); */
-    padding-bottom: 10px;
 }
 
 .avatarPreview {
@@ -81,8 +83,26 @@
 .control {
     width: 100%;
     display: flex;
-    margin-left: 5px;
-    grid-gap: 5px;
+    justify-content: space-between;
+}
+
+.left {
+    width: fit-content;
+    display: flex;
+    /* padding: 10px; */
+    margin-top: 10px;
+    border-radius: 5px;
+    /* grid-gap: 15px; */
+    overflow: hidden;
+    border: 1px solid var(--main-border-color);
+}
+
+.border {
+    margin-top: auto;
+    margin-bottom: auto;
+    height: 60%;
+    width: 1px;
+    background: var(--main-border-color);
 }
 
 .attachments {
@@ -90,16 +110,18 @@
     margin-top: 5px;
     display: flex;
     grid-gap: 2px;
-    border-radius: 10px;
+    border-radius: 5px;
     overflow: hidden;
     image-rendering: pixelated;
+    border: 1px solid var(--main-border-color);
+    cursor: pointer;
 }
 
 /* ============================================== */
 
 .image {
     height: 100%;
-    aspect-ratio: 1.25 / 1;
+    aspect-ratio: 1.5 / 1;
     width: 100%;
     overflow: hidden;
     cursor: pointer;
@@ -111,6 +133,13 @@
 .attachments[id="view-type-1"] .image {
     height: auto;
     width: 100%;
+}
+
+.attachments[id="view-type-1"] image {
+    height: 100%;
+    width: 100%;
+    aspect-ratio: 1.5 / 1;
+    object-fit: contain;
 }
 
 /* ============================================== */
