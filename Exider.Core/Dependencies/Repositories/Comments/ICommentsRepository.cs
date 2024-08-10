@@ -12,7 +12,7 @@ namespace Exider.Repositories.Comments
         where AttachmentLink : LinkBase, ILinkBase, new()
     {
         Task<Result<CommentModel>> AddComment(string text, IFormFile[] files, Guid ownerId, Guid itemId);
-        Task<object[]> GetLastCommentsAsync(Guid id, DateTime date, int count);
+        Task<object[]> GetLastCommentsAsync(Guid[] id, DateTime date, int count, Guid userId);
         Task<Result<AttachmentModel>> GetAttachmentAsync(Guid itemId, Guid attachmentId);
     }
 }

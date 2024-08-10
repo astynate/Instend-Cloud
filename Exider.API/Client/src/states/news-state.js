@@ -16,6 +16,15 @@ class NewsState {
         return dateB - dateA;
     }
 
+    setLike = (id, state) => {
+        let post = this.news.find(p => p.comment.id === id);
+
+        if (post) {
+            post.comment.isLiked = state;
+            post.comment.likes += state ? 1 : -1;
+        }
+    }
+
     setNews = async () => {
         if (this.isHasMore === true) {
             let lastPublicationDate = '';

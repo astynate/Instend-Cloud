@@ -91,8 +91,8 @@ namespace Exider.Repositories.Account
                 }
             }
 
-            userModel.Avatar = Convert.ToBase64String(_imageService.ResizeImageToBase64(Convert.FromBase64String(userModel.Avatar), 250));
-            userModel.Header = Convert.ToBase64String(_imageService.ResizeImageToBase64(Convert.FromBase64String(userModel.Header), 500));
+            userModel.Avatar = Convert.ToBase64String(_imageService.CompressImage(Convert.FromBase64String(userModel.Avatar), 5, "png"));
+            userModel.Header = Convert.ToBase64String(_imageService.CompressImage(Convert.FromBase64String(userModel.Header), 5, "png"));
 
             return Result.Success(userModel);
         }
@@ -211,8 +211,7 @@ namespace Exider.Repositories.Account
                     })
                 .ToArrayAsync();
 
-            await SetAvatarAsync(users);
-            return users;
+            await SetAvatarAsync(users); return users;
         }
 
         private async Task SetAvatarAsync(UserPublic[] users)
@@ -237,7 +236,7 @@ namespace Exider.Repositories.Account
                     }
                 }
 
-                user.Avatar = Convert.ToBase64String(_imageService.ResizeImageToBase64(Convert.FromBase64String(user.Avatar), 100));
+                user.Avatar = Convert.ToBase64String(_imageService.CompressImage(Convert.FromBase64String(user.Avatar), 5, "png"));
             }
         }
     }

@@ -39,7 +39,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
         [HttpGet]
         [Authorize]
         [Route("/api/news")]
-        public async Task<IActionResult> GetPublictions(string? lastPublitionDate)
+        public async Task<IActionResult> GetPublictions(string? lastPublicationDate)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
@@ -55,21 +55,16 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
                 return Conflict(followingCommunities.Error);
             }
 
-            List<object> comments = new List<object>();
-
             DateTime date = DateTime.Now;
 
-            if (lastPublitionDate != null)
+            if (lastPublicationDate != null)
             {
-                DateTime.TryParse(lastPublitionDate, out date);
+                DateTime.TryParse(lastPublicationDate, out date);
             }
 
-            foreach (CommunityFollowerLink community in followingCommunities.Value)
-            {
-                comments.AddRange(await _publicationRepository.GetLastCommentsAsync(community.ItemId, date, 7));
-            }
+            Guid[] communities = followingCommunities.Value.Select(x => x.ItemId).ToArray();
 
-            return Ok(comments);
+            return Ok(await _publicationRepository.GetLastCommentsAsync(communities, date, 7, Guid.Parse(userId.Value)));
         }
     }
 }

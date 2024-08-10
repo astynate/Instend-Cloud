@@ -9,6 +9,8 @@ using Exider.Core.Models.Links;
 using Exider.Core.Models.Comments;
 using Exider.Core.TransferModels.Account;
 using CSharpFunctionalExtensions;
+using Microsoft.AspNetCore.Authorization;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Comments
 {
@@ -47,29 +49,45 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
         }
 
         [HttpGet]
+        [Authorize]
         [Route("/api/album-comments")]
         public async Task<IActionResult> Get(string? albumId)
         {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+            {
+                return BadRequest(userId.Error);
+            }
+
             if (string.IsNullOrEmpty(albumId) || string.IsNullOrWhiteSpace(albumId))
             {
                 return BadRequest("Album not found");
             }
 
-            var result = await _commentsRepository.GetLastCommentsAsync(Guid.Parse(albumId), DateTime.Now, 10);
+            var result = await _commentsRepository.GetLastCommentsAsync([Guid.Parse(albumId)], DateTime.Now, 10, Guid.Parse(userId.Value));
 
             return Ok(result);
         }
 
         [HttpGet]
+        [Authorize]
         [Route("/api/user-publications")]
         public async Task<IActionResult> GetUserPublications(string? id)
         {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+            {
+                return BadRequest(userId.Error);
+            }
+
             if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
             {
                 return BadRequest("User not found");
             }
 
-            var result = await _userPublicationRepository.GetLastCommentsAsync(Guid.Parse(id), DateTime.Now, 10);
+            var result = await _userPublicationRepository.GetLastCommentsAsync([Guid.Parse(id)], DateTime.Now, 10, Guid.Parse(userId.Value));
 
             return Ok(result);
         }
@@ -130,6 +148,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
         }
 
         [HttpPost]
+        [Authorize]
         [Route("/api/album-comments")]
         public async Task<IActionResult> AddAlbumComment
         (
@@ -160,6 +179,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
         }
 
         [HttpPost]
+        [Authorize]
         [Route("/api/community/publications")]
         public async Task<IActionResult> AddCommunityPublication
         (
@@ -190,6 +210,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
         }
 
         [HttpPost]
+        [Authorize]
         [Route("/api/user/publications")]
         public async Task<IActionResult> AddUserPublication
         (
@@ -219,6 +240,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Comments
         }
 
         [HttpDelete]
+        [Authorize]
         [Route("/api/album-comments")]
         public async Task<IActionResult> Delete(string? id, string albumId, int type = 0)
         {

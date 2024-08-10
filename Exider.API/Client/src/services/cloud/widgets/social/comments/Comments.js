@@ -6,7 +6,7 @@ import PublicationsWrapper from '../../../features/publications-wrapper/Publicat
 
 const Comments = (
     {
-        fetch_callback, 
+        setLike = () => {}, 
         comments, 
         id, 
         setUploadingComment, 
@@ -15,20 +15,6 @@ const Comments = (
         isPublications = false,
         type = 0
     }) => {
-
-    const [isLoading, setLoadingState] = useState(false);
-
-    // useEffect(() => {
-    //     if (fetch_callback) {
-    //         (async () => {
-    //             setLoadingState(true);
-    //             await fetch_callback();
-    //             setLoadingState(false);
-    //         })();
-    //     } else {
-    //         setLoadingState(false);
-    //     }
-    // }, []);
 
     return (
         <PublicationsWrapper>
@@ -39,41 +25,28 @@ const Comments = (
                         isPublications={isPublications}
                         setUploadingComment={setUploadingComment.bind(this)}
                     />}
-                {isLoading ? 
-                    <>
-                        <Comment isLoading={true} />
-                        <Comment isLoading={true} />
-                        <Comment isLoading={true} />
-                        <Comment isLoading={true} />
-                        <Comment isLoading={true} />
-                        <Comment isLoading={true} />
-                        <Comment isLoading={true} />
-                        <Comment isLoading={true} />
-                        <Comment isLoading={true} />
-                        <Comment isLoading={true} />
-                    </>
-                :
-                    comments && comments.map && comments.map((element, index) => {
-                        if (element.isUploading) {
-                            return (
-                                <Comment 
-                                    key={index}
-                                    isUploading={true}
-                                    comment={element.comment} 
-                                    user={element.user} 
-                                />
-                            )
-                        } else {
-                            return (
-                                <Comment 
-                                    key={element.comment.id}
-                                    comment={element.comment} 
-                                    user={element.user}
-                                    deleteCallback={deleteCallback}
-                                />
-                            )
-                        }
-                    })}
+                {comments && comments.map && comments.map((element, index) => {
+                    if (element.isUploading) {
+                        return (
+                            <Comment 
+                                key={element.comment.id + "comment"}
+                                isUploading={true}
+                                comment={element.comment} 
+                                user={element.user} 
+                            />
+                        )
+                    } else {
+                        return (
+                            <Comment 
+                                key={element.comment.id + "comment"}
+                                comment={element.comment} 
+                                user={element.user}
+                                deleteCallback={deleteCallback}
+                                setLike={setLike}
+                            />
+                        )
+                    }
+                })}
             </div>
         </PublicationsWrapper>
     );

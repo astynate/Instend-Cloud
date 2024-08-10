@@ -49,7 +49,7 @@ namespace Exider_Version_2._0._0.Server.Hubs
 
             if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id)) return;
 
-            var publications = await _publicationRepository.GetLastCommentsAsync(Guid.Parse(id), DateTime.Now, 10);
+            var publications = await _publicationRepository.GetLastCommentsAsync([Guid.Parse(id)], DateTime.Now, 10, Guid.Parse(userId.Value));
 
             if (publications == null) return;
 

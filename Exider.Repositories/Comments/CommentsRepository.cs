@@ -1,7 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using CSharpFunctionalExtensions.ValueTasks;
 using Exider.Core;
-using Exider.Core.Dependencies.Repositories.Comments;
 using Exider.Core.Dependencies.Repositories.Storage;
 using Exider.Core.Models.Comments;
 using Exider.Core.Models.Links;
@@ -9,7 +8,6 @@ using Exider.Core.Models.Storage;
 using Exider.Services.External.FileService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System.Xml.Linq;
 
 namespace Exider.Repositories.Comments
 {
@@ -29,12 +27,15 @@ namespace Exider.Repositories.Comments
 
         private readonly IAttachmentsRepository<AttachmentLink> _attachmentsRepository;
 
+        private readonly ICommentBaseRepository<AttachmentLink> _commentBaseRepository;
+
         public CommentsRepository
         (
             DatabaseContext context,
             IFileService fileService,
             IPreviewService previewService,
-            IAttachmentsRepository<AttachmentLink> attachmentsRepository
+            IAttachmentsRepository<AttachmentLink> attachmentsRepository,
+            ICommentBaseRepository<AttachmentLink> commentBaseRepository
         )
         {
             _context = context;
@@ -43,17 +44,18 @@ namespace Exider.Repositories.Comments
             _fileService = fileService;
             _attachmentsRepository = attachmentsRepository;
             _previewService = previewService;
+            _commentBaseRepository = commentBaseRepository;
         }
 
-        public async Task<object[]> GetLastCommentsAsync(Guid id, DateTime lastPublictionTime, int count)
+        public async Task<object[]> GetLastCommentsAsync(Guid[] id, DateTime lastPublictionTime, int count, Guid userId)
         {
             if (typeof(CommentLink).Name == "ComminityPublicationLink")
             {
-                return await GetCommunityPublictions(id, lastPublictionTime, count);
+                return await GetCommunityPublictions(id, lastPublictionTime, count, userId);
             }
             else
             {
-                return await GetPersonalPublictions(id, lastPublictionTime, count);
+                return await GetPersonalPublictions(id, lastPublictionTime, count, userId);
             }
         }
 
@@ -105,7 +107,7 @@ namespace Exider.Repositories.Comments
                                 string? fileName = name.Length >= 1 ? name[0] : null;
                                 string? fileType = name.Length >= 2 ? name[name.Length - 1] : null;
 
-                                if (Configuration.postAvailableTypes.Contains(fileType) == false || name == null)
+                                if (fileType == null ||  Configuration.postAvailableTypes.Contains(fileType?.ToLower()) == false || name == null)
                                 {
                                     transaction.Rollback();
                                     return Result.Failure<CommentModel>("Invalid type");
@@ -160,10 +162,10 @@ namespace Exider.Repositories.Comments
             return attachment;
         }
 
-        private async Task<object[]> GetPersonalPublictions(Guid id, DateTime lastPublictionTime, int count)
+        private async Task<object[]> GetPersonalPublictions(Guid[] id, DateTime lastPublictionTime, int count, Guid userId)
         {
             var comments = await _entities
-                .Where(x => x.ItemId == id)
+                .Where(x => id.Contains(x.ItemId))
                 .Join(
                     _context.Comments,
                     albumCommentLink => albumCommentLink.LinkedItemId,
@@ -208,6 +210,8 @@ namespace Exider.Repositories.Comments
                         attachment => attachment.Id,
                         (link, attachments) => attachments)
                     .ToArrayAsync());
+
+                comment.Comment.IsLiked = await _commentBaseRepository.IsUserLikedPubliction(userId, comment.Comment.Id);
             }
 
             var result = new List<object>();
@@ -244,10 +248,10 @@ namespace Exider.Repositories.Comments
             return result.ToArray();
         }
 
-        private async Task<object[]> GetCommunityPublictions(Guid id, DateTime lastPublictionTime, int count)
+        private async Task<object[]> GetCommunityPublictions(Guid[] id, DateTime lastPublictionTime, int count, Guid userId)
         {
             var comments = await _entities
-                .Where(x => x.ItemId == id)
+                .Where(x => id.Contains(x.ItemId))
                 .Join(
                     _context.Comments,
                     albumCommentLink => albumCommentLink.LinkedItemId,
@@ -274,6 +278,8 @@ namespace Exider.Repositories.Comments
                         attachment => attachment.Id,
                         (link, attachments) => attachments)
                     .ToArrayAsync());
+
+                comment.comment.IsLiked = await _commentBaseRepository.IsUserLikedPubliction(userId, comment.comment.Id);
             }
 
             var result = new List<object>();

@@ -42,7 +42,7 @@ namespace Exider.Services.External.FileService
                 try
                 {
                     byte[] file = await handler.Value((type, path));
-                    return Result.Success(_imageService.ResizeImageToBase64(file, 150)); 
+                    return Result.Success(_imageService.CompressImage(file, 10, type ?? ""));
                 }
                 catch
                 {

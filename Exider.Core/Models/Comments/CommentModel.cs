@@ -11,9 +11,13 @@ namespace Exider.Core.Models.Comments
         [Column("id")][Key] public Guid Id { get; private set; } = Guid.NewGuid();
         [Column("text")] public string Text { get; private set; } = string.Empty;
         [Column("date")] public DateTime Date { get; private set; } = DateTime.Now;
+        [Column("likes")] public uint Likes { get; private set; } = 0;
+        [Column("comments")] public uint Comments { get; private set; } = 0;
+        [Column("views")] public uint Views { get; private set; } = 0;
         [Column("owner_id")] public Guid OwnerId { get; private set; }
 
         [NotMapped] public AttachmentModel[] attechments { get; set; } = new AttachmentModel[0];
+        [NotMapped] public bool IsLiked { get; set; } = false;
 
         private CommentModel() { }
 
@@ -41,5 +45,8 @@ namespace Exider.Core.Models.Comments
             attechments = attachment;
             return Result.Success();
         }
+
+        public void IncrementLikes() => Likes++;
+        public void DecrementLikes() => Likes--;
     }
 }

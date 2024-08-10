@@ -1,9 +1,9 @@
 .comment {
     display: flex;
     flex-direction: column;
-    grid-gap: 5px;
+    grid-gap: 7px;
     padding-top: 10px;
-    padding-bottom: 10px;
+    padding-bottom: 5px;
     border-bottom: 1px solid var(--main-border-color);
 }
 
@@ -18,11 +18,12 @@
 .nameWrapper {
     display: flex;
     grid-gap: 0px;
+    align-self: center;
     flex-direction: column;
 }
 
 .name {
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--main-font-color);
 }
@@ -35,17 +36,17 @@
 .postContent {
     display: flex;
     flex-direction: column;
+    grid-gap: 5px;
 }
 
 .textWrapper {
-    margin-top: 10px;
     display: flex;
     flex-direction: column;
 }
 
 .text {
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 500;
     color: var(--main-font-color);
     width: calc(100% - 20px);
 }
@@ -89,12 +90,10 @@
 .left {
     width: fit-content;
     display: flex;
-    /* padding: 10px; */
-    margin-top: 10px;
+    margin-top: 0px;
     border-radius: 5px;
-    /* grid-gap: 15px; */
     overflow: hidden;
-    border: 1px solid var(--main-border-color);
+    grid-gap: 10px
 }
 
 .border {
@@ -109,8 +108,8 @@
     width: 100%;
     margin-top: 5px;
     display: flex;
-    grid-gap: 2px;
-    border-radius: 5px;
+    grid-gap: 4px;
+    border-radius: 3px;
     overflow: hidden;
     image-rendering: pixelated;
     border: 1px solid var(--main-border-color);

@@ -2,7 +2,6 @@
 using Exider.Core;
 using Exider.Core.Models.Comments;
 using Exider.Core.Models.Links;
-using Exider.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
 
 namespace Exider.Repositories.Comments
@@ -54,6 +53,53 @@ namespace Exider.Repositories.Comments
 
             await _context.SaveChangesAsync();
             return Result.Success();
+        }
+
+        public async Task<bool> IsUserLikedPubliction(Guid userId, Guid publictionId)
+        {
+            PublictionLikeLink? publictionLikeLink = await _context.PublictionLikeLinks
+                .FirstOrDefaultAsync(x => x.ItemId == publictionId && x.LinkedItemId == userId);
+
+            return publictionLikeLink != null;
+        }
+
+        public async Task<Result<bool>> SetLike(Guid id, Guid userId)
+        {
+            CommentModel? comment = await _context.Comments.FirstOrDefaultAsync(x => x.Id == id);
+
+            PublictionLikeLink? publictionLikeLink = await _context.PublictionLikeLinks
+                .FirstOrDefaultAsync(x => x.ItemId == id && x.LinkedItemId == userId);
+
+            if (comment == null)
+            {
+                return Result.Failure<bool>("Publiction not found");
+            }
+
+            if (publictionLikeLink == null)
+            {
+                Result<PublictionLikeLink> link = LinkBase.Create<PublictionLikeLink>(id, userId);
+
+                if (link.IsFailure)
+                {
+                    return Result.Failure<bool>("Publiction not found");
+                }
+
+                comment.IncrementLikes();
+
+                await _context.PublictionLikeLinks.AddAsync(link.Value);
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            else
+            {
+                comment.DecrementLikes();
+
+                await _context.PublictionLikeLinks.Where(x => x.ItemId == id && x.LinkedItemId == userId).ExecuteDeleteAsync();
+                await _context.SaveChangesAsync();
+
+                return false;
+            }
         }
     }
 }

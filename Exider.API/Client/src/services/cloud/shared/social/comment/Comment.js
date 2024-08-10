@@ -9,13 +9,25 @@ import save from './images/save.png';
 import commentImage from './images/comment.png';
 import views from './images/view.png';
 import like from './images/like.png';
+import likeFill from './images/like-fill.png';
 import Preview from '../../../../preview/layout/Preview';
 import FileAPI from '../../../api/FileAPI';
 import { PreviewVideo } from '../../../../preview/widgets/files/PreviewVideo/PreviewVideo';
 import Base64Handler from '../../../../../utils/handlers/Base64Handler';
 import statistic from './images/statistics.png';
+import { instance } from '../../../../../state/Interceptors';
+import { observer } from 'mobx-react-lite';
 
-const Comment = ({user, comment, isLoading, isUploading, deleteCallback, type = 0}) => {
+const Comment = observer(({
+        user, 
+        comment, 
+        isLoading, 
+        isUploading, 
+        deleteCallback, 
+        type = 0, 
+        setLike = () => {}
+    }) => {
+
     const [isPreviewOpen, setPreviewState] = useState(false);
     const [index, setIndex] = useState(0);
 
@@ -78,6 +90,16 @@ const Comment = ({user, comment, isLoading, isUploading, deleteCallback, type = 
                     }
                 </div>
                 <div className={styles.postContent}>
+                    <div className={styles.textWrapper}>
+                        {comment.text.split('\r\n').map((part, index) => (
+                            <span 
+                                key={comment.id + index + "text"}
+                                className={styles.text}
+                            >
+                                {part}
+                            </span>
+                        ))}
+                    </div>
                     {isAttechmentsExist() ?
                         <div className={styles.attachments} id={getViewType(comment.attechments.length)}>
                             {comment.attechments.map((element, index) => {
@@ -119,22 +141,18 @@ const Comment = ({user, comment, isLoading, isUploading, deleteCallback, type = 
                                 }
                             })}
                     </div> : null}
-                    <div className={styles.textWrapper}>
-                        {comment.text.split('\r\n').map((part, index) => (
-                            <>
-                                <span 
-                                    key={index = "text"}
-                                    className={styles.text}
-                                >{part}</span>
-
-                            </>
-                        ))}
-                    </div>
                     <div className={styles.control}>
                         <div className={styles.left}>
                             <StatisticButton 
-                                image={like} 
+                                image={comment && comment.isLiked ? likeFill : like} 
+                                isDefault={comment && comment.isLiked}
                                 title={`${comment.likes} Likes`} 
+                                callback={async () => {
+                                    await instance.post(`/api/publiction-activity/like?id=${comment.id}`)
+                                        .then(response => {
+                                            setLike(comment.id, response.data);
+                                        });
+                                }}
                             />
                             <div className={styles.border}></div>
                             <StatisticButton 
@@ -170,6 +188,6 @@ const Comment = ({user, comment, isLoading, isUploading, deleteCallback, type = 
     } else {
         return null;
     }
- };
+});
 
 export default Comment;

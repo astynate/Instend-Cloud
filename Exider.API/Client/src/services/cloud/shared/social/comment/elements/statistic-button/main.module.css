@@ -7,7 +7,7 @@
     grid-gap: 6px;
     align-items: center;
     cursor: pointer;
-    padding: 10px 12.5px;
+    padding: 10px 0px;
     user-select: none;
     font-size: 13px;
     font-weight: 600;
@@ -18,12 +18,12 @@
 
 .statisticButton:hover {
     opacity: 1;
-    background: var(--main-accent-color);
+    /* background: var(--main-accent-color); */
 }
 
 .statisticButton:active {
     opacity: 1;
-    background: var(--pop-up-accent-color);
+    /* background: var(--pop-up-accent-color); */
 }
 
 .statisticButton img {
@@ -32,4 +32,17 @@
     object-fit: contain;
     filter: var(--main-filter);
     flex-shrink: 0;
+    transition: 0.1s ease;
+}
+
+.statisticButton:active img {
+    transform: scale(90%);
+}
+
+.statisticButton[id="default"] { 
+    opacity: 1;
+}
+
+.statisticButton[id="default"] img { 
+    filter: none;
 }

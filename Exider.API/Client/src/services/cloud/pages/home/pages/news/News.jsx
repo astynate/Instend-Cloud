@@ -12,6 +12,7 @@ const News = observer(() => {
         <MainContentWrapper>
             <div className={styles.border}>
                 <Comments 
+                    setLike={newsState.setLike}
                     isPublications={true}
                     isPublicationAvailable={false}
                     fetch_callback={newsState.setNews}

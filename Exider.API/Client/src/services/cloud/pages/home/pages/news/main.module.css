@@ -40,5 +40,5 @@
 }
 
 .border {
-    border-top: 1px solid var(--main-border-color);
+    /* border-top: 1px solid var(--main-border-color); */
 }

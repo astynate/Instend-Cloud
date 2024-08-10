@@ -69,6 +69,58 @@ namespace Exider.Services.External.FileService
             }
         }
 
+        public byte[] CompressImage(byte[] inputImage, int quality, string type)
+        {
+            Dictionary<string, ImageFormat> keyValuePairs = new()
+            {
+                { "png", ImageFormat.Png },
+                { "jpg", ImageFormat.Jpeg },
+            };
+
+            ImageFormat format = ImageFormat.Png;
+
+            if (keyValuePairs.ContainsKey(type.ToLower()))
+            {
+                format = keyValuePairs[type];
+            }
+            else
+            {
+                return inputImage;
+            }
+
+            using (var inputStream = new MemoryStream(inputImage))
+            {
+                using (var outputStream = new MemoryStream())
+                {
+                    using (var bitmap = new Bitmap(inputStream))
+                    {
+                        EncoderParameters encoderParameters = new EncoderParameters(1);
+                        encoderParameters.Param[0] = new EncoderParameter(Encoder.Quality, quality);
+
+                        ImageCodecInfo codecInfo = GetEncoderInfo(format);
+                        bitmap.Save(outputStream, codecInfo, encoderParameters);
+                    }
+
+                    return outputStream.ToArray();
+                }
+            }
+        }
+
+        private ImageCodecInfo? GetEncoderInfo(ImageFormat format)
+        {
+            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
+            
+            foreach (ImageCodecInfo codec in codecs)
+            {
+                if (codec.FormatID == format.Guid)
+                {
+                    return codec;
+                }
+            }
+
+            return null;
+        }
+
         public async Task<Result> UpdateAvatar(IUserDataRepository repository, Guid userId, string path, string avatar)
         {
             if (avatar == null)

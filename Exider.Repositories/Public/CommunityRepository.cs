@@ -37,10 +37,10 @@ namespace Exider.Repositories.Public
                 var header = await _fileService.ReadFileAsync(community.Header);
 
                 community.SetAvatar(avatar.IsFailure ? string.Empty : 
-                    Convert.ToBase64String(_imageService.ResizeImageToBase64(avatar.Value, 170)));
+                    Convert.ToBase64String(_imageService.CompressImage(avatar.Value, 5, "jpg")));
                 
                 community.SetHeader(header.IsFailure ? string.Empty : 
-                    Convert.ToBase64String(_imageService.ResizeImageToBase64(header.Value, 350)));
+                    Convert.ToBase64String(_imageService.CompressImage(header.Value, 5, "jpg")));
             }
 
             return communities;

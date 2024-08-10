@@ -5,6 +5,7 @@ namespace Exider.Services.External.FileService
 {
     public interface IImageService
     {
+        byte[] CompressImage(byte[] inputImage, int quality, string type);
         Task<Result> DeleteAvatar(IUserDataRepository repository, Guid userId, string path);
         Task<Result> DeleteHeader(IUserDataRepository repository, Guid userId, string path);
         Task<Result<string>> ReadImageAsBase64(string path);
