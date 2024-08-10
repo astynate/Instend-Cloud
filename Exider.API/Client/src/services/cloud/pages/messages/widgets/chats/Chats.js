@@ -12,6 +12,7 @@ import { WaitingForConnection, messageWSContext } from '../../../../layout/Layou
 import { useNavigate, useParams } from 'react-router-dom';
 import ContextMenu from '../../../../shared/context-menu/ContextMenu';
 import OkCancel from '../../../../shared/ok-cancel/OkCancel';
+import SearchInChat from '../../shared/search-in-chat/SearchInChat';
 
 const DeleteDirectory = async (id) => {
     await instance.delete(`/api/directs?id=${id}`);
@@ -112,7 +113,7 @@ const Chats = observer(({isMobile, setOpenState}) => {
                 }}
             />
             <div className={styles.header}>
-                <Title value='Chats' />
+                <Title value='Messages' />
                 <div className={styles.create}>
                     <img 
                         src={create}
@@ -129,6 +130,9 @@ const Chats = observer(({isMobile, setOpenState}) => {
                         />
                     </div>}
                 </div>
+            </div>
+            <div className={styles.search}>
+                <SearchInChat />
             </div>
             <div className={styles.chatList}>
                 {chatsState.isChatsLoaded ? 

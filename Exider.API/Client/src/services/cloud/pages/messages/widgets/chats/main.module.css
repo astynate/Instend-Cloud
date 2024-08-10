@@ -1,6 +1,6 @@
 .chats {
     height: calc(100vh - var(--disconnected-height));
-    width: 280px;
+    width: 310px;
     border-right: 1px solid var(--main-border-color);
     user-select: none;
     overflow-y: scroll;
@@ -46,7 +46,7 @@
 .chatList {
     display: flex;
     flex-direction: column;
-    grid-gap: 2px;
+    grid-gap: 0px;
 }
 
 .createPopUp {
@@ -54,6 +54,10 @@
     z-index: 999;
     right: -10px;
     top: 35px;
+}
+
+.search {
+    margin: 0px 10px 10px 10px;
 }
 
 @media (max-width: 700px) {

@@ -26,6 +26,7 @@
     position: sticky;
     top: 0;
     left: 0;
+    border-bottom: 1px solid var(--main-border-color);
     background: var(--main-header-background-color);
     backdrop-filter: var(--main-blur-effect);
     flex-shrink: 0;
@@ -37,8 +38,8 @@
 .chatInfo {
     display: flex;
     align-items: center;
-    padding-top: 15px;
-    padding-bottom: 15px;
+    padding-top: 12px;
+    padding-bottom: 12px;
     justify-content: space-between;
 }
 
@@ -72,12 +73,12 @@
 
 .name {
     font-weight: 600;
-    font-size: 16px;
+    font-size: 15px;
     color: var(--main-font-color);
 }
 
 .data {
-    font-size: 14px;
+    font-size: 12px;
     color: var(--main-paragraph-color);
     user-select: none;
 }
@@ -195,13 +196,20 @@
 }
 
 .date {
-    width: 100%;
+    max-width: 500px;
     display: flex;
     justify-content: center;
-    color: var(--main-paragraph-color);
-    font-size: 14px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.date span {
+    font-size: 12px;
+    padding: 6px 12px;
+    background: var(--main-accent-color);
+    font-weight: 600;
+    color: var(--main-font-color);
+    border-radius: 20px;
 }
 
 .back {

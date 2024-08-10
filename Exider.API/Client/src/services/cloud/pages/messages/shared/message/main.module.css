@@ -7,8 +7,8 @@
 }
 
 .avatar {
-    height: 30px;
-    width: 30px;
+    height: 35px;
+    width: 35px;
     background: var(--main-accent-color);
     border-radius: 100%;
     object-fit: contain;
@@ -17,8 +17,8 @@
 }
 
 .avatarPlaceholder {
-    height: 30px;
-    width: 30px;
+    height: 35px;
+    width: 35px;
 }
 
 .name {
@@ -74,6 +74,11 @@
 .information {
     display: flex;
     align-items: end;
+}
+
+.textParts {
+    display: flex;
+    flex-direction: column;
 }
 
 .time {

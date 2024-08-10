@@ -20,7 +20,16 @@ const Message = ({text, type, avatar, position, time, isSelected}) => {
             }
                 <div className={`${styles.messageText} ${types[position]}`} id={type}>
                 {/* <h1 className={styles.name}>{name}</h1> */}
-                <span className={styles.text}>{text}</span>
+                <div className={styles.textParts}>
+                    {text.split('\n').map((part, index) => (
+                        <span 
+                            key={index + "text"}
+                            className={styles.text}
+                        >
+                            {part}
+                        </span>
+                    ))}
+                </div>
                 <div className={styles.information}>
                     <span className={styles.time}>{time ? ConvertDateToTime(time) : null}</span>
                 </div>

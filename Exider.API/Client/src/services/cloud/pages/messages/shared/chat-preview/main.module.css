@@ -1,22 +1,28 @@
 .chatPreview {
     display: flex;
-    margin-left: 7px;
-    margin-right: 7px;
-    padding-left: 7px;
-    padding-right: 7px;
-    padding-top: 7px;
-    border-radius: 10px;
-    padding-bottom: 7px;
+    margin-left: 22px;
+    margin-right: 10px;
+    padding-left: 0px;
+    padding-right: 12px;
+    padding-top: 12px;
+    padding-bottom: 12px;
     grid-gap: 10px;
     cursor: pointer;
+    border-bottom: 1px solid var(--main-border-color);
 }
 
 .chatPreview[id="active"] {
-    background: var(--main-accent-color);
+    background: var(--pop-up-accent-color);
+    border-radius: 10px;
+    border-bottom: 1px solid transparent;
+    margin-left: 10px;
+    padding-left: 12px;
 }
 
 .chatPreview:hover {
-    background: var(--main-accent-color);
+    /* background: var(--main-accent-color);
+    border-bottom: 1px solid transparent;
+    border-radius: 10px; */
 }
 
 .information {
@@ -29,8 +35,8 @@
 }
 
 .avatar {
-    height: 50px;
-    width: 50px;
+    height: 55px;
+    width: 55px;
     border-radius: 100%;
     background: var(--main-border-color);
     flex-shrink: 0;

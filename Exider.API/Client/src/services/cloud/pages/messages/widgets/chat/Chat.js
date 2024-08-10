@@ -161,7 +161,7 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
     
     useEffect(() => {
         HandleScroll();
-    }, []);
+    }, [params.id]);
 
     useEffect(() => {
         setActiveItems(prev => {

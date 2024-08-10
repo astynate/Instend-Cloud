@@ -1,0 +1,25 @@
+.search {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    grid-gap: 4px;
+    border-radius: 11px;
+    background: var(--main-accent-color);
+}
+
+.searchField {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 16px;
+    font-family: 'Open Sans', sans-serif;
+    background: none;
+    font-weight: 500;
+}
+
+.image {
+    height: 14px;
+    width: 14px;
+    filter: var(--main-filter);
+    opacity: 0.6;
+}
