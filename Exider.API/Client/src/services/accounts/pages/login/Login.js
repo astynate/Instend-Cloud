@@ -50,7 +50,6 @@ const Login = observer(() => {
         }, 10000);
       
         try {
-
             const response = await fetch('/authentication', {
                 method: 'POST',
                 body: userData,
@@ -88,7 +87,6 @@ const Login = observer(() => {
     };
 
     return (
-
         <GoogleOAuthProvider clientId="1099397056156-quc1l3h460li634u6o8eh03feat63s7v.apps.googleusercontent.com">
             { isError ? <Error message="Something went wrong." state={isError} setState={setErrorState} /> : null }
             <h1>{t('account.login_with')} <span className="selected-text">Yexider ID</span></h1>
@@ -108,9 +106,7 @@ const Login = observer(() => {
                 <Link to="/account/password/recovery/email">{t('account.forgot_password')}</Link>
             </div>
         </GoogleOAuthProvider>
-
     );
-
 });
 
 export default Login;

@@ -80,23 +80,21 @@
   display: flex;
   display: none;
   justify-content: start;
-  padding-top: 15px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-top: 10px;
   overflow-x: scroll;
   overflow-y: hidden;
   grid-gap: 20px;
   transition: 0.15s ease;
-  padding-bottom: 10px;
+  margin-left: 80px;
 }
 
 .attachmentsWrapper[id="open"] {
-  height: 300px;
+  height: 170px;
   display: flex;
 }
 
 .attachmentsWrapper::-webkit-scrollbar {
-  height: 3px;
+  height: 1px;
 }
 
 .attachmentsWrapper::-webkit-scrollbar:hover {
@@ -115,16 +113,18 @@
 .file {
   display: flex;
   flex-direction: column;
-  padding: 10px;
-  border-radius: 12px;
-  background: var(--main-accent-color);
+  padding: 0px;
   position: relative;
 }
 
 .fileName {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   margin-top: 7px;
+  max-width: 70%;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
   color: var(--main-font-color);
 }
 
@@ -132,27 +132,31 @@
   height: calc(100% - 30px);
   width: auto;
   max-width: 500px;
-  border-radius: 7px;
+  border-radius: 2px;
   object-fit: cover;
 }
 
 .close {
   height: 45px;
   width: 45px;
-  right: -12px;
-  top: -12px;
+  right: -15px;
+  top: -15px;
   border-radius: 100%;
   cursor: pointer;
-  background: var(--pop-up-accent-color);
+  /* background: var(--pop-up-accent-color); */
+  outline: 2px solid var(--sub-accent-color);
+  outline-offset: -7px;
+  background: rgba(0, 0, 0, 0.5);
   position: absolute;
   user-select: none;
   display: flex;
   align-items: center;
+  z-index: 1;
   justify-content: center;
 }
 
 .closeImage {
-  height: 40%;
-  width: 40%;
+  height: 35%;
+  width: 35%;
   filter: var(--main-filter);
 }

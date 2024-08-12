@@ -78,6 +78,7 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
     const [activeItems, setActiveItems] = useState([]);
     const [selectedItems, setSelectedItems] = useState([]);
     const [pinStateText, setPinStateText] = useState('Pin');
+    const [prevHeight, SetPrevHeight] = useState(0);
     const { user } = userState;
 
     const [isAvailable, setAvailbleState] = useState(!((chatsState.draft && chatsState.draft.messages && 
@@ -121,8 +122,13 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
 
     useEffect(() => {
         if (scrollElement.current) {
-            const element = scrollElement.current;
-            element.scrollTo(0, element.scrollHeight);
+            let element = scrollElement.current;
+            let currentHeight = element.scrollHeight;
+    
+            let scrollDifference = currentHeight - prevHeight;
+            element.scrollTop += scrollDifference;
+    
+            SetPrevHeight(currentHeight);
         }
     }, [scrollElement, scrollElement.current, scrollElement.current?.scrollHeight, chat?.messages, chat?.messages?.length]);
 
@@ -130,12 +136,11 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
         if (scrollRef && scrollRef.current && isHasMore === true) {
             const offsetTop = scrollRef.current.getBoundingClientRect().top;
 
-            while (offsetTop > 0 && chat.hasMore === true) {
+            if (offsetTop > 0 && chat.hasMore === true) {
                 const timeoutMilliseconds = 7000;
+                const getMessagesPromise = chatsState.GetMessages(params.id);
 
                 let operationCompleted = false;
-        
-                const getMessagesPromise = chatsState.GetMessages(params.id);
     
                 const timeoutId = setTimeout(() => {
                     operationCompleted = true;
@@ -161,7 +166,7 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
     
     useEffect(() => {
         HandleScroll();
-    }, [params.id]);
+    }, [params.id, chat.messages]);
 
     useEffect(() => {
         setActiveItems(prev => {
@@ -349,12 +354,14 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
                                                 <span>{date}</span>
                                             </div>}
                                             <Message
+                                                id={element.Id}
                                                 name={null}
                                                 text={element.Text}
                                                 avatar={avatar}
                                                 type={element.UserId === user.id ? 'My' : 'Other'}
                                                 position={position}
                                                 time={element.Date}
+                                                attachments={element.attachments}
                                                 isSelected={selectedItems.map(e => e.id).includes(element.id) === true}
                                             /> 
                                         </div>
@@ -378,38 +385,28 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
                             </div>
                     :
                         <Input 
-                            sendMessage={(message) => {
-                                if (message === '' || !message) {
-                                    return;
-                                }
+                            sendMessage={async (message, attachments) => {
+                                if (message === '' || !message) { return; }
+                                let form = new FormData();
     
-                                if (params.id) {
-                                    try {
-                                        messageWSContext.connection.invoke("SendMessage", {
-                                            id: params.id,
-                                            text: message,
-                                            userId: localStorage.getItem("system_access_token"),
-                                            type: 0
-                                        });
-                                    } catch {
-                                        applicationState.AddErrorInQueue('Attention!', 'Something went wrong');
+                                if (params.id) 
+                                {
+                                    for(let i = 0; i < attachments.length; i++){
+                                        form.append('attachments', attachments[i]);
                                     }
-                                } else if (chatsState.draft) {
-                                    const messageModel = {
-                                        Text: message,
-                                        UserId: localStorage.getItem("system_access_token"),
-                                        Date: new Date()
-                                    }
-    
-                                    chatsState.SetDraftMessage(
-                                        messageWSContext.connection.invoke("SendMessage", {
-                                            id: chatsState.draft.id,
-                                            text: message,
-                                            userId: localStorage.getItem("system_access_token"),
-                                            type: 0
-                                        }),
-                                        messageModel);
+                                    
+                                    form.append('id', params.id);
+                                    form.append('text', message);
+                                    form.append('type', 0);
+                                } 
+                                else if (chatsState.draft) 
+                                {
+                                    form.append('text', message);
+                                    form.append('id', chatsState.draft.id);
+                                    form.append('type', 0);
                                 }
+
+                                await instance.post('api/message', form);
                             }}
                         />
                     }

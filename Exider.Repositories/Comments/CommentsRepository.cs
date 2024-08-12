@@ -107,7 +107,7 @@ namespace Exider.Repositories.Comments
                                 string? fileName = name.Length >= 1 ? name[0] : null;
                                 string? fileType = name.Length >= 2 ? name[name.Length - 1] : null;
 
-                                if (fileType == null ||  Configuration.postAvailableTypes.Contains(fileType?.ToLower()) == false || name == null)
+                                if (fileType == null || Configuration.postAvailableTypes.Contains(fileType?.ToLower()) == false || name == null)
                                 {
                                     transaction.Rollback();
                                     return Result.Failure<CommentModel>("Invalid type");

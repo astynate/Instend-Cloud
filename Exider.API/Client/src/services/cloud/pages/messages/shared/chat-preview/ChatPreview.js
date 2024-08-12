@@ -1,17 +1,22 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import styles from './main.module.css';
 import { Link } from 'react-router-dom';
 import { ConvertDateToTime } from '../../../../../../utils/DateHandler';
+import { ButtonEffectHandler } from '../../../../../../utils/ui/ButtonEffectHandler';
 
-const ChatPreview = observer(({chat, isPlaceholder, isActive, onClick, onContextMenu}) => {    
+const ChatPreview = observer(({chat, isPlaceholder, isActive, onClick, onContextMenu}) => { 
+    const ref = useRef();
+    
     if (isPlaceholder === false && chat) {
         return (
             <Link 
                 to={`/messages/${chat.id}`} 
                 className={styles.chatPreview} 
                 id={isActive ? 'active' : null} 
-                onClick={onClick}
+                ref={ref}
+                onDrag={(e) => e.preventDefault()}
+                onClick={(event) => ButtonEffectHandler(ref, event)}
                 onContextMenu={(event) => {
                     if (onContextMenu) {
                         onContextMenu(event);

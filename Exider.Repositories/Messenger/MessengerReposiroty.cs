@@ -1,5 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core;
+using Exider.Core.Dependencies.Repositories.Storage;
+using Exider.Core.Models.Messenger;
 using Exider.Core.TransferModels;
 using Exider.Core.TransferModels.Account;
 using Exider.Services.External.FileService;
@@ -11,9 +13,12 @@ namespace Exider.Repositories.Messenger
     {
         private readonly DatabaseContext _context = null!;
 
-        public MessengerReposiroty(DatabaseContext context)
+        private readonly IAttachmentsRepository<MessageAttachmentLink> _attachmentsRepository = null!;
+
+        public MessengerReposiroty(DatabaseContext context, IAttachmentsRepository<MessageAttachmentLink> attachmentsRepository)
         {
             _context = context;
+            _attachmentsRepository = attachmentsRepository;
         }
 
         public async Task<MessengerTransferModel[]> GetDirects(IFileService fileService, Guid userId)
@@ -89,6 +94,12 @@ namespace Exider.Repositories.Messenger
                     {
                         direct.userPublic.Avatar = Configuration.DefaultAvatar;
                     }
+                }
+
+                if (direct.messageModel != null)
+                {
+                    direct.messageModel.attachments = await _attachmentsRepository
+                        .GetItemAttachmentsAsync(direct.messageModel.Id);
                 }
             }
 
@@ -168,6 +179,12 @@ namespace Exider.Repositories.Messenger
                     {
                         model.userPublic.Avatar = Configuration.DefaultAvatar;
                     }
+                }
+
+                if (model.messageModel != null)
+                {
+                    model.messageModel.attachments = await _attachmentsRepository
+                        .GetItemAttachmentsAsync(model.messageModel.Id);
                 }
             }
 

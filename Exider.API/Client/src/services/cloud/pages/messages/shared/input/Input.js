@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import styles from './main.module.css';
-import MainMessageButton from '../../elements/MainMessageButton';
+import MainMessageButton from '../../elements/message-button/MainMessageButton';
 import attach from './images/attach.png';
 import smile from './images/smile.png';
 import voice from './images/voice.png';
 import cancel from './images/cancel.png';
+import send from './images/send.png';
 
 const Input = ({sendMessage}) => {
     const [text, setText] = useState('');
@@ -49,8 +50,13 @@ const Input = ({sendMessage}) => {
     };
   
     const sendMessageAsync = async () => {
-        await sendMessage(text);
+        const attachmentsValue = [...attachments];
+        const textValue = text;
+
         setText('');
+        setAttachements([]);
+
+        await sendMessage(textValue, attachmentsValue);
     };
 
     return (
@@ -103,7 +109,7 @@ const Input = ({sendMessage}) => {
                     image={smile}
                 />
                 <MainMessageButton 
-                    image={voice}
+                    image={text !== '' ? send : voice}
                 />
             </div>
         </div>

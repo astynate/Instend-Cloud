@@ -1,6 +1,4 @@
-﻿using Exider.Core.Models;
-
-namespace Exider.Dependencies.Services
+﻿namespace Exider.Dependencies.Services
 {
     public interface ITokenService
     {

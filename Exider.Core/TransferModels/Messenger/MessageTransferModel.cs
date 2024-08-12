@@ -1,12 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace Exider.Core.TransferModels.Messenger
 {
     public record MessageTransferModel
     (
         [Required] Guid id,
-        [Required] string userId,
         [Required] string text,
+        IFormFile[]? attachments,
         [Required] int type
     );
 }

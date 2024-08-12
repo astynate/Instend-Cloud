@@ -70,3 +70,19 @@ h1 {
     height: 60px;
     filter: var(--main-filter);
 }
+
+.drop {
+    background: var(--main-font-color);
+    border-radius: 50%;
+    animation: drop 0.7s ease-out;
+    transform: scale(0);
+    position: absolute;
+}
+
+@keyframes drop {
+    to {
+    transform: scale(2);
+    background-color: #fff;
+    opacity: 0;
+    }
+}

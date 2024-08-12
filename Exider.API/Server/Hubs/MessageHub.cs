@@ -1,13 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core.Dependencies.Repositories.Messenger;
 using Exider.Core.TransferModels;
-using Exider.Core.TransferModels.Messenger;
 using Exider.Repositories.Messenger;
 using Exider.Services.External.FileService;
 using Exider.Services.Internal.Handlers;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
-using System.Net;
 
 namespace Exider_Version_2._0._0.Server.Hubs
 {
@@ -36,41 +34,6 @@ namespace Exider_Version_2._0._0.Server.Hubs
             _fileService = fileService;
             _directRepository = directRepository;
             _chatFactory = [_directRepository];
-        }
-
-        public async Task SendMessage(MessageTransferModel model)
-        {
-            var userId = _requestHandler.GetUserId(model.userId);
-
-            if (userId.IsFailure)
-            {
-                return;
-            }
-
-            if (model.id == Guid.Parse(userId.Value))
-            {
-                return;
-            }
-
-            if (model.type >= 0 && model.type < _chatFactory.Length)
-            {
-                var result = await _chatFactory[model.type].SendMessage(Guid.Parse(userId.Value), model.id, model.text);
-                
-                if (result.IsFailure)
-                {
-                    return;
-                }
-
-                if (result.Value.isChatCreated == true)
-                {
-                    await Clients.Group(userId.Value).SendAsync("NewConnection", result.Value.directModel.Id);
-                    await Clients.Group(model.id.ToString()).SendAsync("NewConnection", result.Value.directModel.Id);
-                }
-                else
-                {
-                    await Clients.Group(result.Value.directModel.Id.ToString()).SendAsync("ReceiveMessage", JsonConvert.SerializeObject(result.Value));
-                }
-            }
         }
 
         public async Task Join(string authorization)

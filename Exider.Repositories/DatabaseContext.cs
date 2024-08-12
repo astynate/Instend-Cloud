@@ -41,6 +41,7 @@ namespace Exider.Core
         public DbSet<AttachmentModel> Attachments { get; set; } = null!;
         public DbSet<AttachmentCommentLink> CommentAttachments { get; set; } = null!;
         public DbSet<AlbumViewLink> ViewsLinks { get; set; } = null!;
+        public DbSet<MessageAttachmentLink> MessageAttachmentLinks { get; set; } = null!;
         public DbSet<PublictionLikeLink> PublictionLikeLinks { get; set; } = null!;
         public DbSet<SongFormat> SongsMeta { get; set; } = null!;
 

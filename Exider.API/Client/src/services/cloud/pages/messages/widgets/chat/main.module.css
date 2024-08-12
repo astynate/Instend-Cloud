@@ -27,7 +27,7 @@
     top: 0;
     left: 0;
     border-bottom: 1px solid var(--main-border-color);
-    background: var(--main-header-background-color);
+    background: var(--main-background-color);
     backdrop-filter: var(--main-blur-effect);
     flex-shrink: 0;
     flex-direction: column;
@@ -196,7 +196,7 @@
 }
 
 .date {
-    max-width: 500px;
+    max-width: 560px;
     display: flex;
     justify-content: center;
     padding-top: 3px;

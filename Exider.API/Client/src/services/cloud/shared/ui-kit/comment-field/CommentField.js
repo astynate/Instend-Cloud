@@ -35,7 +35,6 @@ const CommentField = ({id, setUploadingComment, isPublications}) => {
                 if (videoFile !== null && videoFile !== undefined) {
                     setVideo(videoFile);
                 } else {
-                    console.log(files)
                     const filesArray = Array.from(files).slice(0, 9);
                     setImages(filesArray);
                 }

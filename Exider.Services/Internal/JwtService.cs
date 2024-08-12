@@ -8,7 +8,6 @@ namespace Exider_Version_2._0._0.ServerApp.Services
 {
     public class JwtService : ITokenService
     {
-
         private readonly IEncryptionService _encryptionService;
 
         public JwtService(IEncryptionService encryptionService)
@@ -21,13 +20,11 @@ namespace Exider_Version_2._0._0.ServerApp.Services
             var claims = new List<Claim> { new Claim("sub", id) };
 
             var jwt = new JwtSecurityToken(
-
-                issuer: "Exider Company",
-                audience: "User",
+                issuer: Configuration.Issuer,
+                audience: Configuration.Audience,
                 claims: claims,
                 expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(time)),
                 signingCredentials: new SigningCredentials(_encryptionService.GetSymmetricKey(key), SecurityAlgorithms.HmacSha256)
-
             );
 
             return new JwtSecurityTokenHandler().WriteToken(jwt);
@@ -73,7 +70,6 @@ namespace Exider_Version_2._0._0.ServerApp.Services
             catch {
                 return false;
             }
-
         }
 
         public bool IsTokenValid(string token) 
@@ -81,7 +77,5 @@ namespace Exider_Version_2._0._0.ServerApp.Services
 
         public bool IsTokenAlive(string token) 
             => ValidateToken(token, true);
-        
     }
-
 }

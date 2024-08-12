@@ -1,6 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core.Models.Storage;
-using Exider.Services.External.FileService;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -21,7 +20,7 @@ namespace Exider.Core
             }
         }
 
-        public const string Issuer = "Exider Company";
+        public const string Issuer = "Yexider Company";
 
         public const string Audience = "User";
 

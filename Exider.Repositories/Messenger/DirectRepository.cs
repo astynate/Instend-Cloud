@@ -1,13 +1,13 @@
 ﻿using CSharpFunctionalExtensions;
 using CSharpFunctionalExtensions.ValueTasks;
 using Exider.Core;
+using Exider.Core.Dependencies.Repositories.Storage;
 using Exider.Core.Models.Links;
 using Exider.Core.Models.Messages;
 using Exider.Core.Models.Messenger;
 using Exider.Core.TransferModels;
 using Exider.Core.TransferModels.Account;
 using Exider.Repositories.Account;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Exider.Repositories.Messenger
@@ -18,10 +18,13 @@ namespace Exider.Repositories.Messenger
 
         private readonly IUserDataRepository _userData;
 
-        public DirectRepository(DatabaseContext context, IUserDataRepository userData)
+        private readonly IAttachmentsRepository<MessageAttachmentLink> _attachmentRepository;
+
+        public DirectRepository(DatabaseContext context, IUserDataRepository userData, IAttachmentsRepository<MessageAttachmentLink> attachmentsRepository)
         {
             _context = context;
             _userData = userData;
+            _attachmentRepository = attachmentsRepository;
         }
 
         public async Task<Result<MessengerTransferModel>> CreateNewDiret(Guid userId, Guid ownerId)
@@ -65,7 +68,7 @@ namespace Exider.Repositories.Messenger
 
         public async Task<MessageModel[]> GetLastMessages(Guid destination, Guid userId, int from, int count)
         {
-            return await _context.Directs.AsNoTracking()
+            var messages = await _context.Directs.AsNoTracking()
                 .Where(direct => (direct.UserId == userId && direct.OwnerId == destination) || (direct.OwnerId == userId && direct.UserId == destination))
                 .Join(_context.DirectLinks,
                     direct => direct.Id,
@@ -83,6 +86,13 @@ namespace Exider.Repositories.Messenger
                     message => message.Id,
                     (prev, message) => message)
                 .ToArrayAsync();
+
+            foreach(var message in messages)
+            {
+                message.attachments = await _attachmentRepository.GetItemAttachmentsAsync(message.Id);
+            }
+
+            return messages;
         }
 
         public async Task<Result<MessengerTransferModel>> SendMessage(Guid ownerId, Guid userId, string text)

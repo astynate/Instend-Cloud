@@ -8,6 +8,7 @@ class ChatsState {
     draft = null;
     connected = false;
     isChatsLoaded = false;
+    isBusy = false;
 
     constructor() {
         makeAutoObservable(this);
@@ -125,9 +126,15 @@ class ChatsState {
     }
 
     GetMessages = async (chatId) => {
+        if (this.isBusy === true) {
+            return;
+        }
+
         const chat = this.chats.find(element => element.id === chatId);
 
         if (chat && chat.hasMore === true && chat.messages) {
+            this.isBusy = true;
+
             await instance
                 .get(`/api/directs?destination=${chatId}&from=${chat.messages.length}&count=${20}`)
                 .then(response => {
@@ -145,6 +152,8 @@ class ChatsState {
                             chat.messages = [element, ...chat.messages];
                         });
                     }
+
+                    this.isBusy = false;
                 });
         }
     }
@@ -180,8 +189,6 @@ class ChatsState {
             if (message) {
                 message.IsPinned = state;
             }
-
-            console.log(message)
         }   
     }
 }

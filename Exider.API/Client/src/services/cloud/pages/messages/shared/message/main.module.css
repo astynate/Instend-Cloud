@@ -7,18 +7,18 @@
 }
 
 .avatar {
-    height: 35px;
-    width: 35px;
+    height: 33px;
+    width: 33px;
     background: var(--main-accent-color);
     border-radius: 100%;
     object-fit: contain;
-    margin-bottom: 8px;
+    margin-bottom: 1px;
     user-select: none;
 }
 
 .avatarPlaceholder {
-    height: 35px;
-    width: 35px;
+    height: 33px;
+    width: 33px;
 }
 
 .name {
@@ -28,52 +28,59 @@
 }
 
 .text {
-    font-size: 15px;
+    font-size: 0.95em;
+}
+
+.messageContent {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 15px;
+    background: var(--main-accent-color);
 }
 
 .messageText {
     height: fit-content;
-    padding: 7px 13px;
-    background: var(--main-accent-color);
-    border-radius: 20px;
+    width: fit-content;
+    padding: 6px 8px;
     display: flex;
     height: fit-content;
-    max-width: 400px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    max-width: 500px;
+    font-weight: 500;
     user-select: none;
     color: var(--main-font-color);
 }
 
-.message[id="selected"] .messageText {
+.message[id="selected"] .messageContent {
     filter: brightness(150%);
 }
 
-.messageText[id="My"] {
+.messageContent[id="My"] {
     background: var(--main-blue-color);
     color: white;
 }
 
 .first {
-    border-radius: 20px 20px 20px 5px;
+    border-radius: 25px 25px 25px 2px;
     margin-top: 5px;
     margin-bottom: 0px;
 }
 
 .middle {
-    border-radius: 5px 20px 20px 5px;
+    border-radius: 2px 25px 25px 2px;
     margin: 0px;
 }
 
 .last {
-    border-radius: 5px 20px 20px 20px;
+    border-radius: 2px 25px 25px 25px;
     margin-top: 0px;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
 }
 
 .information {
     display: flex;
     align-items: end;
+    margin-left: auto;
 }
 
 .textParts {
