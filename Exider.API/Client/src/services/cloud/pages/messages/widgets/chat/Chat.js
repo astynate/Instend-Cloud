@@ -347,9 +347,12 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
                                     } else if (element && element.Date) {
                                         date = ConvertDate(element.Date);
                                     }
+
+                                    const sendingType = element.queueId ? 0 : element.IsViewed || element.isViewed ? 2 : 1;
+                                    const key = sendingType === 0 ? index : element.Id;
     
                                     return (
-                                        <div key={index} data={element.Id}>
+                                        <div key={key} data={element.Id}>
                                             {date && <div className={styles.date}>
                                                 <span>{date}</span>
                                             </div>}
@@ -357,12 +360,15 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
                                                 id={element.Id}
                                                 name={null}
                                                 text={element.Text}
+                                                chatId={chat.directId ? chat.directId : params.id}
                                                 avatar={avatar}
+                                                key={key + element.IsViewed}
                                                 type={element.UserId === user.id ? 'My' : 'Other'}
                                                 position={position}
                                                 time={element.Date}
                                                 attachments={element.attachments}
                                                 isSelected={selectedItems.map(e => e.id).includes(element.id) === true}
+                                                sendingType={element.queueId ? 0 : element.IsViewed || element.isViewed ? 2 : 1}
                                             /> 
                                         </div>
                                     );
@@ -398,6 +404,7 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
                                     form.append('id', params.id);
                                     form.append('text', message);
                                     form.append('type', 0);
+                                    form.append('queueId', chatsState.SetLoadingMessage(chat.directId ? chat.directId : chat.id, message, attachments));
                                 } 
                                 else if (chatsState.draft) 
                                 {

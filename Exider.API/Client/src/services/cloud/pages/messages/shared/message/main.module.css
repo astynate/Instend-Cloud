@@ -41,7 +41,7 @@
 
 .messageText {
     height: fit-content;
-    width: fit-content;
+    width: auto;
     padding: 6px 8px;
     display: flex;
     height: fit-content;
@@ -96,4 +96,14 @@
     text-wrap: nowrap;
     margin-top: auto;
     user-select: none;
+}
+
+.messageState {
+    height: 12px;
+    width: 12px;
+    filter: var(--main-filter);
+    opacity: 0.8;
+    margin-bottom: 2px;
+    margin-left: 3px;
+    object-fit: contain;
 }

@@ -1,12 +1,14 @@
 import { makeAutoObservable } from "mobx";
 import { instance } from "../state/Interceptors";
 import userState from "./user-state";
+import { DateTime } from "luxon";
 
 class ChatsState {
     chats = [];
     users = [];
     draft = null;
     connected = false;
+    messageQueueId = 1;
     isChatsLoaded = false;
     isBusy = false;
 
@@ -95,7 +97,31 @@ class ChatsState {
         }
     }
 
-    AddMessage(direct, message, userPublic) {
+    SetLoadingMessage = (directId, message, attachments) => {
+        const chat = this.chats.find(element => element.directId === directId);
+        const queueId = this.messageQueueId;
+
+        if (chat !== null && chat !== undefined) {
+            const messageValue = {
+                Date: new Date(),
+                Id: undefined,
+                IsPinned: false,
+                Text: message,
+                UserId: userState.user.id,
+                attachments: attachments,
+                queueId: queueId,
+                id: undefined,
+                isViewed: false
+            };
+
+            this.messageQueueId++;
+            chat.messages = [...chat.messages, messageValue];
+        }
+
+        return queueId;
+    }
+
+    AddMessage(direct, message, userPublic, queueId) {
         message.id = message.Id;
         
         if (this.chats.map(element => element.directId).includes(direct.Id) === false) {
@@ -116,6 +142,10 @@ class ChatsState {
             const chat = this.chats.find(element => element.directId === direct.Id);
 
             if (chat) {
+                if (userPublic.Id === userState.user.id) {
+                    chat.messages = chat.messages.filter(e => e.queueId !== queueId);
+                }
+
                 chat.messages = [...chat.messages, message];
             }
         }
@@ -155,6 +185,18 @@ class ChatsState {
 
                     this.isBusy = false;
                 });
+        }
+    }
+
+    ViewMessage = (id, chatId) => {
+        const chat = this.chats
+            .find(element => element.id === chatId || element.directId === chatId);
+
+        if (chat && chat.messages) {
+            let message = chat.messages
+                .find(element => element.id === id || element.Id === id);
+
+            if (message) { message.IsViewed = true; }
         }
     }
 

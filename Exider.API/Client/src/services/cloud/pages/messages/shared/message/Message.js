@@ -1,10 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './main.module.css';
 import { ConvertDateToTime } from '../../../../../../utils/DateHandler';
 import MessageAttachments from '../../elements/attachments/MessageAttachments';
+import viewed from './image/sent.svg';
+import sended from './image/tick.svg';
+import sending from './image/time.svg';
+import { instance } from '../../../../../../state/Interceptors';
 
-const Message = ({id, text, type, avatar, position, time, isSelected, attachments}) => {
+const Message = ({id, text, type, avatar, position, time, isSelected, attachments, sendingType = 0, chatId}) => {
     const types = [styles.first, styles.middle, styles.last, styles.single];
+    const sendingTypes = [sending, sended, viewed];
+
+    useEffect(() => {
+        if (type !== 'My' && sendingType === 1) {
+            (async () => await instance.post(`/api/message/view?id=${id}&chatId=${chatId}`))();
+        }
+    }, []);
 
     return(
         <div className={styles.message} id={isSelected ? 'selected' : null}>
@@ -26,6 +37,7 @@ const Message = ({id, text, type, avatar, position, time, isSelected, attachment
                         type={type} 
                         position={position} 
                         attachments={attachments} 
+                        sendingType={sendingType}
                     />}
                 <div className={styles.messageText}>
                     <div className={styles.textParts}>
@@ -40,6 +52,7 @@ const Message = ({id, text, type, avatar, position, time, isSelected, attachment
                     </div>
                     <div className={styles.information}>
                         <span className={styles.time}>{time ? ConvertDateToTime(time) : null}</span>
+                        {type === "My" && <img src={sendingTypes[sendingType]} className={styles.messageState} />}
                     </div>
                 </div>
             </div>

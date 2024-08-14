@@ -1,8 +1,11 @@
 .menuWrapper {
     position: fixed;
-    top: 62px;
+    top: 58px;
     left: 50%;
     transform: translateX(-50%);
+    border: 1px solid var(--main-accent-color);
+    border-radius: 50px;
+    padding: 3px;
 }
 
 .menu {

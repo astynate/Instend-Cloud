@@ -263,10 +263,10 @@ const Layout = observer(() => {
     messageWSContext.useSignalREffect(
         "ReceiveMessage",
         (data) => {
-            const { directModel, messageModel, userPublic } = JSON.parse(data);
+            const { directModel, messageModel, userPublic, queueId } = JSON.parse(data);
 
             if (directModel && messageModel) {
-                chatsState.AddMessage(directModel, messageModel, userPublic);
+                chatsState.AddMessage(directModel, messageModel, userPublic, queueId);
             }
 
             if (chatsState.draft && chatsState.draft.id && userPublic.Id === chatsState.draft.id) {
@@ -304,6 +304,13 @@ const Layout = observer(() => {
         (data) => {
             const { chatId, messageId, state } = JSON.parse(data);
             chatsState.UpdateMessagePinnedState(chatId, messageId, state);
+        }
+    );
+
+    messageWSContext.useSignalREffect(
+        "ViewMessage",
+        ({ id, chatId }) => {
+            chatsState.ViewMessage(id, chatId);
         }
     );
 

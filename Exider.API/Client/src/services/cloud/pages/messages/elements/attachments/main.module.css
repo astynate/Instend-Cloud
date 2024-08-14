@@ -15,11 +15,11 @@
 }
 
 .attachmentsWrapper:hover {
-    opacity: 0.8;
+    /* opacity: 0.8; */
 }
 
 .attachmentsWrapper:active {
-    opacity: 0.5;
+    /* opacity: 0.5; */
 }
 
 .image, .video {
