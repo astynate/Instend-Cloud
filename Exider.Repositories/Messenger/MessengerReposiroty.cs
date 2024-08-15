@@ -268,5 +268,14 @@ namespace Exider.Repositories.Messenger
 
             return result != 0;
         }
+
+        public async Task<bool> ViewMessage(Guid messageId, Guid userId)
+        {
+            var result = await _context.Messages
+                .Where(x => x.Id == messageId && x.UserId != userId)
+                .ExecuteUpdateAsync(x => x.SetProperty(x => x.IsViewed, true));
+
+            return result != 0;
+        }
     }
 }

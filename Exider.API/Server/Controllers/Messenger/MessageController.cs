@@ -70,6 +70,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
                     return BadRequest(result.Error);
                 }
 
+                result.Value.queueId = model.queueId;
+
                 if (model.attachments != null && model.attachments.Length > 0 && result.Value.messageModel != null)
                 {
                     var attachments = await _attachmentRepository.AddAsync(model.attachments, Guid.Parse(userId.Value), result.Value.messageModel.Id);
@@ -89,6 +91,28 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
                 {
                     await _messageHub.Clients.Group(result.Value.directModel.Id.ToString()).SendAsync("ReceiveMessage", JsonConvert.SerializeObject(result.Value));
                 }
+            }
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("/api/message/view")]
+        public async Task<IActionResult> ViewMessage(Guid id, Guid chatId)
+        {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+            {
+                return BadRequest(userId.Error);
+            }
+
+            bool result = await _messengerReposiroty.ViewMessage(id, Guid.Parse(userId.Value));
+
+            if (result == true)
+            {
+                await _messageHub.Clients.Group(chatId.ToString()).SendAsync("ViewMessage", new { id, chatId });
             }
 
             return Ok();

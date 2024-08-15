@@ -14,6 +14,8 @@ namespace Exider.Core.TransferModels
 
         public bool isChatCreated = false;
 
+        public int queueId = 1;
+
         public MessengerTransferModel(DirectModel directModel, MessageModel? messageModel, UserPublic userPublic)
         {
             this.directModel = directModel;

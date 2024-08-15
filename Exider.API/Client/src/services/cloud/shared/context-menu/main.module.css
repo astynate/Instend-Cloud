@@ -4,13 +4,13 @@
     left: 200px;
     backdrop-filter: var(--main-blur-effect);
     z-index: 9999999;
-    border-radius: 10px;
+    border-radius: 15px;
     overflow: hidden;
     padding: 0px;
     display: flex;
     flex-direction: column;
-    grid-gap: 5px;
-    padding: 4px;
+    grid-gap: 0px;
+    padding: 8px;
     /* background: rgba(0, 0, 0, 0.3); */
     background: var(--main-accent-color);
     animation: open 0.25s ease;
@@ -22,17 +22,15 @@
     margin: 0;
     padding: 0;
     display: flex;
-    font-size: 16px;
+    font-size: 15px;
     user-select: none;
     cursor: pointer;
-    padding: 12px;
+    padding: 10px 15px;
     border-radius: 7px;
-    padding-left: 15px;
-    padding-right: 80px;
     align-items: center;
-    grid-gap: 10px;
-    transition: 0.15s ease;
-    opacity: 0.7;
+    grid-gap: 60px;
+    width: 100%;
+    justify-content: space-between;
     background: transparent;
 }
 
@@ -41,14 +39,22 @@
 }
 
 .menuItem:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: var(--pop-up-accent-color);
 }
 
 .menuItem img {
-    height: 14px;
-    width: auto;
+    height: 16px;
+    width: 16px;
     object-fit: contain;
     filter: var(--main-filter);
+}
+
+.red {
+    color: rgb(255, 61, 61);
+}
+
+.redImage {
+    filter: none !important;
 }
 
 @keyframes open {

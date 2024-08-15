@@ -1,7 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import { instance } from "../state/Interceptors";
 import userState from "./user-state";
-import { DateTime } from "luxon";
 
 class ChatsState {
     chats = [];

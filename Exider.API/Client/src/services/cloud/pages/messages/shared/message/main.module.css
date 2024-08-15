@@ -7,18 +7,18 @@
 }
 
 .avatar {
-    height: 33px;
-    width: 33px;
+    height: 31px;
+    width: 31px;
     background: var(--main-accent-color);
     border-radius: 100%;
     object-fit: contain;
-    margin-bottom: 1px;
+    margin-bottom: 3px;
     user-select: none;
 }
 
 .avatarPlaceholder {
-    height: 33px;
-    width: 33px;
+    height: 31px;
+    width: 31px;
 }
 
 .name {
@@ -36,23 +36,24 @@
     flex-direction: column;
     overflow: hidden;
     border-radius: 15px;
-    background: var(--main-accent-color);
+    background: var(--pop-up-accent-color);
 }
 
 .messageText {
     height: fit-content;
     width: auto;
-    padding: 6px 8px;
+    padding: 7px 11px;
     display: flex;
     height: fit-content;
     max-width: 500px;
     font-weight: 500;
-    user-select: none;
     color: var(--main-font-color);
 }
 
 .message[id="selected"] .messageContent {
-    filter: brightness(150%);
+    /* filter: brightness(150%); */
+    /* outline: 1px solid var(--main-font-color);
+    outline-offset: -1px; */
 }
 
 .messageContent[id="My"] {
@@ -61,26 +62,27 @@
 }
 
 .first {
-    border-radius: 25px 25px 25px 2px;
+    border-radius: 25px 25px 25px 5px;
     margin-top: 5px;
     margin-bottom: 0px;
 }
 
 .middle {
-    border-radius: 2px 25px 25px 2px;
+    border-radius: 5px 25px 25px 5px;
     margin: 0px;
 }
 
 .last {
-    border-radius: 2px 25px 25px 25px;
+    border-radius: 5px 25px 25px 25px;
     margin-top: 0px;
-    margin-bottom: 2px;
+    margin-bottom: 3px;
 }
 
 .information {
     display: flex;
     align-items: end;
     margin-left: auto;
+    user-select: none;
 }
 
 .textParts {
@@ -99,8 +101,8 @@
 }
 
 .messageState {
-    height: 12px;
-    width: 12px;
+    height: 11px;
+    /* width: 12px; */
     filter: var(--main-filter);
     opacity: 0.8;
     margin-bottom: 2px;

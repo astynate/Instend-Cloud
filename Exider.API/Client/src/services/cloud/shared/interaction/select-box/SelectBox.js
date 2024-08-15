@@ -20,7 +20,7 @@ const SelectBox = observer((props) => {
     const [isDrawing, setIsDrawing] = useState(false);
     const [isContextMenuOpen, setContextMenuState] = useState(false);
     const [contextMenuPosition, setContextMenuPosition] = useState([0, 0]);
-    const [contextMenuItems, setContextMenuItems] = useState(props.single);
+    const [isMutiple, setMultipleState] = useState(false);
     const target = useRef();
 
     const FilterItems = () => {
@@ -32,11 +32,7 @@ const SelectBox = observer((props) => {
     }
 
     useEffect(() => {
-        if (props.selectedItems[0].length > 1) {
-            setContextMenuItems(props.multiple);
-        } else {
-            setContextMenuItems(props.single);
-        }
+        setMultipleState(props.selectedItems[0].length > 1);
 
         if (props.selectedItems[0].length > 0) {
             let uniqueItems = Array.from(new Set(props.selectedItems[0]));
@@ -184,8 +180,8 @@ const SelectBox = observer((props) => {
     return (
         <>
             {isContextMenuOpen === true &&
-                <ContextMenu 
-                    items={contextMenuItems} 
+                <ContextMenu
+                    items={isMutiple ? props.multiple : props.single} 
                     close={() => setContextMenuState(false)}
                     isContextMenu={true}
                     position={contextMenuPosition}

@@ -7,6 +7,7 @@ import { Route, Routes } from 'react-router-dom';
 import Songs from '../pages/Songs/Songs';
 import Playlists from '../pages/Playlists/Playlists';
 import Playlist from '../pages/Playlist/Playlist';
+import SubContentWrapper from '../../../features/sub-content-wrapper/SubContentWrapper';
 
 const Music = (props) => {
   const scroll = useRef();
@@ -39,23 +40,25 @@ const Music = (props) => {
         />
       </div>
       <div className={styles.content}>
-        <Routes>
-          <Route 
-            path=''
-            element={<Songs isMobile={props.isMobile} />} 
-          />
-          <Route 
-            path='/playlists'
-            element={<Playlists />} 
-          />
-          <Route 
-            path='/playlists/:id'
-            element={<Playlist 
-              scroll={scroll}
-              isMobile={props.isMobile}
-            />} 
-          />
-        </Routes>
+        <SubContentWrapper>
+          <Routes>
+            <Route 
+              path=''
+              element={<Songs isMobile={props.isMobile} />} 
+            />
+            <Route 
+              path='/playlists'
+              element={<Playlists />} 
+            />
+            <Route 
+              path='/playlists/:id'
+              element={<Playlist 
+                scroll={scroll}
+                isMobile={props.isMobile}
+              />} 
+            />
+          </Routes>
+        </SubContentWrapper>
       </div>
     </div>
   )

@@ -8,6 +8,7 @@ namespace Exider.Core.TransferModels.Messenger
         [Required] Guid id,
         [Required] string text,
         IFormFile[]? attachments,
-        [Required] int type
+        [Required] int type,
+        [Required] int queueId
     );
 }

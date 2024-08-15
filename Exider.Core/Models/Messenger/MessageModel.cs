@@ -13,6 +13,7 @@ namespace Exider.Core.Models.Messages
         [Column("user_id")] public Guid UserId { get; private set; }
         [Column("date")] public DateTime Date { get; private set; } = DateTime.Now;
         [Column("is_pinned")] public bool IsPinned { get; set; } = false;
+        [Column("is_viewed")] public bool IsViewed { get; set; } = false;
 
         [NotMapped] public AttachmentModel[]? attachments { get; set; }
 

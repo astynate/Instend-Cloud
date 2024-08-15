@@ -11,5 +11,6 @@ namespace Exider.Repositories.Messenger
         Task<Result<bool>> ChangeAcceptState(Guid directId, Guid userId, bool isAccept);
         Task<Result<Guid>> DeleteMessage(Guid id, Guid userId);
         Task<bool> ChangePinnedState(Guid messageId, bool pinnedState);
+        Task<bool> ViewMessage(Guid messageId, Guid userId);
     }
 }

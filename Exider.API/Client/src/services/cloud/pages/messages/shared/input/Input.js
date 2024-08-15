@@ -6,8 +6,11 @@ import smile from './images/smile.png';
 import voice from './images/voice.png';
 import cancel from './images/cancel.png';
 import send from './images/send.png';
+import reply from './images/reply.png';
+import reject from './images/reject.png';
+import { MessageOperations } from '../../widgets/chat/MessageOperations';
 
-const Input = ({sendMessage}) => {
+const Input = ({sendMessage, operation, setDefaultOperation}) => {
     const [text, setText] = useState('');
     const [attachments, setAttachements] = useState([]);
     const textAreaRef = React.createRef();
@@ -61,6 +64,16 @@ const Input = ({sendMessage}) => {
 
     return (
         <div className={styles.wrapper}>
+            {operation !== MessageOperations[0] && <div className={styles.reply}>
+                <img className={styles.replyImage} src={reply} />
+                <div className={styles.replyInformation}>
+                    <span className={styles.replyName}>Reply to Name</span>
+                    <span className={styles.replyMessage}>message</span>
+                </div>
+                <button className={styles.replyReject} onClick={() => setDefaultOperation()}>
+                    <img className={styles.replyImage} src={reject} />
+                </button>
+            </div>}
             <input type="file" id="message-file-picker" style={{ display: 'none' }} multiple onChange={handleFileChange} />
             <div className={styles.attachmentsWrapper} id={attachments.length > 0 ? 'open' : null}>
                 {attachments.map((file, index) => {

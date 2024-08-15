@@ -41,7 +41,6 @@ const ContextMenu = (props) => {
         return () => {
             document.removeEventListener('click', handleClickOutside);
         }
-
     }, []);
 
     return (
@@ -49,8 +48,8 @@ const ContextMenu = (props) => {
             {props.items.map((element, index) => {
                 return (
                     <div key={index} className={styles.menuItem} onClick={element[2]}>
-                        <img src={element[0]} alt="" />
-                        <div>{element[1]}</div>
+                        <div className={element.length >= 4 && element[3] ? styles.red : null}>{element[1]}</div>
+                        <img className={element.length >= 4 && element[3] ? styles.redImage : null} src={element[0]} />
                     </div>
                 )
             })}
