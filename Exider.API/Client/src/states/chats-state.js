@@ -222,7 +222,7 @@ class ChatsState {
 
     UpdateMessagePinnedState = (chatId, messageId, state) => {
         const chat = this.chats
-        .find(element => element.directId === chatId);
+            .find(element => element.directId === chatId);
 
         if (chat && chat.messages) {
             let message = chat.messages.find(element => element.id === messageId);

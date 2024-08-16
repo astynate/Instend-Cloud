@@ -9,11 +9,23 @@ import send from './images/send.png';
 import reply from './images/reply.png';
 import reject from './images/reject.png';
 import { MessageOperations } from '../../widgets/chat/MessageOperations';
+import ChatHandler from '../../../../../../utils/handlers/ChatHandler';
 
-const Input = ({sendMessage, operation, setDefaultOperation}) => {
+const Input = ({sendMessage, operation, messages, setDefaultOperation}) => {
     const [text, setText] = useState('');
     const [attachments, setAttachements] = useState([]);
+    const [message, setMessage] = useState(undefined);
     const textAreaRef = React.createRef();
+
+    useEffect(() => {
+        if (messages.length > 0) {
+            setMessage(messages[0]);
+        } else {
+            sendMessage(undefined);
+        }
+    }, [operation]);
+    
+    const validOperations = [MessageOperations.Edit, MessageOperations.Reply];
 
     const handleFileChange = (event) => {
         if (event.target.files.length > 0) {
@@ -55,20 +67,26 @@ const Input = ({sendMessage, operation, setDefaultOperation}) => {
     const sendMessageAsync = async () => {
         const attachmentsValue = [...attachments];
         const textValue = text;
+        const replyTo = operation === MessageOperations.Reply && message ? message.Id : null;
 
         setText('');
         setAttachements([]);
 
-        await sendMessage(textValue, attachmentsValue);
+        await sendMessage(textValue, attachmentsValue, replyTo);
     };
 
     return (
         <div className={styles.wrapper}>
-            {operation !== MessageOperations[0] && <div className={styles.reply}>
+            {validOperations.includes(operation) && message && <div className={styles.reply}>
                 <img className={styles.replyImage} src={reply} />
                 <div className={styles.replyInformation}>
-                    <span className={styles.replyName}>Reply to Name</span>
-                    <span className={styles.replyMessage}>message</span>
+                    <span className={styles.replyName}>{
+                        operation === MessageOperations.Reply ? 
+                            `Reply to ${ChatHandler.GetMessageUser(message).nickname ?? ChatHandler.GetMessageUser(message).Nickname}` 
+                        : 
+                            'Edit'
+                    }</span>
+                    <span className={styles.replyMessage}>{message.Text ?? "Message"}</span>
                 </div>
                 <button className={styles.replyReject} onClick={() => setDefaultOperation()}>
                     <img className={styles.replyImage} src={reject} />

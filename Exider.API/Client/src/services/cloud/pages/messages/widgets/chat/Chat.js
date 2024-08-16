@@ -392,27 +392,25 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
                         operation={operation}
                         setDefaultOperation={() => {setOperation(MessageOperations[0])}}
                         messages={activeItems}
-                        sendMessage={async (message, attachments) => {
+                        sendMessage={async (message, attachments, replyTo) => {
                             if (message === '' || !message) { return; }
                             let form = new FormData();
 
                             if (params.id) 
                             {
-                                for(let i = 0; i < attachments.length; i++){
+                                for (let i = 0; i < attachments.length; i++){
                                     form.append('attachments', attachments[i]);
                                 }
                                 
                                 form.append('id', params.id);
-                                form.append('text', message);
-                                form.append('type', 0);
                                 form.append('queueId', chatsState.SetLoadingMessage(chat.directId ? chat.directId : chat.id, message, attachments));
-                            } 
-                            else if (chatsState.draft) 
-                            {
-                                form.append('text', message);
+                            } else if (chatsState.draft) {
                                 form.append('id', chatsState.draft.id);
-                                form.append('type', 0);
                             }
+
+                            form.append('type', 0);
+                            form.append('text', message);
+                            form.append('replyTo', replyTo);
 
                             await instance.post('api/message', form);
                         }}
