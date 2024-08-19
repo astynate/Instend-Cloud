@@ -6,16 +6,37 @@ import viewed from './image/sent.svg';
 import sended from './image/tick.svg';
 import sending from './image/time.svg';
 import { instance } from '../../../../../../state/Interceptors';
+import { SpecialTypes } from '../../../../../../utils/handlers/SpecialType';
+import AlertMesssage from '../special-messages/alert/alert-message';
 
-const Message = ({id, text, type, avatar, position, time, isSelected, attachments, sendingType = 0, chatId}) => {
+const Message = ({
+        id, 
+        text, 
+        type, 
+        avatar, 
+        position, 
+        time, 
+        isSelected, 
+        attachments, 
+        sendingType = 0, 
+        chatId,
+        SpecialType = SpecialTypes.None
+    }) => {
+
     const types = [styles.first, styles.middle, styles.last, styles.single];
     const sendingTypes = [sending, sended, viewed];
 
     useEffect(() => {
-        if (type !== 'My' && sendingType === 1) {
+        if (type !== 'My' && sendingType === 1 && SpecialType === SpecialTypes.None) {
             (async () => await instance.post(`/api/message/view?id=${id}&chatId=${chatId}`))();
         }
     }, []);
+
+    if (SpecialType === SpecialTypes.Alert) {
+        return (
+            <AlertMesssage message={text} />
+        )
+    }
 
     return(
         <div className={styles.message} id={isSelected ? 'selected' : null}>

@@ -1,14 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import styles from './main.module.css';
 
-const Button = (props) => {
+const Button = ({callback, isEnter, value}) => {
     const buttonRef = useRef(null);
 
     useEffect(() => {
-        if (props.isEnter) {
+        if (isEnter) {
             const handleKeyDown = (event) => {
                 if (event.key === 'Enter' && !event.shiftKey) {
-                    props.callback();
+                    callback();
                 }
             };
             document.addEventListener('keydown', handleKeyDown);
@@ -16,15 +16,15 @@ const Button = (props) => {
                 document.removeEventListener('keydown', handleKeyDown);
             };
         }
-    }, [props.isEnter, props.callback]);
+    }, [isEnter, callback]);
 
     return (
         <button 
             ref={buttonRef}
-            onClick={props.callback} 
+            onClick={callback} 
             className={styles.button}
         >
-            {props.value}
+            {value}
         </button>
     );
 };

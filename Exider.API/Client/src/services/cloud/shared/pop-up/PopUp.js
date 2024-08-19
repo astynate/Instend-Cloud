@@ -5,12 +5,10 @@ const PopUp = (props) => {
     const popupRef = useRef();
 
     const handleClickOutside = (e) => {
-
         if (popupRef.current && !props.caller.current.contains(e.target) && 
             !popupRef.current.contains(e.target)) {
             props.setState(false);
         }
-
     };
       
     useEffect(() => {

@@ -1,0 +1,32 @@
+.createGroup {
+    height: auto;
+    width: 400px;
+    /* border-top: 1px solid var(--main-border-color); */
+    display: flex;
+    flex-direction: column;
+    padding: 0px 10px 10px 10px;
+    grid-gap: 10px;
+}
+
+.input {
+    display: flex;
+    grid-gap: 10px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: end;
+}
+
+.inputField {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    grid-gap: 5px;
+    justify-content: center;
+}
+
+.description {
+    margin-left: 7px;
+    color: var(--main-paragraph-color);
+}

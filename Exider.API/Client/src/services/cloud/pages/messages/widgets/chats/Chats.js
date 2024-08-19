@@ -13,9 +13,17 @@ import { useNavigate, useParams } from 'react-router-dom';
 import ContextMenu from '../../../../shared/context-menu/ContextMenu';
 import OkCancel from '../../../../shared/ok-cancel/OkCancel';
 import SearchInChat from '../../shared/search-in-chat/SearchInChat';
+import CreateGroup from '../../features/create-group/CreateGroup';
+import remove from './images/remove.png';
+import ChatHandler from '../../../../../../utils/handlers/ChatHandler';
+import ChatTypes from '../chat/ChatTypes';
 
 const DeleteDirectory = async (id) => {
     await instance.delete(`/api/directs?id=${id}`);
+}
+
+const LeaveGroup = async (id) => {
+    await instance.delete(`/api/groups?id=${id}`);
 }
 
 const Chats = observer(({isMobile, setOpenState}) => {
@@ -25,10 +33,17 @@ const Chats = observer(({isMobile, setOpenState}) => {
     const [contextMenuPosition, setContextMenuPosition] = useState([0, 0]);
     const [searchUsers, setSearchUsers] = useState([]);
     const [isDeleteOpen, setDeleteOpenState] = useState(false);
+    const [isLeaveChatOpen, setLeaveChatOpenState] = useState(false);
+    const [isCreateGroup, setCreateGroupState] = useState(false);
     const [id, setId] = useState(null);
     const params = useParams();
     const navigate = useNavigate();
     const ref = useRef();
+
+    const directContextMenuItems = [[remove, 'Delete', () => {setDeleteOpenState(true)}, true]];
+    const groupContextMenuItems = [[remove, 'Leave group', () => {setLeaveChatOpenState(true)}, true]];
+
+    const [items, setItems] = useState(directContextMenuItems);
 
     useEffect(() => {
         const connectToChats = async () => {
@@ -68,21 +83,34 @@ const Chats = observer(({isMobile, setOpenState}) => {
             {isContextMenuOpen && <ContextMenu 
                 position={contextMenuPosition}
                 isContextMenu={isContextMenuOpen}
-                items={[
-                    [null, 'Delete', () => {setDeleteOpenState(true)}]
-                ]}
+                items={items}
                 close={() => setContextMenuState(false)}
             />}
             <OkCancel
                 open={isDeleteOpen}
                 close={() => setDeleteOpenState(false)}
                 title={"Delete chat"}
-                message={"Are you sure you want to permanently delete this chat for all participants?"}
+                message={"Are you sure want to permanently delete this chat for all participants?"}
                 callback={() => {
                     if (id) {
                         DeleteDirectory(id);
                     }
                 }}
+            />
+            <OkCancel
+                open={isLeaveChatOpen}
+                close={() => setLeaveChatOpenState(false)}
+                title={"Leave group"}
+                message={"Are you sure want to leave this group?"}
+                callback={() => {
+                    if (id) {
+                        LeaveGroup(id);
+                    }
+                }}
+            />
+            <CreateGroup 
+                open={isCreateGroup} 
+                close={() => setCreateGroupState(false)} 
             />
             <UsersPopUp
                 title={"Next"}
@@ -125,7 +153,7 @@ const Chats = observer(({isMobile, setOpenState}) => {
                         <PopUpList
                             items={[
                                 {title: "Chat", callback: () => setCreatePopUpState(true)},
-                                // {title: "Group", callback: () => alert('!')}
+                                {title: "Group", callback: () => setCreateGroupState(true)}
                             ]}
                         />
                     </div>}
@@ -146,13 +174,25 @@ const Chats = observer(({isMobile, setOpenState}) => {
                         } else {
                             return (
                                 <ChatPreview 
-                                    key={index}
+                                    key={chat.id}
                                     chat={chat}
                                     isPlaceholder={false}
                                     isActive={chat.id === params.id}
                                     onClick={setOpenState}
                                     onContextMenu={(event) => {
                                         event.preventDefault();
+
+                                        switch (chat.type) {
+                                            case 'direct': {
+                                                setItems(directContextMenuItems);
+                                                break;
+                                            }
+                                            case 'group': {
+                                                setItems(groupContextMenuItems);
+                                                break;
+                                            }
+                                        }
+
                                         setContextMenuState(true);
                                         setContextMenuPosition([event.clientX, event.clientY]);
                                         setId(chat.id);

@@ -1,0 +1,16 @@
+.alert {
+    max-width: 560px;
+    display: flex;
+    justify-content: center;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.messageText {
+    font-size: 12px;
+    padding: 6px 12px;
+    background: var(--main-accent-color);
+    font-weight: 600;
+    color: var(--main-font-color);
+    border-radius: 20px;
+}

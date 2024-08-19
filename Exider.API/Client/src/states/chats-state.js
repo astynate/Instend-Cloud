@@ -1,6 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import { instance } from "../state/Interceptors";
 import userState from "./user-state";
+import { SpecialTypes } from "../utils/handlers/SpecialType";
 
 class ChatsState {
     chats = [];
@@ -47,6 +48,64 @@ class ChatsState {
                 })
                 .filter(element => element !== null);
         }
+
+        if (chats.groups && chats.groups.length && chats.groups.length >= 0) {
+            this.chats = [...chats.groups
+                .map(element => {
+                    if (element.groupModel) {
+                        if (element.messageModel === null) {
+                            element.messageModel = {
+                                SpecialType: SpecialTypes.Alert,
+                                Text: 'Chat has beeen created.',
+                                Date: element.groupModel.Date
+                            };
+                        }
+
+                        const chat = {
+                            type: 'group',
+                            id: element.groupModel.Id,
+                            hasMore: true,
+                            name: element.groupModel.Name,
+                            messages: [element.messageModel],
+                            ownerId: element.groupModel.OwnerId,
+                            avatar: element.groupModel.Avatar,
+                            members: element.groupModel.Members
+                        }
+
+                        for (let index in element.groupModel.Members) {
+                            if (this.users.map(u => u.Id).includes(element.groupModel.Members[index].Id) === false) {
+                                this.users = [element.groupModel.Members[index], ...this.users];
+                            }
+                        }
+
+                        return chat;
+                    }
+
+                    return null;
+                })
+                .filter(element => element !== null), ...this.chats];
+        }
+    }
+
+    addGroup = (groupModel) => {
+        const messageModel = {
+            SpecialType: SpecialTypes.Alert,
+            Text: 'Chat has beeen created.',
+            Date: groupModel.Date
+        };
+
+        const chat = {
+            type: 'group',
+            id: groupModel.Id,
+            hasMore: false,
+            name: groupModel.Name,
+            messages: [messageModel],
+            ownerId: groupModel.OwnerId,
+            avatar: groupModel.Avatar,
+            members: groupModel.Members
+        }
+        
+        this.chats = [...this.chats, chat];
     }
 
     setChatsLoadedState = (state) => {
@@ -89,7 +148,6 @@ class ChatsState {
         } else {
             this.chats.map(element => {
                 if (element.directId && element.directId === id) {
-
                     element.isAccepted = true;
                 }
             });
@@ -120,32 +178,32 @@ class ChatsState {
         return queueId;
     }
 
-    AddMessage(direct, message, userPublic, queueId) {
+    AddMessage(chat, message, userPublic, queueId) {
         message.id = message.Id;
         
-        if (this.chats.map(element => element.directId).includes(direct.Id) === false) {
+        if (this.chats.map(element => element.directId).includes(chat.Id) === false) {
             const chat = {
-                type: 'direct',
+                type: chat.type,
                 id: userPublic.Id,
                 name: userPublic.Nickname,
                 messages: [message],
                 avatar: userPublic.Avatar,
-                directId: direct.Id,
-                isAccepted: direct.IsAccepted,
-                ownerId: direct.OwnerId,
+                directId: chat.Id,
+                isAccepted: chat.IsAccepted,
+                ownerId: chat.OwnerId,
                 hasMore: true
             }
 
             this.chats = [chat, ...this.chats];
         } else {
-            const chat = this.chats.find(element => element.directId === direct.Id);
+            const chatValue = this.chats.find(element => element.directId === chat.Id);
 
-            if (chat) {
+            if (chatValue) {
                 if (userPublic.Id === userState.user.id) {
-                    chat.messages = chat.messages.filter(e => e.queueId !== queueId);
+                    chatValue.messages = chatValue.messages.filter(e => e.queueId !== queueId);
                 }
 
-                chat.messages = [...chat.messages, message];
+                chatValue.messages = [...chatValue.messages, message];
             }
         }
 

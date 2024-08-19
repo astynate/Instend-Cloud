@@ -1,15 +1,16 @@
 import React from 'react';
 import styles from './main.module.css';
 
-const Input = (props) => {
+const Input = ({placeholder, value, setValue, maxLength = 30}) => {
     return (
         <>
             <input 
                 type='text' 
-                value={props.value}
-                placeholder={props.placeholder}
+                value={value}
+                placeholder={placeholder}
                 className={styles.input}
-                onInput={(event) => props.setValue(event.target.value)}
+                onInput={(event) => setValue(event.target.value)}
+                maxLength={maxLength}
             />
         </>
     );

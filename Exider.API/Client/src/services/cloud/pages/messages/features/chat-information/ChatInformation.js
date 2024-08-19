@@ -3,7 +3,7 @@ import styles from './main.module.css';
 import PopUpWindow from "../../../../shared/pop-up-window/PopUpWindow";
 import PopUpItems from "../../../../shared/pop-up-window/elements/items/PopUpItems";
 
-const ChatInformation = ({open, close, name, avatar, title, profileAddition}) => {
+const ChatInformation = ({open, close, name, avatar, title, content}) => {
     return (
         <>
             <PopUpWindow
@@ -26,7 +26,11 @@ const ChatInformation = ({open, close, name, avatar, title, profileAddition}) =>
                             <span className={styles.status}>last seen recently</span>
                         </div>
                     </div>
-                    <PopUpItems 
+                    <div className={styles.}>
+
+                    </div>
+                    {(content)}
+                    {/* <PopUpItems 
                         items={[
                             {
                                 title: "Photos", 
@@ -45,7 +49,7 @@ const ChatInformation = ({open, close, name, avatar, title, profileAddition}) =>
                                 element: <h1 className={styles.placeholder}>No links uploaded</h1>,
                             }
                         ]}
-                    />
+                    /> */}
                 </div>
             </PopUpWindow>
         </>

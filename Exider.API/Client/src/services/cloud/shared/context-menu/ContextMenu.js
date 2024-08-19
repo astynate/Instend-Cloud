@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
 
-const ContextMenu = (props) => {
+const ContextMenu = ({close, position, isContextMenu, items, brefore=<></>, after=<></>}) => {
     const wrapper = useRef(null);
-    const [isContextMenu, setContextMenuState] = useState(props.isContextMenu);
+    const [isContextMenuOpen, setContextMenuState] = useState(isContextMenu);
 
     const handleClickOutside = () => {
         if (isContextMenu) {
-            props.close();
+            close();
         }
         
         setContextMenuState(true);
@@ -15,8 +15,8 @@ const ContextMenu = (props) => {
 
     useEffect(() => {
         if (wrapper.current) {
-            let x = props.position[0];
-            let y = props.position[1];
+            let x = position[0];
+            let y = position[1];
         
             const menuWidth = wrapper.current.offsetWidth;
             const menuHeight = wrapper.current.offsetHeight;
@@ -45,7 +45,8 @@ const ContextMenu = (props) => {
 
     return (
         <div className={styles.contextMenu} ref={wrapper}>
-            {props.items.map((element, index) => {
+            {(brefore)}
+            {items.map((element, index) => {
                 return (
                     <div key={index} className={styles.menuItem} onClick={element[2]}>
                         <div className={element.length >= 4 && element[3] ? styles.red : null}>{element[1]}</div>
@@ -53,6 +54,7 @@ const ContextMenu = (props) => {
                     </div>
                 )
             })}
+            {(after)}
         </div>
     );
 };

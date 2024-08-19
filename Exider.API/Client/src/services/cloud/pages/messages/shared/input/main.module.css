@@ -204,3 +204,10 @@
   border: none;
   cursor: pointer;
 }
+
+.input {
+  position: sticky;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+}

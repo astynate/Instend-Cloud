@@ -18,23 +18,6 @@
     z-index: 999;
 }
 
-.header {
-    width: 100%;
-    height: auto;
-    padding-left: 15px;
-    padding-right: 15px;
-    position: sticky;
-    top: 0;
-    left: 0;
-    border-bottom: 1px solid var(--main-border-color);
-    background: var(--main-background-color);
-    backdrop-filter: var(--main-blur-effect);
-    flex-shrink: 0;
-    flex-direction: column;
-    z-index: 1;
-    user-select: none;
-}
-
 .chatInfo {
     display: flex;
     align-items: center;
@@ -43,72 +26,11 @@
     justify-content: space-between;
 }
 
-.left {
-    display: flex;
-    align-items: center;
-    grid-gap: 10px;
-    cursor: pointer;
-}
-
-.information {
-    display: flex;
-    flex-direction: column;
-}
-
-.avatar {
-    height: 37px;
-    width: 37px;
-    background: var(--main-font-color);
-    border-radius: 100%;
-    overflow: hidden;
-    image-rendering: pixelated;
-    user-select: none;
-}
-
-.avatarImage {
-    height: 100%;
-    width: 100%;
-    user-select: none;
-}
-
-.name {
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--main-font-color);
-}
-
-.data {
-    font-size: 12px;
-    color: var(--main-paragraph-color);
-    user-select: none;
-}
-
-.right {
-    display: flex;
-}
-
 .buttonImage {
     height: 20px;
     width: 20px;
     filter: var(--main-filter);
     cursor: pointer;
-}
-
-.messages {
-    margin-top: auto;
-    padding: 15px;
-    grid-gap: 2px;
-    display: flex;
-    flex-direction: column;
-    justify-content: end;
-    overflow-y: visible;
-}
-
-.input {
-    position: sticky;
-    width: 100%;
-    bottom: 0;
-    left: 0;
 }
 
 .inputPlaceholder, .buttons {
@@ -193,23 +115,6 @@
     font-size: 16px;
     color: var(--main-paragraph-color);
     max-width: 500px;
-}
-
-.date {
-    max-width: 560px;
-    display: flex;
-    justify-content: center;
-    padding-top: 3px;
-    padding-bottom: 3px;
-}
-
-.date span {
-    font-size: 12px;
-    padding: 6px 12px;
-    background: var(--main-accent-color);
-    font-weight: 600;
-    color: var(--main-font-color);
-    border-radius: 20px;
 }
 
 .back {

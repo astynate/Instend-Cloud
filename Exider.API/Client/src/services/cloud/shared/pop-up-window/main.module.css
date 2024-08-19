@@ -36,14 +36,15 @@
     cursor: pointer;
     background: var(--pop-up-accent-color);
     transition: 0.15s ease;
-    /* border: 1px solid rgba(255, 255, 255, 0.1); */
+    border: 1px solid transparent;
 }
 
 .close:active {
-    top: 15px;
+    /* top: 15px;
     right: 15px;
     height: 35px;
-    width: 35px;
+    width: 35px; */
+    border: 1px solid var(--main-border-color);
 }
 
 .close:hover .closeImage { 
@@ -51,7 +52,7 @@
 }
 
 .backButton:hover img { 
-    opacity: 0.9;
+    opacity: 1;
 }
 
 .closeImage {
@@ -75,7 +76,7 @@
 }
 
 .title {
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 600;
     left: 50%;
     transform: translateX(-50%);

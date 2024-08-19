@@ -1,0 +1,26 @@
+.messages {
+    margin-top: auto;
+    padding: 15px;
+    grid-gap: 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    overflow-y: visible;
+}
+
+.date {
+    max-width: 560px;
+    display: flex;
+    justify-content: center;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.date span {
+    font-size: 12px;
+    padding: 6px 12px;
+    background: var(--main-accent-color);
+    font-weight: 600;
+    color: var(--main-font-color);
+    border-radius: 20px;
+}

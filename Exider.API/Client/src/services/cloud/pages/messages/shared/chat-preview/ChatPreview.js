@@ -24,7 +24,7 @@ const ChatPreview = observer(({chat, isPlaceholder, isActive, onClick, onContext
                 }}
             >
                 <div className={styles.avatar}>
-                    <img src={`data:image/png;base64,${chat.avatar}`} className={styles.avatarImage} />
+                    <img src={`data:image/png;base64,${chat.avatar}`} className={styles.avatarImage} draggable="false" />
                 </div>
                 <div className={styles.information}>
                     <div className={styles.text}>
