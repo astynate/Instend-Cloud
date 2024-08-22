@@ -1,15 +1,26 @@
 import styles from './main.module.css';
 import arrow from './arrow.png';
+import { useState } from 'react';
 
-const Container = () => {
-    console.log('!');
+const Container = ({title, content=<></>, additionalContent=<></>}) => {
+    const [isOpen, setOpenState] = useState(false);
 
     return (
         <div className={styles.container}>
-            <div className={styles.header}>
-                <span className={styles.title}>Name</span>
-                <img src={arrow} className={styles.image} />
+            <div className={styles.header} onClick={() => setOpenState(prev => !prev)}>
+                <span 
+                    className={styles.title}
+                >
+                    {title}
+                </span>
+                <img 
+                    src={arrow} 
+                    className={styles.image} 
+                    draggable="false" 
+                    id={isOpen ? 'open' : null}
+                />
             </div>
+            {isOpen && (content)}
         </div>
     );
 }

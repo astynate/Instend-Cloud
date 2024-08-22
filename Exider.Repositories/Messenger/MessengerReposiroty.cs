@@ -21,10 +21,12 @@ namespace Exider.Repositories.Messenger
             _attachmentsRepository = attachmentsRepository;
         }
 
-        public async Task<MessengerTransferModel[]> GetDirects(IFileService fileService, Guid userId)
+        public async Task<DirectTransferModel[]> GetDirects(IFileService fileService, Guid userId, int count)
         {
-            MessengerTransferModel[] directs = await _context.Directs
+            DirectTransferModel[] directs = await _context.Directs
                 .Where(direct => direct.UserId == userId || direct.OwnerId == userId)
+                .Skip(count)
+                .Take(1)
                 .Join(_context.Users,
                     direct => (direct.OwnerId == userId ? direct.UserId : direct.OwnerId),
                     user => user.Id,
@@ -54,7 +56,7 @@ namespace Exider.Repositories.Messenger
                     prev => prev.link.LinkedItemId,
                     message => message.Id,
                     (prev, message) =>
-                        new MessengerTransferModel
+                        new DirectTransferModel
                         (
                             prev.prev.direct,
                             message,
@@ -106,9 +108,9 @@ namespace Exider.Repositories.Messenger
             return directs;
         }
 
-        public async Task<MessengerTransferModel?> GetDirect(IFileService fileService, Guid id, Guid userId)
+        public async Task<DirectTransferModel?> GetDirect(IFileService fileService, Guid id, Guid userId)
         {
-            MessengerTransferModel? model = await _context.Directs
+            DirectTransferModel? model = await _context.Directs
                 .Where(direct => (direct.UserId == userId || direct.OwnerId == userId) && direct.Id == id)
                 .Join(_context.Users,
                     direct => (direct.OwnerId == userId ? direct.UserId : direct.OwnerId),
@@ -139,7 +141,7 @@ namespace Exider.Repositories.Messenger
                     prev => prev.link.LinkedItemId,
                     message => message.Id,
                     (prev, message) =>
-                        new MessengerTransferModel
+                        new DirectTransferModel
                         (
                             prev.prev.direct,
                             message,
@@ -257,7 +259,7 @@ namespace Exider.Repositories.Messenger
 
         /// <summary>
         /// Возможны проблемы с безопасностью
-        /// когда можно прикрепить сообщение зная только id
+        /// когда можно прикрепить сообщение зная только id, но как будто срал я на эту безопасность =)
         /// </summary>
         /// <returns>Результат операции</returns>
         public async Task<bool> ChangePinnedState(Guid messageId, bool pinnedState)

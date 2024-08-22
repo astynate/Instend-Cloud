@@ -1,11 +1,11 @@
 import React from "react";
 import styles from './main.module.css';
 
-const Button = (props) => {
+const Button = ({onClick, forwardRef, img, title}) => {
     return (
-      <div className={styles.button} onClick={props.onClick} ref={props.forwardRef}>
-        <img src={props.img} />
-        <span>{props.title}</span>
+      <div className={styles.button} onClick={onClick} ref={forwardRef}>
+        <img src={img} />
+        <span>{title}</span>
       </div>
     )
   };

@@ -314,6 +314,21 @@ const Layout = observer(() => {
         }
     );
 
+    messageWSContext.useSignalREffect(
+        "ConnetToGroup",
+        ({ id }) => {
+            console.log(id);
+            messageWSContext.connection.invoke('ConnectToGroup', id);
+        }
+    );
+
+    messageWSContext.useSignalREffect(
+        "LeaveGroup",
+        ({ id }) => {
+            chatsState.DeleteChat(id);
+        }
+    );
+
     /////////////////////////////////////////////////////////////////////////////////
 
     useEffect(() => {

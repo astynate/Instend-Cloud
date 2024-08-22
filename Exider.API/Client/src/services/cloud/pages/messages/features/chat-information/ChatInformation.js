@@ -3,7 +3,7 @@ import styles from './main.module.css';
 import PopUpWindow from "../../../../shared/pop-up-window/PopUpWindow";
 import PopUpItems from "../../../../shared/pop-up-window/elements/items/PopUpItems";
 
-const ChatInformation = ({open, close, name, avatar, title, content}) => {
+const ChatInformation = ({open, close, name, avatar, subTitle="", title, content=<></>, additionalContent=<></>}) => {
     return (
         <>
             <PopUpWindow
@@ -23,13 +23,13 @@ const ChatInformation = ({open, close, name, avatar, title, content}) => {
                             <div className={styles.nameWrapper}>
                                 <span className={styles.name}>{name}</span>
                             </div>
-                            <span className={styles.status}>last seen recently</span>
+                            <span className={styles.status}>{subTitle}</span>
                         </div>
                     </div>
-                    <div className={styles.}>
-
+                    <div className={styles.content}>
+                        {(content)}
                     </div>
-                    {(content)}
+                    {(additionalContent)}
                     {/* <PopUpItems 
                         items={[
                             {

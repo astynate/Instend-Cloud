@@ -3,11 +3,11 @@ import styles from './main.module.css';
 import defaultAvatar from './images/default-avatar.png';
 
 const UserAvatar = ({user}) => {
-    if (user && user.avatar) {
+    if (user && (user.avatar || user.Avatar)) {
         return (
             <div className={styles.userAvatar}>
                 <img 
-                    src={`data:image/png;base64,${user.avatar}`} 
+                    src={`data:image/png;base64,${user.avatar ?? user.Avatar}`} 
                     draggable={false}
                 />
             </div>

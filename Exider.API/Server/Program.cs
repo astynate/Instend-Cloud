@@ -49,6 +49,7 @@ builder.Services.AddScoped<IDirectRepository, DirectRepository>();
 builder.Services.AddScoped<IMessengerReposiroty, MessengerReposiroty>();
 builder.Services.AddScoped<ICommunityRepository, CommunityRepository>();
 builder.Services.AddScoped<IFriendsRepository, FriendsRepository>();
+builder.Services.AddScoped<IGroupsRepository, GroupsRepository>();
 builder.Services.AddScoped(typeof(ICommentsRepository<,>), typeof(CommentsRepository<,>));
 builder.Services.AddScoped(typeof(ICommentBaseRepository<>), typeof(CommentBaseRepository<>));
 builder.Services.AddScoped(typeof(IAccessRepository<,>), typeof(AccessRepository<,>));

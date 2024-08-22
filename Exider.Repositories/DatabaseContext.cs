@@ -38,6 +38,8 @@ namespace Exider.Core
         public DbSet<UserPublicationLink> UserPublications { get; set; } = null!;
         public DbSet<FriendModel> Friends { get; set; } = null!;
         public DbSet<DirectModel> Directs { get; set; } = null!;
+        public DbSet<GroupModel> Groups { get; set; } = null!;
+        public DbSet<GroupMemberLink> GroupMemberLink { get; set; } = null!;
         public DbSet<AttachmentModel> Attachments { get; set; } = null!;
         public DbSet<AttachmentCommentLink> CommentAttachments { get; set; } = null!;
         public DbSet<AlbumViewLink> ViewsLinks { get; set; } = null!;

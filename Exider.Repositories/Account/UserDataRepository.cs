@@ -91,8 +91,11 @@ namespace Exider.Repositories.Account
                 }
             }
 
-            userModel.Avatar = Convert.ToBase64String(_imageService.CompressImage(Convert.FromBase64String(userModel.Avatar), 5, "png"));
-            userModel.Header = Convert.ToBase64String(_imageService.CompressImage(Convert.FromBase64String(userModel.Header), 5, "png"));
+            userModel.Avatar = Convert.ToBase64String(_imageService
+                .CompressImage(Convert.FromBase64String(userModel.Avatar ?? ""), 2, "png"));
+
+            userModel.Header = Convert.ToBase64String(_imageService
+                .CompressImage(Convert.FromBase64String(userModel.Header ?? ""), 2, "png"));
 
             return Result.Success(userModel);
         }

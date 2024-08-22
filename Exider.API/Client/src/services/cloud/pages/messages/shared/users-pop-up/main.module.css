@@ -16,6 +16,7 @@
     padding-right: 5px;
     display: flex;
     flex-direction: column;
+    user-select: none;
     
     &::-webkit-scrollbar {
         width: 5px;

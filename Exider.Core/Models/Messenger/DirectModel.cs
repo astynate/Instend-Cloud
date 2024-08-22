@@ -13,6 +13,8 @@ namespace Exider.Core.Models.Messenger
         [Column("date")] public DateTime Date { get; set; } = DateTime.Now;
         [Column("is_accepted")] public bool IsAccepted { get; set; } = false;
 
+        [NotMapped] public string Type = "direct";
+
         private DirectModel() { }
 
         public static Result<DirectModel> Create(Guid userId, Guid ownerId)

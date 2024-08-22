@@ -51,8 +51,12 @@ const Chats = observer(({isMobile, setOpenState}) => {
                 await WaitingForConnection(messageWSContext);
 
                 if (messageWSContext.connection.state === 'Connected') {
-                    await messageWSContext.connection.invoke("Join", localStorage.getItem("system_access_token"));
-                    chatsState.SetConnectedState(true);
+                    const object = {
+                        authorization: localStorage.getItem("system_access_token"),
+                        count: chatsState.countLoadedChats
+                    };
+
+                    await messageWSContext.connection.invoke("Join", object);
                 }
             } catch (error) {
                 console.error('Failed to connect or join:', error);
@@ -63,7 +67,7 @@ const Chats = observer(({isMobile, setOpenState}) => {
         if (chatsState.connected === false) {
             connectToChats();
         }
-    }, [messageWSContext, messageWSContext.connection]);
+    }, [messageWSContext, messageWSContext.connection, chatsState.countLoadedChats]);
 
     useEffect(() => {
         function handleClickOutside(event) {

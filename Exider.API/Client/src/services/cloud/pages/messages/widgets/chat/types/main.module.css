@@ -1,0 +1,92 @@
+.list {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 5px;
+}
+
+.user {
+    display: flex;
+    grid-gap: 10px;
+}
+
+.information {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+}
+
+.userAvatar img {
+    height: 50px;
+    width: 50px;
+    border-radius: 100%;
+}
+
+.title {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--main-font-color);
+}
+
+.status {
+    font-size: 14px;
+    color: var(--main-paragraph-color);
+}
+
+.addUser {
+    bottom: 15px;
+    right: 15px;
+    margin-top: auto;
+    margin-left: auto;
+    position: sticky;
+    background: var(--pop-up-accent-color);
+    color: var(--main-font-color);
+    padding: 10px;
+    width: fit-content;
+    height: fit-content;
+    border-radius: 30px;
+    user-select: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    grid-gap: 5px;
+    transition: 0.15s ease;
+    border: 1px solid transparent;
+}
+
+.addUser span {
+    opacity: 0.7;
+    transition: 0.15s ease;
+    font-size: 14px;
+}
+
+.addUser img {
+    height: 14px;
+    width: 14px;
+    opacity: 0.7;
+    filter: var(--main-filter);
+    transition: 0.15s ease;
+}
+
+.addUser:hover span, .addUser:hover img {
+    opacity: 1;
+}
+
+.addUser:active {
+    border: 1px solid var(--main-border-color);
+}
+
+.button {
+    height: fit-content;
+    width: fit-content;
+    background: var(--sub-accent-color);
+    color: var(--sub-background-color);
+    border: none;
+    outline: none;
+    padding: 8px 20px;
+    font-weight: 600;
+    border-radius: 7px;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: auto;
+    cursor: pointer;
+}

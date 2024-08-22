@@ -71,6 +71,11 @@ namespace Exider.Services.External.FileService
 
         public byte[] CompressImage(byte[] inputImage, int quality, string type)
         {
+            if (inputImage == null || inputImage.Length == 0)
+            {
+                return inputImage ?? [];
+            }
+
             Dictionary<string, ImageFormat> keyValuePairs = new()
             {
                 { "png", ImageFormat.Png },

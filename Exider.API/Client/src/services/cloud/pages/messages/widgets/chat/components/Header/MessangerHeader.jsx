@@ -1,10 +1,16 @@
 import { useState } from 'react';
 import styles from './main.module.css';
 import ChatInformation from '../../../../features/chat-information/ChatInformation';
-import Container from '../../../../features/chat-information/elements/container/Container';
 
-const MessangerHeader = ({avatar, title, subTitle}) => {
-    const [isChatInformation, setChatInformation] = useState(false);
+const MessangerHeader = ({
+        avatar, 
+        title, 
+        subTitle, 
+        isChatInformation,
+        setChatInformation,
+        additionalContent=<></>, 
+        content=<></>
+    }) => {
 
     return (
         <>
@@ -13,12 +19,10 @@ const MessangerHeader = ({avatar, title, subTitle}) => {
                 close={() => setChatInformation(false)}
                 name={title}
                 avatar={avatar}
+                subTitle={subTitle}
                 title={"Group information"}
-                content={
-                    <>
-                        <Container />
-                    </>
-                }
+                additionalContent={additionalContent}
+                content={content}
             />
             <div className={styles.header}>
             <div className={styles.left} onClick={() => setChatInformation(true)}>

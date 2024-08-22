@@ -27,26 +27,26 @@ namespace Exider.Repositories.Messenger
             _attachmentRepository = attachmentsRepository;
         }
 
-        public async Task<Result<MessengerTransferModel>> CreateNewDiret(Guid userId, Guid ownerId)
+        public async Task<Result<DirectTransferModel>> CreateNewDiret(Guid userId, Guid ownerId)
         {
             var directModel = DirectModel.Create(userId, ownerId);
 
             if (directModel.IsFailure)
             {
-                return Result.Failure<MessengerTransferModel>("Failed to create chat");
+                return Result.Failure<DirectTransferModel>("Failed to create chat");
             }
 
             var user = await _userData.GetUserAsync(ownerId);
 
             if (user.IsFailure)
             {
-                return Result.Failure<MessengerTransferModel>(user.Error);
+                return Result.Failure<DirectTransferModel>(user.Error);
             }
 
             await _context.Directs.AddAsync(directModel.Value);
             await _context.SaveChangesAsync();
 
-            return new MessengerTransferModel(directModel.Value, null, user.Value);
+            return new DirectTransferModel(directModel.Value, null, user.Value);
         }
 
         public async Task<Result<Guid>> DeleteDirect(Guid destination, Guid userId)
@@ -95,9 +95,9 @@ namespace Exider.Repositories.Messenger
             return messages;
         }
 
-        public async Task<Result<MessengerTransferModel>> SendMessage(Guid ownerId, Guid userId, string text)
+        public async Task<Result<DirectTransferModel>> SendMessage(Guid ownerId, Guid userId, string text)
         {
-            MessengerTransferModel? direct = await _context.Directs.AsNoTracking()
+            DirectTransferModel? direct = await _context.Directs.AsNoTracking()
                 .Where(direct => (direct.UserId == userId && direct.OwnerId == ownerId) || (direct.OwnerId == userId && direct.UserId == ownerId))
                 .Join(_context.Users,
                     direct => direct.OwnerId == userId ? direct.UserId : direct.OwnerId,
@@ -110,7 +110,7 @@ namespace Exider.Repositories.Messenger
                 .Join(_context.UserData,
                     prev => prev.user.Id,
                     user => user.UserId,
-                    (prev, userData) => new MessengerTransferModel
+                    (prev, userData) => new DirectTransferModel
                     (
                         prev.direct,
                         null,
@@ -132,7 +132,7 @@ namespace Exider.Repositories.Messenger
                     ))
                 .FirstOrDefaultAsync();
 
-            return await _context.Database.CreateExecutionStrategy().ExecuteAsync(async Task<Result<MessengerTransferModel>> () =>
+            return await _context.Database.CreateExecutionStrategy().ExecuteAsync(async Task<Result<DirectTransferModel>> () =>
             {
                 using (var transaction = _context.Database.BeginTransaction())
                 {
@@ -142,7 +142,7 @@ namespace Exider.Repositories.Messenger
 
                         if (newDirect.IsFailure)
                         {
-                            return Result.Failure<MessengerTransferModel>(newDirect.Error);
+                            return Result.Failure<DirectTransferModel>(newDirect.Error);
                         }
 
                         direct = newDirect.Value;
@@ -150,21 +150,21 @@ namespace Exider.Repositories.Messenger
                     }
                     else if (direct.directModel.IsAccepted == false)
                     {
-                        return Result.Failure<MessengerTransferModel>("Invite is not accepted");
+                        return Result.Failure<DirectTransferModel>("Invite is not accepted");
                     }
 
                     var messageModel = MessageModel.Create(text, ownerId);
 
                     if (messageModel.IsFailure)
                     {
-                        return Result.Failure<MessengerTransferModel>(messageModel.Error);
+                        return Result.Failure<DirectTransferModel>(messageModel.Error);
                     }
 
                     var link = LinkBase.Create<DirectMessageLink>(direct.directModel.Id, messageModel.Value.Id);
 
                     if (link.IsFailure)
                     {
-                        return Result.Failure<MessengerTransferModel>(link.Error);
+                        return Result.Failure<DirectTransferModel>(link.Error);
                     }
 
                     await _context.DirectLinks.AddAsync(link.Value);

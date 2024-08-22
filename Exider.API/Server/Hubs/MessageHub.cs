@@ -17,6 +17,8 @@ namespace Exider_Version_2._0._0.Server.Hubs
 
         private readonly IDirectRepository _directRepository;
 
+        private readonly IGroupsRepository _groupsRepository;
+
         private readonly IFileService _fileService;
 
         private readonly IChatBase[] _chatFactory = [];
@@ -26,7 +28,8 @@ namespace Exider_Version_2._0._0.Server.Hubs
             IRequestHandler requestHandler, 
             IMessengerReposiroty messengerReposiroty, 
             IFileService fileService, 
-            IDirectRepository directRepository
+            IDirectRepository directRepository,
+            IGroupsRepository groupsRepository
         )
         {
             _requestHandler = requestHandler;
@@ -34,26 +37,38 @@ namespace Exider_Version_2._0._0.Server.Hubs
             _fileService = fileService;
             _directRepository = directRepository;
             _chatFactory = [_directRepository];
+            _groupsRepository = groupsRepository;
         }
 
-        public async Task Join(string authorization)
+        public record JoinTransferModel(string authorization, int count);
+
+        public async Task Join(JoinTransferModel anonymousObject)
         {
-            var userId = _requestHandler.GetUserId(authorization);
+            var userId = _requestHandler.GetUserId(anonymousObject.authorization);
 
             if (userId.IsFailure)
             {
                 return;
             }
 
-            MessengerTransferModel[] directs = await _messengerReposiroty.GetDirects(_fileService, Guid.Parse(userId.Value));
+            DirectTransferModel[] directs = await _messengerReposiroty.GetDirects(_fileService, Guid.Parse(userId.Value), anonymousObject.count);
+            GroupTransferModel[] groups = await _groupsRepository.GetUserGroups(Guid.Parse(userId.Value), anonymousObject.count);
 
-            foreach (MessengerTransferModel directory in directs)
+            foreach (DirectTransferModel directory in directs)
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, directory.directModel.Id.ToString());
             }
 
+            foreach (GroupTransferModel group in groups)
+            {
+                if (group.groupModel != null)
+                {
+                    await Groups.AddToGroupAsync(Context.ConnectionId, group.groupModel.Id.ToString());
+                }
+            }
+
             await Groups.AddToGroupAsync(Context.ConnectionId, userId.Value);
-            await Clients.Caller.SendAsync("GetChats", JsonConvert.SerializeObject(new { directs }));
+            await Clients.Caller.SendAsync("GetChats", JsonConvert.SerializeObject(new { directs, groups }));
         }
 
         public async Task ConnectToDirect(Guid id, string authorization)
@@ -63,7 +78,7 @@ namespace Exider_Version_2._0._0.Server.Hubs
             if (userId.IsFailure)
                 return;
 
-            MessengerTransferModel? direct = await _messengerReposiroty
+            DirectTransferModel? direct = await _messengerReposiroty
                 .GetDirect(_fileService, id, Guid.Parse(userId.Value));
 
             if (direct == null)
@@ -71,6 +86,23 @@ namespace Exider_Version_2._0._0.Server.Hubs
 
             await Groups.AddToGroupAsync(Context.ConnectionId, direct.directModel.Id.ToString());
             await Clients.Caller.SendAsync("ReceiveMessage", JsonConvert.SerializeObject(direct));
+        }
+
+        public async Task ConnectToGroup(Guid id, string authorization)
+        {
+            var userId = _requestHandler.GetUserId(authorization);
+
+            if (userId.IsFailure)
+                return;
+
+            GroupTransferModel? group = await _groupsRepository
+                .GetGroup(id, Guid.Parse(userId.Value));
+
+            if (group == null) 
+                return;
+
+            await Groups.AddToGroupAsync(Context.ConnectionId, group.groupModel.Id.ToString());
+            await Clients.Caller.SendAsync("ReceiveMessage", JsonConvert.SerializeObject(group.groupModel));
         }
 
         public async Task ChangeAccessState(Guid id, string authorization, bool isAccept)

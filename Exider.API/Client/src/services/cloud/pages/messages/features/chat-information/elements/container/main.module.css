@@ -1,24 +1,39 @@
 .container {
-
+    display: flex;
+    flex-direction: column;
+    grid-gap: 10px;
+    background: var(--pop-up-accent-color);
+    border-radius: 15px;
+    padding: 12px;
+    user-select: none;
 }
 
 .header {
     display: flex;
     justify-content: space-between;
-    padding: 10px 10px;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.header:hover {
     background: var(--pop-up-accent-color);
-    border-radius: 7px;
 }
 
 .title {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 500;
     color: var(--main-font-color);
 }
 
 .image {
-    height: 20px;
-    width: 20px;
+    height: 17px;
+    width: 17px;
     filter: var(--main-filter);
     object-fit: contain;
+    transition: 0.2s ease;
+}
+
+.image[id="open"] {
+    transform: rotate(90deg);
 }
