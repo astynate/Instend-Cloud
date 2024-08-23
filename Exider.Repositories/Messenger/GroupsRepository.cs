@@ -109,7 +109,7 @@ namespace Exider.Repositories.Messenger
 
         public async Task<GroupTransferModel?> GetGroup(Guid id, Guid userId)
         {
-            var isUserIsMember = _context.GroupMemberLink
+            var isUserIsMember = await _context.GroupMemberLink
                 .FirstOrDefaultAsync(x => x.ItemId == id && x.LinkedItemId == userId);
 
             if (isUserIsMember == null)
@@ -141,50 +141,43 @@ namespace Exider.Repositories.Messenger
 
         public async Task<Result<(Guid[] membersToAdd, Guid[] membersToDelete)>> SetGroupMembers(Guid id, Guid[] users)
         {
-            return await _context.Database.CreateExecutionStrategy().ExecuteAsync(async Task<Result<(Guid[] membersToAdd, Guid[] membersToDelete)>> () =>
+            GroupMemberLink[] members = await _context.GroupMemberLink
+                .Where(x => x.ItemId == id).ToArrayAsync();
+
+            if (members == null)
             {
-                using (var transaction = _context.Database.BeginTransaction())
+                return Result.Failure<(Guid[] membersToAdd, Guid[] membersToDelete)>("Members not found");
+            }
+
+            Guid[] membersToDelete = members
+                .SelectMany(x => new[] { x.LinkedItemId })
+                .Except(users)
+                .ToArray();
+
+            Guid[] membersToAdd = users
+                .Except(members
+                .SelectMany(x => new[] { x.LinkedItemId }))
+                .ToArray();
+
+            await _context.GroupMemberLink
+                .Where(x => membersToDelete.Contains(x.LinkedItemId))
+                .ExecuteDeleteAsync();
+
+            foreach (var user in membersToAdd)
+            {
+                var link = LinkBase.Create<GroupMemberLink>(id, user);
+
+                if (link.IsFailure)
                 {
-                    GroupMemberLink[] members = await _context.GroupMemberLink
-                        .Where(x => x.ItemId == id).ToArrayAsync();
-
-                    if (members == null)
-                    {
-                        return Result.Failure<(Guid[] membersToAdd, Guid[] membersToDelete)>("Members not found");
-                    }
-
-                    Guid[] membersToDelete = members
-                        .SelectMany(x => new[] { x.LinkedItemId })
-                        .Except(users)
-                        .ToArray();
-
-                    Guid[] membersToAdd = users
-                        .Except(members
-                        .SelectMany(x => new[] { x.LinkedItemId }))
-                        .ToArray();
-
-                    await _context.GroupMemberLink
-                        .Where(x => membersToDelete.Contains(x.LinkedItemId))
-                        .ExecuteDeleteAsync();
-
-                    foreach (var user in membersToAdd)
-                    {
-                        var link = LinkBase.Create<GroupMemberLink>(id, user);
-
-                        if (link.IsFailure)
-                        {
-                            transaction.Rollback();
-                            return Result.Failure<(Guid[] membersToAdd, Guid[] membersToDelete)>(link.Error);
-                        }
-
-                        await _context.GroupMemberLink.AddAsync(link.Value);
-                    }
-
-                    await _context.SaveChangesAsync(); transaction.Commit();
-
-                    return Result.Success((membersToAdd, membersToDelete));
+                    return Result.Failure<(Guid[] membersToAdd, Guid[] membersToDelete)>(link.Error);
                 }
-            });
+
+                await _context.GroupMemberLink.AddAsync(link.Value);
+            }
+
+            await _context.SaveChangesAsync(); 
+
+            return Result.Success((membersToAdd, membersToDelete));
         }
     }
 }

@@ -10,7 +10,7 @@ const UsersPopUp = ({
         title="Create a chat", 
         open, 
         close, 
-        userButton, 
+        userButton=()=>{}, 
         callback, 
         setSearchResult, 
         setSearchingState, 

@@ -106,8 +106,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
                 foreach (var user in result.Value.membersToDelete)
                 {
                     await _messageHub.Clients
-                        .Group(user.ToString())
-                        .SendAsync("LeaveGroup", id);
+                        .Group(id.ToString())
+                        .SendAsync("LeaveGroup", JsonConvert.SerializeObject(new { id, user }));
                 }
             }
 

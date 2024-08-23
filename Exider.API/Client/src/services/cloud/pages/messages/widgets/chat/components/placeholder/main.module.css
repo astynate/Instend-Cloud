@@ -1,0 +1,10 @@
+.chatPlaceholder {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.chatPlaceholder span {
+    color: var(--main-paragraph-color);
+    font-size: 16px;
+}

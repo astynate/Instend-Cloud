@@ -316,16 +316,21 @@ const Layout = observer(() => {
 
     messageWSContext.useSignalREffect(
         "ConnetToGroup",
-        ({ id }) => {
-            console.log(id);
-            messageWSContext.connection.invoke('ConnectToGroup', id);
+        (id) => {
+            const object = {
+                id: id,
+                authorization: localStorage.getItem('system_access_token')
+            };
+
+            messageWSContext.connection.invoke('ConnectToGroup', object);
         }
     );
 
     messageWSContext.useSignalREffect(
         "LeaveGroup",
-        ({ id }) => {
-            chatsState.DeleteChat(id);
+        (data) => {
+            const { id, user } = JSON.parse(data);
+            chatsState.DeleteChat(id, user);
         }
     );
 

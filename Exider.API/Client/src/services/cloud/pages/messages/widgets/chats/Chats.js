@@ -17,6 +17,8 @@ import CreateGroup from '../../features/create-group/CreateGroup';
 import remove from './images/remove.png';
 import ChatHandler from '../../../../../../utils/handlers/ChatHandler';
 import ChatTypes from '../chat/ChatTypes';
+import userState from '../../../../../../states/user-state';
+import applicationState from '../../../../../../states/application-state';
 
 const DeleteDirectory = async (id) => {
     await instance.delete(`/api/directs?id=${id}`);
@@ -34,6 +36,7 @@ const Chats = observer(({isMobile, setOpenState}) => {
     const [searchUsers, setSearchUsers] = useState([]);
     const [isDeleteOpen, setDeleteOpenState] = useState(false);
     const [isLeaveChatOpen, setLeaveChatOpenState] = useState(false);
+    const [isBot, setBotState] = useState(false);
     const [isCreateGroup, setCreateGroupState] = useState(false);
     const [id, setId] = useState(null);
     const params = useParams();
@@ -117,6 +120,7 @@ const Chats = observer(({isMobile, setOpenState}) => {
                 close={() => setCreateGroupState(false)} 
             />
             <UsersPopUp
+                mainTitle={"Create direct"}
                 title={"Next"}
                 open={isCreatePopUp}
                 close={() => setCreatePopUpState(false)}
@@ -127,6 +131,19 @@ const Chats = observer(({isMobile, setOpenState}) => {
                 setLoadingState={() => {}}
                 isHasSubmitButton={false}
                 userCallback={(user) => {
+                    if (user.id === userState.user.id) {
+                        applicationState.AddErrorInQueue('Attantion!', `You can't chat with yourself!`);
+                        return;
+                    }
+
+                    const chat = ChatHandler.GetChat(user.id);
+
+                    if (chat) {
+                        navigate(`/messages/${chat.id}`);
+                        setCreatePopUpState(false);
+                        return;
+                    }
+
                     if (user.id) {
                         const result = chatsState.setDraft(user);
                         
@@ -134,6 +151,7 @@ const Chats = observer(({isMobile, setOpenState}) => {
                             navigate(`/messages`);
                         }
                     }
+
                     setCreatePopUpState(false);
                 }}
                 GetData={async (prefix) => {
@@ -156,8 +174,9 @@ const Chats = observer(({isMobile, setOpenState}) => {
                     {isCreateOpen && <div className={styles.createPopUp} ref={ref}>
                         <PopUpList
                             items={[
-                                {title: "Chat", callback: () => setCreatePopUpState(true)},
-                                {title: "Group", callback: () => setCreateGroupState(true)}
+                                {title: "Direct", callback: () => {setCreatePopUpState(true); setCreateOpenState(false)}},
+                                {title: "Group", callback: () => {setCreateGroupState(true); setCreateOpenState(false)}},
+                                {title: "Appication", callback: () => {setBotState(true); setCreateOpenState(false)}}
                             ]}
                         />
                     </div>}
@@ -172,38 +191,36 @@ const Chats = observer(({isMobile, setOpenState}) => {
                         const lastMessageA = a.messages && a.messages.length > 0 ? a.messages[a.messages.length - 1].Date : 0;
                         const lastMessageB = b.messages && b.messages.length > 0 ? b.messages[b.messages.length - 1].Date : 0;
                         return new Date(lastMessageB) - new Date(lastMessageA);
-                    }).map((chat, index) => {
-                        if (!chat || !chat.id) {
-                            return null;
-                        } else {
-                            return (
-                                <ChatPreview 
-                                    key={chat.id}
-                                    chat={chat}
-                                    isPlaceholder={false}
-                                    isActive={chat.id === params.id}
-                                    onClick={setOpenState}
-                                    onContextMenu={(event) => {
-                                        event.preventDefault();
+                    }).map((chat) => {
+                        if (!chat || !chat.id) { return null; }
+                            
+                        return (
+                            <ChatPreview 
+                                key={chat.id}
+                                chat={chat}
+                                isPlaceholder={false}
+                                isActive={chat.id === params.id}
+                                onClick={setOpenState}
+                                onContextMenu={(event) => {
+                                    event.preventDefault();
 
-                                        switch (chat.type) {
-                                            case 'direct': {
-                                                setItems(directContextMenuItems);
-                                                break;
-                                            }
-                                            case 'group': {
-                                                setItems(groupContextMenuItems);
-                                                break;
-                                            }
+                                    switch (chat.type) {
+                                        case 'direct': {
+                                            setItems(directContextMenuItems);
+                                            break;
                                         }
+                                        case 'group': {
+                                            setItems(groupContextMenuItems);
+                                            break;
+                                        }
+                                    }
 
-                                        setContextMenuState(true);
-                                        setContextMenuPosition([event.clientX, event.clientY]);
-                                        setId(chat.id);
-                                    }}
-                                />
-                            );
-                        }
+                                    setContextMenuState(true);
+                                    setContextMenuPosition([event.clientX, event.clientY]);
+                                    setId(chat.id);
+                                }}
+                            />
+                        );
                     })
                 :
                     Array.from({length: 20}).map((_, index) => {

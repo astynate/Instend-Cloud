@@ -2,7 +2,14 @@ import { instance } from "../../../../../../state/Interceptors";
 import chatsState from "../../../../../../states/chats-state";
 import ChatHandler from "../../../../../../utils/handlers/ChatHandler";
 
-export const SendMessage = async (message, attachments, replyTo, chat) => {
+export const SendMessage = async (
+        message, 
+        attachments, 
+        replyTo, 
+        chat, 
+        type = 0
+    ) => {
+
     if (message === '' || !message) { 
         return false; 
     }
@@ -20,7 +27,7 @@ export const SendMessage = async (message, attachments, replyTo, chat) => {
         }
     }
 
-    form.append('type', 0);
+    form.append('type', type);
     form.append('text', message);
     form.append('replyTo', replyTo);
 

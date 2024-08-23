@@ -2,8 +2,9 @@ import React from "react";
 import styles from './main.module.css';
 import PopUpWindow from "../../../../shared/pop-up-window/PopUpWindow";
 import PopUpItems from "../../../../shared/pop-up-window/elements/items/PopUpItems";
+import { observer } from "mobx-react-lite";
 
-const ChatInformation = ({open, close, name, avatar, subTitle="", title, content=<></>, additionalContent=<></>}) => {
+const ChatInformation = observer(({open, close, name, avatar, subTitle="", title, content=<></>, additionalContent=<></>}) => {
     return (
         <>
             <PopUpWindow
@@ -54,6 +55,6 @@ const ChatInformation = ({open, close, name, avatar, subTitle="", title, content
             </PopUpWindow>
         </>
     );
-}
+});
 
 export default ChatInformation;

@@ -283,9 +283,18 @@ class ChatsState {
         }
     }
 
-    DeleteChat = (id) => {
-        this.chats = this.chats
-            .filter(element => element.directId !== id && element.id !== id);
+    DeleteChat = (id, user) => {
+        if (user === userState.user.id) {
+            this.chats = this.chats
+                .filter(element => element.directId !== id && element.id !== id);
+        } else {
+            const chat = ChatHandler.GetChat(id);
+
+            if (chat && chat.members) {
+                chat.members = chat.members
+                    .filter(u => u.id !== user && u.Id !== user);
+            }
+        }
     }
 
     DeleteMessage = (messageId, chatId) => {

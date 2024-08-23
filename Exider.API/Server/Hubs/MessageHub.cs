@@ -88,15 +88,17 @@ namespace Exider_Version_2._0._0.Server.Hubs
             await Clients.Caller.SendAsync("ReceiveMessage", JsonConvert.SerializeObject(direct));
         }
 
-        public async Task ConnectToGroup(Guid id, string authorization)
+        public record ConnectToGroupTM(Guid id, string authorization);
+
+        public async Task ConnectToGroup(ConnectToGroupTM model)
         {
-            var userId = _requestHandler.GetUserId(authorization);
+            var userId = _requestHandler.GetUserId(model.authorization);
 
             if (userId.IsFailure)
                 return;
 
             GroupTransferModel? group = await _groupsRepository
-                .GetGroup(id, Guid.Parse(userId.Value));
+                .GetGroup(model.id, Guid.Parse(userId.Value));
 
             if (group == null) 
                 return;

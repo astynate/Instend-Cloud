@@ -45,7 +45,7 @@
 
 .dark-mode {
     --main-background-color: rgb(0, 0, 0);
-    --main-border-color: rgba(255, 255, 255, 0.18);
+    --main-border-color: rgba(255, 255, 255, 0.12);
     --main-accent-color: #2c2c2c; /* 212125 */
     --main-font-color: #ffffff;
     --main-header-font-color: #161616;
@@ -53,7 +53,7 @@
     --main-blue-color: #388eff;
     --main-red-color: rgb(255, 44, 44);
     --main-accent-font-color: white;
-    --main-paragraph-color: #aaa;
+    --main-paragraph-color: #a9a9a9;
     --main-button-background-color: rgb(255, 255, 255);
     --main-filter: invert(100%);
     --main-button-font-color: rgb(0, 0, 0);
