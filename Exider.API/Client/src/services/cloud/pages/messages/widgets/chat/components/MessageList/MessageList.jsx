@@ -77,31 +77,31 @@ const MessageList = observer(({chat, scroll}) => {
             />} */}
             <div ref={scrollRef}></div>
             {chat.messages && chat.messages.map((element, index) => {
-                const avatar = ChatHandler.GetMessageUser(element).Avatar ?? ChatHandler.GetMessageUser(element).avatar;
+                const avatar = ChatHandler.GetMessageUser(element).avatar;
                 const position = GetMessagePosition(element, chat, index);
                 const date = GetMessageDateIfItNessecery(element, chat, index);
-                const sendingType = element.queueId ? 0 : element.IsViewed || element.isViewed ? 2 : 1;
+                const sendingType = element.queueId ? 0 : element.isViewed || element.isViewed ? 2 : 1;
                 const key = sendingType === 0 ? index : element.Id;
 
                 return (
-                    <div key={key ?? index} data={element.Id}>
+                    <div key={key ?? index} data={element.id}>
                         {date && <div className={styles.date}>
                             <span>{date}</span>
                         </div>}
                         <Message
-                            id={element.Id ?? index}
+                            id={element.id ?? index}
                             name={null}
-                            text={element.Text}
+                            text={element.text}
                             chatId={chat.directId ? chat.directId : params.id}
                             avatar={avatar}
-                            key={key + element.IsViewed}
-                            type={element.UserId === userState.user.id ? 'My' : 'Other'}
+                            key={key + element.isViewed}
+                            type={element.userId === userState.user.id ? 'My' : 'Other'}
                             position={position}
-                            time={element.Date}
+                            time={element.date}
                             attachments={element.attachments}
                             isSelected={false}
-                            SpecialType={element.SpecialType ?? SpecialTypes.None}
-                            sendingType={element.queueId ? 0 : element.IsViewed || element.isViewed ? 2 : 1}
+                            specialType={element.specialType ?? SpecialTypes.None}
+                            sendingType={element.queueId ? 0 : element.isViewed || element.isViewed ? 2 : 1}
                         /> 
                     </div>
                 );

@@ -11,6 +11,7 @@ import Button from "../../../../cloud/shared/button/Button";
 import { instance } from "../../../../../../../state/Interceptors";
 import chatsState from "../../../../../../../states/chats-state";
 import { observer } from "mobx-react-lite";
+import applicationState from "../../../../../../../states/application-state";
 
 const Group = observer(({operation, setDefaultOperation, chat, scrollElement}) => {
     const [isUsersPopUpOpen, setUsersPopUpOpenState] = useState(false);
@@ -50,14 +51,14 @@ const Group = observer(({operation, setDefaultOperation, chat, scrollElement}) =
                             content={
                                 <div className={styles.list}>
                                     {chat && chat.members && chat.members.map(user => {
-                                        if (user && user.Avatar && user.Nickname) {
+                                        if (user && user.avatar && user.nickname) {
                                             return (
-                                                <div className={styles.user} key={user.Id}>
+                                                <div className={styles.user} key={user.id}>
                                                     <div className={styles.userAvatar}>
-                                                        <img src={Base64Handler.Base64ToUrlFormatPng(user.Avatar ?? user.avatar ?? "")} draggable="false" />
+                                                        <img src={Base64Handler.Base64ToUrlFormatPng(user.avatar ?? "")} draggable="false" />
                                                     </div>
                                                     <div className={styles.information}>
-                                                        <span className={styles.title}>{user.Nickname ?? user.nickname}</span>
+                                                        <span className={styles.title}>{user.nickname} {user.id === chat.ownerId ? "(owner)" : null}</span>
                                                         <span className={styles.status}>last seen recently</span>
                                                     </div>
                                                 </div>
@@ -78,11 +79,11 @@ const Group = observer(({operation, setDefaultOperation, chat, scrollElement}) =
                 open={isUsersPopUpOpen}
                 back={() => {
                     setChatInformation(true);
-                    setUsersPopUpOpenState(false)
+                    setUsersPopUpOpenState(false);
                 }}
                 close={() => {
                     setChatInformation(false);
-                    setUsersPopUpOpenState(false)
+                    setUsersPopUpOpenState(false);
                 }}
                 callback={async () => {
                     let form = new FormData();
@@ -90,10 +91,14 @@ const Group = observer(({operation, setDefaultOperation, chat, scrollElement}) =
                     form.append('id', chat.id ?? chat.Id);
 
                     for (let index in chat.members) {
-                        form.append('users', chat.members[index].id ?? chat.members[index].Id);
+                        form.append('users', chat.members[index].id);
                     }
 
-                    await instance.post('api/groups/members', form);
+                    await instance
+                        .post('api/groups/members', form)
+                        .catch(_ => {
+                            applicationState.AddErrorInQueue('Attantion!', 'Something went wrong.')
+                        });
 
                     setChatInformation(false);
                     setUsersPopUpOpenState(false);
@@ -103,8 +108,8 @@ const Group = observer(({operation, setDefaultOperation, chat, scrollElement}) =
                         <button 
                             className={styles.button}
                             onClick={() => {
-                                if (isMemberExist(user.Id ?? user.id)) {
-                                    chatsState.removeGroupMember(chat.id, user.id ?? user.Id);
+                                if (isMemberExist(user.id)) {
+                                    chatsState.removeGroupMember(chat.id, user.id);
                                 } else {
                                     chatsState.addGroupMember(chat.id, user);
                                 }
@@ -113,7 +118,7 @@ const Group = observer(({operation, setDefaultOperation, chat, scrollElement}) =
                                     .filter(e => isMemberExist(e.id) === false));
                             }}
                         >
-                            <span>{isMemberExist(user.Id ?? user.id) ? 'Remove' : 'Add'}</span>
+                            <span>{isMemberExist(user.id) ? 'Remove' : 'Add'}</span>
                         </button>
                     )
                 }

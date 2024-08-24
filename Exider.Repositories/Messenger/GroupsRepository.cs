@@ -7,7 +7,6 @@ using Exider.Core.TransferModels.Account;
 using Exider.Repositories.Account;
 using Exider.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Exider.Repositories.Messenger
 {
@@ -99,7 +98,7 @@ namespace Exider.Repositories.Messenger
 
                 resultGroups[i] = new GroupTransferModel();
 
-                resultGroups[i].groupModel = groups[i].group;
+                resultGroups[i].model = groups[i].group;
                 resultGroups[i].messageModel = null;
                 resultGroups[i].userPublic = null;
             }
@@ -112,29 +111,43 @@ namespace Exider.Repositories.Messenger
             var isUserIsMember = await _context.GroupMemberLink
                 .FirstOrDefaultAsync(x => x.ItemId == id && x.LinkedItemId == userId);
 
-            if (isUserIsMember == null)
-            {
-                return null;
-            }
+            if (isUserIsMember == null) return null;
 
             var result = await _context.Groups
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .Where(x => x.Id == id)
+                .GroupJoin(_context.GroupMemberLink,
+                    (group) => group.Id,
+                    (link) => link.ItemId,
+                    (group, link) => new { group, link})
+                .FirstOrDefaultAsync();
+                
+            if (result == null) return null;
 
-            if (result == null)
+            result.group.Members = new UserPublic[result.link.Count()];
+
+            for (int i = 0; i < result.link.Count(); i++)
             {
-                return null;
+                var user = await _userDateRepository.GetUserAsync(result.link.ToArray()[i].LinkedItemId);
+
+                if (user.IsFailure)
+                {
+                    return null;
+                }
+
+                user.Value.Header = null;
+                result.group.Members[i] = user.Value;
             }
 
             GroupTransferModel groupTransferModel = new GroupTransferModel();
 
-            var avatar = await _fileService.ReadFileAsync(result.AvatarPath);
+            var avatar = await _fileService.ReadFileAsync(result.group.AvatarPath);
 
             if (avatar.IsSuccess)
             {
-                result.Avatar = _imageService.ResizeImageToBase64(avatar.Value, 5);
+                result.group.Avatar = _imageService.CompressImage(avatar.Value, 2, "jpg");
             }
 
-            groupTransferModel.groupModel = result;
+            groupTransferModel.model = result.group;
 
             return groupTransferModel;
         }
@@ -178,6 +191,11 @@ namespace Exider.Repositories.Messenger
             await _context.SaveChangesAsync(); 
 
             return Result.Success((membersToAdd, membersToDelete));
+        }
+
+        public Task<Result<MessengerTransferModelBase>> SendMessage(Guid ownerId, Guid userId, string text)
+        {
+            throw new NotImplementedException();
         }
     }
 }

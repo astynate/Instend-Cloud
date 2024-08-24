@@ -3,18 +3,18 @@ import Draft from "./types/Draft";
 import Group from "./types/Group";
 
 const ChatTypes = {
-    NotSelect: undefined,
-    Direct: {
+    notSelect: undefined,
+    direct: {
         prefix: 'direct',
         type: 0,
         object: Direct,
     },
-    Group: {
+    group: {
         prefix: 'group',
         type: 1,
         object: Group,
     },
-    Draft: {
+    draft: {
         prefix: 'draft',
         type: 2,
         object: Draft

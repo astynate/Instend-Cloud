@@ -89,13 +89,14 @@ namespace Exider.Repositories.Messenger
 
             foreach(var message in messages)
             {
-                message.attachments = await _attachmentRepository.GetItemAttachmentsAsync(message.Id);
+                message.attachments = await _attachmentRepository
+                    .GetItemAttachmentsAsync(message.Id);
             }
 
             return messages;
         }
 
-        public async Task<Result<DirectTransferModel>> SendMessage(Guid ownerId, Guid userId, string text)
+        public async Task<Result<MessengerTransferModelBase>> SendMessage(Guid ownerId, Guid userId, string text)
         {
             DirectTransferModel? direct = await _context.Directs.AsNoTracking()
                 .Where(direct => (direct.UserId == userId && direct.OwnerId == ownerId) || (direct.OwnerId == userId && direct.UserId == ownerId))
@@ -132,7 +133,7 @@ namespace Exider.Repositories.Messenger
                     ))
                 .FirstOrDefaultAsync();
 
-            return await _context.Database.CreateExecutionStrategy().ExecuteAsync(async Task<Result<DirectTransferModel>> () =>
+            return await _context.Database.CreateExecutionStrategy().ExecuteAsync(async Task<Result<MessengerTransferModelBase>> () =>
             {
                 using (var transaction = _context.Database.BeginTransaction())
                 {
@@ -142,29 +143,29 @@ namespace Exider.Repositories.Messenger
 
                         if (newDirect.IsFailure)
                         {
-                            return Result.Failure<DirectTransferModel>(newDirect.Error);
+                            return Result.Failure<MessengerTransferModelBase>(newDirect.Error);
                         }
 
                         direct = newDirect.Value;
                         direct.isChatCreated = true;
                     }
-                    else if (direct.directModel.IsAccepted == false)
+                    else if (direct.model.IsAccepted == false)
                     {
-                        return Result.Failure<DirectTransferModel>("Invite is not accepted");
+                        return Result.Failure<MessengerTransferModelBase>("Invite is not accepted");
                     }
 
                     var messageModel = MessageModel.Create(text, ownerId);
 
                     if (messageModel.IsFailure)
                     {
-                        return Result.Failure<DirectTransferModel>(messageModel.Error);
+                        return Result.Failure<MessengerTransferModelBase>(messageModel.Error);
                     }
 
-                    var link = LinkBase.Create<DirectMessageLink>(direct.directModel.Id, messageModel.Value.Id);
+                    var link = LinkBase.Create<DirectMessageLink>(direct.model.Id, messageModel.Value.Id);
 
                     if (link.IsFailure)
                     {
-                        return Result.Failure<DirectTransferModel>(link.Error);
+                        return Result.Failure<MessengerTransferModelBase>(link.Error);
                     }
 
                     await _context.DirectLinks.AddAsync(link.Value);

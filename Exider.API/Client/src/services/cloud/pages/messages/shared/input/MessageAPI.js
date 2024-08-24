@@ -1,6 +1,7 @@
 import { instance } from "../../../../../../state/Interceptors";
 import chatsState from "../../../../../../states/chats-state";
 import ChatHandler from "../../../../../../utils/handlers/ChatHandler";
+import ChatTypes from "../../widgets/chat/ChatTypes";
 
 export const SendMessage = async (
         message, 
@@ -17,14 +18,19 @@ export const SendMessage = async (
     let form = new FormData();
 
     if (chatsState.draft) {
+        chatsState.SetLoadingMessage(ChatTypes.draft, 
+            ChatHandler.GetChatId(chat), message, attachments);
+
         form.append('id', chatsState.draft.id);
-    } else {
+    }
+
+    if (!chatsState.draft) {
         form.append('id', chat.id);
         form.append('queueId', chatsState.SetLoadingMessage(ChatHandler.GetChatId(chat), message, attachments));
+    }
 
-        for (let i = 0; i < attachments.length; i++){
-            form.append('attachments', attachments[i]);
-        }
+    for (let i = 0; i < attachments.length; i++){
+        form.append('attachments', attachments[i]);
     }
 
     form.append('type', type);

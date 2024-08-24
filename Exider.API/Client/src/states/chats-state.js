@@ -1,8 +1,8 @@
 import { makeAutoObservable } from "mobx";
 import { instance } from "../state/Interceptors";
 import userState from "./user-state";
-import { SpecialTypes } from "../utils/handlers/SpecialType";
 import ChatHandler from "../utils/handlers/ChatHandler";
+import ChatTypes from "../services/cloud/pages/messages/widgets/chat/ChatTypes";
 
 class ChatsState {
     chats = [];
@@ -27,101 +27,49 @@ class ChatsState {
         this.connected = isDirectsConnected && isGroupsConnected;
         this.countLoadedChats++;
 
-        try {
-            if (chatsValue.directs.length >= 0) {
-                this.chats = [...chatsValue.directs
-                    .map(element => {
-                        if (element.directModel && element.messageModel && element.userPublic) {
-                            element.messageModel.id = element.messageModel.Id;
-    
-                            const chat = {
-                                type: 'direct',
-                                id: element.userPublic.Id,
-                                hasMore: true,
-                                name: element.userPublic.Nickname,
-                                directId: element.directModel.Id,
-                                messages: [element.messageModel],
-                                isAccepted: element.directModel.IsAccepted,
-                                ownerId: element.directModel.OwnerId,
-                                avatar: element.userPublic.Avatar,
-                            }
-    
-                            if (this.users.map(u => u.Id).includes(element.userPublic.Id) === false) {
-                                this.users = [element.userPublic, ...this.users];
-                            }
-    
-                            return chat;
+        if (chatsValue.directs.length >= 0) {
+            this.chats = [...chatsValue.directs
+                .map(element => {
+                    if (element.model && element.messageModel && element.userPublic) {
+                        const chat = ChatHandler.AdaptDirect(element.model, element.messageModel, element.userPublic);
+
+                        if (this.users.map(u => u.id).includes(element.userPublic.id) === false) {
+                            this.users = [element.userPublic, ...this.users];
                         }
-    
-                        return null;
-                    })
-                    .filter(element => element !== null), ...this.chats];
-            }
-    
-            if (chatsValue.groups.length >= 0) {
-                this.chats = [...chatsValue.groups
-                    .map(element => {
-                        if (element.groupModel) {
-                            if (element.messageModel === null) {
-                                element.messageModel = {
-                                    SpecialType: SpecialTypes.Alert,
-                                    Text: 'Chat has beeen created.',
-                                    Date: element.groupModel.Date
-                                };
+
+                        return chat;
+                    }
+
+                    return null;
+                })
+                .filter(e => e), ...this.chats];
+        }
+
+        if (chatsValue.groups.length >= 0) {
+            this.chats = [...chatsValue.groups
+                .map(element => {
+                    if (element.model) {
+                        const chat = ChatHandler.AdaptGroup(element.model);
+
+                        for (let index in element.model.members) {
+                            if (!element.model.members[index]) {
+                                continue;
                             }
-    
-                            const chat = {
-                                type: 'group',
-                                id: element.groupModel.Id,
-                                hasMore: true,
-                                name: element.groupModel.Name,
-                                messages: [element.messageModel],
-                                ownerId: element.groupModel.OwnerId,
-                                avatar: element.groupModel.Avatar,
-                                members: element.groupModel.Members.filter(x => x)
+
+                            if (this.users.map(u => u.id).includes(element.model.members[index].id) === false) {
+                                this.users = [element.model.members[index], ...this.users];
                             }
-    
-                            for (let index in element.groupModel.Members) {
-                                if (!element.groupModel.Members[index]) {
-                                    continue;
-                                }
-    
-                                if (this.users.map(u => u.Id).includes(element.groupModel.Members[index].Id) === false) {
-                                    this.users = [element.groupModel.Members[index], ...this.users];
-                                }
-                            }
-    
-                            return chat;
                         }
-    
-                        return null;
-                    })
-                    .filter(element => element !== null), ...this.chats];
-            }
-        } catch { 
-            console.error('Someting went wrong!');
+
+                        return chat;
+                    }
+                })
+                .filter(e => e), ...this.chats];
         }
     }
 
-    addGroup = (groupModel) => {
-        const messageModel = {
-            SpecialType: SpecialTypes.Alert,
-            Text: 'Chat has beeen created.',
-            Date: groupModel.Date
-        };
-
-        const chat = {
-            type: 'group',
-            id: groupModel.Id,
-            hasMore: false,
-            name: groupModel.Name,
-            messages: [messageModel],
-            ownerId: groupModel.OwnerId,
-            avatar: groupModel.Avatar,
-            members: groupModel.Members
-        }
-        
-        this.chats = [...this.chats, chat];
+    addGroup = (groupModel, messageModel=null) => {
+        this.chats = [...this.chats, ChatTypes.group.adapt(groupModel, messageModel)];
     }
 
     setChatsLoadedState = (state) => {
@@ -137,14 +85,16 @@ class ChatsState {
         if (user && userState.user && userState.user.id) {
             if (this.chats.map(chat => chat.id).includes(user.id) || userState.user.id === user.id) {
                 return false;
-            } else {
-                user.type = 'draft';
-                this.draft = user;
             }
-        } else {
-            this.draft = null;
+
+            user.type = 'draft';
+            user.messages = [];
+
+            this.draft = user;
+            return true;
         }
 
+        this.draft = null;
         return true;
     }
     
@@ -159,11 +109,7 @@ class ChatsState {
     UpdateDirectAccessState = (id, state) => {
         if (state === false) {
             this.chats = this.chats.filter(element => {
-                if (element.directId && element.directId === id) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return !(element.directId && element.directId === id);
             });
         } else {
             this.chats.map(element => {
@@ -174,20 +120,30 @@ class ChatsState {
         }
     }
 
-    SetLoadingMessage = (directId, message, attachments) => {
-        const chat = this.chats.find(element => element.directId === directId);
+    SetLoadingMessage = (type, id, message, attachments) => {
+        let chat = {};
+
+        switch (type) {
+            case (ChatTypes.draft): {
+                chat = this.draft;
+                break;
+            }
+            default: {
+                chat = this.chats.find(element => element.id === id);
+                break;
+            }
+        }
+        
         const queueId = this.messageQueueId;
 
         if (chat !== null && chat !== undefined) {
             const messageValue = {
-                Date: new Date(),
-                Id: undefined,
-                IsPinned: false,
-                Text: message,
-                UserId: userState.user.id,
+                date: new Date(),
+                id: undefined,
+                text: message,
+                userId: userState.user.id,
                 attachments: attachments,
                 queueId: queueId,
-                id: undefined,
                 isViewed: false
             };
 
@@ -199,27 +155,25 @@ class ChatsState {
     }
 
     AddMessage(chat, message, userPublic, queueId) {
-        message.id = message.Id;
-        
-        if (this.chats.map(element => element.directId ?? element.id).includes(chat.Id) === false) {
-            const chat = {
-                type: chat.type,
-                id: userPublic.Id,
-                name: userPublic.Nickname,
-                messages: [message],
-                avatar: userPublic.Avatar,
-                directId: chat.Id,
-                isAccepted: chat.IsAccepted,
-                ownerId: chat.OwnerId,
-                hasMore: true
+        switch (chat.type) {
+            case (ChatTypes.direct.prefix): {
+                chat = ChatHandler.AdaptDirect(chat, message, userPublic);
+                break;
             }
+            case (ChatTypes.group.prefix): {
+                chat = ChatHandler.AdaptGroup(chat, message);
+                break;
+            }
+        }
 
+        if (this.chats.map(e => e.directId ?? e.id).includes(chat.directId ?? chat.id) === false) {
             this.chats = [chat, ...this.chats];
-        } else {
-            const chatValue = this.chats.find(element => element.directId === chat.Id);
+        } 
+        else {
+            const chatValue = ChatHandler.GetChat(chat.directId ?? chat.id);
 
             if (chatValue) {
-                if (userPublic.Id === userState.user.id) {
+                if (userPublic.id === userState.user.id) {
                     chatValue.messages = chatValue.messages.filter(e => e.queueId !== queueId);
                 }
 
@@ -237,7 +191,7 @@ class ChatsState {
             return;
         }
 
-        const chat = this.chats.find(element => element.id === chatId);
+        const chat = ChatHandler.GetChat(chatId);
 
         if (chat && chat.hasMore === true && chat.messages) {
             this.isBusy = true;
@@ -255,7 +209,6 @@ class ChatsState {
 
                     if (response.data.map && response.data.length > 0) {                    
                         response.data.map(element => {
-                            element.id = element.Id;
                             chat.messages = [element, ...chat.messages];
                         });
                     }
@@ -266,14 +219,11 @@ class ChatsState {
     }
 
     ViewMessage = (id, chatId) => {
-        const chat = this.chats
-            .find(element => element.id === chatId || element.directId === chatId);
+        const chat = ChatHandler.GetChat(chatId);
 
         if (chat && chat.messages) {
-            let message = chat.messages
-                .find(element => element.id === id || element.Id === id);
-
-            if (message) { message.IsViewed = true; }
+            let message = chat.messages.find(element => element.id === id);
+            if (message) message.isViewed = true;
         }
     }
 
@@ -307,19 +257,6 @@ class ChatsState {
         }
     }
 
-    UpdateMessagePinnedState = (chatId, messageId, state) => {
-        const chat = this.chats
-            .find(element => element.directId === chatId);
-
-        if (chat && chat.messages) {
-            let message = chat.messages.find(element => element.id === messageId);
-
-            if (message) {
-                message.IsPinned = state;
-            }
-        }   
-    }
-
     addGroupMember = (id, user) => {
         const chat = ChatHandler.GetChat(id);
 
@@ -332,7 +269,8 @@ class ChatsState {
         const chat = ChatHandler.GetChat(id);
 
         if (chat && chat.members) {
-            chat.members = chat.members.filter(e => e.id !== userId && e.Id !== userId);
+            chat.members = chat.members
+                .filter(e => e.id !== userId && e.Id !== userId);
         }
     }
 }

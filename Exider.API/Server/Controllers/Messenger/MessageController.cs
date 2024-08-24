@@ -1,8 +1,11 @@
-﻿using Exider.Core.Dependencies.Repositories.Messenger;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Exider.Core.Dependencies.Repositories.Messenger;
 using Exider.Core.Dependencies.Repositories.Storage;
 using Exider.Core.Models.Messenger;
+using Exider.Core.TransferModels;
 using Exider.Core.TransferModels.Messenger;
 using Exider.Repositories.Messenger;
+using Exider.Services.Internal;
 using Exider.Services.Internal.Handlers;
 using Exider_Version_2._0._0.Server.Hubs;
 using Microsoft.AspNetCore.Authorization;
@@ -24,6 +27,10 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
 
         private readonly IDirectRepository _directRepository;
 
+        private readonly ISerializationHelper _serializator;
+
+        private readonly IGroupsRepository _groupRepository;
+
         private readonly IAttachmentsRepository<MessageAttachmentLink> _attachmentRepository;
 
         private readonly IChatBase[] _chatFactory = [];
@@ -34,15 +41,19 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
             IRequestHandler requestHandler, 
             IHubContext<MessageHub> messageHub,
             IDirectRepository directRepository,
-            IAttachmentsRepository<MessageAttachmentLink> attachmentRepository
+            IAttachmentsRepository<MessageAttachmentLink> attachmentRepository,
+            ISerializationHelper serializator,
+            IGroupsRepository group
         )
         {
             _messengerReposiroty = messengerReposiroty;
             _requestHandler = requestHandler;
             _messageHub = messageHub;
             _directRepository = directRepository;
-            _chatFactory = [_directRepository];
+            _groupRepository = group;
+            _chatFactory = [_directRepository, _groupRepository];
             _attachmentRepository = attachmentRepository;
+            _serializator = serializator;
         }
 
         [HttpPost]
@@ -52,48 +63,72 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
             if (userId.IsFailure)
-            {
                 return BadRequest(userId.Error);
-            }
 
             if (model.id == Guid.Parse(userId.Value))
-            {
                 return BadRequest("Chat not found");
+
+            if (model.type < 0 && model.type > _chatFactory.Length)
+                return BadRequest("Invalid type");
+
+            var result = await _chatFactory[model.type]
+                .SendMessage(Guid.Parse(userId.Value), model.id, model.text);
+
+            if (result.IsFailure)
+                return BadRequest(result.Error);
+
+            result.Value.queueId = model.queueId;
+
+            if (model.attachments != null && model.attachments.Length > 0 && result.Value.messageModel != null)
+            {
+                var attachments = await _attachmentRepository.AddAsync(model.attachments, Guid.Parse(userId.Value), result.Value.messageModel.Id);
+
+                if (attachments.IsSuccess)
+                {
+                    result.Value.messageModel.attachments = attachments.Value;
+                }
             }
 
-            if (model.type >= 0 && model.type < _chatFactory.Length)
+            switch (result.Value)
             {
-                var result = await _chatFactory[model.type].SendMessage(Guid.Parse(userId.Value), model.id, model.text);
-
-                if (result.IsFailure)
+                case DirectTransferModel direct:
                 {
-                    return BadRequest(result.Error);
+                    await HandleDirectMessgeSend(direct); break;
                 }
-
-                result.Value.queueId = model.queueId;
-
-                if (model.attachments != null && model.attachments.Length > 0 && result.Value.messageModel != null)
+                case GroupTransferModel group:
                 {
-                    var attachments = await _attachmentRepository.AddAsync(model.attachments, Guid.Parse(userId.Value), result.Value.messageModel.Id);
-
-                    if (attachments.IsSuccess)
+                    if (group.model != null)
                     {
-                        result.Value.messageModel.attachments = attachments.Value;
+                        await NotifyAboutMessage(group, group.model.Id.ToString());
                     }
-                }
 
-                if (result.Value.isChatCreated == true)
-                {
-                    await _messageHub.Clients.Group(userId.Value).SendAsync("NewConnection", result.Value.directModel.Id);
-                    await _messageHub.Clients.Group(model.id.ToString()).SendAsync("NewConnection", result.Value.directModel.Id);
-                }
-                else
-                {
-                    await _messageHub.Clients.Group(result.Value.directModel.Id.ToString()).SendAsync("ReceiveMessage", JsonConvert.SerializeObject(result.Value));
+                    break;
                 }
             }
 
             return Ok();
+        }
+
+        private async Task HandleDirectMessgeSend(DirectTransferModel direct)
+        {
+            if (direct.isChatCreated)
+            {
+                await _messageHub.Clients.Group(direct.model.UserId.ToString())
+                    .SendAsync("NewConnection", direct.model.Id);
+
+                await _messageHub.Clients.Group(direct.model.OwnerId.ToString())
+                    .SendAsync("NewConnection", direct.model.Id);
+
+                return;
+            }
+
+            await NotifyAboutMessage(direct, direct.model.Id.ToString());
+        }
+
+        private async Task NotifyAboutMessage(MessengerTransferModelBase transferModel, string id)
+        {
+            await _messageHub.Clients.Group(id)
+                .SendAsync("ReceiveMessage", _serializator.SerializeWithCamelCase(transferModel));
         }
 
         [HttpPost]
@@ -137,7 +172,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
             }
 
             await _messageHub.Clients.Group(result.Value.ToString())
-                .SendAsync("DeleteMessage", JsonConvert.SerializeObject(new { chatId = id, messageId = result.Value }));
+                .SendAsync("DeleteMessage", _serializator.SerializeWithCamelCase(new { chatId = id, messageId = result.Value }));
 
             return Ok();
         }
@@ -153,7 +188,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
                 return;
 
             await _messageHub.Clients.Group(chatId.ToString()).SendAsync("HandlePinnedStateChanges",
-                JsonConvert.SerializeObject(new { chatId, messageId, state }));
+                _serializator.SerializeWithCamelCase(new { chatId, messageId, state }));
         }
     }
 }

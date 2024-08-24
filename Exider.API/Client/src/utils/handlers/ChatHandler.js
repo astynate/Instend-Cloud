@@ -1,19 +1,20 @@
 import ChatTypes from "../../services/cloud/pages/messages/widgets/chat/ChatTypes";
 import chatsState from "../../states/chats-state"
 import userState from "../../states/user-state";
+import { SpecialTypes } from "./SpecialType";
 
 class ChatHandler {
     static GetMessageUser = (message) => {
-        if (!message || message && !message.UserId) {
+        if (!message || message && !message.userId) {
             return {};
         }
 
-        if (message.UserId === userState.user.id) {
+        if (message.userId === userState.user.id) {
             return userState.user;
         }
 
         const user = chatsState.users
-            .find(x => x.Id === message.UserId);
+            .find(x => x.id === message.userId);
 
         if (!user) {
             return {};
@@ -27,11 +28,12 @@ class ChatHandler {
     }
 
     static GetChat(id) {
-        return chatsState.chats.find(x => x.directId === id || x.id === id || x.Id === id);
+        return chatsState.chats
+            .find(x => x && (x.directId === id || x.id === id || x.Id === id));
     }
 
     static GetChatHandlerByType = (chat) => {
-        let result = ChatTypes.NotSelect
+        let result = ChatTypes.notSelect;
 
         if (chat && chat.type) {
             return Object.values(ChatTypes).find(element => {
@@ -47,7 +49,7 @@ class ChatHandler {
 
     static GetChatType = (params) => {
         const regex = /#.*?-/g;
-        let result = ChatTypes.NotSelect;
+        let result = ChatTypes.notSelect;
 
         if (params.id) {
             return Object.values(ChatTypes).find(element => {
@@ -59,6 +61,45 @@ class ChatHandler {
         }
 
         return result;
+    }
+
+    static AdaptDirect = (directModel, messageModel, userPublic) => {
+        const chat = {
+            type: 'direct',
+            id: userPublic.id,
+            name: userPublic.nickname,
+            messages: [messageModel],
+            avatar: userPublic.avatar,
+            directId: directModel.id,
+            isAccepted: directModel.isAccepted,
+            ownerId: directModel.ownerId,
+            hasMore: true
+        }
+
+        return chat;
+    }
+
+    static AdaptGroup = (groupModel, messageModel) => {
+        if (!messageModel) {
+            messageModel = {
+                specialType: SpecialTypes.Alert,
+                text: 'Chat has beeen created.',
+                date: groupModel.date
+            };
+        }
+
+        const chat = {
+            type: 'group',
+            id: groupModel.id,
+            name: groupModel.name,
+            messages: [messageModel],
+            ownerId: groupModel.ownerId,
+            avatar: groupModel.avatar,
+            members: groupModel.members,
+            hasMore: true
+        }
+
+        return chat;
     }
 }
 

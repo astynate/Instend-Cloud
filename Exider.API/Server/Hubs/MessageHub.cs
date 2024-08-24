@@ -3,6 +3,7 @@ using Exider.Core.Dependencies.Repositories.Messenger;
 using Exider.Core.TransferModels;
 using Exider.Repositories.Messenger;
 using Exider.Services.External.FileService;
+using Exider.Services.Internal;
 using Exider.Services.Internal.Handlers;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
@@ -19,6 +20,8 @@ namespace Exider_Version_2._0._0.Server.Hubs
 
         private readonly IGroupsRepository _groupsRepository;
 
+        private readonly ISerializationHelper _serializator;
+
         private readonly IFileService _fileService;
 
         private readonly IChatBase[] _chatFactory = [];
@@ -29,7 +32,8 @@ namespace Exider_Version_2._0._0.Server.Hubs
             IMessengerReposiroty messengerReposiroty, 
             IFileService fileService, 
             IDirectRepository directRepository,
-            IGroupsRepository groupsRepository
+            IGroupsRepository groupsRepository,
+            ISerializationHelper serializator
         )
         {
             _requestHandler = requestHandler;
@@ -38,6 +42,7 @@ namespace Exider_Version_2._0._0.Server.Hubs
             _directRepository = directRepository;
             _chatFactory = [_directRepository];
             _groupsRepository = groupsRepository;
+            _serializator = serializator;
         }
 
         public record JoinTransferModel(string authorization, int count);
@@ -56,19 +61,19 @@ namespace Exider_Version_2._0._0.Server.Hubs
 
             foreach (DirectTransferModel directory in directs)
             {
-                await Groups.AddToGroupAsync(Context.ConnectionId, directory.directModel.Id.ToString());
+                await Groups.AddToGroupAsync(Context.ConnectionId, directory.model.Id.ToString());
             }
 
             foreach (GroupTransferModel group in groups)
             {
-                if (group.groupModel != null)
+                if (group.model != null)
                 {
-                    await Groups.AddToGroupAsync(Context.ConnectionId, group.groupModel.Id.ToString());
+                    await Groups.AddToGroupAsync(Context.ConnectionId, group.model.Id.ToString());
                 }
             }
 
             await Groups.AddToGroupAsync(Context.ConnectionId, userId.Value);
-            await Clients.Caller.SendAsync("GetChats", JsonConvert.SerializeObject(new { directs, groups }));
+            await Clients.Caller.SendAsync("GetChats", _serializator.SerializeWithCamelCase(new { directs, groups }));
         }
 
         public async Task ConnectToDirect(Guid id, string authorization)
@@ -84,8 +89,8 @@ namespace Exider_Version_2._0._0.Server.Hubs
             if (direct == null)
                 return;
 
-            await Groups.AddToGroupAsync(Context.ConnectionId, direct.directModel.Id.ToString());
-            await Clients.Caller.SendAsync("ReceiveMessage", JsonConvert.SerializeObject(direct));
+            await Groups.AddToGroupAsync(Context.ConnectionId, direct.model.Id.ToString());
+            await Clients.Caller.SendAsync("ReceiveMessage", _serializator.SerializeWithCamelCase(direct));
         }
 
         public record ConnectToGroupTM(Guid id, string authorization);
@@ -100,11 +105,11 @@ namespace Exider_Version_2._0._0.Server.Hubs
             GroupTransferModel? group = await _groupsRepository
                 .GetGroup(model.id, Guid.Parse(userId.Value));
 
-            if (group == null) 
+            if (group == null || group.model == null) 
                 return;
 
-            await Groups.AddToGroupAsync(Context.ConnectionId, group.groupModel.Id.ToString());
-            await Clients.Caller.SendAsync("ReceiveMessage", JsonConvert.SerializeObject(group.groupModel));
+            await Groups.AddToGroupAsync(Context.ConnectionId, group.model.Id.ToString());
+            await Clients.Caller.SendAsync("ReceiveMessage", _serializator.SerializeWithCamelCase(group));
         }
 
         public async Task ChangeAccessState(Guid id, string authorization, bool isAccept)
@@ -120,7 +125,7 @@ namespace Exider_Version_2._0._0.Server.Hubs
             if (state.IsFailure)
                 return;
 
-            await Clients.Group(id.ToString()).SendAsync("HandleAccessStateChange", JsonConvert.SerializeObject(new { id, state = state.Value }));
+            await Clients.Group(id.ToString()).SendAsync("HandleAccessStateChange", _serializator.SerializeWithCamelCase(new { id, state = state.Value }));
         }
     }
 }

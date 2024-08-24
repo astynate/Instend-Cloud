@@ -20,19 +20,19 @@ const Message = ({
         attachments, 
         sendingType = 0, 
         chatId,
-        SpecialType = SpecialTypes.None
+        specialType = SpecialTypes.None
     }) => {
 
     const types = [styles.first, styles.middle, styles.last, styles.single];
     const sendingTypes = [sending, sended, viewed];
 
     useEffect(() => {
-        if (type !== 'My' && sendingType === 1 && SpecialType === SpecialTypes.None) {
+        if (type !== 'My' && sendingType === 1 && specialType === SpecialTypes.None) {
             (async () => await instance.post(`/api/message/view?id=${id}&chatId=${chatId}`))();
         }
     }, []);
 
-    if (SpecialType === SpecialTypes.Alert) {
+    if (specialType === SpecialTypes.Alert) {
         return (
             <AlertMesssage message={text} />
         )

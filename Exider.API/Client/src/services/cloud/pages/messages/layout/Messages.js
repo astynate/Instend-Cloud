@@ -7,6 +7,7 @@ import { observer } from 'mobx-react-lite';
 import Chats from '../widgets/chats/Chats';
 import chatsState from '../../../../../states/chats-state';
 import { useParams } from 'react-router-dom';
+import ChatHandler from '../../../../../utils/handlers/ChatHandler';
 
 const Messages = observer((props) => {
   const params = useParams();
@@ -20,7 +21,7 @@ const Messages = observer((props) => {
   }, [props.setPanelState]);
 
   useEffect(() => { 
-    setChat(chatsState.chats.find(element => element.id === params.id));
+    setChat(ChatHandler.GetChat(params.id));
   }, [chatsState.chats, params, params.id])
   
   return (

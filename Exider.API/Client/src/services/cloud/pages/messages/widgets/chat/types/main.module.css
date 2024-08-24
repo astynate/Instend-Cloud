@@ -136,7 +136,14 @@
     color: var(--main-blue-color);
 }
 
-
 .reject {
     color: rgb(255, 57, 57);
+}
+
+.connecting {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

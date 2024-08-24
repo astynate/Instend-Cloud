@@ -5,6 +5,6 @@ namespace Exider.Core.Dependencies.Repositories.Messenger
 {
     public interface IChatBase
     {
-        Task<Result<DirectTransferModel>> SendMessage(Guid ownerId, Guid userId, string text);
+        Task<Result<MessengerTransferModelBase>> SendMessage(Guid ownerId, Guid userId, string text);
     }
 }

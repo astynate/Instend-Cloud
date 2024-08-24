@@ -55,7 +55,7 @@ export const ChangePinnedState = async (items, id) => {
 
 const IsDateExist = (elements) => {
     for (let index in elements) {
-        if (!elements[index] || !elements[index].Date) {
+        if (!elements[index] || !elements[index].date) {
             return false;
         }
     }
@@ -69,28 +69,28 @@ export const GetMessagePosition = (current, chat, index) => {
     const previous = chat.messages[index - 1];
     const next = chat.messages[index + 1];
 
-    const isMiddleMessage = previous && next && previous.UserId === current.UserId && next.UserId === current.UserId;
-    const isLastMessage = previous && previous.UserId === current.UserId;
-    const isFirstMessage = next && next.UserId === current.UserId;
+    const isMiddleMessage = previous && next && previous.userId === current.userId && next.userId === current.userId;
+    const isLastMessage = previous && previous.userId === current.userId;
+    const isFirstMessage = next && next.userId === current.userId;
 
     if (isMiddleMessage) {
-        if (IsDateExist([next, current]) && IsDayDiffrent(next.Date, current.Date)) {
+        if (IsDateExist([next, current]) && IsDayDiffrent(next.date, current.date)) {
             position = 2;
         } else {
-            if (IsDateExist([previous, current]) && IsDayDiffrent(previous.Date, current.Date)) {
+            if (IsDateExist([previous, current]) && IsDayDiffrent(previous.date, current.date)) {
                 position = 0;
             } else {
                 position = 1;
             }
         }
     } else if (isLastMessage) {
-        if (IsDateExist([previous, current]) && IsDayDiffrent(previous.Date, current.Date)) {
+        if (IsDateExist([previous, current]) && IsDayDiffrent(previous.date, current.date)) {
             position = 3;
         } else {
             position = 2;
         }
     } else if (isFirstMessage) {
-        if (IsDateExist([next, current]) && IsDayDiffrent(next.Date, current.Date)) {
+        if (IsDateExist([next, current]) && IsDayDiffrent(next.date, current.date)) {
             position = 3;
         } else {
             position = 0;
@@ -104,10 +104,10 @@ export const GetMessageDateIfItNessecery = (current, chat, index) => {
     let date = null;
     const previous = chat.messages[index - 1];
 
-    if (previous && previous.Date && current && current.Date) {
-        date = IsDayDiffrent(previous.Date, current.Date) === true ? ConvertDate(current.Date) : null;
-    } else if (current && current.Date) {
-        date = ConvertDate(current.Date);
+    if (previous && previous.date && current && current.date) {
+        date = IsDayDiffrent(previous.date, current.date) === true ? ConvertDate(current.date) : null;
+    } else if (current && current.date) {
+        date = ConvertDate(current.date);
     }
 
     return date;

@@ -20,11 +20,11 @@ import ChatTypes from '../chat/ChatTypes';
 import userState from '../../../../../../states/user-state';
 import applicationState from '../../../../../../states/application-state';
 
-const DeleteDirectory = async (id) => {
+export const DeleteDirectory = async (id) => {
     await instance.delete(`/api/directs?id=${id}`);
 }
 
-const LeaveGroup = async (id) => {
+export const LeaveGroup = async (id) => {
     await instance.delete(`/api/groups?id=${id}`);
 }
 
@@ -176,7 +176,7 @@ const Chats = observer(({isMobile, setOpenState}) => {
                             items={[
                                 {title: "Direct", callback: () => {setCreatePopUpState(true); setCreateOpenState(false)}},
                                 {title: "Group", callback: () => {setCreateGroupState(true); setCreateOpenState(false)}},
-                                {title: "Appication", callback: () => {setBotState(true); setCreateOpenState(false)}}
+                                {title: "Application", callback: () => {setBotState(true); setCreateOpenState(false)}}
                             ]}
                         />
                     </div>}
@@ -188,8 +188,8 @@ const Chats = observer(({isMobile, setOpenState}) => {
             <div className={styles.chatList}>
                 {chatsState.isChatsLoaded ? 
                     chatsState.chats.slice().sort((a, b) => {
-                        const lastMessageA = a.messages && a.messages.length > 0 ? a.messages[a.messages.length - 1].Date : 0;
-                        const lastMessageB = b.messages && b.messages.length > 0 ? b.messages[b.messages.length - 1].Date : 0;
+                        const lastMessageA = a.messages && a.messages.length > 0 ? a.messages[a.messages.length - 1].date : 0;
+                        const lastMessageB = b.messages && b.messages.length > 0 ? b.messages[b.messages.length - 1].date : 0;
                         return new Date(lastMessageB) - new Date(lastMessageA);
                     }).map((chat) => {
                         if (!chat || !chat.id) { return null; }

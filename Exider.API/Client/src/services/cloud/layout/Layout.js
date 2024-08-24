@@ -263,14 +263,19 @@ const Layout = observer(() => {
     messageWSContext.useSignalREffect(
         "ReceiveMessage",
         (data) => {
-            const { directModel, messageModel, userPublic, queueId } = JSON.parse(data);
+            const { model, messageModel, userPublic, queueId } = JSON.parse(data);
 
-            if (directModel && messageModel) {
-                chatsState.AddMessage(directModel, messageModel, userPublic, queueId);
+            if (model) {
+                chatsState.AddMessage(
+                    model, 
+                    messageModel, 
+                    userPublic, 
+                    queueId
+                );
             }
 
-            if (chatsState.draft && chatsState.draft.id && userPublic.Id === chatsState.draft.id) {
-                navigate(`/messages/${userPublic.Id}`);
+            if (chatsState.draft && chatsState.draft.id && userPublic.id === chatsState.draft.id) {
+                navigate(`/messages/${userPublic.id}`);
                 chatsState.setDraft(null);
             }
         }
@@ -311,6 +316,13 @@ const Layout = observer(() => {
         "ViewMessage",
         ({ id, chatId }) => {
             chatsState.ViewMessage(id, chatId);
+        }
+    );
+
+    messageWSContext.useSignalREffect(
+        "DeleteDirectory",
+        (id) => {
+            chatsState.DeleteChat(id, userState.user.id);
         }
     );
 

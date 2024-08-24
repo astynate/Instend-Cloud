@@ -30,10 +30,10 @@ const ChatPreview = observer(({chat, isPlaceholder, isActive, onClick, onContext
                     <div className={styles.text}>
                         <span className={styles.name}>{chat.name}</span>
                         {chat && chat.messages && chat.messages.length > 0 &&
-                            <span className={styles.lastMessage}>{chat.messages && chat.messages.length > 0 ? chat.messages[chat.messages.length - 1].Text : null}</span>}
+                            <span className={styles.lastMessage}>{chat.messages && chat.messages.length > 0 ? chat.messages[chat.messages.length - 1].text : null}</span>}
                     </div>
                     <div className={styles.status}>
-                        <span>{chat.messages && chat.messages.length > 0 ? ConvertDateToTime(chat.messages[chat.messages.length - 1].Date) : null}</span>
+                        <span>{chat.messages && chat.messages.length > 0 ? ConvertDateToTime(chat.messages[chat.messages.length - 1].date) : null}</span>
                     </div>
                 </div>
             </Link>

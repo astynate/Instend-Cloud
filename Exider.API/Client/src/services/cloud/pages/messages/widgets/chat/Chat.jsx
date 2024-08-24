@@ -21,14 +21,14 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
     const [open, setOpenState] = useState(false);
     const [prevHeight, SetPrevHeight] = useState(0);
     const [operation, setOperation] = useState(MessageOperations[0]);
-    const [currentChatType, setCurrentChatTypeState] = useState(ChatTypes.NotSelect);
+    const [currentChatType, setCurrentChatTypeState] = useState(ChatTypes.notSelect);
 
     useEffect(() => {
         if (params.id) {
             chatsState.setDraft(null);
             setCurrentChatTypeState(ChatHandler.GetChatHandlerByType(ChatHandler.GetChat(params.id)));
         } else {
-            setCurrentChatTypeState(chatsState.draft ? ChatTypes.Draft : ChatTypes.NotSelect);
+            setCurrentChatTypeState(chatsState.draft ? ChatTypes.draft : ChatTypes.notSelect);
         }
     }, [params]);
 
@@ -61,7 +61,7 @@ const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSende
                 close={() => setOpenState(false)}
                 title="Chat information"
             />} */}
-            {currentChatType !== ChatTypes.NotSelect && 
+            {currentChatType !== ChatTypes.notSelect && 
                 <currentChatType.object 
                     operation={operation}
                     setDefaultOperation={() => setOperation(MessageOperations[0])}

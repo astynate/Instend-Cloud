@@ -4,8 +4,8 @@ using Exider.Services.Internal.Handlers;
 using Exider_Version_2._0._0.Server.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
+using Exider.Services.Internal;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Messenger
 {
@@ -19,16 +19,20 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
         
         private readonly IRequestHandler _requestHandler;
 
+        private readonly ISerializationHelper _serialyzer;
+
         public DirectController
         (
             IDirectRepository directRepository, 
             IRequestHandler requestHandler,
-            IHubContext<MessageHub> messageHub
+            IHubContext<MessageHub> messageHub,
+            ISerializationHelper serialyzer
         )
         {
             _directRepository = directRepository;
             _requestHandler = requestHandler;
             _messageHub = messageHub;
+            _serialyzer = serialyzer;
         }
 
         [HttpGet]
@@ -46,7 +50,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
             MessageModel[] messages = await _directRepository
                 .GetLastMessages(destination, Guid.Parse(userId.Value), from, count);
 
-            return Ok(JsonConvert.SerializeObject(messages));
+            return Ok(_serialyzer.SerializeWithCamelCase(messages));
         }
 
         [Authorize]

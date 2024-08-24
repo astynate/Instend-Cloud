@@ -13,11 +13,12 @@ const MessageAttachments = ({messageId, attachments, sendingType}) => {
         if (sendingType === 0) {
             return attachment && attachment.type ? attachment.type.split('/')[1] : '';
         } else {
-            return attachment.Type;
+            return attachment.type;
         }
     }
 
-    const [mediaAtachments] = useState(attachments.filter(e => validateMediaTypes(GetType(sendingType, e))));
+    const [mediaAtachments] = useState(attachments
+        .filter(e => validateMediaTypes(GetType(sendingType, e))));
 
     return (
         <div 
@@ -28,26 +29,26 @@ const MessageAttachments = ({messageId, attachments, sendingType}) => {
                 const type = GetType(sendingType, attachment);
 
                 return (
-                    <div key={sendingType !== 0 ? attachment.Id : index + "attachement"} className={styles.attachmentsWrapper}>
+                    <div key={sendingType !== 0 ? attachment.id : index + "attachement"} className={styles.attachmentsWrapper}>
                         {FileAPI.imageTypes.includes(type.toLowerCase()) &&
                             <img 
-                                src={sendingType === 0 ? URL.createObjectURL(attachment) : `data:image/${type.toLowerCase()};base64,${attachment.Preview}`} 
+                                src={sendingType === 0 ? URL.createObjectURL(attachment) : `data:image/${type.toLowerCase()};base64,${attachment.preview}`} 
                                 draggable="false"
                                 className={styles.image}
                             />
                         }
                         {FileAPI.videoTypes.includes(type.toLowerCase()) &&
                             <video
-                                poster={Base64Handler.Base64ToUrlFormatPng(attachment.Preview)}
+                                poster={Base64Handler.Base64ToUrlFormatPng(attachment.preview)}
                                 className={styles.video}
                                 controls
                                 muted
                                 loop
                                 autoPlay
                                 type={`type-${index}`}
-                                src={sendingType === 0 ? URL.createObjectURL(attachment) : `/api/publictions/stream?publictionId=${messageId}&id=${attachment.Id}&type=3`}
+                                src={sendingType === 0 ? URL.createObjectURL(attachment) : `/api/publictions/stream?publictionId=${messageId}&id=${attachment.id}&type=3`}
                             >
-                                <source src={sendingType === 0 ? URL.createObjectURL(attachment) : `/api/publictions/stream?publictionId=${messageId}&id=${attachment.Id}&type=3`} />
+                                <source src={sendingType === 0 ? URL.createObjectURL(attachment) : `/api/publictions/stream?publictionId=${messageId}&id=${attachment.id}&type=3`} />
                             </video>
                         }
                     </div>

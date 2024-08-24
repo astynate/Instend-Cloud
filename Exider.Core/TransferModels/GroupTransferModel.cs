@@ -5,7 +5,7 @@ namespace Exider.Core.TransferModels
 {
     public class GroupTransferModel : MessengerTransferModelBase
     {
-        public GroupModel? groupModel;
+        public new GroupModel? model;
     }
 
     public class GroupMessageLink : LinkBase { }
