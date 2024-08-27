@@ -6,7 +6,7 @@ const PopUpItems = ({items}) => {
     const [active, setActive] = useState(0);
 
     return (
-        <div className={styles.itemsWrapper}>
+        <>
             <div className={styles.items}>
                 {items.map((element, index) => {
                     return (
@@ -20,14 +20,14 @@ const PopUpItems = ({items}) => {
                         </div>
                     );
                 })}
-                <div className={styles.item} id="next">
+                {/* <div className={styles.item} id="next">
                     <img src={next} draggable="false" />
-                </div>
+                </div> */}
             </div>
             <div className={styles.element}>
                 {(items[active].element)}
             </div>
-        </div>
+        </>
     );
 }
 

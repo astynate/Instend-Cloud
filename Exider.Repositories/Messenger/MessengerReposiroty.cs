@@ -163,31 +163,35 @@ namespace Exider.Repositories.Messenger
                         ))
                 .FirstOrDefaultAsync();
 
-            if (model != null)
+            if (model == null)
             {
-                if (model.userPublic.Avatar == null)
+                return null;
+            }
+
+            if (model.userPublic.Avatar == null)
+            {
+                model.userPublic.Avatar = Configuration.DefaultAvatar;
+            }
+            else
+            {
+                var avatar = await fileService.ReadFileAsync(model.userPublic.Avatar);
+
+                if (avatar.IsSuccess)
                 {
-                    model.userPublic.Avatar = Configuration.DefaultAvatar;
+                    model.userPublic.Avatar = Convert
+                        .ToBase64String(avatar.Value);
                 }
                 else
                 {
-                    var avatar = await fileService.ReadFileAsync(model.userPublic.Avatar);
-
-                    if (avatar.IsSuccess)
-                    {
-                        model.userPublic.Avatar = Convert.ToBase64String(avatar.Value);
-                    }
-                    else
-                    {
-                        model.userPublic.Avatar = Configuration.DefaultAvatar;
-                    }
+                    model.userPublic.Avatar = Configuration
+                        .DefaultAvatar;
                 }
+            }
 
-                if (model.messageModel != null)
-                {
-                    model.messageModel.attachments = await _attachmentsRepository
-                        .GetItemAttachmentsAsync(model.messageModel.Id);
-                }
+            if (model.messageModel != null)
+            {
+                model.messageModel.attachments = await _attachmentsRepository
+                    .GetItemAttachmentsAsync(model.messageModel.Id);
             }
 
             return model;

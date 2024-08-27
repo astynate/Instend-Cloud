@@ -1,5 +1,6 @@
 ﻿using Exider.Core.Models.Links;
 using Exider.Core.Models.Messenger;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Exider.Core.TransferModels
 {
@@ -8,5 +9,8 @@ namespace Exider.Core.TransferModels
         public new GroupModel? model;
     }
 
-    public class GroupMessageLink : LinkBase { }
+    [Table("group_message_links")] public class GroupMessageLink : LinkBase 
+    {
+        [Column("date")] public DateTime Date { get; set; } = DateTime.Now;
+    }
 }

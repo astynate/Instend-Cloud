@@ -1,0 +1,24 @@
+.subSystemLogo {
+    display: flex;
+    align-items: center;
+    user-select: none;
+}
+
+.subSystemLogo img {
+    height: 30px;
+    width: 30px;
+    filter: var(--main-filter);
+    margin-right: 2px;
+    object-fit: contain;
+}
+
+.subSystemLogo span {
+    font-size: 21px;
+    color: var(--main-font-color);
+    font-weight: 600;
+}
+
+.subSystemLogo span:last-child {
+    color: var(--main-paragraph-color);
+    font-weight: 500;
+}

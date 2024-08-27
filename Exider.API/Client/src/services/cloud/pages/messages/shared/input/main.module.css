@@ -29,7 +29,7 @@
     resize: none;
     margin-top: 0px;
     overflow-y: scroll;
-    padding-top: 12px;
+    padding-top: 13px;
     padding-bottom: 15px;
     margin-bottom: 0px;
     border-radius: 0px;
@@ -210,4 +210,10 @@
   width: 100%;
   bottom: 0;
   left: 0;
+}
+
+.createPopUpWindow {
+  position: absolute;
+  left: 10px;
+  bottom: 60px;
 }

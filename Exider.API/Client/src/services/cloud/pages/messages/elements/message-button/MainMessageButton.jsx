@@ -2,7 +2,13 @@ import { useRef } from 'react';
 import styles from './main.module.css';
 import { ButtonEffectHandler } from '../../../../../../utils/ui/ButtonEffectHandler';
 
-const MainMessageButton = ({image, callback = () => {}}) => {
+const MainMessageButton = ({
+        image, 
+        callback = () => {}, 
+        onMouseEnter = () => {},
+        onMouseLeave = () => {},
+    }) => {
+    
     const ref = useRef();
 
     return (
@@ -13,8 +19,10 @@ const MainMessageButton = ({image, callback = () => {}}) => {
                 ButtonEffectHandler(ref, event);
                 callback(event);
             }}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
         >
-            <img src={image} />
+            <img src={image} draggable="false" />
         </button>
     );
 }

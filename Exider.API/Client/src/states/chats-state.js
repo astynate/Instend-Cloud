@@ -49,7 +49,7 @@ class ChatsState {
             this.chats = [...chatsValue.groups
                 .map(element => {
                     if (element.model) {
-                        const chat = ChatHandler.AdaptGroup(element.model);
+                        const chat = ChatHandler.AdaptGroup(element.model, element.messageModel);
 
                         for (let index in element.model.members) {
                             if (!element.model.members[index]) {
@@ -66,6 +66,16 @@ class ChatsState {
                 })
                 .filter(e => e), ...this.chats];
         }
+
+        const uniqueIds = new Set();
+
+        this.chats = this.chats.filter(chat => {
+            if (uniqueIds.has(chat.id)) {
+                return false;
+            }
+            uniqueIds.add(chat.id);
+            return true; 
+        });
     }
 
     addGroup = (groupModel, messageModel=null) => {
@@ -120,20 +130,7 @@ class ChatsState {
         }
     }
 
-    SetLoadingMessage = (type, id, message, attachments) => {
-        let chat = {};
-
-        switch (type) {
-            case (ChatTypes.draft): {
-                chat = this.draft;
-                break;
-            }
-            default: {
-                chat = this.chats.find(element => element.id === id);
-                break;
-            }
-        }
-        
+    SetLoadingMessage = (chat, message, attachments) => {
         const queueId = this.messageQueueId;
 
         if (chat !== null && chat !== undefined) {
@@ -173,7 +170,7 @@ class ChatsState {
             const chatValue = ChatHandler.GetChat(chat.directId ?? chat.id);
 
             if (chatValue) {
-                if (userPublic.id === userState.user.id) {
+                if (message.userId === userState.user.id) {
                     chatValue.messages = chatValue.messages.filter(e => e.queueId !== queueId);
                 }
 
@@ -197,7 +194,7 @@ class ChatsState {
             this.isBusy = true;
 
             await instance
-                .get(`/api/directs?destination=${chatId}&from=${chat.messages.length}&count=${20}`)
+                .get(`/api/${chat.type}s?destination=${chatId}&from=${chat.messages.length}&count=${20}`)
                 .then(response => {
                     if (!response || !response.data) {
                         return;

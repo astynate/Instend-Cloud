@@ -146,6 +146,7 @@ const Group = observer(({operation, setDefaultOperation, chat, scrollElement}) =
                 operation={operation}
                 setDefaultOperation={setDefaultOperation}
                 chat={chat}
+                type={1}
             />
         </>
     );

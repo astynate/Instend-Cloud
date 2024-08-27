@@ -18,15 +18,14 @@ export const SendMessage = async (
     let form = new FormData();
 
     if (chatsState.draft) {
-        chatsState.SetLoadingMessage(ChatTypes.draft, 
-            ChatHandler.GetChatId(chat), message, attachments);
-
+        chatsState.SetLoadingMessage(chatsState.draft, message, attachments);
         form.append('id', chatsState.draft.id);
     }
 
     if (!chatsState.draft) {
         form.append('id', chat.id);
-        form.append('queueId', chatsState.SetLoadingMessage(ChatHandler.GetChatId(chat), message, attachments));
+        form.append('queueId', chatsState
+            .SetLoadingMessage(chat, message, attachments));
     }
 
     for (let i = 0; i < attachments.length; i++){

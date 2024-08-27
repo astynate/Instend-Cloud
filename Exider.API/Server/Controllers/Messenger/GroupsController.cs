@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Exider.Services.External.FileService;
+using Microsoft.AspNetCore.Authorization;
+using Exider.Core.Models.Messages;
+using Exider.Services.Internal;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Messenger
 {
@@ -19,20 +22,24 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
 
         private readonly IImageService _imageService;
 
+        private readonly ISerializationHelper _serialyzer;
+
         private readonly IHubContext<MessageHub> _messageHub;
 
         public GroupsController
         (
-            IGroupsRepository groupsRepository, 
-            IRequestHandler requestHandler, 
+            IGroupsRepository groupsRepository,
+            IRequestHandler requestHandler,
             IHubContext<MessageHub> messageHub,
-            IImageService imageService
+            IImageService imageService,
+            ISerializationHelper serialyzer
         )
         {
             _groupsRepository = groupsRepository;
             _requestHandler = requestHandler;
             _messageHub = messageHub;
             _imageService = imageService;
+            _serialyzer = serialyzer;
         }
 
         [HttpPost]
@@ -76,42 +83,54 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
             if (userId.IsFailure)
+                return BadRequest(userId.Error);
+
+            if (users.Length == 0)
+                return BadRequest("TODO: delete group!");
+
+            var group = await _groupsRepository.GetGroup(id, Guid.Parse(userId.Value));
+
+            if (group == null)
+                return Conflict("Group not found");
+
+            var result = await _groupsRepository.SetGroupMembers(id, users);
+
+            if (result.IsFailure)
+                return Conflict(result.Error);
+
+            foreach (var user in result.Value.membersToAdd)
+            {
+                await _messageHub.Clients
+                    .Group(user.ToString())
+                    .SendAsync("ConnetToGroup", id);
+            }
+
+            foreach (var user in result.Value.membersToDelete)
+            {
+                await _messageHub.Clients
+                    .Group(id.ToString())
+                    .SendAsync("LeaveGroup", JsonConvert.SerializeObject(new { id, user }));
+            }
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("/api/groups")]
+        public async Task<IActionResult> GetLastMessages(Guid destination, int from, int count)
+        {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
             {
                 return BadRequest(userId.Error);
             }
 
-            if (users.Length > 0)
-            {
-                var group = await _groupsRepository.GetGroup(id, Guid.Parse(userId.Value));
+            MessageModel[] messages = await _groupsRepository
+                .GetLastMessages(destination, Guid.Parse(userId.Value), from, count);
 
-                if (group == null)
-                {
-                    return Conflict("Group not found");
-                }
-
-                var result = await _groupsRepository.SetGroupMembers(id, users);
-
-                if (result.IsFailure) 
-                {  
-                    return Conflict(result.Error);
-                }
-
-                foreach (var user in result.Value.membersToAdd) 
-                {
-                    await _messageHub.Clients
-                        .Group(user.ToString())
-                        .SendAsync("ConnetToGroup", id);
-                }
-
-                foreach (var user in result.Value.membersToDelete)
-                {
-                    await _messageHub.Clients
-                        .Group(id.ToString())
-                        .SendAsync("LeaveGroup", JsonConvert.SerializeObject(new { id, user }));
-                }
-            }
-
-            return Ok();
+            return Ok(_serialyzer.SerializeWithCamelCase(messages));
         }
     }
 }

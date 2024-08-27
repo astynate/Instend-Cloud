@@ -9,6 +9,7 @@ using Exider.Core.Models.Messages;
 using Exider.Core.Models.Messenger;
 using Exider.Core.Models.Public;
 using Exider.Core.Models.Storage;
+using Exider.Core.TransferModels;
 using Microsoft.EntityFrameworkCore;
 using static Exider.Core.Models.Links.AlbumLinks;
 
@@ -41,6 +42,7 @@ namespace Exider.Core
         public DbSet<GroupModel> Groups { get; set; } = null!;
         public DbSet<GroupMemberLink> GroupMemberLink { get; set; } = null!;
         public DbSet<AttachmentModel> Attachments { get; set; } = null!;
+        public DbSet<GroupMessageLink> GroupMessageLink { get; set; } = null!;
         public DbSet<AttachmentCommentLink> CommentAttachments { get; set; } = null!;
         public DbSet<AlbumViewLink> ViewsLinks { get; set; } = null!;
         public DbSet<MessageAttachmentLink> MessageAttachmentLinks { get; set; } = null!;

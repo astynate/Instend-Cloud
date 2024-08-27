@@ -6,7 +6,7 @@
     outline: none;
     background: none;
     cursor: pointer;
-    opacity: 0.5;
+    opacity: 0.3;
     display: flex;
     align-items: center;
     position: relative;
@@ -16,12 +16,23 @@
 }
 
 .button img {
-    height: 45%;
-    width: 45%;
+    height: 50%;
+    width: 50%;
     object-fit: contain;
     filter: var(--main-filter);
+    transition: 0.15s ease;
 }
 
 .button:hover {
     opacity: 1;
+}
+
+.button:hover img {
+    height: 55%;
+    width: 55%;
+}
+
+.button:active img {
+    height: 49%;
+    width: 49%;
 }

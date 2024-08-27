@@ -41,7 +41,7 @@
 }
 
 .content[id="placeholder"] {
-    background: var(--main-accent-color);
+    background: var(--pop-up-accent-color);
 }
 
 .content:active {
@@ -93,7 +93,7 @@
 .file {
     height: 100%;
     width: 100%;
-    background: var(--main-accent-color);
+    background: var(--pop-up-accent-color);
     color: var(--main-blue-color);
     border-radius: 6px;
     display: flex;
