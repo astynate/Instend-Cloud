@@ -4,9 +4,12 @@ import { Link } from 'react-router-dom';
 import { ConvertDate } from '../../../../../../utils/DateHandler';
 import system from './images/gear.png';
 import Loader from '../../../../shared/loader/Loader';
+import SelectUIElements from '../../../../elements/select/SelectUIElements';
 
 const Folder = (props) => {
   const [files, setFiles] = useState([]);
+  const [isSelected, setSelectedState] = useState(false);
+  const [isSelectedOpen, setSelectOpenState] = useState(false);
 
   useEffect(() => {
     if (props.folder && !props.folder.isLoading) {
@@ -30,7 +33,6 @@ const Folder = (props) => {
           className={styles.wrapper} 
           id={props.isSelected === true ? 'selected' : null} 
           onContextMenu={props.onContextMenu}
-          onClick={props.callback}
         >
         <div className={styles.content} id='loading'>
           <div className={styles.loader}>
@@ -52,14 +54,29 @@ const Folder = (props) => {
     )
   } else {
     return (
-      <Link to={`/cloud/${props.id}`} data={props.folder.id}>
+      <Link 
+        to={`/cloud/${props.id}`} 
+        data={props.folder.id} 
+        onClick={props.isPreventDefault ? (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+        } : () => {}}
+      >
         <div 
           className={styles.wrapper} 
           id={props.isSelected === true ? 'selected' : null} 
           onContextMenu={props.onContextMenu}
-          onClick={props.callback}
+          onMouseEnter={() => setSelectOpenState(true)}
+          onMouseLeave={() => setSelectOpenState(false)}
         >
-          <div className={styles.content}>
+          <SelectUIElements 
+            isSelected={isSelected}
+            setSelectedState={setSelectedState}
+            isSelectedOpen={isSelectedOpen}
+            setSelectedFiles={props.setSelectedFolders}
+            element={props.folder ?? {id: undefined}}
+          />
+          <div className={styles.content} onClick={props.callback}>
             {(files)}
           </div>
           <div className={styles.description}>

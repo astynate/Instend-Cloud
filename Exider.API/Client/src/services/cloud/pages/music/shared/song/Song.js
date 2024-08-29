@@ -40,7 +40,7 @@ const Song = observer(({index, song, isPlaying, isLoading, isShort, isSelect, se
                 {isShort ? 
                     <div className={styles.artistName}>
                         <span className={styles.item} id='name'>{song && song.title ? song.title : song && song.name ? song.name : 'Not set'}</span>
-                        <span className={styles.item}>{song && song.artist ? song.artist : null}</span>
+                        <span className={styles.item}>{song && song.artist ? song.artist : 'Unknown'}</span>
                     </div>
                 : 
                     <span className={styles.item}>{song && song.title ? song.title : song && song.name ? song.name : 'Not set'}</span>

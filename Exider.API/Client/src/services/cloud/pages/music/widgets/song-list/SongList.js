@@ -10,7 +10,7 @@ import { Delete } from '../../../cloud/api/FolderRequests';
 import EditSong from '../../features/edit-song/EditSong';
 import applicationState from '../../../../../../states/application-state';
 
-const SongList = observer(({songs, isHeaderless, isMobile}) => {
+const SongList = observer(({songs, isHeaderless, isMobile, isHasIndex = true}) => {
     const [activeItems, setActiveItems] = useState([]);
     const [selectedItems, setSelectedItems] = useState([]);
     const [isCreateAlbumOpen, setCreateAlbumOpen] = useState(false);
@@ -71,7 +71,7 @@ const SongList = observer(({songs, isHeaderless, isMobile}) => {
                     return (
                         <Song 
                             key={index}
-                            index={applicationState.isMobile ? null : index + 1}
+                            index={applicationState.isMobile ? null : isHasIndex ? index + 1 : null}
                             song={element}
                             isSelect={selectedItems.map(x => x.id).includes(element.id)}
                             isPlaying={element.id === musicState.GetCurrentSongId() && musicState.isPlaying}

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './main.module.css';
 import Preview from '../../../../../preview/layout/Preview';
 import { instance } from '../../../../../../state/Interceptors';
@@ -8,10 +8,10 @@ import galleryState from '../../../../../../states/gallery-state';
 import AddToAlbum from '../../../../process/add-to-album/AddToAlbum';
 import { Delete } from '../../../cloud/api/FolderRequests';
 import Loader from '../../../../shared/loader/Loader';
-import { toJS } from 'mobx';
 import { AddPhotosInAlbum } from '../../api/GalleryRequests';
 import { observer } from 'mobx-react-lite';
 import applicationState from '../../../../../../states/application-state';
+import SelectUIElements from '../../../../elements/select/SelectUIElements';
 
 const PhotoList = observer((props) => {
     const [gridTemplateColumns, setGridTemplateColumns] = useState('repeat(auto-fill, minmax(200px, 1fr))');
@@ -89,7 +89,7 @@ const PhotoList = observer((props) => {
     }, []);
 
     return (
-        <div>
+        <>
             {isPreview && 
                 <Preview
                     close={() => setPreviewState(false)} 
@@ -138,6 +138,10 @@ const PhotoList = observer((props) => {
                                     data={element.id}
                                     onContextMenu={() => setCurrentIndex(index)}
                                 >
+                                    <SelectUIElements 
+
+                                        isSelectedOpen={true}
+                                    />
                                     <img 
                                         src={`data:image/png;base64,${element.fileAsBytes ? element.fileAsBytes : element.preview}`}
                                         draggable="false"
@@ -167,7 +171,7 @@ const PhotoList = observer((props) => {
                 single={single}
                 multiple={multiple}
             />
-        </div>
+        </>
     );
 });
 

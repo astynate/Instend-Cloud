@@ -7,6 +7,7 @@
     flex-direction: column;
     grid-gap: 10px;
     cursor: pointer;
+    position: relative;
 }
 
 .wrapper:hover .description {
@@ -77,6 +78,7 @@
     overflow: hidden;
     max-width: 70%;
     text-wrap: nowrap;
+    font-weight: 500;
     /* max-width: 16px; */
 }
 

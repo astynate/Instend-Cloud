@@ -3,9 +3,12 @@ import styles from './main.module.css';
 import { ConvertDate } from '../../../../../../utils/DateHandler';
 import Loader from '../../../../shared/loader/Loader';
 import { CircularProgress } from '@mui/joy';
+import SelectUIElements from '../../../../elements/select/SelectUIElements';
 
 const File = (props) => {
   const [aspectRatio, setAspectRatio] = useState(1);
+  const [isSelected, setSelectedState] = useState(false);
+  const [isSelectedOpen, setSelectedOpenState] = useState(false);
 
   useLayoutEffect(() => {
     var img = new Image();
@@ -81,7 +84,16 @@ const File = (props) => {
         onClick={props.callback} 
         onContextMenu={props.onContextMenu}
         data={props.file.id}
+        onMouseEnter={() => setSelectedOpenState(true)}
+        onMouseLeave={() => setSelectedOpenState(false)}
       >
+        <SelectUIElements 
+          isSelected={isSelected} 
+          setSelectedState={setSelectedState}
+          isSelectedOpen={isSelectedOpen}
+          setSelectedFiles={props.setSelectedFiles ? props.setSelectedFiles : () => {}}
+          element={props.file}
+        />
         <div className={styles.content} id={props.isSelected === true ? 'selected' : null}>
           {props.image != null ? 
             <img 

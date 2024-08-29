@@ -13,6 +13,8 @@ import ChatHandler from '../../../../../../utils/handlers/ChatHandler';
 import { SendMessage } from './MessageAPI';
 import PopUpList from '../../../../shared/ui-kit/pop-up-list/PopUpList';
 import YexiderCloud from '../../../../sub-systems/yexider-cloud/YexiderCloud';
+import File from '../../../cloud/shared/file/File';
+import Folder from '../../../cloud/shared/folder/Folder';
 
 const Input = ({operation, setDefaultOperation, chat, type = 0}) => {
     const [text, setText] = useState('');
@@ -20,6 +22,8 @@ const Input = ({operation, setDefaultOperation, chat, type = 0}) => {
     const [isCreatePopUpOpen, setCreatePopUpState] = useState(false);
     const [timer, setTimer] = useState(null);
     const [isYexiderCloud, setYexiderCloudState] = useState(false);
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [selectedFolders, setSelectedFolders] = useState([]);
     const textAreaRef = React.createRef();
     const validOperations = [MessageOperations.Edit, MessageOperations.Reply];
 
@@ -89,24 +93,12 @@ const Input = ({operation, setDefaultOperation, chat, type = 0}) => {
             <YexiderCloud 
                 open={isYexiderCloud} 
                 close={() => setYexiderCloudState(false)} 
+                selectedFiles={selectedFiles}
+                setSelectedFiles={setSelectedFiles}
+                setSelectedFolders={setSelectedFolders}
             />
             <div className={styles.input}>
                 <div className={styles.wrapper}>
-                    {/* {validOperations.includes(operation) && message && <div className={styles.reply}>
-                        <img className={styles.replyImage} src={reply} />
-                        <div className={styles.replyInformation}>
-                            <span className={styles.replyName}>{
-                                operation === MessageOperations.Reply ? 
-                                    `Reply to ${ChatHandler.GetMessageUser(message).nickname ?? ChatHandler.GetMessageUser(message).Nickname}` 
-                                : 
-                                    'Edit'
-                            }</span>
-                            <span className={styles.replyMessage}>{message.Text ?? "Message"}</span>
-                        </div>
-                        <button className={styles.replyReject} onClick={() => setDefaultOperation()}>
-                            <img className={styles.replyImage} src={reject} />
-                        </button>
-                    </div>} */}
                     {isCreatePopUpOpen && 
                         <div 
                             className={styles.createPopUpWindow} 
@@ -123,7 +115,41 @@ const Input = ({operation, setDefaultOperation, chat, type = 0}) => {
                             />
                         </div>}
                     <input type="file" id="message-file-picker" style={{ display: 'none' }} multiple onChange={handleFileChange} />
-                    <div className={styles.attachmentsWrapper} id={attachments.length > 0 ? 'open' : null}>
+                    <div 
+                        className={styles.attachmentsWrapper} 
+                        id={(attachments.length > 0 || 
+                             selectedFiles.length > 0 || 
+                             selectedFolders.length > 0) 
+                        ? 
+                            'open' : null}
+                    >
+                        {selectedFolders.map((element) =>
+                            <div className={styles.fileWrapper} key={element.id}>
+                                <Folder 
+                                    id={element.id}
+                                    isSelected={false}
+                                    folder={element}
+                                    name={element.name} 
+                                    time={element.creationTime}
+                                    isLoading={element.isLoading}
+                                    setSelectedFolders={setSelectedFolders}
+                                />
+                            </div>
+                        )}
+                        {selectedFiles.map((element) =>
+                            <div className={styles.fileWrapper} key={element.id}>
+                                <File
+                                    name={element.name}
+                                    file={element}
+                                    time={element.lastEditTime}
+                                    image={element.preview == "" ? null : element.preview}
+                                    type={element.type}
+                                    isLoading={element.isLoading}
+                                    isSelected={false}
+                                    setSelectedFiles={setSelectedFiles}
+                                />
+                            </div>
+                        )}
                         {attachments.map((file, index) => {
                             const type = file.type ? file.type.split('/')[0] : null;
 

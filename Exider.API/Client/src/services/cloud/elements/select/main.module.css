@@ -1,0 +1,33 @@
+.select {
+    top: -5px;
+    right: -10px;
+    height: 40px;
+    width: 40px;
+    background: rgba(88, 88, 88, 0.5);
+    backdrop-filter: blur(10px);
+    outline: 2px solid rgb(255, 255, 255);
+    outline-offset: -7px;
+    position: absolute;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    user-select: none;
+}
+
+.checkMark {
+    height: 28px;
+    width: 28px;
+    background: white;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.checkMark img {
+    height: 15px;
+    width: 15px;
+    /* filter: invert(100%); */
+}
