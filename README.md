@@ -1,4 +1,4 @@
-# [Yexider][exider] — The best place for your memories.
+# [Instend][exider] — The best place for your memories.
 
 Welcome to Instend — the best place for your memories. This service provide an ability to store and exchange your photos, music and GNC currency only in one place. Also you can blog, chat keep all sorted in collections!
 
