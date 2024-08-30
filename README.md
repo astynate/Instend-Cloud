@@ -1,6 +1,6 @@
 # [Instend][exider] — The best place for your memories.
 
-Welcome to Instend — the best place for your memories. This service provide an ability to store and exchange your photos, music and GNC currency only in one place. Also you can blog, chat keep all sorted in collections!
+Welcome to Instend! The service provides the ability to store and exchange your photos, music and GNC currency in just one place. You can also blog, chat, store everything in collections!
 
 [![Preview of Exider][preview_image]][preview_image_url]
 
