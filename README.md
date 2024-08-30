@@ -1,6 +1,6 @@
 # [Yexider][exider] — The best place for your memories.
 
-Welcome to Exider Cloud — first cloud storage with neural newtworks! It is a unique platform that offers a convenient and secure place to store and share important information. We are proud that our project is open source, which allows us to collaborate with the community and create better solutions together.
+Welcome to Instend — the best place for your memories. This service provide an ability to store and exchange your photos, music and GNC currency only in one place. Also you can blog, chat keep all sorted in collections!
 
 [![Preview of Exider][preview_image]][preview_image_url]
 
