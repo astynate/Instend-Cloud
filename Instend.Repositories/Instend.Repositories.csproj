@@ -15,7 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Exider.Core\Exider.Core.csproj" />
+	  <ProjectReference Include="..\Instend.Core\Instend.Core.csproj" />
 	</ItemGroup>
 
 </Project>

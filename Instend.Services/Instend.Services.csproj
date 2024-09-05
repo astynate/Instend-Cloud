@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Exider.Core\Exider.Core.csproj" />
-    <ProjectReference Include="..\Exider.Repositories\Exider.Repositories.csproj" />
+    <ProjectReference Include="..\Instend.Core\Instend.Core.csproj" />
+    <ProjectReference Include="..\Instend.Repositories\Instend.Repositories.csproj" />
   </ItemGroup>
 
   <ItemGroup>

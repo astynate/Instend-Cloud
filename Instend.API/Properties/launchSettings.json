@@ -1,13 +1,13 @@
 {
   "profiles": {
-    "Exider_Version_2._0._0": {
+    "Instend": {
       "commandName": "Project",
       "launchBrowser": false,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
       },
-      "applicationUrl": "http://192.168.1.63:5000;http://192.168.1.63:5200"
+      "applicationUrl": "http://localhost:5000;http://localhost:5200"
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -20,11 +20,11 @@
     "WSL": {
       "commandName": "WSL2",
       "launchBrowser": true,
-      "launchUrl": "http://192.168.1.63:5000",
+      "launchUrl": "https://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy",
-        "ASPNETCORE_URLS": "http://192.168.1.63:7128;http://192.168.1.63:5200"
+        "ASPNETCORE_URLS": "https://localhost:7128;https://localhost:5200"
       },
       "distributionName": ""
     }
@@ -33,7 +33,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://192.168.1.63:7128",
+      "applicationUrl": "https://localhost:7128",
       "sslPort": 44353
     }
   }

@@ -1,6 +1,10 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
+const fs = require('fs');
 
-const target = 'http://192.168.1.63:5000';
+const configuration = JSON.parse(fs.readFileSync('../../Properties/launchSettings.json', 'utf8'));
+const target = 'http://localhost:5000';
+
+//console.log(configuration);
 
 const context = [
     "/accounts",

@@ -21,10 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Exider.API\Exider.API.csproj" />
-    <ProjectReference Include="..\Exider.Core\Exider.Core.csproj" />
-    <ProjectReference Include="..\Exider.Repositories\Exider.Repositories.csproj" />
-    <ProjectReference Include="..\Exider.Services\Exider.Services.csproj" />
+    <ProjectReference Include="..\Instend.API\Instend.API.csproj" />
+    <ProjectReference Include="..\Instend.Core\Instend.Core.csproj" />
+    <ProjectReference Include="..\Instend.Repositories\Instend.Repositories.csproj" />
+    <ProjectReference Include="..\Instend.Services\Instend.Services.csproj" />
   </ItemGroup>
 
 </Project>
