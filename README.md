@@ -4,6 +4,6 @@ Welcome to Instend! The service provides the ability to store and exchange your 
 
 [![Preview of Exider][preview_image]][preview_image_url]
 
-[exider]: https://github.com/astynate/Exider-Version-2.0.0
-[preview_image]: https://github.com/astynate/Yexider-Cloud/blob/master/tech-doc/images/Yexider.png
-[preview_image_url]: https://github.com/astynate/Yexider-Cloud/blob/master/tech-doc/images/Yexider.png
+[exider]: https://github.com/astynate/Yexider-Cloud
+[preview_image]: https://github.com/astynate/Yexider-Cloud/blob/master/Instend.Documentation/images/Yexider.png
+[preview_image_url]: https://github.com/astynate/Yexider-Cloud/blob/master/Instend.Documentation/images/Yexider.png
