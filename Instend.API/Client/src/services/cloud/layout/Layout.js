@@ -88,7 +88,11 @@ const Layout = observer(() => {
     const [errorMessage, setErrorMessage] = useState('');
     const [song, setSong] = useState(null);
     const navigate = useNavigate();
-    const url = 'http://192.168.1.63:5000' // 'http://localhost:5000/message-hub'
+    const url = 'http://localhost:5000';
+
+    process.env.SERVER_URL = 'http://localhost:5000';
+
+    console.log(process.env.APPDATA)
 
     useEffect(() => {
         setSong(GetCurrentSong());
@@ -114,8 +118,6 @@ const Layout = observer(() => {
         }
     }, [isError, applicationState, applicationState.errorQueue, applicationState.errorQueue.length]);
 
-    /////////////////////////////////////////////////////////////////////////////////
-
     storageWSContext.useSignalREffect(
         "CreateFolder",
         async ([folder, queueId]) => {
@@ -135,8 +137,6 @@ const Layout = observer(() => {
         "DeleteFolder",
         (data) => {storageState.DeleteFolder(data)}
     );
-
-    /////////////////////////////////////////////////////////////////////////////////
 
     storageWSContext.useSignalREffect(
         "UploadFile",
@@ -163,8 +163,6 @@ const Layout = observer(() => {
             musicState.DeleteSong(data);
         }
     );
-
-    /////////////////////////////////////////////////////////////////////////////////
 
     galleryWSContext.useSignalREffect(
         "AddToAlbum",
@@ -202,8 +200,6 @@ const Layout = observer(() => {
         }
     );
 
-    /////////////////////////////////////////////////////////////////////////////////
-
     galleryWSContext.useSignalREffect(
         "AddComment",
         ({comment, user, albumId, queueId}) => {
@@ -225,8 +221,6 @@ const Layout = observer(() => {
         }
     );
 
-    /////////////////////////////////////////////////////////////////////////////////
-
     galleryWSContext.useSignalREffect(
         "AddComment",
         ({comment, user, albumId, queueId}) => {
@@ -240,8 +234,6 @@ const Layout = observer(() => {
             galleryState.ReplaceLoadingComment({comment: comment, user: user}, queueId, albumId);
         }
     );
-
-    /////////////////////////////////////////////////////////////////////////////////
 
     storageWSContext.useSignalREffect(
         "UpdateOccupiedSpace",
@@ -249,8 +241,6 @@ const Layout = observer(() => {
             userState.ChangeOccupiedSpace(space);
         }
     );
-
-    /////////////////////////////////////////////////////////////////////////////////
 
     messageWSContext.useSignalREffect(
         "GetChats",
@@ -346,8 +336,6 @@ const Layout = observer(() => {
         }
     );
 
-    /////////////////////////////////////////////////////////////////////////////////
-
     useEffect(() => {
         const handleResize = () => {
             setWindowWidth(window.innerWidth);
@@ -370,7 +358,7 @@ const Layout = observer(() => {
 
     return (
         <messageWSContext.Provider url={url + '/message-hub'}>
-            <storageWSContext.Provider url={url + '/storage-hub'}>
+            <storageWSContext.Provider url={url +'/storage-hub'}>
                 <galleryWSContext.Provider url={url + '/gallery-hub'}>
                     <layoutContext.Provider value={{song: song}}>
                         <div className='cloud-wrapper' style={{'--disconnected-height': applicationState.connectionState === 0 ? '0px' : '15px'}}>

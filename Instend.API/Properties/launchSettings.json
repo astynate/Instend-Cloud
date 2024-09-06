@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Instend": {
+    "Instend-Local": {
       "commandName": "Project",
       "launchBrowser": false,
       "environmentVariables": {

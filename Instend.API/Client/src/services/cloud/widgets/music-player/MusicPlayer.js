@@ -1,13 +1,52 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
 import { observer } from 'mobx-react-lite';
 import musicState from '../../../../states/music-state';
-import { instance } from '../../../../state/Interceptors';
 import { convertSecondsToTicks, convertTicksToSeconds } from '../../../../utils/TimeHandler';
+import proxyURLProvider from '../../../../ProxyURLProvider';
 
 const MusicPlayer = observer(() => {
     const { isPlaying } = musicState;
     const audioRef = useRef(null);
+    const [isAvailable, setAvailableState] = useState(true);
+
+    console.log(proxyURLProvider.serverUrl);
+
+    const StartPlaying = () => {
+        if (isAvailable && audioRef.current) {
+            let playPromise = audioRef.current.play();
+            setAvailableState(false);
+         
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    setAvailableState(true);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            } else {
+                setAvailableState(true);
+            }
+        }
+    }
+
+    const StopPlaying = () => {
+        if (isAvailable && audioRef.current) {
+            setAvailableState(false);
+            let pausePromise = audioRef.current.pause();
+         
+            if (pausePromise !== undefined) {
+                pausePromise.then(_ => {
+                    setAvailableState(true);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            } else {
+                setAvailableState(true);
+            }
+        }
+    }
 
     const handleTimeUpdate = () => {
         musicState.setTime(convertSecondsToTicks(audioRef.current.currentTime));
@@ -38,7 +77,7 @@ const MusicPlayer = observer(() => {
             audio.currentTime = 0;
 
             if (musicState.repeatState === 2) {
-                audio.play();
+                StartPlaying();
             }
             
             return;
@@ -50,17 +89,15 @@ const MusicPlayer = observer(() => {
     }, [musicState.time]);
 
     useEffect(() => {
-        if (isPlaying && audioRef.current) {
-            audioRef.current.play();
-        } else if (!isPlaying && audioRef.current) {
-            audioRef.current.pause();
+        if (isPlaying) {
+            StartPlaying();
+        } else{
+            StopPlaying();
         }
     }, [isPlaying]);
     
     useEffect(() => {
-        if (isPlaying && audioRef.current) {
-            audioRef.current.play();
-        }
+        StartPlaying();
     }, [musicState.songQueue, musicState.currentSongIndex]);
 
     return (

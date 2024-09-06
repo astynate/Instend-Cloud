@@ -5,7 +5,7 @@ const SubSystemLogo = ({title}) => {
     return (
         <div className={styles.subSystemLogo}>
             <img src={logo} draggable="false" />
-            <span>Yexider&nbsp;</span>
+            <span>Instend&nbsp;</span>
             <span>{title}</span>
         </div>
     );
