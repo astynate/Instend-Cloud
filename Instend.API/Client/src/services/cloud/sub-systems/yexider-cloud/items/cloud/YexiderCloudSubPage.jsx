@@ -5,13 +5,8 @@ import Folder from '../../../../pages/cloud/shared/folder/Folder';
 import styles from './main.module.css';
 import { observer } from 'mobx-react-lite';
 
-const YexiderCloudSubPage = observer(({setSelectedFiles, setSelectedFolders}) => {
-    const [folderId, setFolderId] = useState(null);
+const YexiderCloudSubPage = observer(({setSelectedFiles, setSelectedFolders, setFolderId, folderId}) => {
     const { folders, files } = storageState;
-
-    useEffect(() => {
-        storageState.SetFolderItemsById(folderId);
-    }, [folderId]);
 
     return (
         <div className={styles.wrapper}>

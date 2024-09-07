@@ -22,7 +22,7 @@ const Messages = observer((props) => {
 
   useEffect(() => { 
     setChat(ChatHandler.GetChat(params.id));
-  }, [chatsState.chats, params, params.id])
+  }, [chatsState.chats, params, params.id]);
   
   return (
     <Content>

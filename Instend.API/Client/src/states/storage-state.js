@@ -11,9 +11,6 @@ export const AdaptId = (id) => {
 export const SystemFolders = ["Music", "Photos", "Trash"]
 
 class StorageState {
-
-    ///////////////////////////////////////////////////////////////////////////////////////////
-
     files = {};
     folders = {};
     path = [];
@@ -24,13 +21,9 @@ class StorageState {
     countPhotos = 0;
     countSongs = 0;
 
-    ///////////////////////////////////////////////////////////////////////////////////////////
-
     constructor() {
         makeAutoObservable(this);
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////
 
     IsFolderExisitInFolders(folder) {
         return folder && folder.folderId && this.folders[AdaptId(folder.folderId)];
@@ -40,14 +33,15 @@ class StorageState {
         return folder && folder.folderId && this.files[AdaptId(folder.folderId)];
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////
-
     FindFileById(id) {
         return Object.values(this.files).flat()
             .find(element => element.id === id);
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////
+    FindFolderById(id) {
+        return Object.values(this.folders).flat()
+            .find(element => element.id === id);
+    }
 
     CreateLoadingFolder(name, folderId) {
         const folder = {
@@ -110,8 +104,6 @@ class StorageState {
         this.folders = this.folders[AdaptId(folderId)]
             .filter(element => element.queueId !== queueId);
     }
-
-    // ################################################################################### //
     
     RenameFolder = (folder) => {
         for (let key in this.folders) {
@@ -168,8 +160,6 @@ class StorageState {
             .filter(element => element.queueId !== queueId);
         }
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////
 
     CreateLoadingFile(name, folderId, type) {
         const file = {
@@ -240,8 +230,6 @@ class StorageState {
         }
     }
 
-    // ################################################################################### //
-
     RenameFile = (file) => {
         for (let key in this.files) {
             const index = this.files[key]
@@ -263,8 +251,6 @@ class StorageState {
             });
         }
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////
 
     async SetFolderItemsById(id) {
         id = AdaptId(id);
@@ -301,8 +287,6 @@ class StorageState {
             }
         }
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////
 
     async GetItems(hasMore = this.hasMorePhotos, count=this.countPhotos, type='gallery') {
         await instance
@@ -344,14 +328,10 @@ class StorageState {
             });
     };
 
-    //////////////////////////////////////////////////////////////////////////////////////////
-
     GetSelectionByType(type) {
         return Object.values(this.files).flat()
             .filter(element => element.type ? type.includes(element.type) === true : null); 
     }
-
-    //////////////////////////////////////////////////////////////////////////////////////////
 }
 
 export default new StorageState();

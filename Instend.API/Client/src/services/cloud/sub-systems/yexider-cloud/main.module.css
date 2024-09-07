@@ -7,10 +7,10 @@
 
 .header {
     display: flex;
-    /* width: 100%; */
     justify-content: center;
     padding-left: 15px;
     padding-right: 15px;
     padding-top: 15px;
     flex-direction: column;
+    cursor: pointer;
 }

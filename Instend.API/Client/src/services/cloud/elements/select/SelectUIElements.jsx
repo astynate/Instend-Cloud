@@ -2,7 +2,16 @@ import styles from './main.module.css';
 import checkmark from './checkmark.png';
 import { useEffect } from 'react';
 
-const SelectUIElements = ({isSelected=false, isSelectedOpen=false, setSelectedState={}, element={}, setSelectedFiles={}}) => {
+const SelectUIElements = ({
+        isSelected=false, 
+        isSelectedOpen=false, 
+        setSelectedState={}, 
+        element={}, 
+        setSelectedFiles={},
+        top = -5,
+        right = -10
+    }) => {
+
     useEffect(() => {
         if (typeof setSelectedFiles === 'function') {
             setSelectedFiles(prev => {
@@ -20,6 +29,7 @@ const SelectUIElements = ({isSelected=false, isSelectedOpen=false, setSelectedSt
     return (
         <div 
             className={styles.select}
+            style={{top: `${top}px`, right: `${right}px`}}
             onClick={(event) => {
                 if (typeof setSelectedFiles === 'function') {
                     setSelectedFiles(prev => {

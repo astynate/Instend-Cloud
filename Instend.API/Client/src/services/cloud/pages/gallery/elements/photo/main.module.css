@@ -1,0 +1,54 @@
+.photoWrapper {
+    height: 100%;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #ddd;
+    color: rgba(57, 136, 255, 0.897);
+    border-radius: 0px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 0;
+    overflow: visible;
+}
+
+.photoWrapper[id="loadingPhoto"] {
+    height: 100%;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #ddd;
+    border-radius: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 0;
+    cursor: not-allowed;
+    animation: fileAnimation 2s ease infinite;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -o-crisp-edges;
+    image-rendering: pixelated;
+    -ms-interpolation-mode: nearest-neighbor;
+    transition: 0.25s ease;
+    outline: 4px solid transparent;
+    outline-offset: -4px;
+}
+
+@keyframes fileAnimation {
+    0% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.3;
+    }
+}

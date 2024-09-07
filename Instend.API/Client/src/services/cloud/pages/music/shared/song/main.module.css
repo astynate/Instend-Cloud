@@ -8,6 +8,7 @@
     padding-right: 10px;
     padding-left: 10px;
     border-radius: 5px;
+    position: relative;
 }
 
 .select {
@@ -27,7 +28,7 @@
 }
 
 .song[id="short"] .item {
-    font-size: 14px;
+    font-size: 15px;
 }
 
 .song[id="short"] .name {
@@ -42,7 +43,7 @@
 .item {
     max-width: 10ic;
     width: fit-content;
-    font-size: 18px;
+    font-size: 16px;
     justify-content: center;
     color: var(--main-paragraph-color);
     justify-self: end;
@@ -64,6 +65,7 @@
 .name {
     display: flex;
     grid-gap: 15px;
+    color: var(--main-font-color);
     align-items: center;
 }
 
@@ -77,4 +79,8 @@
     border-radius: 3px;
     transition: 0.1s;
     cursor: pointer;
+}
+
+.selectBoxWrapper {
+    width: 30px;
 }

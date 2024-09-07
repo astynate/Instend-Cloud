@@ -11,7 +11,7 @@ import Loader from '../../../../shared/loader/Loader';
 import { AddPhotosInAlbum } from '../../api/GalleryRequests';
 import { observer } from 'mobx-react-lite';
 import applicationState from '../../../../../../states/application-state';
-import SelectUIElements from '../../../../elements/select/SelectUIElements';
+import Photo from '../../elements/photo/Photo';
 
 const PhotoList = observer((props) => {
     const [gridTemplateColumns, setGridTemplateColumns] = useState('repeat(auto-fill, minmax(200px, 1fr))');
@@ -129,37 +129,16 @@ const PhotoList = observer((props) => {
                                 <Loader />
                             </div>  
                         );
-                    } else {
-                        return (
-                            element.preview || element.fileAsBytes ? 
-                                <div 
-                                    key={element.id} 
-                                    className={styles.photoWrapper} 
-                                    data={element.id}
-                                    onContextMenu={() => setCurrentIndex(index)}
-                                >
-                                    <SelectUIElements 
-
-                                        isSelectedOpen={true}
-                                    />
-                                    <img 
-                                        src={`data:image/png;base64,${element.fileAsBytes ? element.fileAsBytes : element.preview}`}
-                                        draggable="false"
-                                        id={selectedItems.map(element => element.id !== null ? element.id : [])
-                                            .includes(element.id ? element.id : null) === true ? 'active' : 'passive'}
-                                    />
-                                </div>
-                            : 
-                                <div
-                                    key={element.id} 
-                                    className={styles.placeholder} 
-                                    data={element.id}
-                                    onContextMenu={() => setCurrentIndex(index)}
-                                >
-                                    <p>{element.type ? element.type : "Image"}</p>
-                                </div>
-                        )
                     }
+                        
+                    return (
+                        <Photo
+                            key={element.id}
+                            element={element}
+                            setSelectedFiles={props.setSelectedFiles}
+                            onContextMenu={() => setCurrentIndex(index)}
+                        />
+                    );
                 })}
             </div>
             <SelectBox 

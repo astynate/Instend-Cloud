@@ -11,7 +11,6 @@ import { PreviewVideo } from '../widgets/files/PreviewVideo/PreviewVideo';
 
 const Preview = ({close, files, index, fullFileLoadEndpoint, partialFileLoadEndpoint, additionalParams = {}}) => {
     const [currentIndex, setCurrentIndex] = useState(index);
-    const domain = "http://192.168.1.63:5000";
     
     const fileTypeHandlers = [
         {
@@ -19,7 +18,7 @@ const Preview = ({close, files, index, fullFileLoadEndpoint, partialFileLoadEndp
             object: <PreviewImage 
                 key={files[currentIndex].id + "preview"} 
                 endpoint={fullFileLoadEndpoint}
-                domain={domain}
+                domain={process.env.REACT_APP_SERVER_URL}
                 file={files[currentIndex]} 
                 additionalParams={additionalParams}
             />
@@ -29,7 +28,7 @@ const Preview = ({close, files, index, fullFileLoadEndpoint, partialFileLoadEndp
             object: <PreviewDocument 
                 key={files[currentIndex].id + "preview"} 
                 endpoint={fullFileLoadEndpoint}
-                domain={domain}
+                domain={process.env.REACT_APP_SERVER_URL}
                 file={files[currentIndex]} 
                 additionalParams={additionalParams}
             />
@@ -39,7 +38,7 @@ const Preview = ({close, files, index, fullFileLoadEndpoint, partialFileLoadEndp
             object: <PreviewVideo 
                 key={files[currentIndex].id + "preview"}
                 endpoint={partialFileLoadEndpoint}
-                domain={domain}
+                domain={process.env.REACT_APP_SERVER_URL}
                 file={files[currentIndex]} 
                 additionalParams={additionalParams}
             />

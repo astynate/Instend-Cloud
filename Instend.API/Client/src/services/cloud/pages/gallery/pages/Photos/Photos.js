@@ -70,12 +70,12 @@ const Photos = observer((props) => {
 
     return (
         <>
-            {photos && photos.length > 0 && <div className={styles.down}>
+            {/* {photos && photos.length > 0 && <div className={styles.down}>
                 <div className={styles.currentDate}>
                     <span className={styles.date} ref={dataRef}>{date}</span>
                     <span className={styles.location}>Yexider Cloud</span>
                 </div>
-            </div>}
+            </div>} */}
             {photos && photos.length === 0 &&
                 <div className={styles.placeholder}>
                     <Placeholder title='No photos or videos uploaded.' />

@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import styles from './main.module.css';
 import next from './images/next.png';
 
 const PopUpItems = ({items}) => {
     const [active, setActive] = useState(0);
+    const ref = useRef();
 
     return (
         <>
@@ -24,8 +25,8 @@ const PopUpItems = ({items}) => {
                     <img src={next} draggable="false" />
                 </div> */}
             </div>
-            <div className={styles.element}>
-                {(items[active].element)}
+            <div className={styles.element} ref={ref}>
+                {React.cloneElement(items[active].element, {wrapper: ref})}
             </div>
         </>
     );

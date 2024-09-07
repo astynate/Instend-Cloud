@@ -1,12 +1,12 @@
 import styles from './main.module.css';
 import logo from './logo.png';
 
-const SubSystemLogo = ({title}) => {
+const SubSystemLogo = ({icon, title, subTitle}) => {
     return (
         <div className={styles.subSystemLogo}>
-            <img src={logo} draggable="false" />
-            <span>Instend&nbsp;</span>
-            <span>{title}</span>
+            <img src={icon ?? logo} draggable="false" />
+            <span>{title ?? 'Instend'}&nbsp;</span>
+            <span>{subTitle ?? ""}</span>
         </div>
     );
 }

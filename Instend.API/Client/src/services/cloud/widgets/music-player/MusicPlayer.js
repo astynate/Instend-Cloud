@@ -3,14 +3,11 @@ import styles from './main.module.css';
 import { observer } from 'mobx-react-lite';
 import musicState from '../../../../states/music-state';
 import { convertSecondsToTicks, convertTicksToSeconds } from '../../../../utils/TimeHandler';
-import proxyURLProvider from '../../../../ProxyURLProvider';
 
 const MusicPlayer = observer(() => {
     const { isPlaying } = musicState;
     const audioRef = useRef(null);
     const [isAvailable, setAvailableState] = useState(true);
-
-    console.log(proxyURLProvider.serverUrl);
 
     const StartPlaying = () => {
         if (isAvailable && audioRef.current) {
@@ -110,7 +107,7 @@ const MusicPlayer = observer(() => {
             onTimeUpdate={handleTimeUpdate}
             onProgress={handleProgress}
         >
-            <source src={`http://192.168.1.63:5000/api/storage/file?id=${musicState.songQueue[musicState.currentSongIndex].id}&token=${localStorage.getItem('system_access_token')}`} />
+            <source src={`${process.env.REACT_APP_SERVER_URL}/api/storage/file?id=${musicState.songQueue[musicState.currentSongIndex].id}&token=${localStorage.getItem('system_access_token')}`} />
         </audio>
     );
 });

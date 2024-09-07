@@ -28,6 +28,8 @@ class ChatHandler {
     }
 
     static GetChat(id) {
+        if (!id) return null;
+
         return chatsState.chats
             .find(x => x && (x.directId === id || x.id === id || x.Id === id));
     }

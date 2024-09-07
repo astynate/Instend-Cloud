@@ -87,15 +87,7 @@ namespace Exider.Repositories.Messenger
                 else
                 {
                     var avatar = await fileService.ReadFileAsync(direct.userPublic.Avatar);
-
-                    if (avatar.IsSuccess)
-                    {
-                        direct.userPublic.Avatar = Convert.ToBase64String(avatar.Value);
-                    }
-                    else
-                    {
-                        direct.userPublic.Avatar = Configuration.DefaultAvatar;
-                    }
+                    direct.userPublic.Avatar = avatar.IsSuccess ? Convert.ToBase64String(avatar.Value) : Configuration.DefaultAvatar;
                 }
 
                 if (direct.messageModel != null)
@@ -175,17 +167,7 @@ namespace Exider.Repositories.Messenger
             else
             {
                 var avatar = await fileService.ReadFileAsync(model.userPublic.Avatar);
-
-                if (avatar.IsSuccess)
-                {
-                    model.userPublic.Avatar = Convert
-                        .ToBase64String(avatar.Value);
-                }
-                else
-                {
-                    model.userPublic.Avatar = Configuration
-                        .DefaultAvatar;
-                }
+                model.userPublic.Avatar = avatar.IsSuccess ? Convert.ToBase64String(avatar.Value) : Configuration.DefaultAvatar;
             }
 
             if (model.messageModel != null)
@@ -261,11 +243,6 @@ namespace Exider.Repositories.Messenger
             });
         }
 
-        /// <summary>
-        /// Возможны проблемы с безопасностью
-        /// когда можно прикрепить сообщение зная только id, но как будто срал я на эту безопасность =)
-        /// </summary>
-        /// <returns>Результат операции</returns>
         public async Task<bool> ChangePinnedState(Guid messageId, bool pinnedState)
         {
             int result = await _context.Messages

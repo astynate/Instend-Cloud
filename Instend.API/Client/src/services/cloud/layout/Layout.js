@@ -1,4 +1,4 @@
-﻿import React, { createContext, useCallback, useLayoutEffect } from 'react'
+﻿import React, { createContext, useLayoutEffect } from 'react'
 import { useState, useEffect } from 'react';
 import Loader from '../widgets/loader/Loader';
 import './css/fonts.css';
@@ -88,11 +88,6 @@ const Layout = observer(() => {
     const [errorMessage, setErrorMessage] = useState('');
     const [song, setSong] = useState(null);
     const navigate = useNavigate();
-    const url = 'http://localhost:5000';
-
-    process.env.SERVER_URL = 'http://localhost:5000';
-
-    console.log(process.env.APPDATA)
 
     useEffect(() => {
         setSong(GetCurrentSong());
@@ -357,15 +352,15 @@ const Layout = observer(() => {
     }, [galleryWSContext.connection, galleryWSContext.connection?.state]);
 
     return (
-        <messageWSContext.Provider url={url + '/message-hub'}>
-            <storageWSContext.Provider url={url +'/storage-hub'}>
-                <galleryWSContext.Provider url={url + '/gallery-hub'}>
+        <messageWSContext.Provider url={process.env.REACT_APP_SERVER_URL + '/message-hub'}>
+            <storageWSContext.Provider url={process.env.REACT_APP_SERVER_URL +'/storage-hub'}>
+                <galleryWSContext.Provider url={process.env.REACT_APP_SERVER_URL + '/gallery-hub'}>
                     <layoutContext.Provider value={{song: song}}>
                         <div className='cloud-wrapper' style={{'--disconnected-height': applicationState.connectionState === 0 ? '0px' : '15px'}}>
                             {isLoading && <Loader />}
                             <MusicPlayer />
                             <Helmet>
-                                <title>Yexider</title>
+                                <title>Instend</title>
                             </Helmet>
                             {applicationState.connectionState !== 0 && <Disconnected />}
                             {windowWidth > 700 ? <Desktop /> : <Mobile />}

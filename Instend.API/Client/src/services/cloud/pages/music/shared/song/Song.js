@@ -4,13 +4,13 @@ import { convertFromTimespan } from '../../../../../../utils/TimeHandler';
 import musicState from '../../../../../../states/music-state';
 import SongCover from '../../../../shared/ui-kit/song/song-cover/SongCover';
 import { observer } from 'mobx-react-lite';
+import SelectUIElements from '../../../../elements/select/SelectUIElements';
 
-const Song = observer(({index, song, isPlaying, isLoading, isShort, isSelect, setQueue}) => {
+const Song = observer(({index, song, isPlaying, isLoading, isShort, isSelect, setQueue, setSelectedFiles}) => {
     const [isHovered, setHoveredState] = useState(false);
+    const [isSelected, setSelectedState] = useState(false);
 
-    if (!song) {
-        return null;
-    }
+    if (!song) { return null; }
 
     return (
         <div 
@@ -52,7 +52,23 @@ const Song = observer(({index, song, isPlaying, isLoading, isShort, isSelect, se
                     <span className={styles.item}>{song && song.plays}</span>
                 </>
             }
-            <span className={styles.item}>{song && song.duration && convertFromTimespan(song.duration)}</span>
+            <span 
+                className={styles.item}
+            >
+                {song && song.duration && convertFromTimespan(song.duration)}
+            </span>
+            <div className={styles.selectBoxWrapper}>
+                {setSelectedFiles && 
+                    <SelectUIElements
+                        isSelected={isSelected}
+                        setSelectedState={setSelectedState}
+                        isSelectedOpen={true}
+                        setSelectedFiles={setSelectedFiles}
+                        element={song ?? {id: undefined}}
+                        top={10}
+                        right={0}
+                    />}
+            </div>
         </div>
     );
 });
