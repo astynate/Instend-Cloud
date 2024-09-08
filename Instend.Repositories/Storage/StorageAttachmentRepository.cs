@@ -47,10 +47,10 @@ namespace Instend.Repositories.Storage
 
             for (int i = 0; i < folderIds.Length; i++)
             {
-                folders[i] = await _folderRepository.GetByIdAsync(folderIds[i], );
+                //folders[i] = await _folderRepository.GetByIdAsync(folderIds[i], );
             }
 
-            await _accessHandler.GetAccessStateAsync();
+            //await _accessHandler.GetAccessStateAsync();
 
             return folders;
         }
