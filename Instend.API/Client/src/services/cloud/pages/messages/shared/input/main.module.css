@@ -80,12 +80,30 @@
   display: flex;
   display: none;
   justify-content: start;
-  padding-top: 10px;
+  padding-top: 15px;
   overflow-x: scroll;
   overflow-y: hidden;
-  grid-gap: 20px;
+  grid-gap: 15px;
   transition: 0.15s ease;
-  margin-left: 80px;
+  padding-left: 35px;
+  padding-right: 35px;
+  position: relative;
+  scroll-behavior: smooth;
+}
+
+.next {
+  top: 0px;
+  margin-top: 60px;
+  position: sticky;
+  z-index: 1;
+}
+
+.next[direction="left"] {
+  left: 0px;
+}
+
+.next[direction="right"] {
+  right: 0px;
 }
 
 .attachmentsWrapper[id="open"] {
@@ -94,7 +112,7 @@
 }
 
 .attachmentsWrapper::-webkit-scrollbar {
-  height: 1px;
+  height: 0px;
 }
 
 .attachmentsWrapper::-webkit-scrollbar:hover {
@@ -221,4 +239,8 @@
 
 .fileWrapper {
   aspect-ratio: 1 / 1.35;
+  padding: 7px;
+  border-radius: 5px;
+  background: var(--main-accent-color);
+  border: 1px solid var(--main-border-color);
 }

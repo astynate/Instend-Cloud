@@ -30,8 +30,8 @@ namespace Exider.Core.Models.Storage
             if (userId == Guid.Empty)
                 return Result.Failure<AttachmentModel>("User not found");
 
-            Guid id = Guid.NewGuid();
-            string path = Configuration.SystemDrive + $"__attachments__/{id}";
+            var id = Guid.NewGuid();
+            var path = Configuration.GetAvailableDrivePath() + id;
 
             return new AttachmentModel()
             {

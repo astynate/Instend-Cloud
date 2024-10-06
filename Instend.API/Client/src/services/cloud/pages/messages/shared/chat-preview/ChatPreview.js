@@ -4,6 +4,7 @@ import styles from './main.module.css';
 import { Link } from 'react-router-dom';
 import { ConvertDateToTime } from '../../../../../../utils/DateHandler';
 import { ButtonEffectHandler } from '../../../../../../utils/ui/ButtonEffectHandler';
+import ChatAvatar from '../../elements/chat-avatar/ChatAvatar';
 
 const ChatPreview = observer(({chat, isPlaceholder, isActive, onClick, onContextMenu}) => { 
     const ref = useRef();
@@ -24,7 +25,15 @@ const ChatPreview = observer(({chat, isPlaceholder, isActive, onClick, onContext
                 }}
             >
                 <div className={styles.avatar}>
-                    <img src={`data:image/png;base64,${chat.avatar}`} className={styles.avatarImage} draggable="false" />
+                    {chat.avatar ?
+                        <img 
+                            src={`data:image/png;base64,${chat.avatar}`} 
+                            className={styles.avatarImage} 
+                            draggable="false" 
+                        />
+                    :
+                        <ChatAvatar text={chat.name} />
+                    }
                 </div>
                 <div className={styles.information}>
                     <div className={styles.text}>

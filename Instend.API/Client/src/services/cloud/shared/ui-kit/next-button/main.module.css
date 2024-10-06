@@ -1,0 +1,34 @@
+.next {
+    height: 40px;
+    width: 40px;
+    border-radius: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    background: var(--main-accent-color);
+    transition: 0.15s ease;
+    border: 1px solid transparent;
+}
+
+.next[direction="left"] {
+    transform: rotate(180deg);
+}
+
+.next:hover {
+    background: var(--pop-up-accent-color);
+}
+
+.next:active {
+    border: 1px solid var(--main-border-color);
+}
+
+.next img {
+    height: 18px;
+    width: 18px;
+    filter: var(--main-filter);
+    object-fit: contain;
+    padding-left: 2px;
+}

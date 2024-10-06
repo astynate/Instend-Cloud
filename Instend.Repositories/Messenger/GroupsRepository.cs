@@ -8,10 +8,8 @@ using Exider.Core.Models.Messenger;
 using Exider.Core.TransferModels;
 using Exider.Core.TransferModels.Account;
 using Exider.Repositories.Account;
-using Exider.Repositories.Storage;
 using Exider.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Exider.Repositories.Messenger
 {
@@ -25,6 +23,8 @@ namespace Exider.Repositories.Messenger
 
         private readonly IAttachmentsRepository<MessageAttachmentLink> _attachmentsRepository;
 
+        private readonly IMessengerRepository _messengerRepository;
+
         private readonly IImageService _imageService;
 
         public GroupsRepository
@@ -33,7 +33,8 @@ namespace Exider.Repositories.Messenger
             IFileService fileService, 
             IUserDataRepository userDataRepository, 
             IImageService imageService,
-            IAttachmentsRepository<MessageAttachmentLink> attachmentsRepository
+            IAttachmentsRepository<MessageAttachmentLink> attachmentsRepository,
+            IMessengerRepository messengerRepository
         )
         {
             _context = context;
@@ -41,6 +42,7 @@ namespace Exider.Repositories.Messenger
             _userDateRepository = userDataRepository;
             _imageService = imageService;
             _attachmentsRepository = attachmentsRepository;
+            _messengerRepository = messengerRepository;
         }
 
         public async Task<Result<GroupModel>> Create(string name, byte[] avatar, Guid ownerId)
@@ -48,16 +50,12 @@ namespace Exider.Repositories.Messenger
             var result = GroupModel.Create(name, ownerId);
 
             if (result.IsFailure)
-            {
                 return result;
-            }
 
             var member = LinkBase.Create<GroupMemberLink>(result.Value.Id, ownerId);
 
             if (member.IsFailure)
-            {
                 return Result.Failure<GroupModel>(member.Error);
-            }
 
             await _context.AddAsync(result.Value);
             await _context.AddAsync(member.Value);
@@ -109,8 +107,7 @@ namespace Exider.Repositories.Messenger
 
             foreach (var message in messages)
             {
-                message.attachments = await _attachmentsRepository
-                    .GetItemAttachmentsAsync(message.Id);
+                await _messengerRepository.SetAttachments(message);
             }
 
             return messages;

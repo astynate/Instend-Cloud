@@ -22,10 +22,7 @@ namespace Exider.Repositories.Repositories
 
         public async Task AddAsync(UserModel user)
         {
-            if (user is null)
-            {
-                throw new ArgumentNullException("User cannot be null");
-            }
+            if (user == null) return;
 
             user.HashPassword(_encryptionService);
 
@@ -48,7 +45,7 @@ namespace Exider.Repositories.Repositories
         public async Task<Result> RecoverPassword(Guid userId, string password)
         {
             if (userId == Guid.Empty || string.IsNullOrEmpty(password))
-            return Result.Failure("Ivalid data");
+            return Result.Failure("Invalid data");
 
             UserModel? user = await GetUserByIdAsync(userId);
 
@@ -81,5 +78,4 @@ namespace Exider.Repositories.Repositories
             await _context.SaveChangesAsync();
         }
     }
-
 }

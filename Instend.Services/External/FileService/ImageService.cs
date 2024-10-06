@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using Exider.Core.Models.Account;
 using Exider.Repositories.Account;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -126,22 +127,21 @@ namespace Exider.Services.External.FileService
             return null;
         }
 
-        public async Task<Result> UpdateAvatar(IUserDataRepository repository, Guid userId, string path, string avatar)
+        public async Task<Result> UpdateAvatar(IUserDataRepository repository, Guid userId, string path, string image)
         {
-            if (avatar == null)
-            {
-                return Result.Failure("Invalid avatar");
-            }
+            var user = await repository.GetUserAsync(userId);
 
-            byte[] avatarAsByteArray = Convert.FromBase64String(avatar);
+            if (user.IsFailure == true)
+                return Result.Failure("User not found");
 
-            //if (ValidateImage(avatarAsByteArray) == false)
-            //{
-            //    return Result.Failure("Invalid avatar size");
-            //}
+            var imageAsByteArray = Convert.FromBase64String(image);
 
             await repository.UpdateAvatarAsync(userId, path);
-            await File.WriteAllBytesAsync(path, avatarAsByteArray);
+
+            if (user.Value.Avatar != null && File.Exists(user.Value.Avatar) == true)
+                File.Delete(user.Value.Avatar);
+
+            await File.WriteAllBytesAsync(path, imageAsByteArray);
 
             return Result.Success();
         }
@@ -154,22 +154,21 @@ namespace Exider.Services.External.FileService
             return Result.Success();
         }
 
-        public async Task<Result> UpdateHeader(IUserDataRepository repository, Guid userId, string path, string header)
+        public async Task<Result> UpdateHeader(IUserDataRepository repository, Guid userId, string path, string image)
         {
-            if (header == null)
-            {
-                return Result.Failure("Invalid avatar");
-            }
+            var user = await repository.GetUserAsync(userId);
 
-            byte[] headerAsByteArray = Convert.FromBase64String(header);
+            if (user.IsFailure == true)
+                return Result.Failure("User not found");
 
-            //if (ValidateImage(headerAsByteArray) == false)
-            //{
-            //    return Result.Failure("Invalid avatar size");
-            //}
+            var imageAsByteArray = Convert.FromBase64String(image);
 
             await repository.UpdateHeaderAsync(userId, path);
-            await File.WriteAllBytesAsync(path, headerAsByteArray);
+
+            if (user.Value.Header != null && File.Exists(user.Value.Header) == true)
+                File.Delete(user.Value.Header);
+
+            await File.WriteAllBytesAsync(path, imageAsByteArray);
 
             return Result.Success();
         }

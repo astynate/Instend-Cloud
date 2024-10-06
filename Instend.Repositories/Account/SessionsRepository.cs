@@ -28,33 +28,29 @@ namespace Exider.Repositories.Repositories
 
         public async Task AddSessionAsync(SessionModel session)
         {
-            try
+            await _context.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
             {
-                await _context.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
+                using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
-                    using (var transaction = await _context.Database.BeginTransactionAsync())
+                    if (session == null)
                     {
-                        if (session == null)
-                        {
-                            throw new ArgumentNullException(nameof(session));
-                        }
-
-                        List<SessionModel> userSessions = await GetSessionsByUserId(session.UserId);
-
-                        if (userSessions != null && userSessions.Count >= 5)
-                        {
-                            _context.Sessions.RemoveRange(userSessions[0]);
-                            await _context.SaveChangesAsync();
-                        }
-
-                        await _context.Sessions.AddAsync(session);
-                        await _context.SaveChangesAsync();
-
-                        transaction.Commit();
+                        transaction.Rollback(); return;
                     }
-                });
 
-            } catch { }
+                    List<SessionModel> userSessions = await GetSessionsByUserId(session.UserId);
+
+                    if (userSessions != null && userSessions.Count >= 5)
+                    {
+                        _context.Sessions.RemoveRange(userSessions[0]);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    await _context.Sessions.AddAsync(session);
+                    await _context.SaveChangesAsync();
+
+                    transaction.Commit();
+                }
+            });
         }
     }
 }

@@ -1,24 +1,40 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core;
 using Exider.Core.Dependencies.Repositories.Storage;
+using Exider.Core.Models.Messages;
 using Exider.Core.Models.Messenger;
+using Exider.Core.Models.Storage;
 using Exider.Core.TransferModels;
 using Exider.Core.TransferModels.Account;
+using Exider.Repositories.Links;
 using Exider.Services.External.FileService;
+using Instend.Core.Models.Storage;
 using Microsoft.EntityFrameworkCore;
 
 namespace Exider.Repositories.Messenger
 {
-    public class MessengerReposiroty : IMessengerReposiroty
+    public class MessengerRepository : IMessengerRepository
     {
         private readonly DatabaseContext _context = null!;
 
         private readonly IAttachmentsRepository<MessageAttachmentLink> _attachmentsRepository = null!;
 
-        public MessengerReposiroty(DatabaseContext context, IAttachmentsRepository<MessageAttachmentLink> attachmentsRepository)
+        private readonly ILinkBaseRepository<FolderMessageLink> _folderMessageRepository = null!;
+
+        private readonly ILinkBaseRepository<FileMessageLink> _filesMessageRepository = null!;
+
+        public MessengerRepository
+        (
+            DatabaseContext context,
+            IAttachmentsRepository<MessageAttachmentLink> attachmentsRepository,
+            ILinkBaseRepository<FolderMessageLink> folderMessageRepository,
+            ILinkBaseRepository<FileMessageLink> filesMessageRepository
+        )
         {
             _context = context;
             _attachmentsRepository = attachmentsRepository;
+            _folderMessageRepository = folderMessageRepository;
+            _filesMessageRepository = filesMessageRepository;
         }
 
         public async Task<DirectTransferModel[]> GetDirects(IFileService fileService, Guid userId, int count)
@@ -80,7 +96,7 @@ namespace Exider.Repositories.Messenger
 
             foreach (var direct in directs)
             {
-                if (direct.userPublic.Avatar == null)
+                if (direct.userPublic!.Avatar == null)
                 {
                     direct.userPublic.Avatar = Configuration.DefaultAvatar;
                 }
@@ -90,11 +106,7 @@ namespace Exider.Repositories.Messenger
                     direct.userPublic.Avatar = avatar.IsSuccess ? Convert.ToBase64String(avatar.Value) : Configuration.DefaultAvatar;
                 }
 
-                if (direct.messageModel != null)
-                {
-                    direct.messageModel.attachments = await _attachmentsRepository
-                        .GetItemAttachmentsAsync(direct.messageModel.Id);
-                }
+                await SetAttachments(direct.messageModel);
             }
 
             return directs;
@@ -155,28 +167,40 @@ namespace Exider.Repositories.Messenger
                         ))
                 .FirstOrDefaultAsync();
 
-            if (model == null)
-            {
-                return null;
-            }
+            if (model == null) return null;
 
-            if (model.userPublic.Avatar == null)
+            if (model.userPublic != null && model.userPublic.Avatar == null)
             {
                 model.userPublic.Avatar = Configuration.DefaultAvatar;
             }
             else
             {
-                var avatar = await fileService.ReadFileAsync(model.userPublic.Avatar);
-                model.userPublic.Avatar = avatar.IsSuccess ? Convert.ToBase64String(avatar.Value) : Configuration.DefaultAvatar;
+                var avatar = await fileService
+                    .ReadFileAsync(model.userPublic.Avatar);
+               
+                model.userPublic.Avatar = avatar.IsSuccess ? 
+                    Convert.ToBase64String(avatar.Value) :
+                    Configuration.DefaultAvatar;
             }
 
-            if (model.messageModel != null)
-            {
-                model.messageModel.attachments = await _attachmentsRepository
-                    .GetItemAttachmentsAsync(model.messageModel.Id);
-            }
+            await SetAttachments(model.messageModel); 
 
             return model;
+        }
+
+        public async Task SetAttachments(MessageModel? model)
+        {
+            if (model != null)
+            {
+                model.attachments = await _attachmentsRepository
+                    .GetItemAttachmentsAsync(model.Id);
+
+                model.folders = await _folderMessageRepository
+                    .GetLinkedItems<FolderModel>(model.Id);
+
+                model.files = await _filesMessageRepository
+                    .GetLinkedItems<FileModel>(model.Id);
+            }
         }
 
         public async Task<Result<bool>> ChangeAcceptState(Guid directId, Guid userId, bool isAccept)

@@ -16,7 +16,6 @@ import SearchInChat from '../../shared/search-in-chat/SearchInChat';
 import CreateGroup from '../../features/create-group/CreateGroup';
 import remove from './images/remove.png';
 import ChatHandler from '../../../../../../utils/handlers/ChatHandler';
-import ChatTypes from '../chat/ChatTypes';
 import userState from '../../../../../../states/user-state';
 import applicationState from '../../../../../../states/application-state';
 
@@ -163,27 +162,29 @@ const Chats = observer(({isMobile, setOpenState}) => {
                 }}
             />
             <div className={styles.header}>
-                <Title value='Messages' />
-                <div className={styles.create}>
-                    <img 
-                        src={create}
-                        className={styles.createImage}
-                        draggable="false"
-                        onClick={() => setCreateOpenState(prev => !prev)}
-                    />
-                    {isCreateOpen && <div className={styles.createPopUp} ref={ref}>
-                        <PopUpList
-                            items={[
-                                {title: "Direct", callback: () => {setCreatePopUpState(true); setCreateOpenState(false)}},
-                                {title: "Group", callback: () => {setCreateGroupState(true); setCreateOpenState(false)}},
-                                {title: "Application", callback: () => {setBotState(true); setCreateOpenState(false)}}
-                            ]}
+                <div className={styles.top}>
+                    <Title value='Messages' />
+                    <div className={styles.create}>
+                        <img 
+                            src={create}
+                            className={styles.createImage}
+                            draggable="false"
+                            onClick={() => setCreateOpenState(prev => !prev)}
                         />
-                    </div>}
+                        {isCreateOpen && <div className={styles.createPopUp} ref={ref}>
+                            <PopUpList
+                                items={[
+                                    {title: "Direct", callback: () => {setCreatePopUpState(true); setCreateOpenState(false)}},
+                                    {title: "Group", callback: () => {setCreateGroupState(true); setCreateOpenState(false)}},
+                                    // {title: "Application", callback: () => {setBotState(true); setCreateOpenState(false)}}
+                                ]}
+                            />
+                        </div>}
+                    </div>
                 </div>
-            </div>
-            <div className={styles.search}>
-                <SearchInChat />
+                <div className={styles.search}>
+                    <SearchInChat />
+                </div>
             </div>
             <div className={styles.chatList}>
                 {chatsState.isChatsLoaded ? 

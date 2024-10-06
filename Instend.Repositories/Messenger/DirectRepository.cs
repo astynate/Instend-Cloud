@@ -18,16 +18,26 @@ namespace Exider.Repositories.Messenger
 
         private readonly IUserDataRepository _userData;
 
+        private readonly IMessengerRepository _messengerRepository;
+
         private readonly IAttachmentsRepository<MessageAttachmentLink> _attachmentRepository;
 
-        public DirectRepository(DatabaseContext context, IUserDataRepository userData, IAttachmentsRepository<MessageAttachmentLink> attachmentsRepository)
+        public DirectRepository
+        (
+            DatabaseContext context,
+            IUserDataRepository userData,
+            IAttachmentsRepository<MessageAttachmentLink> attachmentsRepository,
+            IMessengerRepository messengerRepository
+
+        )
         {
             _context = context;
             _userData = userData;
             _attachmentRepository = attachmentsRepository;
+            _messengerRepository = messengerRepository;
         }
 
-        public async Task<Result<DirectTransferModel>> CreateNewDiret(Guid userId, Guid ownerId)
+        public async Task<Result<DirectTransferModel>> CreateNewDirect(Guid userId, Guid ownerId)
         {
             var directModel = DirectModel.Create(userId, ownerId);
 
@@ -89,8 +99,7 @@ namespace Exider.Repositories.Messenger
 
             foreach(var message in messages)
             {
-                message.attachments = await _attachmentRepository
-                    .GetItemAttachmentsAsync(message.Id);
+                await _messengerRepository.SetAttachments(message);
             }
 
             return messages;
@@ -139,7 +148,7 @@ namespace Exider.Repositories.Messenger
                 {
                     if (direct == null)
                     {
-                        var newDirect = await CreateNewDiret(userId, ownerId);
+                        var newDirect = await CreateNewDirect(userId, ownerId);
 
                         if (newDirect.IsFailure)
                         {

@@ -46,7 +46,7 @@ namespace Exider.Repositories.Storage
 
             if (result == null)
             {
-                return Result.Failure<Format>("Metadata not found");
+                return Result.Failure<Format?>("Metadata not found");
             }
 
             return result;
@@ -78,8 +78,7 @@ namespace Exider.Repositories.Storage
 
         public async Task SaveChanges(Format format)
         {
-            _context.Entry(format).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            _context.Entry(format).State = EntityState.Modified; await _context.SaveChangesAsync();
         }
     }
 }

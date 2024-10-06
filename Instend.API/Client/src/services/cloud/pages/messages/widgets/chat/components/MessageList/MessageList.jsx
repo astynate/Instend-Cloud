@@ -99,6 +99,7 @@ const MessageList = observer(({chat, scroll}) => {
                             position={position}
                             time={element.date}
                             attachments={element.attachments}
+                            message={element}
                             isSelected={false}
                             specialType={element.specialType ?? SpecialTypes.None}
                             sendingType={element.queueId ? 0 : element.isViewed || element.isViewed ? 2 : 1}

@@ -57,7 +57,7 @@ namespace Exider.Repositories.Comments
 
         public async Task<bool> IsUserLikedPubliction(Guid userId, Guid publictionId)
         {
-            PublictionLikeLink? publictionLikeLink = await _context.PublictionLikeLinks
+            PublictionLikeLink? publictionLikeLink = await _context.PublicationLikeLinks
                 .FirstOrDefaultAsync(x => x.ItemId == publictionId && x.LinkedItemId == userId);
 
             return publictionLikeLink != null;
@@ -67,7 +67,7 @@ namespace Exider.Repositories.Comments
         {
             CommentModel? comment = await _context.Comments.FirstOrDefaultAsync(x => x.Id == id);
 
-            PublictionLikeLink? publictionLikeLink = await _context.PublictionLikeLinks
+            PublictionLikeLink? publictionLikeLink = await _context.PublicationLikeLinks
                 .FirstOrDefaultAsync(x => x.ItemId == id && x.LinkedItemId == userId);
 
             if (comment == null)
@@ -86,7 +86,7 @@ namespace Exider.Repositories.Comments
 
                 comment.IncrementLikes();
 
-                await _context.PublictionLikeLinks.AddAsync(link.Value);
+                await _context.PublicationLikeLinks.AddAsync(link.Value);
                 await _context.SaveChangesAsync();
 
                 return true;
@@ -95,7 +95,7 @@ namespace Exider.Repositories.Comments
             {
                 comment.DecrementLikes();
 
-                await _context.PublictionLikeLinks.Where(x => x.ItemId == id && x.LinkedItemId == userId).ExecuteDeleteAsync();
+                await _context.PublicationLikeLinks.Where(x => x.ItemId == id && x.LinkedItemId == userId).ExecuteDeleteAsync();
                 await _context.SaveChangesAsync();
 
                 return false;

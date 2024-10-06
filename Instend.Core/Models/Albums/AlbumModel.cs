@@ -49,7 +49,7 @@ namespace Exider.Core.Models.Albums
                 Id = id,
                 Name = name,
                 Description = description,
-                Cover = Configuration.SystemDrive + "__albums__/" + id.ToString(),
+                Cover = Configuration.GetAvailableDrivePath() + id.ToString(),
                 CreationTime = creationTime,
                 LastEditTime = lastEditTime,
                 OwnerId = ownerId,

@@ -42,7 +42,7 @@ namespace Exider.Core.Models.Storage
                 CreationTime = DateTime.Now,
                 LastEditTime = DateTime.Now,
                 Size = size,
-                Path = Configuration.SystemDrive + "__files__/" + id,
+                Path = Configuration.GetAvailableDrivePath() + id,
                 Type = type,
                 FolderId = folderId
             });

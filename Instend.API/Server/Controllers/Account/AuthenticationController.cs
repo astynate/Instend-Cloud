@@ -63,7 +63,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
                     return Unauthorized();
 
                 accessToken = _tokenService.GenerateAccessToken(userId.ToString(),
-                    Configuration.accsessTokenLifeTimeInMinutes, Configuration.TestEncryptionKey);
+                    Configuration.accessTokenLifeTimeInMinutes, Configuration.TestEncryptionKey);
             }
 
             return Ok(accessToken);

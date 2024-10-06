@@ -16,6 +16,8 @@ namespace Exider.Core.Models.Messages
         [Column("is_viewed")] public bool IsViewed { get; set; } = false;
 
         [NotMapped] public AttachmentModel[]? attachments { get; set; }
+        [NotMapped] public FolderModel[]? folders { get; set; }
+        [NotMapped] public FileModel[]? files { get; set; }
 
         private MessageModel() { }
 

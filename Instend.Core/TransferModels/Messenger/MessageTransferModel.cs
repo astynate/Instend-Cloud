@@ -7,9 +7,11 @@ namespace Exider.Core.TransferModels.Messenger
     (
         [Required] Guid id,
         [Required] string text,
-        IFormFile[]? attachments,
         [Required] int type,
-        Guid? replyTo,
-        [Required] int queueId
+        [Required] int queueId,
+        IFormFile[]? attachments,
+        Guid[]? fileIds,
+        Guid[]? folderIds,
+        Guid? replyTo
     );
 }

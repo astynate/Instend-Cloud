@@ -18,6 +18,7 @@ using Exider.Services.Internal.Handlers;
 using Exider.Services.Middleware;
 using Exider_Version_2._0._0.Server.Hubs;
 using Exider_Version_2._0._0.ServerApp.Services;
+using Instend.Repositories.Storage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -47,10 +48,11 @@ builder.Services.AddScoped<IFolderRepository, FolderRepository>();
 builder.Services.AddScoped<IFileRespository, FileRespository>();
 builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
 builder.Services.AddScoped<IDirectRepository, DirectRepository>();
-builder.Services.AddScoped<IMessengerReposiroty, MessengerReposiroty>();
+builder.Services.AddScoped<IMessengerRepository, MessengerRepository>();
 builder.Services.AddScoped<ICommunityRepository, CommunityRepository>();
 builder.Services.AddScoped<IFriendsRepository, FriendsRepository>();
 builder.Services.AddScoped<IGroupsRepository, GroupsRepository>();
+builder.Services.AddScoped<IStorageAttachmentRepository, StorageAttachmentRepository>();
 builder.Services.AddScoped(typeof(ICommentsRepository<,>), typeof(CommentsRepository<,>));
 builder.Services.AddScoped(typeof(ICommentBaseRepository<>), typeof(CommentBaseRepository<>));
 builder.Services.AddScoped(typeof(IAccessRepository<,>), typeof(AccessRepository<,>));
@@ -125,7 +127,7 @@ app.Use(async (context, next) =>
 
             if (sessionModel != null && sessionModel.EndTime >= DateTime.Now)
             {
-                accessToken = tokenService.GenerateAccessToken(userId, Configuration.accsessTokenLifeTimeInMinutes,
+                accessToken = tokenService.GenerateAccessToken(userId, Configuration.accessTokenLifeTimeInMinutes,
                     Configuration.TestEncryptionKey);
 
                 context.Request.Headers["Authorization"] = "Bearer " + accessToken;

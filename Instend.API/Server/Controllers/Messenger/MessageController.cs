@@ -8,10 +8,10 @@ using Exider.Repositories.Messenger;
 using Exider.Services.Internal;
 using Exider.Services.Internal.Handlers;
 using Exider_Version_2._0._0.Server.Hubs;
+using Instend.Repositories.Storage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Newtonsoft.Json;
 
 namespace Exider_Version_2._0._0.Server.Controllers.Messenger
 {
@@ -19,7 +19,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
     [Route("api/[controller]")]
     public class MessageController : ControllerBase
     {
-        private readonly IMessengerReposiroty _messengerReposiroty;
+        private readonly IMessengerRepository _messengerReposiroty;
 
         private readonly IRequestHandler _requestHandler;
 
@@ -31,17 +31,20 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
 
         private readonly IGroupsRepository _groupRepository;
 
+        private readonly IStorageAttachmentRepository _storageAttachmentRepository;
+
         private readonly IAttachmentsRepository<MessageAttachmentLink> _attachmentRepository;
 
         private readonly IChatBase[] _chatFactory = [];
 
         public MessageController
         (
-            IMessengerReposiroty messengerReposiroty, 
+            IMessengerRepository messengerReposiroty, 
             IRequestHandler requestHandler, 
             IHubContext<MessageHub> messageHub,
             IDirectRepository directRepository,
             IAttachmentsRepository<MessageAttachmentLink> attachmentRepository,
+            IStorageAttachmentRepository storageAttachmentRepository,
             ISerializationHelper serializator,
             IGroupsRepository group
         )
@@ -52,6 +55,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
             _directRepository = directRepository;
             _groupRepository = group;
             _chatFactory = [_directRepository, _groupRepository];
+            _storageAttachmentRepository = storageAttachmentRepository;
             _attachmentRepository = attachmentRepository;
             _serializator = serializator;
         }
@@ -87,6 +91,16 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
                 {
                     result.Value.messageModel.attachments = attachments.Value;
                 }
+            }
+
+            if (result.Value.messageModel != null && model.fileIds != null || model.folderIds != null)
+            {
+                await _storageAttachmentRepository.AddStorageMessageLinks(
+                    model.folderIds ?? [],
+                    model.fileIds ?? [],
+                    result.Value.messageModel!.Id,
+                    Request.Headers["Authorization"]!
+                );
             }
 
             switch (result.Value)

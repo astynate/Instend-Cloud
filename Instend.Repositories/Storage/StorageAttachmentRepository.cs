@@ -1,12 +1,15 @@
 ﻿using CSharpFunctionalExtensions;
 using Exider.Core;
+using Exider.Core.Models.Links;
 using Exider.Core.Models.Storage;
 using Exider.Repositories.Storage;
 using Exider.Services.Internal.Handlers;
+using Instend.Core.Models.Storage;
+using Microsoft.EntityFrameworkCore;
 
 namespace Instend.Repositories.Storage
 {
-    public class StorageAttachmentRepository
+    public class StorageAttachmentRepository : IStorageAttachmentRepository
     {
         private readonly DatabaseContext _context;
 
@@ -20,7 +23,7 @@ namespace Instend.Repositories.Storage
 
         public StorageAttachmentRepository
         (
-            DatabaseContext context, 
+            DatabaseContext context,
             IAccessHandler accessHandler,
             IFolderRepository folderRepository,
             IFileRespository fileRepository,
@@ -34,25 +37,72 @@ namespace Instend.Repositories.Storage
             _requestHandler = requestHandler;
         }
 
-        public async Task<Result<FolderModel[]>> AddFolderLinks(Guid[] folderIds, string bearer)
+        public async Task<Result<(FolderModel[] folders, FileModel[] files)>> AddStorageMessageLinks
+        (
+            Guid[] folderIds,
+            Guid[] fileIds,
+            Guid messageId,
+            string bearer
+        )
         {
             var userId = _requestHandler.GetUserId(bearer);
 
             if (userId.IsFailure)
-            {
-                return Result.Failure<FolderModel[]>(userId.Error);
-            }
+                return Result.Failure<(FolderModel[] folders, FileModel[] files)>(userId.Error);
 
             FolderModel[] folders = new FolderModel[folderIds.Length];
+            FileModel[] files = new FileModel[fileIds.Length];
 
-            for (int i = 0; i < folderIds.Length; i++)
+            return await _context.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
             {
-                //folders[i] = await _folderRepository.GetByIdAsync(folderIds[i], );
-            }
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    for (int i = 0; i < folderIds.Length; i++)
+                    {
+                        var folder = await _folderRepository.GetByIdAsync(folderIds[i]
+                            .ToString(), Guid.Parse(userId.Value));
 
-            //await _accessHandler.GetAccessStateAsync();
+                        if (folder == null)
+                            return Result.Failure<(FolderModel[] folders, FileModel[] files)>("Folder not found");
 
-            return folders;
+                        var access = await _accessHandler.GetAccessStateAsync(folder,
+                            Configuration.Abilities.Write, bearer);
+
+                        if (access.IsFailure)
+                            return Result.Failure<(FolderModel[] folders, FileModel[] files)>("You don't have access to this file.");
+
+                        var link = LinkBase.Create<FolderMessageLink>(messageId, folder.Id);
+
+                        if (link.IsFailure)
+                            return Result.Failure<(FolderModel[] folders, FileModel[] files)>(link.Error);
+
+                        await _context.AddAsync(link.Value); folders[i] = folder;
+                    }
+
+                    for (int i = 0; i < fileIds.Length; i++)
+                    {
+                        var file = await _fileRepository.GetByIdAsync(fileIds[i]);
+
+                        if (file.IsFailure)
+                            return Result.Failure<(FolderModel[] folders, FileModel[] files)>(file.Error);
+
+                        var access = await _accessHandler.GetAccessStateAsync(file.Value,
+                            Configuration.Abilities.Write, bearer);
+
+                        if (access.IsFailure)
+                            return Result.Failure<(FolderModel[] folders, FileModel[] files)>("You don't have access to this file.");
+
+                        var link = LinkBase.Create<FileMessageLink>(messageId, file.Value.Id);
+
+                        if (link.IsFailure)
+                            return Result.Failure<(FolderModel[] folders, FileModel[] files)>(link.Error);
+
+                        await _context.AddAsync(link.Value); files[i] = file.Value;
+                    }
+
+                    await _context.SaveChangesAsync(); transaction.Commit(); return (folders, files);
+                }
+            });
         }
     }
 }

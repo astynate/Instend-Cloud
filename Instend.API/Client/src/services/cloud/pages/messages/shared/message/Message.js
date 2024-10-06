@@ -20,6 +20,7 @@ const Message = ({
         attachments, 
         sendingType = 0, 
         chatId,
+        message,
         specialType = SpecialTypes.None
     }) => {
 
@@ -60,6 +61,9 @@ const Message = ({
                         attachments={attachments} 
                         sendingType={sendingType}
                     />}
+                {message.folders && message.folders.map(e => {
+                    return <h1>!!!</h1>;
+                })}
                 <div className={styles.messageText}>
                     <div className={styles.textParts}>
                         {text.split('\n').map((part, index) => (

@@ -1,10 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
+using Exider.Core.Models.Messages;
 using Exider.Core.TransferModels;
 using Exider.Services.External.FileService;
 
 namespace Exider.Repositories.Messenger
 {
-    public interface IMessengerReposiroty
+    public interface IMessengerRepository
     {
         Task<DirectTransferModel[]> GetDirects(IFileService fileService, Guid userId, int count);
         Task<DirectTransferModel?> GetDirect(IFileService fileService, Guid id, Guid userId);
@@ -12,5 +13,6 @@ namespace Exider.Repositories.Messenger
         Task<Result<Guid>> DeleteMessage(Guid id, Guid userId);
         Task<bool> ChangePinnedState(Guid messageId, bool pinnedState);
         Task<bool> ViewMessage(Guid messageId, Guid userId);
+        Task SetAttachments(MessageModel model);
     }
 }

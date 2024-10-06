@@ -9,18 +9,11 @@ namespace Exider.Core
     {
         static Configuration()
         {
-            try
-            {
-                DefaultAvatar = Convert.ToBase64String(File.ReadAllBytes(DefaultAvatarPath));
-                DefaultAlbumCover = Convert.ToBase64String(File.ReadAllBytes(DefaultAlbumCoverPath));
-            }
-            catch (Exception exception) 
-            {
-                Console.WriteLine(exception);
-            }
+            DefaultAvatar = Convert.ToBase64String(File.ReadAllBytes(DefaultAvatarPath));
+            DefaultAlbumCover = Convert.ToBase64String(File.ReadAllBytes(DefaultAlbumCoverPath));
         }
 
-        public const string Issuer = "Yexider Company";
+        public const string Issuer = "Instend NPO";
 
         public const string Audience = "User";
 
@@ -30,9 +23,9 @@ namespace Exider.Core
 
         public static readonly string CorporatePassword = "kqzu gsig ghgn ecis";
 
-        public static readonly string DefaultAvatarPath = "D:/Exider-System/default-avatar.png";
+        public static readonly string DefaultAvatarPath = "D:/Instend LLC/System/default-avatar.png";
 
-        public static readonly string DefaultAlbumCoverPath = "D:/Exider-System/default-album-cover.png";
+        public static readonly string DefaultAlbumCoverPath = "D:/Instend LLC/System/default-album-cover.png";
 
         public static readonly string URL = "http://localhost:44441/";
 
@@ -40,13 +33,11 @@ namespace Exider.Core
 
         public static readonly int refreshTokenLifeTimeInDays = 30;
 
-        public static readonly int accsessTokenLifeTimeInMinutes = 30;
+        public static readonly int accessTokenLifeTimeInMinutes = 30;
 
         public static readonly string? DefaultAvatar;
 
         public static readonly string DefaultAlbumCover;
-
-        public static readonly string SystemDrive = "D:/Exider-System/";
 
         public static readonly string[] imageTypes = {"png", "jpg", "jpeg", "gif"};
 
@@ -65,6 +56,32 @@ namespace Exider.Core
         public delegate string ConvertToHtml(string path);
 
         public delegate Task<Result<AttachmentModel>> GetAttachmentDelegate(Guid itemId, Guid attachmentId);
+
+        public static readonly string[] _drivePaths = { "D:/Instend LLC/System/" };
+
+        public static string GetAvailableDrivePath()
+        {
+            var maxFreeSpacePath = "D:/";
+            long maxFreeSpace = 0;
+
+            foreach (var path in _drivePaths)
+            {
+                DriveInfo driveInfo = new DriveInfo(Path.GetPathRoot(path) ?? "");
+                
+                if (driveInfo.IsReady)
+                {
+                    var freeSpace = driveInfo.AvailableFreeSpace;
+
+                    if (freeSpace > maxFreeSpace)
+                    {
+                        maxFreeSpace = freeSpace;
+                        maxFreeSpacePath = path;
+                    }
+                }
+            }
+
+            return maxFreeSpacePath;
+        }
 
         public enum Months
         {

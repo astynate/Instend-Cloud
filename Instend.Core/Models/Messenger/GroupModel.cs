@@ -38,7 +38,7 @@ namespace Exider.Core.Models.Messenger
             {
                 Id = id,
                 Name = name,
-                AvatarPath = Configuration.SystemDrive + "__group__/" + id.ToString(),
+                AvatarPath = Configuration.GetAvailableDrivePath() + id.ToString(),
                 OwnerId = ownerId
             };
         }

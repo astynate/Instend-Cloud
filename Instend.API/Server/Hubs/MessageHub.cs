@@ -14,7 +14,7 @@ namespace Exider_Version_2._0._0.Server.Hubs
     {
         private readonly IRequestHandler _requestHandler;
 
-        private readonly IMessengerReposiroty _messengerReposiroty;
+        private readonly IMessengerRepository _messengerReposiroty;
 
         private readonly IDirectRepository _directRepository;
 
@@ -29,7 +29,7 @@ namespace Exider_Version_2._0._0.Server.Hubs
         public MessageHub
         (
             IRequestHandler requestHandler, 
-            IMessengerReposiroty messengerReposiroty, 
+            IMessengerRepository messengerReposiroty, 
             IFileService fileService, 
             IDirectRepository directRepository,
             IGroupsRepository groupsRepository,

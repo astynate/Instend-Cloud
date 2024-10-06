@@ -100,7 +100,7 @@ namespace Exider.Repositories.Account
             return Result.Success(userModel);
         }
 
-        public async Task<UserPublic[]> GetUsersbyPrefixAsync(string prefix)
+        public async Task<UserPublic[]> GetUsersByPrefixAsync(string prefix)
         {
             UserPublic[] users = await _context.Users
                 .Where(user => user.Nickname.Contains(prefix) ||

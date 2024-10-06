@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './main.module.css';
 import MainMessageButton from '../../elements/message-button/MainMessageButton';
 import attach from './images/attach.png';
@@ -15,6 +15,7 @@ import PopUpList from '../../../../shared/ui-kit/pop-up-list/PopUpList';
 import YexiderCloud from '../../../../sub-systems/yexider-cloud/YexiderCloud';
 import File from '../../../cloud/shared/file/File';
 import Folder from '../../../cloud/shared/folder/Folder';
+import NextButton, { ButtonDirections } from '../../../../shared/ui-kit/next-button/NextButton';
 
 const Input = ({operation, setDefaultOperation, chat, type = 0}) => {
     const [text, setText] = useState('');
@@ -24,8 +25,13 @@ const Input = ({operation, setDefaultOperation, chat, type = 0}) => {
     const [isYexiderCloud, setYexiderCloudState] = useState(false);
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [selectedFolders, setSelectedFolders] = useState([]);
+    const [isLeftArrowOpen, setLeftArrowOpenState] = useState(false);
+    const [isRightArrowOpen, setRightArrowOpenState] = useState(false);
     const textAreaRef = React.createRef();
+    const attachmentsAreaRef = useRef();
     const validOperations = [MessageOperations.Edit, MessageOperations.Reply];
+
+    const SCROLL_SPEED = 200;
 
     const handleFileChange = (event) => {
         if (event.target.files.length > 0) {
@@ -78,15 +84,49 @@ const Input = ({operation, setDefaultOperation, chat, type = 0}) => {
     };
   
     const sendMessageAsync = async () => {
+        const selectedFilesValue = [...selectedFiles].map(e => e.id);
+        const selectedFoldersValue = [...selectedFolders].map(e => e.id);
         const attachmentsValue = [...attachments];
         const textValue = text;
         const replyTo = operation === MessageOperations.Reply ? '' : '';
 
         setText('');
         setAttachements([]);
+        setSelectedFiles([]);
+        setSelectedFolders([]);
 
-        await SendMessage(textValue, attachmentsValue, replyTo, chat, type);
+        await SendMessage(
+            textValue, 
+            attachmentsValue, 
+            replyTo, 
+            chat, 
+            type,
+            selectedFilesValue,
+            selectedFoldersValue
+        );
     };
+
+    const HandleAttechmentsScroll = () => {
+        const ref = attachmentsAreaRef.current;
+
+        if (ref) {
+            const offset = ref.scrollLeft;
+            const isRightOpen = ref.scrollWidth > ref.clientWidth;
+            
+            setLeftArrowOpenState(offset > 30);
+            setRightArrowOpenState(isRightOpen);
+        }
+    }
+
+    const HandleNextButtonClick = (offset) => {
+        if (attachmentsAreaRef.current) {
+            attachmentsAreaRef.current.scrollLeft += offset;
+        }
+    }
+
+    useEffect(() => {
+        HandleAttechmentsScroll();
+    }, [selectedFiles.length, selectedFolders.length])
 
     return (
         <>
@@ -109,20 +149,29 @@ const Input = ({operation, setDefaultOperation, chat, type = 0}) => {
                                 items={[
                                     {title: "From Cloud", callback: () => {setYexiderCloudState(true)}},
                                     {title: "From Device", callback: () => document.getElementById('message-file-picker').click()},
-                                    {title: "Transaction", callback: () => {}}
+                                    // {title: "Transaction", callback: () => {}}
                                 ]}
                                 close={() => Close()}
                             />
                         </div>}
                     <input type="file" id="message-file-picker" style={{ display: 'none' }} multiple onChange={handleFileChange} />
                     <div 
-                        className={styles.attachmentsWrapper} 
+                        onScroll={HandleAttechmentsScroll}
+                        className={styles.attachmentsWrapper}
+                        ref={attachmentsAreaRef}
                         id={(attachments.length > 0 || 
                              selectedFiles.length > 0 || 
                              selectedFolders.length > 0) 
                         ? 
                             'open' : null}
+                        
                     >
+                        {isLeftArrowOpen && <div className={styles.next} direction={"left"}>
+                            <NextButton 
+                                direction={ButtonDirections.left} 
+                                callback={() => HandleNextButtonClick(-SCROLL_SPEED)} 
+                            />
+                        </div>}
                         {selectedFolders.map((element) =>
                             <div className={styles.fileWrapper} key={element.id}>
                                 <Folder 
@@ -175,6 +224,11 @@ const Input = ({operation, setDefaultOperation, chat, type = 0}) => {
                                 </div>
                             );
                         })}
+                        {isRightArrowOpen && <div className={styles.next} direction={"right"}>
+                            <NextButton 
+                                callback={() => HandleNextButtonClick(SCROLL_SPEED)} 
+                            />
+                        </div>}
                     </div>
                     <div className={styles.inputWrapper}>
                         <MainMessageButton 

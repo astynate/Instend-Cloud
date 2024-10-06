@@ -27,7 +27,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
         private readonly IEmailRepository _emailRepository;
 
-        private readonly IConfirmationRespository _confirmationRespository;
+        private readonly IConfirmationRespository _confirmationRepository;
 
         private readonly ICommunityRepository _communityRepository;
 
@@ -56,7 +56,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
         {
             _usersRepository = users;
             _emailRepository = email;
-            _confirmationRespository = confirmation;
+            _confirmationRepository = confirmation;
             _userDataRepository = userDataRepository;
             _imageService = imageService;
             _folderRepository = folderRepository;
@@ -92,16 +92,12 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
         public async Task<IActionResult> GetUsersByPrefixAsync(string prefix)
         {
             if (string.IsNullOrEmpty(prefix))
-            {
                 return BadRequest("Prefix required");
-            }
 
-            UserPublic[] users = await _userDataRepository.GetUsersbyPrefixAsync(prefix);
+            UserPublic[] users = await _userDataRepository.GetUsersByPrefixAsync(prefix);
 
             if (users == null)
-            {
                 return Conflict("User not found");
-            }
 
             return Ok(users);
         }
@@ -113,9 +109,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
             UserPublic[] users = await _userDataRepository.GetPopularPeople();
 
             if (users == null)
-            {
                 return Conflict("User not found");
-            }
 
             return Ok(users);
         }
@@ -123,17 +117,13 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
         [HttpGet("email/{email}")]
         public async Task<IActionResult> GetAccountByEmail(string email)
         {
-            if (string.IsNullOrEmpty(email))
-            {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrWhiteSpace(email))
                 return BadRequest("Email required");
-            }
 
             UserModel? userModel = await _usersRepository.GetUserByEmailAsync(email);
 
-            if (userModel is null)
-            {
+            if (userModel == null)
                 return StatusCode(470, "User not found");
-            }
 
             return Ok();
         }
@@ -155,17 +145,13 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
         [HttpGet("nickname/{nickname}")]
         public async Task<IActionResult> GetAccountByNickname(string nickname)
         {
-            if (string.IsNullOrEmpty(nickname))
-            {
+            if (string.IsNullOrEmpty(nickname) || string.IsNullOrWhiteSpace(nickname))
                 return BadRequest("Nickname required");
-            }
 
             UserModel? userModel = await _usersRepository.GetUserByNicknameAsync(nickname);
 
-            if (userModel is null)
-            {
+            if (userModel == null)
                 return StatusCode(470, "User not found");
-            }
 
             return Ok();
         }
@@ -192,9 +178,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
                     );
 
                     if (userCreationResult.IsFailure)
-                    {
                         return BadRequest(userCreationResult.Error);
-                    }
 
                     await _usersRepository.AddAsync(userCreationResult.Value);
 
@@ -206,9 +190,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
                     );
 
                     if (emailCreationResult.IsFailure)
-                    {
                         return BadRequest(emailCreationResult.Error);
-                    }
 
                     await _emailRepository.AddAsync(emailCreationResult.Value);
 
@@ -220,18 +202,14 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
                     );
 
                     if (confirmationCreationResult.IsFailure)
-                    {
                         return BadRequest(confirmationCreationResult.Error);
-                    }
 
-                    await _confirmationRespository.AddAsync(confirmationCreationResult.Value);
+                    await _confirmationRepository.AddAsync(confirmationCreationResult.Value);
 
                     var userDataCreationResult = UserDataModel.Create(userCreationResult.Value.Id);
 
                     if (userDataCreationResult.IsFailure)
-                    {
                         return BadRequest(userDataCreationResult.Error);
-                    }
 
                     await _userDataRepository.AddAsync(userDataCreationResult.Value);
 
@@ -241,9 +219,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
                     var systemResult = await CreateSystemFolders(userCreationResult.Value.Id);
 
                     if (systemResult.IsFailure)
-                    {
                         return Conflict(systemResult.Error);
-                    }
 
                     transaction.Commit();
 
@@ -257,27 +233,26 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
         public async Task<IActionResult> Update([FromForm] UpdateUserDTO userDTO, IRequestHandler requestHandler)
         {
             if (userDTO is null)
-            {
                 return BadRequest("Invalid user data");
-            }
 
             if (string.IsNullOrEmpty(userDTO.name) || string.IsNullOrEmpty(userDTO.surname) || string.IsNullOrEmpty(userDTO.nickname))
-            {
                 return BadRequest("First name, last name and nickname are required fields.");
-            }
 
             var userId = requestHandler.GetUserId(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
 
             if (userId.IsFailure)
-            {
                 return Unauthorized("Invalid token");
-            }
 
             await _usersRepository.Update(Guid.Parse(userId.Value), userDTO.name, userDTO.surname, userDTO.nickname);
 
             if (userDTO.avatar == "delete")
             {
-                var deleteResult = await _imageService.DeleteAvatar(_userDataRepository, Guid.Parse(userId.Value), Configuration.DefaultAvatarPath);
+                var deleteResult = await _imageService.DeleteAvatar
+                (
+                    _userDataRepository, 
+                    Guid.Parse(userId.Value), 
+                    Configuration.DefaultAvatarPath
+                );
 
                 if (deleteResult.IsFailure)
                 {
@@ -287,7 +262,12 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
             else if (userDTO.avatar != null && userDTO.avatar.Length > 0)
             {
-                var updateResult = await _imageService.UpdateAvatar(_userDataRepository, Guid.Parse(userId.Value), Configuration.SystemDrive + "__avatars__/" + userId.Value, userDTO.avatar);
+                var updateResult = await _imageService.UpdateAvatar
+                (
+                    _userDataRepository, 
+                    Guid.Parse(userId.Value), 
+                    Configuration.GetAvailableDrivePath() + userId.Value + "a", userDTO.avatar
+                );
 
                 if (updateResult.IsFailure)
                 {
@@ -297,7 +277,12 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
             if (userDTO.header == "delete")
             {
-                var deleteResult = await _imageService.DeleteHeader(_userDataRepository, Guid.Parse(userId.Value), Configuration.SystemDrive + "__headers__/" + userId.Value);
+                var deleteResult = await _imageService.DeleteHeader
+                (
+                    _userDataRepository,
+                    Guid.Parse(userId.Value),
+                    Configuration.GetAvailableDrivePath() + userId.Value + "h"
+                );
 
                 if (deleteResult.IsFailure)
                 {
@@ -307,7 +292,12 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
 
             else if (userDTO.header != null && userDTO.header.Length > 0)
             {
-                var updateResult = await _imageService.UpdateHeader(_userDataRepository, Guid.Parse(userId.Value), Configuration.SystemDrive + "__headers__/" + userId.Value, userDTO.header);
+                var updateResult = await _imageService.UpdateHeader
+                (
+                    _userDataRepository, 
+                    Guid.Parse(userId.Value), 
+                    Configuration.GetAvailableDrivePath() + userId.Value + "h", userDTO.header
+                );
 
                 if (updateResult.IsFailure)
                 {

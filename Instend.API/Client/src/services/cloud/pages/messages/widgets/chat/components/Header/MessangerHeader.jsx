@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styles from './main.module.css';
 import ChatInformation from '../../../../features/chat-information/ChatInformation';
+import ChatAvatar from '../../../../elements/chat-avatar/ChatAvatar';
 
 const MessangerHeader = ({
         avatar, 
@@ -33,11 +34,14 @@ const MessangerHeader = ({
                             onClick={close}
                         />} */}
                     <div className={styles.avatar}>
-                        <img 
-                            src={`data:image/png;base64,${avatar}`}
-                            className={styles.avatarImage} 
-                            draggable="false"
-                        />
+                        {avatar ? 
+                            <img 
+                                src={`data:image/png;base64,${avatar}`}
+                                className={styles.avatarImage} 
+                                draggable="false"
+                            />
+                        :
+                            <ChatAvatar text={title} />}
                     </div>
                     <div className={styles.information}>
                         <span className={styles.name}>{title}</span>

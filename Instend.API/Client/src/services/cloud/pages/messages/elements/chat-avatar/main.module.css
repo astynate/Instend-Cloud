@@ -1,0 +1,15 @@
+.avatarPlaceholder {
+    height: 100%;
+    width: 100%;
+    background: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatarPlaceholder span {
+    font-size: 24px;
+    color: white;
+    text-transform: uppercase;
+    font-weight: 700;
+}

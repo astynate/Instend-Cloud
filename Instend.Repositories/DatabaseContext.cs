@@ -10,6 +10,7 @@ using Exider.Core.Models.Messenger;
 using Exider.Core.Models.Public;
 using Exider.Core.Models.Storage;
 using Exider.Core.TransferModels;
+using Instend.Core.Models.Storage;
 using Microsoft.EntityFrameworkCore;
 using static Exider.Core.Models.Links.AlbumLinks;
 
@@ -31,7 +32,7 @@ namespace Exider.Core
         public DbSet<Models.Access.FileAccess> FileAccess { get; set; } = null!;
         public DbSet<CommentModel> Comments { get; set; } = null!;
         public DbSet<AlbumCommentLink> AlbumCommentLinks { get; set; } = null!;
-        public DbSet<ComminityPublicationLink> ComminityPublicationLinks { get; set; } = null!;
+        public DbSet<ComminityPublicationLink> CommunityPublicationLinks { get; set; } = null!;
         public DbSet<CommunityFollowerLink> CommunityFollowers { get; set; } = null!;
         public DbSet<MessageModel> Messages { get; set; } = null!;
         public DbSet<DirectMessageLink> DirectLinks { get; set; } = null!;
@@ -46,7 +47,9 @@ namespace Exider.Core
         public DbSet<AttachmentCommentLink> CommentAttachments { get; set; } = null!;
         public DbSet<AlbumViewLink> ViewsLinks { get; set; } = null!;
         public DbSet<MessageAttachmentLink> MessageAttachmentLinks { get; set; } = null!;
-        public DbSet<PublictionLikeLink> PublictionLikeLinks { get; set; } = null!;
+        public DbSet<FolderMessageLink> FolderMessageLink { get; set; } = null!;
+        public DbSet<FileMessageLink> FileMessageModel { get; set; } = null!;
+        public DbSet<PublictionLikeLink> PublicationLikeLinks { get; set; } = null!;
         public DbSet<SongFormat> SongsMeta { get; set; } = null!;
 
         public DatabaseContext() => Database.EnsureCreated();

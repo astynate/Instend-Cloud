@@ -1,14 +1,20 @@
 import { instance } from "../../../../../../state/Interceptors";
 import chatsState from "../../../../../../states/chats-state";
-import ChatHandler from "../../../../../../utils/handlers/ChatHandler";
-import ChatTypes from "../../widgets/chat/ChatTypes";
+
+const AppendArray = (name, form, array) => {
+    for (let i = 0; i < array.length; i++){
+        form.append(name, array[i]);
+    }
+}
 
 export const SendMessage = async (
         message, 
         attachments, 
         replyTo, 
         chat, 
-        type = 0
+        type = 0,
+        selectedFiles,
+        selectedFolders
     ) => {
 
     if (message === '' || !message) { 
@@ -24,13 +30,17 @@ export const SendMessage = async (
 
     if (!chatsState.draft) {
         form.append('id', chat.id);
-        form.append('queueId', chatsState
-            .SetLoadingMessage(chat, message, attachments));
+
+        form.append('queueId', chatsState.SetLoadingMessage(
+            chat, 
+            message, 
+            attachments
+        ));
     }
 
-    for (let i = 0; i < attachments.length; i++){
-        form.append('attachments', attachments[i]);
-    }
+    AppendArray('attachments', form, attachments);
+    AppendArray('fileIds', form, selectedFiles);
+    AppendArray('folderIds', form, selectedFolders);
 
     form.append('type', type);
     form.append('text', message);

@@ -10,7 +10,7 @@ namespace Exider.Repositories.Account
         Task<Result<UserDataModel>> DecreaseOccupiedSpace(Guid userId, double amountInBytes);
         Task<UserPublic[]> GetPopularPeople();
         Task<Result<UserPublic>> GetUserAsync(Guid id);
-        Task<UserPublic[]> GetUsersbyPrefixAsync(string prefix);
+        Task<UserPublic[]> GetUsersByPrefixAsync(string prefix);
         Task<Result<UserDataModel>> IncreaseOccupiedSpace(Guid userId, double amountInBytes);
         Task UpdateAvatarAsync(Guid userId, string avatarPath);
         Task UpdateHeaderAsync(Guid userId, string headerPath);

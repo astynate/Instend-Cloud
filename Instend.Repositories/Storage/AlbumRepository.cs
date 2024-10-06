@@ -17,9 +17,24 @@ namespace Exider.Repositories.Storage
             _context = context;
         }
 
-        public async Task<Result<AlbumModel>> AddAsync(Guid ownerId, byte[] cover, string name, string? description, Configuration.AlbumTypes type)
+        public async Task<Result<AlbumModel>> AddAsync
+        (
+            Guid ownerId, 
+            byte[] cover, 
+            string name, 
+            string? description, 
+            Configuration.AlbumTypes type
+        )
         {
-            var albumModel = AlbumModel.Create(name, description, DateTime.Now, DateTime.Now, ownerId, type, Configuration.AccessTypes.Private);
+            var albumModel = AlbumModel.Create(
+                name, 
+                description, 
+                DateTime.Now, 
+                DateTime.Now, 
+                ownerId, 
+                type, 
+                Configuration.AccessTypes.Private
+            );
 
             if (albumModel.IsFailure)
             {
@@ -62,26 +77,18 @@ namespace Exider.Repositories.Storage
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (album == null)
-            {
                 return Result.Failure<AlbumModel>("Album not found");
-            }
 
             if (album.OwnerId != userId)
-            {
                 return Result.Failure<AlbumModel>("Only owners can delete an album.");
-            }
 
             int result = await _context.Albums.Where(x => x.Id == id)
                 .ExecuteDeleteAsync();
 
             if (result == 0)
-            {
                 return Result.Failure<AlbumModel>("Album not found");
-            }
 
-            File.Delete(album.Cover);
-
-            return Result.Success(album);
+            File.Delete(album.Cover); return Result.Success(album);
         }
 
         public async Task<AlbumModel?> GetByIdAsync(Guid id)
@@ -96,16 +103,12 @@ namespace Exider.Repositories.Storage
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (albumModel == null)
-            {
                 return Result.Failure("Album not found");
-            }
 
             albumModel.Update(name, description);
 
             if (cover.Length > 0)
-            {
                 await File.WriteAllBytesAsync(albumModel.Cover, cover);
-            }
 
             await _context.SaveChangesAsync();
             return Result.Success();
@@ -142,16 +145,12 @@ namespace Exider.Repositories.Storage
                 AlbumViewLink[] links = isViewExistRequest[0].Link.ToArray();
 
                 if (album.OwnerId == userId || links.Length > 0)
-                {
                     return -1;
-                }
 
                 var link = LinkBase.Create<AlbumViewLink>(albumId, userId);
 
                 if (link.IsFailure)
-                {
                     return Result.Failure<long>(link.Error);
-                }
 
                 album.IncrementViews();
 

@@ -7,7 +7,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
       },
-      "applicationUrl": "http://213.184.250.181:5000;http://213.184.250.181:5200"
+      "applicationUrl": "http://localhost:5000;http://localhost:5200"
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -33,7 +33,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "https://213.184.250.181:7128",
+      "applicationUrl": "https://localhost:7128",
       "sslPort": 44353
     }
   }

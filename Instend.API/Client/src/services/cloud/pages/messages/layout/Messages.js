@@ -19,7 +19,7 @@ const Messages = observer((props) => {
         props.setPanelState(true);
     }
   }, [props.setPanelState]);
-
+  
   useEffect(() => { 
     setChat(ChatHandler.GetChat(params.id));
   }, [chatsState.chats, params, params.id]);

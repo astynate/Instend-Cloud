@@ -56,8 +56,8 @@ namespace Exider.Repositories.Public
 
             Guid id = Guid.NewGuid();
 
-            string avatarPath = Configuration.SystemDrive + $"__community_avatar__/{id}";
-            string headerPath = Configuration.SystemDrive + $"__community_header__/{id}";
+            string avatarPath = Configuration.GetAvailableDrivePath() + id + "a";
+            string headerPath = Configuration.GetAvailableDrivePath() + id + "h";
 
             var community = CommunityModel.Create(id, userId, name, description, avatarPath, headerPath);
 
@@ -154,11 +154,6 @@ namespace Exider.Repositories.Public
             {
                 return Result.Failure<bool>("Community not found");
             }
-
-            //if (model != null && model.OwnerId == userId)
-            //{
-            //    return Result.Failure<bool>("You cannot subscribe to your own community");
-            //}
 
             CommunityFollowerLink? link = await _context.CommunityFollowers
                 .FirstOrDefaultAsync(x => x.ItemId == id && x.LinkedItemId == userId);
