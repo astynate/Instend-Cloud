@@ -3,19 +3,57 @@
     align-items: center;
     grid-gap: 5px;
     user-select: none;
+    position: absolute;
+    bottom: 7px;
+    right: -50px;
+}
+
+.button {
+    background: none;
+    outline: none;
+    border: none;
+    height: 38px;
+    width: 38px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 30px;
+    transition: 0.15s ease;
+    border: 1px solid transparent;
+}
+
+.button:hover {
+    background: var(--main-accent-color);
+}
+
+.button:active {
+    background: var(--pop-up-accent-color);
+    border: 1px solid var(--main-border-color);
 }
 
 .input {
+    top: 7px;
+    left: 35px;
     background: none;
     border: none;
     outline: none;
     font-size: 16px;
+    position: absolute;
+    padding-bottom: 7px;
+    transition: 0.2s ease;
+    border-bottom: 2px solid var(--main-border-color);
     font-family: 'Open Sans', sans-serif;
 }
 
+.input:focus {
+    border-bottom: 2px solid var(--main-font-color);
+}
+
 .icon {
-    height: 16px;
-    width: 16px;
+    height: 17px;
+    width: 17px;
+    object-fit: contain;
     filter: var(--main-filter);
     opacity: 0.6;
 }

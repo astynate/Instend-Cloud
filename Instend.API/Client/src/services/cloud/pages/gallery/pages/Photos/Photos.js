@@ -7,9 +7,9 @@ import { ConvertDate, ConvertFullDate } from '../../../../../../utils/DateHandle
 import Placeholder from '../../../../shared/placeholder/Placeholder';
 import { toJS } from 'mobx';
 import PhotoList from '../../shared/photo-list/PhotoList';
-import storageState from '../../../../../../states/storage-state';
+import storageState from '../../../../../../state/entities/StorageState';
 import FileAPI from '../../../../api/FileAPI';
-import AddInGallery from '../../widgets/add/AddInGallery';
+import AddInGallery from '../../widgets/add-in-gallery-button/AddInGallery';
 import { ByDate, ByName } from '../../../cloud/layout/Cloud';
 
 const Photos = observer((props) => {
@@ -73,7 +73,7 @@ const Photos = observer((props) => {
             {/* {photos && photos.length > 0 && <div className={styles.down}>
                 <div className={styles.currentDate}>
                     <span className={styles.date} ref={dataRef}>{date}</span>
-                    <span className={styles.location}>Yexider Cloud</span>
+                    <span className={styles.location}>Instend Cloud</span>
                 </div>
             </div>} */}
             {photos && photos.length === 0 &&

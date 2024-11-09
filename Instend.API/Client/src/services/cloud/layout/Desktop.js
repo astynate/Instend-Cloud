@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import NavigationPanel from '../widgets/navigation-panel/NavigationPanel';
 import { observer } from 'mobx-react-lite';
-import userState from '../../../states/user-state';
+import userState from '../../../state/entities/UserState';
 import PrivateRoutes from '../../../routes/PrivateRoutes';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Disconnected from '../features/disconnected/Disconnected';

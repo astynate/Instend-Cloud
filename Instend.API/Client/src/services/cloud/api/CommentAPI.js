@@ -1,5 +1,5 @@
-import { instance } from "../../../state/Interceptors";
-import applicationState from "../../../states/application-state";
+import { instance } from "../../../state/application/Interceptors";
+import applicationState from "../../../state/application/ApplicationState";
 
 export const AddUploadingAlbumComment = async (
         route, 
@@ -12,7 +12,8 @@ export const AddUploadingAlbumComment = async (
         queueId,
         setQueueId
     ) => {
-    if (!attachments) {
+
+    if (!!attachments === false) {
         attachments = [];
     }
 
@@ -42,13 +43,8 @@ export const AddUploadingAlbumComment = async (
             .post(route, form)
             .catch(error => {
                 DeleteCommentByQueueId(comment.queueId, itemId);
-                // applicationState.AddErrorInQueue(error.response.data);
             })
     }
     
     setQueueId(queueId++);
-}
-
-export const DeleteCommentByQueueId = async () => {
-    
 }

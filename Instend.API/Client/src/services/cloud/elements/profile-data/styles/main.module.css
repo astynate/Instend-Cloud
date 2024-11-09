@@ -1,0 +1,44 @@
+.placeholder {
+    height: 15px;
+    width: 120px;
+    background: var(--main-accent-color);
+    animation: var(--loading-animation);
+    border-radius: 30px;
+}
+
+.data {
+    display: flex;
+    grid-gap: 35px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.counter {
+    display: flex;
+    grid-gap: 5px;
+}
+
+.counter h2 {
+    font-size: 15px;
+    color: var(--main-font-color);
+}
+
+.counter span {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--main-paragraph-color);
+}
+
+@media (max-width: 500px) {
+    .data {
+        grid-gap: 20px;
+    }
+
+    .counter h2 {
+        font-size: 12px;
+    }
+
+    .counter span {
+        font-size: 12px;
+    }
+}

@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { MessageOperations } from '../../widgets/chat/helpers/MessageOperations';
+import { SendMessage } from './MessageAPI';
+import NextButton, { ButtonDirections } from '../../../../shared/ui-kit/next-button/NextButton';
 import styles from './main.module.css';
 import MainMessageButton from '../../elements/message-button/MainMessageButton';
 import attach from './images/attach.png';
@@ -6,23 +9,17 @@ import smile from './images/smile.png';
 import voice from './images/voice.png';
 import cancel from './images/cancel.png';
 import send from './images/send.png';
-import reply from './images/reply.png';
-import reject from './images/reject.png';
-import { MessageOperations } from '../../widgets/chat/MessageOperations';
-import ChatHandler from '../../../../../../utils/handlers/ChatHandler';
-import { SendMessage } from './MessageAPI';
 import PopUpList from '../../../../shared/ui-kit/pop-up-list/PopUpList';
-import YexiderCloud from '../../../../sub-systems/yexider-cloud/YexiderCloud';
 import File from '../../../cloud/shared/file/File';
 import Folder from '../../../cloud/shared/folder/Folder';
-import NextButton, { ButtonDirections } from '../../../../shared/ui-kit/next-button/NextButton';
+import InstendCloud from '../../../../sub-systems/yexider-cloud/InstendCloud';
 
 const Input = ({operation, setDefaultOperation, chat, type = 0}) => {
     const [text, setText] = useState('');
     const [attachments, setAttachements] = useState([]);
     const [isCreatePopUpOpen, setCreatePopUpState] = useState(false);
     const [timer, setTimer] = useState(null);
-    const [isYexiderCloud, setYexiderCloudState] = useState(false);
+    const [isInstendCloud, setInstendCloudState] = useState(false);
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [selectedFolders, setSelectedFolders] = useState([]);
     const [isLeftArrowOpen, setLeftArrowOpenState] = useState(false);
@@ -130,9 +127,9 @@ const Input = ({operation, setDefaultOperation, chat, type = 0}) => {
 
     return (
         <>
-            <YexiderCloud 
-                open={isYexiderCloud} 
-                close={() => setYexiderCloudState(false)} 
+            <InstendCloud
+                open={isInstendCloud} 
+                close={() => setInstendCloudState(false)} 
                 selectedFiles={selectedFiles}
                 setSelectedFiles={setSelectedFiles}
                 setSelectedFolders={setSelectedFolders}
@@ -147,7 +144,7 @@ const Input = ({operation, setDefaultOperation, chat, type = 0}) => {
                         >
                             <PopUpList 
                                 items={[
-                                    {title: "From Cloud", callback: () => {setYexiderCloudState(true)}},
+                                    {title: "From Cloud", callback: () => {setInstendCloudState(true)}},
                                     {title: "From Device", callback: () => document.getElementById('message-file-picker').click()},
                                     // {title: "Transaction", callback: () => {}}
                                 ]}

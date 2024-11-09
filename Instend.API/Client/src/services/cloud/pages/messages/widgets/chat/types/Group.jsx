@@ -2,14 +2,14 @@ import { useState } from "react";
 import Input from "../../../shared/input/Input";
 import UsersPopUp from "../../../shared/users-pop-up/UsersPopUp";
 import MessangerHeader from "../components/Header/MessangerHeader";
-import MessageList from "../components/MessageList/MessageList";
+import MessageList from "../components/message-list/MessageList";
 import Container from "../../../features/chat-information/elements/container/Container";
 import styles from './main.module.css';
 import plus from '../images/general/plus.png';
 import Base64Handler from "../../../../../../../utils/handlers/Base64Handler";
 import Button from "../../../../cloud/shared/button/Button";
 import { instance } from "../../../../../../../state/Interceptors";
-import chatsState from "../../../../../../../states/chats-state";
+import chatsState from "../../../../../../../states/ChatsState";
 import { observer } from "mobx-react-lite";
 import applicationState from "../../../../../../../states/application-state";
 

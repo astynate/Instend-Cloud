@@ -1,10 +1,10 @@
 import { observer } from "mobx-react-lite";
 import Input from "../../../shared/input/Input";
 import MessangerHeader from "../components/Header/MessangerHeader";
-import chatsState from "../../../../../../../states/chats-state";
+import chatsState from "../../../../../../../states/ChatsState";
 import styles from './main.module.css';
-import ChatPlaceholder from "../components/placeholder/ChatPlaceholder";
-import MessageList from "../components/MessageList/MessageList";
+import ChatPlaceholder from "../components/chat-placeholder/ChatPlaceholder";
+import MessageList from "../components/message-list/MessageList";
 import PointsLoaderAnimation from "../../../../../shared/points-loader-animation/PointsLoaderAnimation";
 
 const Draft = observer(({operation, setDefaultOperation, scrollElement}) => {

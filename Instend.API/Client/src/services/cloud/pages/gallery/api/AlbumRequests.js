@@ -1,10 +1,6 @@
-/////////////////////////////////////////////////////////////////////////////////////
-
-import { instance } from "../../../../../state/Interceptors";
-import applicationState from "../../../../../states/application-state";
-import galleryState from "../../../../../states/gallery-state";
-
-/////////////////////////////////////////////////////////////////////////////////////
+import { instance } from "../../../../../state/application/Interceptors";
+import applicationState from "../../../../../state/application/ApplicationState";
+import galleryState from "../../../../../state/entities/GalleryState";
 
 export const CreateAlbumRequest = async (route='/api/albums/create', name, description, image) => {
     if (name === '') {
@@ -30,8 +26,6 @@ export const CreateAlbumRequest = async (route='/api/albums/create', name, descr
     });
 }
 
-/////////////////////////////////////////////////////////////////////////////////////
-
 export const UpdateAlbum = async (name, description, image, id) => {
     if (name === '') {
         return;
@@ -54,8 +48,6 @@ export const UpdateAlbum = async (name, description, image, id) => {
     });
 }
 
-/////////////////////////////////////////////////////////////////////////////////////
-
 export const DeleteAlbums = async (albums) => {
     if (albums && albums.length > 0) {
         for (let i = 0; i < albums.length; i++) {
@@ -73,8 +65,6 @@ export const DeleteAlbums = async (albums) => {
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////////////
-
 export const DeleteComment = async (id, albumId) => {
     galleryState.SetCommentAsLoading(id);
 
@@ -87,5 +77,3 @@ export const DeleteComment = async (id, albumId) => {
             });
     }
 }
-
-/////////////////////////////////////////////////////////////////////////////////////

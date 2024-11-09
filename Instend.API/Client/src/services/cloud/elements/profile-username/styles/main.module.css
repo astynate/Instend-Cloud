@@ -1,0 +1,26 @@
+.placeholder {
+    height: 30px;
+    width: 200px;
+    background: var(--main-accent-color);
+    animation: var(--loading-animation);
+    border-radius: 30px;
+}
+
+.username {
+    margin: 0;
+    padding: 0;
+    font-size: 34px;
+    font-weight: 700;
+}
+
+.wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width: 600px) {
+    .username {
+        font-size: 24px;
+    }
+}

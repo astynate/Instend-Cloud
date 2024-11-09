@@ -20,11 +20,11 @@ const Support = () => {
         <div className={styles.main}>
             <Header name={'Support'}/>
             <Helmet>
-                <title>Yexider Support</title>
+                <title>Instend Support</title>
             </Helmet>
             <div className={styles.content}>
                 {/* <img src={support} className={styles.mainImage} draggable="false" /> */}
-                <h1 className={styles.title}>Yexider Technical Support</h1>
+                <h1 className={styles.title}>Instend Technical Support</h1>
                 <h2 className={styles.subTitle}>Help system, additional information and user manual.</h2>
                 <div className={styles.menuWrapper}>
                     <Menu 

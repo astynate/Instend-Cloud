@@ -1,0 +1,8 @@
+.wrapper {
+    width: 100%;
+    height: fit-content;
+    border-radius: 15px;
+    overflow: hidden;
+    border-bottom: none;
+    border: 1px solid var(--main-border-color);
+}

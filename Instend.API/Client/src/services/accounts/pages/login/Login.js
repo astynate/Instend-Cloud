@@ -89,7 +89,7 @@ const Login = observer(() => {
     return (
         <GoogleOAuthProvider clientId="1099397056156-quc1l3h460li634u6o8eh03feat63s7v.apps.googleusercontent.com">
             { isError ? <Error message="Something went wrong." state={isError} setState={setErrorState} /> : null }
-            <h1>{t('account.login_with')} <span className="selected-text">Yexider ID</span></h1>
+            <h1>{t('account.login_with')} <span className="selected-text">Instend ID</span></h1>
             <p className='page-description'>{t('account.login_with.message')}</p>
             <InputText placeholder={t('account.email_or_nickname')} SetValue={setEmail} autofocus={true} />
             <InputPassword placeholder={t('account.password')} SetValue={setPassword} autofocus={false} />

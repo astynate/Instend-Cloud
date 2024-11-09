@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from './main.module.css';
 import AlbumView from '../../../../widgets/album-view/AlbumView';
-import galleryState from '../../../../../../states/gallery-state';
+import galleryState from '../../../../../../state/entities/GalleryState';
 import { useParams } from 'react-router-dom';
 import Scroll from '../../../../widgets/scroll/Scroll';
 import AddInMusic from '../../widgets/add-in-music/AddInMusic';

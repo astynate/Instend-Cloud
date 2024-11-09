@@ -22,7 +22,7 @@ const Email = () => {
     return (
 
         <>
-            <h1>{t('account.create.creation_of')} <span className="selected-text">Yexider ID</span></h1>
+            <h1>{t('account.create.creation_of')} <span className="selected-text">Instend ID</span></h1>
             <p className='page-description'>{t('account.create.email_desc')}</p>
             <InputCheck
                 placeholder={t('account.email')}

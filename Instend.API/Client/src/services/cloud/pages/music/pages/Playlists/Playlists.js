@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
 import PlayListPreview from '../../widgets/playlist-preview/PlayListPreview';
 import AddInMusic from '../../widgets/add-in-music/AddInMusic';
-import galleryState from '../../../../../../states/gallery-state';
+import galleryState from '../../../../../../states/GalleryState';
 import { ConvertDate, ConvertFullDate } from '../../../../../../utils/DateHandler';
 import { observer } from 'mobx-react-lite';
 import SelectBox from '../../../../shared/interaction/select-box/SelectBox';

@@ -1,0 +1,81 @@
+.input {
+    outline: none;
+    max-height: 200px;
+    width: 100%;
+    outline: none;
+    border: none;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 10px 0px;
+    color: var(--main-font-color);
+    border-bottom: 2px solid var(--main-border-color);
+    transition: 0.25s ease;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.input b, .input u, .input i {
+    height: fit-content;
+}
+
+.input::-webkit-scrollbar {
+    display: none;
+}
+
+.input:focus {
+    border-bottom: 2px solid var(--main-blue-color);
+}
+
+.control {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.buttons {
+    display: flex;
+    grid-gap: 3px;
+}
+
+.control button {
+    border: none;
+    outline: none;
+    background: none;
+    cursor: pointer;
+    height: 32px;
+    width: 32px;
+    display: flex;
+    user-select: none;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    font-size: 18px;
+    border-radius: 3px;
+}
+
+.control button img {
+    height: 19px;
+    width: 19px;
+    filter: var(--main-filter);
+}
+
+.control button[state="active"] {
+    background: var(--main-accent-color);
+}
+
+.control button:hover {
+    background: var(--main-accent-color);
+}
+
+.control button:nth-child(2) {
+    font-style: italic;
+}
+
+.control button:nth-child(3) {
+    text-decoration: underline;
+}
+
+
+.markwdownWrapper {
+    border-bottom: 2px solid var(--main-border-color);
+}

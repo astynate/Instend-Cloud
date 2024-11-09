@@ -1,24 +1,24 @@
 import { observer } from "mobx-react-lite";
 import Input from "../../../shared/input/Input";
 import MessangerHeader from "../components/Header/MessangerHeader";
-import MessageList from "../components/MessageList/MessageList";
-import ChatPlaceholder from "../components/placeholder/ChatPlaceholder";
+import MessageList from "../components/message-list/MessageList";
+import ChatPlaceholder from "../components/chat-placeholder/ChatPlaceholder";
 import styles from './main.module.css';
-import userState from "../../../../../../../states/user-state";
+import userState from "../../../../../../../state/entities/UserState";
 import { DeleteDirectory } from "../../chats/Chats";
 import { useParams } from "react-router-dom";
-import { messageWSContext } from "../../../../../layout/Layout";
+import { globalWSContext } from "../../../../../layout/Layout";
 
 export const ChangeAccessStateAsync = async (id, isAccept) => {
     try {
-        while (messageWSContext.connection.state !== 'Connected') {
-            if (messageWSContext.connection.state === 'Disconnected') {
-                await messageWSContext.connection.start();
+        while (globalWSContext.connection.state !== 'Connected') {
+            if (globalWSContext.connection.state === 'Disconnected') {
+                await globalWSContext.connection.start();
             }
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
 
-        await messageWSContext.connection.invoke("ChangeAccessState", id, localStorage.getItem("system_access_token"), isAccept);
+        await globalWSContext.connection.invoke("ChangeAccessState", id, localStorage.getItem("system_access_token"), isAccept);
     } catch (error) {
         console.error('Failed to connect or join:', error);
     }

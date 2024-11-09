@@ -23,7 +23,7 @@ const Nickname = () => {
     return (
 
         <>
-            <h1>{t('account.create.creation_of')} <span className="selected-text">Yexider ID</span></h1>
+            <h1>{t('account.create.creation_of')} <span className="selected-text">Instend ID</span></h1>
             <p className='page-description'>{t('account.create.nickname_desc')}</p>
             <InputCheck
                 placeholder={t('account.nickname')}

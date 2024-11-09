@@ -1,7 +1,7 @@
 import { instance } from "../../../../../state/Interceptors";
 import applicationState from "../../../../../states/application-state";
-import homeState from "../../../../../states/home-state";
-import userState from "../../../../../states/user-state";
+import homeState from "../../../../../states/HomeState";
+import userState from "../../../../../state/entities/UserState";
 
 export const Follow = async (id) => {
     await instance.put(`api/community/followers?id=${id}`)

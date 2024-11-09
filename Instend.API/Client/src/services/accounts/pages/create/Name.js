@@ -33,7 +33,7 @@ const Name = () => {
     return (
 
         <>
-            <h1>{t('account.create.creation_of')} <span className="selected-text">Yexider ID</span></h1>
+            <h1>{t('account.create.creation_of')} <span className="selected-text">Instend ID</span></h1>
             <p className='page-description'>{t('account.create.name_desc')}</p>
             <InputText placeholder={t('account.name')} autofocus={true} defaultValue={name} SetValue={setName} />
             <InputText placeholder={t('account.surname')} defaultValue={surname} SetValue={setSurname} />

@@ -1,0 +1,32 @@
+.textBlock {
+    padding: 10px 15px;
+    display: flex;
+    flex-direction: column;
+    grid-gap: 10px;
+}
+
+.textBlock h1 {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.textBlock span {
+    font-size: 15px;
+    color: var(--main-paragraph-color);
+}
+
+.textBlock hr {
+    height: 1px;
+    outline: none;
+    border: none;
+    background: var(--main-border-color);
+}
+
+.title {
+    font-size: 22px;
+    font-weight: 700;
+    background: none;
+    outline: none;
+    border: none;
+    font-family: 'Open Sans', sans-serif;
+}

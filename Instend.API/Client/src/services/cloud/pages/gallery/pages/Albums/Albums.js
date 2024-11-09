@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
 import { observer } from 'mobx-react-lite';
-import galleryState from '../../../../../../states/gallery-state';
-import Album from '../../widgets/album/Album';
+import galleryState from '../../../../../../states/GalleryState';
+import Album from '../../../../components/album/Album';
 import { autorun } from 'mobx';
 import { toJS } from 'mobx';
 import SelectBox from '../../../../shared/interaction/select-box/SelectBox';
 import { DeleteAlbums, UpdateAlbum } from '../../api/AlbumRequests';
 import CreateAlbum from '../../../../widgets/create-album/CreateAlbum';
-import AddInGallery from '../../widgets/add/AddInGallery';
+import AddInGallery from '../../widgets/add-in-gallery-button/AddInGallery';
 
 const Albums = observer(() => {
     const wrapper = useRef();

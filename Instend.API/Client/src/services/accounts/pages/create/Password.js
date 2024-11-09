@@ -69,7 +69,7 @@ const Password = () => {
     return (
         <>
             { isError ? <Error message="Something went wrong." state={isError} setState={setErrorState} /> : null }
-            <h1>{t('account.create.creation_of')} <span className="selected-text">Yexider ID</span></h1>
+            <h1>{t('account.create.creation_of')} <span className="selected-text">Instend ID</span></h1>
             <p className='page-description'>This is a required field. Your password must be at least 8 characters long.</p>
             <InputPassword
                 placeholder={t('account.enter_password')}

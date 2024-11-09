@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './styles/main.module.css';
 import { observer } from 'mobx-react-lite';
-import userState from '../../../../states/user-state';
+import userState from '../../../../state/entities/UserState';
 
 const MiniProfile = observer(() => {
 

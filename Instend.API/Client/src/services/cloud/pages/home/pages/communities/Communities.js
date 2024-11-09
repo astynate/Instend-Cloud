@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import styles from './main.module.css';
 import CommunityPreview from '../../widgets/community-preview/CommunityPreview';
-import homeState from '../../../../../../states/home-state';
+import homeState from '../../../../../../states/HomeState';
 import { observer } from 'mobx-react-lite';
 import SubContentWrapper from '../../../../features/sub-content-wrapper/SubContentWrapper';
 

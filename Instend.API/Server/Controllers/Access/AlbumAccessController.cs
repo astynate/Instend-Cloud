@@ -1,9 +1,5 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using DocumentFormat.OpenXml.Spreadsheet;
-using Exider.Core;
-using Exider.Core.Dependencies.Repositories.Account;
+﻿using Exider.Core;
 using Exider.Core.Models.Access;
-using Exider.Core.Models.Account;
 using Exider.Core.Models.Albums;
 using Exider.Core.TransferModels;
 using Exider.Repositories.Account;

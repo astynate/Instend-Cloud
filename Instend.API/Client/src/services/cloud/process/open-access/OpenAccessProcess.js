@@ -1,8 +1,8 @@
 import React, { useState, createContext, useEffect } from 'react';
 import AccessPicker from '../../widgets/social/access/access-picker/AccessPicker';
-import OpenAccess from '../../widgets/social/access/open-access/OpenAccess';
-import { instance } from '../../../../state/Interceptors';
-import applicationState from '../../../../states/application-state';
+import SearchUsersAccessManager from '../../widgets/social/access/search-users-access-management-pop-up/SearchUsersAccessManager';
+import { instance } from '../../../../state/application/Interceptors';
+import applicationState from '../../../../state/application/ApplicationState';
 import { observer } from 'mobx-react-lite';
 
 export const OpenAccessContext = createContext();
@@ -18,15 +18,14 @@ const OpenAccessProcess = observer((props) => {
     const GetData = async (prefix) => {
         setLoadingState(true);
 
-        try {
-            await instance
-                .get(`/accounts/all/${prefix}`)
-                .then(response => {
-                    setSearchUsers(response.data);
-                });
-        } finally {
-            setLoadingState(false);
-        }
+        await instance
+            .get(`/accounts/all/${prefix}`)
+            .then(response => {
+                setSearchUsers(response.data);
+            })
+            .finally(_ => {
+                setLoadingState(false);
+            });
     }
 
     const SendAccessRequest = async (access, users) => {
@@ -38,7 +37,7 @@ const OpenAccessProcess = observer((props) => {
                 })
                 .catch(error => {
                     applicationState.AddErrorInQueue('Attention!', error.response.data);
-                })
+                });
         }
     };
 
@@ -73,15 +72,11 @@ const OpenAccessProcess = observer((props) => {
                     props.setLoadingState(false);
                 }
             })
-            // .catch(error => {
-            //     // applicationState.AddErrorInQueue('Attention!', error.response.data);
-            // });
     }
 
     useState(() => {
-        if (props.endPoint) {
+        if (props.endPoint)
             GetAccessState();
-        }
     }, []);
 
     const components = {
@@ -97,7 +92,7 @@ const OpenAccessProcess = observer((props) => {
             />
         ),
         'OpenAccess': (
-            <OpenAccess
+            <SearchUsersAccessManager
                 open={state === 'OpenAccess'}
                 back={() => setState('AccessPicker')}
                 close={props.close}
@@ -105,7 +100,7 @@ const OpenAccessProcess = observer((props) => {
         )
     };
 
-    if (props.open) {
+    if (props.open === true) {
         return (
             <OpenAccessContext.Provider value={{
                 users, 
@@ -119,9 +114,9 @@ const OpenAccessProcess = observer((props) => {
                 {components[state]}
             </OpenAccessContext.Provider>
         );
-    } else {
-        return null;
     }
+        
+    return null;
 });
 
 export default OpenAccessProcess;

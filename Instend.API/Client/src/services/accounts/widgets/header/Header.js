@@ -1,12 +1,11 @@
 ﻿import React, { useState, useEffect } from 'react';
 import './styles/main.css';
 import './styles/media.css';
-import logo from './images/logo.svg';
 import link from './images/link.png';
 import ExternalLink from '../../shared/link/ExternalLink';
 import { useTranslation } from 'react-i18next';
 import HeaderMenu from './HeaderMenu';
-import YexiderLogo from './images/yexider-logo.svg';
+import InstendLogo from './images/instend-logo.svg';
 import { Link } from 'react-router-dom';
 
 const Header = ({name}) => {
@@ -29,8 +28,8 @@ const Header = ({name}) => {
     return (
         <div className="header" id={isMenuOpen ? 'menu-open' : (windowWidth > 550) ? 'desktop' : 'mobile'}>
             <Link to={'/main'} className="product-logo">
-                <img src={YexiderLogo} className="logo" alt="Logo" draggable="false" />
-                <span className="product-name"><span className="company-name">Yexider</span>&nbsp;{name}</span>
+                <img src={InstendLogo} className="logo" alt="Logo" draggable="false" />
+                <span className="product-name"><span className="company-name">Instend</span>&nbsp;{name}</span>
             </Link>
             {(windowWidth > 550) ? (
                 <div className="links">

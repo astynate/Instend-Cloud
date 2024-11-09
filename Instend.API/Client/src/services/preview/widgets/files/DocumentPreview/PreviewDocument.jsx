@@ -2,7 +2,7 @@ import { toJS } from "mobx";
 import { useEffect } from "react";
 import DocViewer from "react-doc-viewer";
 import { instance } from "../../../../../state/Interceptors";
-import storageState from "../../../../../states/storage-state";
+import storageState from "../../../../../state/entities/StorageState";
 
 export const PreviewDocument = ({file}) => {
     useEffect(() => {

@@ -1,6 +1,6 @@
 import { instance } from "../../../../../state/Interceptors";
 import applicationState from "../../../../../states/application-state";
-import storageState from "../../../../../states/storage-state";
+import storageState from "../../../../../state/entities/StorageState";
 
 //////////////////////////////////////////////////////////////////////////////////
 

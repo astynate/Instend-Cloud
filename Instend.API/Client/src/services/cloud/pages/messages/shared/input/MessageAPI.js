@@ -1,5 +1,5 @@
 import { instance } from "../../../../../../state/Interceptors";
-import chatsState from "../../../../../../states/chats-state";
+import chatsState from "../../../../../../states/ChatsState";
 
 const AppendArray = (name, form, array) => {
     for (let i = 0; i < array.length; i++){

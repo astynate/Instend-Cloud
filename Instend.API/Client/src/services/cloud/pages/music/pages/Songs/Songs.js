@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import styles from './main.module.css';
 import SongInformation from '../../widgets/song-information/SongInformation';
 import SongList from '../../widgets/song-list/SongList';
-import storageState from '../../../../../../states/storage-state';
+import storageState from '../../../../../../state/entities/StorageState';
 import FileAPI from '../../../../api/FileAPI';
 import Scroll from '../../../../widgets/scroll/Scroll';
 import { observer } from 'mobx-react-lite';

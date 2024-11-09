@@ -1,0 +1,23 @@
+.wrapper {
+    width: 100%;
+}
+
+.content {
+    width: 65%;
+    margin-right: 26%;
+    margin-left: auto; 
+}
+
+@media (max-width: 1300px) {
+    .content {
+        width: 90%;
+        margin-right: 0%;
+    }
+}
+
+@media (max-width: 950px) {
+    .content {
+        width: 95%;
+        margin-right: 0%;
+    }
+}

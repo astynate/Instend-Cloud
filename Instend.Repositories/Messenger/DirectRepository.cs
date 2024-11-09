@@ -79,7 +79,8 @@ namespace Exider.Repositories.Messenger
         public async Task<MessageModel[]> GetLastMessages(Guid destination, Guid userId, int from, int count)
         {
             var messages = await _context.Directs.AsNoTracking()
-                .Where(direct => (direct.UserId == userId && direct.OwnerId == destination) || (direct.OwnerId == userId && direct.UserId == destination))
+                .Where(direct => (direct.UserId == userId && direct.OwnerId == destination) || 
+                                 (direct.OwnerId == userId && direct.UserId == destination))
                 .Join(_context.DirectLinks,
                     direct => direct.Id,
                     link => link.ItemId,

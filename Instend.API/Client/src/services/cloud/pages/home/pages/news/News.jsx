@@ -1,9 +1,9 @@
 import styles from './main.module.css';
-import userState from "../../../../../../states/user-state";
+import userState from "../../../../../../state/entities/UserState";
 import MainContentWrapper from "../../../../features/main-content-wrapper/MainContentWrapper";
 import Comments from "../../../../widgets/social/comments/Comments";
 import Pagination from '../../../../elements/pagination/Pagination';
-import newsState from '../../../../../../states/news-state';
+import newsState from '../../../../../../states/NewsState';
 import { observer } from "mobx-react-lite";
 import checkMark from './check-mark.png';
 

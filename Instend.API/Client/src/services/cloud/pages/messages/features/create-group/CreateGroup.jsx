@@ -6,8 +6,8 @@ import Button from "../../../../shared/ui-kit/button/Button";
 import AvatarPicker from "../../../../shared/pop-up-window/elements/avatar-picker/AvatarPicker";
 import applicationState from "../../../../../../states/application-state";
 import { instance } from "../../../../../../state/Interceptors";
-import { messageWSContext } from "../../../../layout/Layout";
-import chatsState from "../../../../../../states/chats-state";
+import { globalWSContext } from "../../../../layout/Layout";
+import chatsState from "../../../../../../states/ChatsState";
 import { useNavigate } from "react-router-dom";
 
 const CreateGroup = ({open, close}) => {
@@ -21,7 +21,7 @@ const CreateGroup = ({open, close}) => {
     }, [open])
 
     const CreateGroup = async () => {
-        const connectionId = messageWSContext?.connection?.connectionId;
+        const connectionId = globalWSContext?.connection?.connectionId;
 
         if (!connectionId) {
             applicationState.AddErrorInQueue('Attantion!', 'Check your connection.');

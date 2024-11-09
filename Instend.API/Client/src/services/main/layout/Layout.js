@@ -20,12 +20,12 @@ const Layout = () => {
         <div className={styles.main}>
             <Header name={'Service'}/>
             <Helmet>
-                <title>Yexider Main</title>
+                <title>Instend Main</title>
             </Helmet>
             <img className={styles.background} src={background} draggable="false" />
             <div className={styles.content}>
                 <img className={styles.logo} src={logo} />
-                <h1 className={styles.title}>Yexider — The best place for your memories.</h1>
+                <h1 className={styles.title}>Instend — The best place for your memories.</h1>
                 <p className={styles.information}>Access your data from anywhere in the world. Chat with friends and find like-minded people in communities.</p>
                 <div className={styles.buttons}>
                     <Link to={userState.isAuthorize ? '/' : '/account/login'} className={styles.button}>Log in</Link>

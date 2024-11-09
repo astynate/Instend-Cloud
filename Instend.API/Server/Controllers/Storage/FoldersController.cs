@@ -68,7 +68,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 }
             }
 
-            string zipName = folder == null ? "Yexider Cloud.zip" : folder.Name + ".zip";
+            string zipName = folder == null ? "Instend Cloud.zip" : folder.Name + ".zip";
 
             byte[] zipArchive = fileService.CreateZipFromFiles(files);
             

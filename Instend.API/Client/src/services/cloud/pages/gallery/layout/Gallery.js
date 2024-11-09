@@ -1,20 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Header from '../../../widgets/header/Header';
 import { observer } from 'mobx-react-lite';
-import Search from '../../../features/search/Search';
+import { toJS } from 'mobx';
 import { Route, Routes } from 'react-router-dom';
+import Search from '../../../features/search/Search';
 import Menu from '../../../widgets/menu/Menu';
 import styles from './main.module.css';
-import Photos from '../pages/Photos/Photos';
+import Photos from '../pages/photos/Photos.js';
 import Albums from '../pages/Albums/Albums';
 import Range from '../../../shared/range/Range';
-import { toJS } from 'mobx';
 import SelectItems from '../../../shared/ui-kit/header/select-items/SelectItems.js';
 import sort from './images/sort.png';
 import grid from './images/grid.png';
 import Album from '../pages/Album/Album';
-import storageState from '../../../../../states/storage-state';
+import storageState from '../../../../../state/entities/StorageState.js';
 import FileAPI from '../../../api/FileAPI';
+import GalleryHeader from '../widgets/gallery-header/GalleryHeader.jsx';
 
 export const GetPhotoById = async (id) => {
   return await toJS(storageState.GetSelectionByType(FileAPI.imageTypes).find(element => element.id === id));
@@ -93,42 +94,7 @@ const Gallery = observer((props) => {
     <div className={styles.gallery} ref={scroll}>
         <Header />
         <Search />
-        <div className={styles.header}>
-          <div className={styles.up}>
-              <div className={styles.rangeWrapper}>
-                <Range
-                  min={1}
-                  max={5}
-                  value={scale}
-                  setValue={setScale}
-                  inc={1}
-                />
-              </div>
-              <Menu 
-                items={[
-                  {
-                    'name': 'Photos', 
-                    'route': '/gallery'
-                  }, 
-                  {
-                    'name': 'Albums', 
-                    'route': '/gallery/albums'
-                  }
-                ]}
-              />
-            {!props.isMobile && <div className={styles.buttons}>
-              <SelectItems 
-                icon={sort}
-                items={[PhotosSortState, SortingOrderState]}
-                states={[setSortingTypeState, setSortingOrderState]}
-              />
-              <SelectItems icon={grid} 
-                items={[template]}
-                states={[setTemplate]}
-              />
-            </div>}
-          </div>
-        </div>
+        <GalleryHeader />
         <div className={styles.content}>
           <Routes>
             <Route 

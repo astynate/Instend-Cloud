@@ -1,9 +1,7 @@
 import { instance } from "../../../../../state/Interceptors";
 import applicationState from "../../../../../states/application-state";
-import galleryState from "../../../../../states/gallery-state";
-import storageState from "../../../../../states/storage-state";
-
-//////////////////////////////////////////////////////////////////////////////////////
+import galleryState from "../../../../../states/GalleryState";
+import storageState from "../../../../../state/entities/StorageState";
 
 export const UploadPhotosInGallery = async (event, id) => {
     event.preventDefault();
@@ -25,8 +23,6 @@ export const UploadPhotosInGallery = async (event, id) => {
     });
 }
 
-//////////////////////////////////////////////////////////////////////////////////////
-
 export const AddPhotosInAlbum = async (selected, activeItems) => {
     if (selected && selected[0] && selected[0].id) {
         (async () => {
@@ -42,8 +38,6 @@ export const AddPhotosInAlbum = async (selected, activeItems) => {
         })();
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////////////
 
 export const UploadPhotosInAlbum = async (files, folderId, albumId) => {
     files = files.target.files;

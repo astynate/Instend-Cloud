@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
-import chatsState from '../../../../../../states/chats-state';
+import chatsState from '../../../../../../states/ChatsState';
 import { observer } from 'mobx-react-lite';
 import { useParams } from 'react-router-dom';
 import ChatInformation from '../../features/chat-information/ChatInformation';
@@ -11,8 +11,8 @@ import save from './images/context-menu/save.svg';
 import deleteIcon from './images/context-menu/delete.svg';
 import edit from './images/context-menu/edit.svg';
 import forward from './images/context-menu/forward.svg';
-import { MessageOperations } from './MessageOperations';
-import ChatTypes from './ChatTypes';
+import { MessageOperations } from './helpers/MessageOperations';
+import ChatTypes from './helpers/ChatTypes';
 import ChatHandler from '../../../../../../utils/handlers/ChatHandler';
 
 const Chat = observer(({isMobile, isOpen, close, chat, placeholder, requestSended}) => {

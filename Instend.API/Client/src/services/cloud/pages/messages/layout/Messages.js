@@ -5,7 +5,7 @@ import styles from './main.module.css';
 import cyraAvatar from './images/cyra.png';
 import { observer } from 'mobx-react-lite';
 import Chats from '../widgets/chats/Chats';
-import chatsState from '../../../../../states/chats-state';
+import chatsState from '../../../../../states/ChatsState';
 import { useParams } from 'react-router-dom';
 import ChatHandler from '../../../../../utils/handlers/ChatHandler';
 

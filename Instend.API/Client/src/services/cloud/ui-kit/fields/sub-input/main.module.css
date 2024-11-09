@@ -1,0 +1,17 @@
+.subInput {
+    max-height: 300px;
+    width: 100%;
+    background: none;
+    border: none;
+    outline: none;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 15px;
+    resize: none;
+    padding-top: 10px;
+    transition: 0.15s ease;
+    border-bottom: 2px solid var(--main-border-color);
+}
+
+.subInput:focus {
+    border-bottom: 2px solid var(--main-font-color);
+}

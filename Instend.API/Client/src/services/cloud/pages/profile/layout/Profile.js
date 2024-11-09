@@ -1,18 +1,20 @@
 import React, { useEffect } from 'react';
+import { observer } from 'mobx-react-lite';
+import { instance } from '../../../../../state/Interceptors';
+import { AddUploadingAlbumComment } from '../../../api/CommentAPI';
+import { galleryWSContext } from '../../../layout/Layout';
 import LayoutHeader from '../../../widgets/header/Header';
 import styles from './styles/main.module.css';
 import Search from '../../../features/search/Search';
-import { observer } from 'mobx-react-lite';
-import userState from '../../../../../states/user-state';
+import userState from '../../../../../state/entities/UserState';
 import ProfileDescription from '../widgets/profile-description/ProfileDescription';
 import Header from '../../../features/profile/header/Header';
 import HeaderSearch from '../../../widgets/album-view/compontens/header-search/HeaderSearch';
 import LocalMenu from '../../../shared/ui-kit/local-menu/LocalMenu';
 import CommunityPreview from '../../home/widgets/community-preview/CommunityPreview';
-import { instance } from '../../../../../state/Interceptors';
 import Comments from '../../../widgets/social/comments/Comments';
-import { AddUploadingAlbumComment } from '../../../api/CommentAPI';
-import { galleryWSContext } from '../../../layout/Layout';
+import TextBlock from '../widgets/text-block/TextBlock';
+import plus from './images/plus.png';
 
 const Profile = observer((props) => {
   const { user } = userState;
@@ -49,6 +51,12 @@ const Profile = observer((props) => {
           items={[
             {title: "Publications", component: 
               <div className={styles.contentWrapper}>
+                <div className={styles.leftPanel}>
+                  <TextBlock />
+                  <div className={styles.create}>
+                    <img src={plus} draggable="false" />
+                  </div>
+                </div>
                 <Comments 
                   isPublications={true}
                   isPublicationAvailable={true}

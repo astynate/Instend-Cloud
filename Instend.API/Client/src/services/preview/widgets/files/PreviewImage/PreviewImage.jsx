@@ -4,7 +4,7 @@ import { toJS } from "mobx";
 import { instance } from "../../../../../state/Interceptors";
 import Base64Handler from "../../../../../utils/handlers/Base64Handler";
 import styles from './main.module.css';
-import storageState from "../../../../../states/storage-state";
+import storageState from "../../../../../state/entities/StorageState";
 import { observer } from "mobx-react-lite";
 
 export const PreviewImage = observer(({file, endpoint, additionalParams = {}}) => {

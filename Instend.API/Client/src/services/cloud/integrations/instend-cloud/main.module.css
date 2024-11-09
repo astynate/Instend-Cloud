@@ -1,0 +1,16 @@
+.InstendCloud {
+    height: 450px;
+    width: 650px;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 15px;
+    flex-direction: column;
+    cursor: pointer;
+}

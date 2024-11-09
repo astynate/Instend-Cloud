@@ -6,7 +6,7 @@ import { NavLink, Route, Routes } from 'react-router-dom';
 import './css/main.css';
 import styles from './css/mobile.module.css';
 import { observer } from 'mobx-react-lite';
-import userState from '../../../states/user-state';
+import userState from '../../../state/entities/UserState';
 import applicationState from '../../../states/application-state';
 
 const Mobile = observer(() => {
@@ -21,7 +21,7 @@ const Mobile = observer(() => {
             <div className='mobile-header'>
                 <div className='service-name'>
                     <img src={logo} />
-                    <h1 className={styles.application}>Yexider&nbsp;</h1>
+                    <h1 className={styles.application}>Instend&nbsp;</h1>
                     <h2 className={styles.service}>Cloud</h2>
                 </div>
                 <NavLink to='/profile' className={styles.profileLink}>

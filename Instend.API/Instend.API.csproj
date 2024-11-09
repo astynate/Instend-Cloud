@@ -32,14 +32,22 @@
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Compile Remove="Client\src\services\accounts\features\slider\**" />
     <Compile Remove="Client\src\services\accounts\shared\text\**" />
+    <Compile Remove="Client\src\services\cloud\entities\**" />
+    <Compile Remove="Client\src\services\cloud\shared\Новая папка\**" />
     <Content Remove="$(SpaRoot)**" />
     <Content Remove="Client\src\services\accounts\features\slider\**" />
     <Content Remove="Client\src\services\accounts\shared\text\**" />
+    <Content Remove="Client\src\services\cloud\entities\**" />
+    <Content Remove="Client\src\services\cloud\shared\Новая папка\**" />
     <EmbeddedResource Remove="Client\src\services\accounts\features\slider\**" />
     <EmbeddedResource Remove="Client\src\services\accounts\shared\text\**" />
+    <EmbeddedResource Remove="Client\src\services\cloud\entities\**" />
+    <EmbeddedResource Remove="Client\src\services\cloud\shared\Новая папка\**" />
     <None Remove="$(SpaRoot)**" />
     <None Remove="Client\src\services\accounts\features\slider\**" />
     <None Remove="Client\src\services\accounts\shared\text\**" />
+    <None Remove="Client\src\services\cloud\entities\**" />
+    <None Remove="Client\src\services\cloud\shared\Новая папка\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
@@ -50,10 +58,7 @@
     <Folder Include="Client\src\services\accounts\pages\login\" />
     <Folder Include="Client\src\services\accounts\pages\confirm\" />
     <Folder Include="Client\src\services\accounts\widgets\footer\" />
-    <Folder Include="Client\src\services\cloud\features\Новая папка\" />
-    <Folder Include="Client\src\services\cloud\entities\" />
     <Folder Include="Client\src\services\cloud\api\" />
-    <Folder Include="Client\src\services\cloud\shared\Новая папка\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -7,8 +7,8 @@ import ChatPreview from '../../shared/chat-preview/ChatPreview';
 import PopUpList from '../../../../shared/ui-kit/pop-up-list/PopUpList';
 import UsersPopUp from '../../shared/users-pop-up/UsersPopUp';
 import { instance } from '../../../../../../state/Interceptors';
-import chatsState from '../../../../../../states/chats-state';
-import { WaitingForConnection, messageWSContext } from '../../../../layout/Layout';
+import chatsState from '../../../../../../states/ChatsState';
+import { WaitingForConnection, globalWSContext } from '../../../../layout/Layout';
 import { useNavigate, useParams } from 'react-router-dom';
 import ContextMenu from '../../../../shared/context-menu/ContextMenu';
 import OkCancel from '../../../../shared/ok-cancel/OkCancel';
@@ -16,7 +16,7 @@ import SearchInChat from '../../shared/search-in-chat/SearchInChat';
 import CreateGroup from '../../features/create-group/CreateGroup';
 import remove from './images/remove.png';
 import ChatHandler from '../../../../../../utils/handlers/ChatHandler';
-import userState from '../../../../../../states/user-state';
+import userState from '../../../../../../state/entities/UserState';
 import applicationState from '../../../../../../states/application-state';
 
 export const DeleteDirectory = async (id) => {
@@ -50,15 +50,15 @@ const Chats = observer(({isMobile, setOpenState}) => {
     useEffect(() => {
         const connectToChats = async () => {
             try {
-                await WaitingForConnection(messageWSContext);
+                await WaitingForConnection(globalWSContext);
 
-                if (messageWSContext.connection.state === 'Connected') {
+                if (globalWSContext.connection.state === 'Connected') {
                     const object = {
                         authorization: localStorage.getItem("system_access_token"),
                         count: chatsState.countLoadedChats
                     };
 
-                    await messageWSContext.connection.invoke("Join", object);
+                    await globalWSContext.connection.invoke("Join", object);
                 }
             } catch (error) {
                 console.error('Failed to connect or join:', error);
@@ -69,7 +69,7 @@ const Chats = observer(({isMobile, setOpenState}) => {
         if (chatsState.connected === false) {
             connectToChats();
         }
-    }, [messageWSContext, messageWSContext.connection, chatsState.countLoadedChats]);
+    }, [globalWSContext, globalWSContext.connection, chatsState.countLoadedChats]);
 
     useEffect(() => {
         function handleClickOutside(event) {

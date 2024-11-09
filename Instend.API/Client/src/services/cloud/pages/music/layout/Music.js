@@ -4,9 +4,9 @@ import Header from '../../../widgets/header/Header';
 import Search from '../../../features/search/Search';
 import Menu from '../../../widgets/menu/Menu';
 import { Route, Routes } from 'react-router-dom';
-import Songs from '../pages/Songs/Songs';
-import Playlists from '../pages/Playlists/Playlists';
-import Playlist from '../pages/Playlist/Playlist';
+import Songs from '../pages/songs/Songs';
+import Playlists from '../pages/playlists/Playlists';
+import Playlist from '../pages/playlist/Playlist';
 import SubContentWrapper from '../../../features/sub-content-wrapper/SubContentWrapper';
 
 const Music = (props) => {

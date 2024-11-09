@@ -1,6 +1,6 @@
-import ChatTypes from "../../services/cloud/pages/messages/widgets/chat/ChatTypes";
-import chatsState from "../../states/chats-state"
-import userState from "../../states/user-state";
+import ChatTypes from "../../services/cloud/pages/messages/widgets/chat/helpers/ChatTypes";
+import chatsState from "../../states/ChatsState"
+import userState from "../../state/entities/UserState";
 import { SpecialTypes } from "./SpecialType";
 
 class ChatHandler {

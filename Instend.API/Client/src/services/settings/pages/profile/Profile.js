@@ -5,7 +5,7 @@ import { UpdateAvatar, UpdateHeader } from './operations/Set/SetImages';
 import { instance } from '../../../../state/Interceptors';
 import styles from './styles/main.module.css';
 import SettingType from '../../shared/setting-type/SettingType';
-import userState from '../../../../states/user-state';
+import userState from '../../../../state/entities/UserState';
 import Setting from '../../shared/setting/Setting';
 import upload from './images/upload.png';
 import trash from './images/trash.png';

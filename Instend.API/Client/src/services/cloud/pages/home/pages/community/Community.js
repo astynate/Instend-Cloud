@@ -6,7 +6,7 @@ import Description from '../../../../widgets/description/Description';
 import HeaderSearch from '../../../../widgets/album-view/compontens/header-search/HeaderSearch';
 import LocalMenu from '../../../../shared/ui-kit/local-menu/LocalMenu';
 import { useNavigate, useParams } from 'react-router-dom';
-import userState from '../../../../../../states/user-state';
+import userState from '../../../../../../state/entities/UserState';
 import CommunityEditor from '../../../../features/add-community-pop-up/CommunityEditor';
 import applicationState from '../../../../../../states/application-state';
 import Comments from '../../../../widgets/social/comments/Comments';
@@ -14,7 +14,7 @@ import { AddUploadingAlbumComment } from '../../../../api/CommentAPI';
 import { WaitingForConnection, galleryWSContext } from '../../../../layout/Layout';
 import { Follow } from '../../api/CommunityAPI';
 import { observer } from 'mobx-react-lite';
-import homeState from '../../../../../../states/home-state';
+import homeState from '../../../../../../states/HomeState';
 
 const Community = observer(({isMobile}) => {
     const [isLoading, setLoadingState] = useState(true);

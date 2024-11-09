@@ -1,34 +1,31 @@
 import React, { useRef, useState } from 'react';
-import styles from './main.module.css';
 import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
-import galleryState from '../../../../states/gallery-state';
-import Loader from '../../shared/loader/Loader';
+import { DeleteComment } from '../../pages/gallery/api/AlbumRequests';
 import { ConvertDate } from '../../../../utils/DateHandler';
-import emoji from './images/emoji.png';
+import { AddUploadingAlbumComment } from '../../api/CommentAPI';
+import styles from './main.module.css';
+import galleryState from '../../../../state/entities/GalleryState';
+import Loader from '../../shared/loader/Loader';
 import BurgerMenu from '../../shared/ui-kit/burger-menu/BurgerMenu';
 import UserAvatar from '../../widgets/avatars/user-avatar/UserAvatar';
 import AddUser from '../../widgets/avatars/add-user/AddUser';
 import OpenAccessProcess from '../../process/open-access/OpenAccessProcess';
 import LocalMenu from '../../shared/ui-kit/local-menu/LocalMenu';
 import Comments from '../../widgets/social/comments/Comments';
-import { DeleteComment } from '../../pages/gallery/api/AlbumRequests';
 import HeaderSearch from './compontens/header-search/HeaderSearch';
 import MainContentWrapper from '../../features/main-content-wrapper/MainContentWrapper';
-import { AddUploadingAlbumComment } from '../../api/CommentAPI';
-import applicationState from '../../../../states/application-state';
+import applicationState from '../../../../state/application/ApplicationState';
 
 const AlbumView = observer(({isSquareCover, button, uniqItems, views, isMobile}) => {
     const { albums } = galleryState;
-    const params = useParams();
-    const wrapper = useRef();
     const [isUsersLoading, setUsersLoadingState] = useState(true);
     const [isOpenAccessWindow, setOpenAccessWindowState] = useState(false);
+    const params = useParams();
 
     const accessSaveCallback = (data) => {
-        if (data) {
+        if (!!data === true)
             galleryState.SetAlbumAccess(data, params.id);
-        }
     }
 
     return (
@@ -63,10 +60,6 @@ const AlbumView = observer(({isSquareCover, button, uniqItems, views, isMobile})
                                     }
                                     <div className={styles.controlPanel}>
                                         {applicationState.isMobile === false && button && (button)}
-                                        {/* <img
-                                            src={emoji}
-                                            className={styles.subButton} 
-                                        /> */}
                                         <BurgerMenu 
                                             items={[
                                                 {title: "astynate", callback: () => {}}
