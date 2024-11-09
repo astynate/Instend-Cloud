@@ -1,19 +1,19 @@
 import React, { useEffect } from 'react'
-import MobileNavigation from '../widgets/navigation-panel/MobileNavigation';
-import logo from '../widgets/navigation-panel/images/logo/main-logo-black.svg';
-import PrivateRoutes from '../../../routes/PrivateRoutes';
-import { NavLink, Route, Routes } from 'react-router-dom';
-import './css/main.css';
-import styles from './css/mobile.module.css';
 import { observer } from 'mobx-react-lite';
-import userState from '../../../state/entities/UserState';
-import applicationState from '../../../states/application-state';
+import { NavLink, Route, Routes } from 'react-router-dom';
+import MobileNavigation from './components/navigation-panel/MobileNavigation';
+import UserState from '../../../state/entities/UserState';
+import ApplicationState from '../../../state/application/ApplicationState';
+import PrivateRoutes from '../../../routes/PrivateRoutes';
+import logo from './components/navigation-panel/images/logo/main-logo-black.svg';
+import styles from './css/mobile.module.css';
+import './css/main.css';
 
 const Mobile = observer(() => {
-    const { user } = userState;
+    const { user } = UserState;
     
     useEffect(() => {
-        applicationState.setIsMobile(true);
+        ApplicationState.setIsMobile(true);
     }, []);
 
     return (

@@ -1,30 +1,24 @@
 import React, { useEffect } from 'react';
 import { Routes, useNavigate, Route, useLocation } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
 import Authorization from './services/accounts/layout/Layout';
 import Cloud from './services/cloud/layout/Layout';
-import userState from './states/user-state';
-import { observer } from 'mobx-react-lite';
-import MainLoader from './components/loader/MainLoader';
+import UserState from './state/entities/UserState';
 import Main from './services/main/layout/Layout';
 import Support from './services/support/layout/Layout';
+import TopLineLoaderAnimation from './services/cloud/shared/animations/top-line-loader-animation/TopLineLoaderAnimation';
 
 const App = observer(() => {
     let navigate = useNavigate();
     let location = useLocation();
 
-    const {UpdateAuthorizeState, isLoading} = userState;
-
     useEffect(() => {
-        try {
-            document.querySelector('#root').className = localStorage.getItem('color-mode');
-            UpdateAuthorizeState(location.pathname, navigate);
-        } catch {
-            // console.error(error);
-        }
+        document.querySelector('#root').className = localStorage.getItem('color-mode');
+        UserState.UpdateAuthorizeState(location.pathname, navigate);
     }, []);
 
-    if (isLoading)
-        return (<MainLoader />);
+    if (UserState.isLoading)
+        return (<TopLineLoaderAnimation />);
 
     return (
         <Routes>

@@ -1,93 +1,86 @@
 ﻿import React, { createContext, useLayoutEffect } from 'react'
 import { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet';
 import { createSignalRContext } from "react-signalr/signalr";
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
-import { GetCurrentSong } from '../widgets/navigation-panel/NavigationPanel';
+import Desktop from './Desktop';
+import Mobile from './Mobile';
+import ApplicationState from '../../../state/application/ApplicationState';
+import InformationPopUp from '../shared/popup-windows/information-pop-up/InformationPopUp';
+import UserState from '../../../state/entities/UserState';
+import MusicPlayer from '../singletones/music-player/MusicPlayer';
+import WebsocketListener from '../api/WebsocketListener';
 import './css/fonts.css';
 import './css/colors.css';
 import './css/main.css';
 import './css/animations.css';
-import Loader from '../widgets/loader/Loader';
-import Desktop from './Desktop';
-import Mobile from './Mobile';
-import Information from '../shared/information/Information';
-import applicationState from '../../../states/application-state';
-import userState from '../../../state/entities/UserState';
-import MusicPlayer from '../widgets/music-player/MusicPlayer';
-import musicState from '../../../states/music-state';
-import chatsState from '../../../states/ChatsState';
-import Disconnected from '../features/disconnected/Disconnected';
-import WebsocketListener from '../api/WebsocketListener';
 
 export const globalWSContext = createSignalRContext();
 export const layoutContext = createContext(); 
 
-export const WaitingForConnection = async (signalRContext, onSuccessCallback = async () => {}) => {
-    while (signalRContext.connection.state === 'Connecting') {
-        applicationState.SetConnectionState(1);
-        await new Promise(resolve => setTimeout(resolve, 2000));
-    }
+// export const WaitingForConnection = async (signalRContext, onSuccessCallback = async () => {}) => {
+//     while (signalRContext.connection.state === 'Connecting') {
+//         applicationState.SetConnectionState(1);
+//         await new Promise(resolve => setTimeout(resolve, 2000));
+//     }
 
-    if (signalRContext.connection.state === 'Disconnected') {
-        applicationState.SetConnectionState(2);
+//     if (signalRContext.connection.state === 'Disconnected') {
+//         applicationState.SetConnectionState(2);
         
-        await signalRContext.connection.start();
-        await WaitingForConnection(signalRContext);
-    }
+//         await signalRContext.connection.start();
+//         await WaitingForConnection(signalRContext);
+//     }
 
-    if (signalRContext.connection.state === 'Connected') {
-        await onSuccessCallback();
-    }
+//     if (signalRContext.connection.state === 'Connected') {
+//         await onSuccessCallback();
+//     }
 
-    applicationState.SetConnectionState(0);
-}
+//     applicationState.SetConnectionState(0);
+// }
 
-export const connectToDirectListener = async (id) => {
-    try {
-        await WaitingForConnection(storageWSContext);
+// export const connectToDirectListener = async (id) => {
+//     try {
+//         await WaitingForConnection(storageWSContext);
 
-        if (storageWSContext.connection.state === 'Connected') {
-            await globalWSContext.connection.invoke("ConnectToDirect", id, localStorage.getItem("system_access_token"));
-        }
-    } catch (error) {
-        console.error('Failed to connect or join:', error);
-    }
-};
+//         if (storageWSContext.connection.state === 'Connected') {
+//             await globalWSContext.connection.invoke("ConnectToDirect", id, localStorage.getItem("system_access_token"));
+//         }
+//     } catch (error) {
+//         console.error('Failed to connect or join:', error);
+//     }
+// };
 
-export const connectToFoldersListener = async () => {
-    try {
-        await WaitingForConnection(storageWSContext);
+// export const connectToFoldersListener = async () => {
+//     try {
+//         await WaitingForConnection(storageWSContext);
 
-        if (storageWSContext.connection.state === 'Connected') {
-            await storageWSContext.connection.invoke("Join", localStorage.getItem("system_access_token"));
-        }
-    } catch (error) {
-        console.error('Failed to connect or join:', error);
-    }
-};
+//         if (storageWSContext.connection.state === 'Connected') {
+//             await storageWSContext.connection.invoke("Join", localStorage.getItem("system_access_token"));
+//         }
+//     } catch (error) {
+//         console.error('Failed to connect or join:', error);
+//     }
+// };
 
-export const connectToGallerySocket = async () => {
-    try {
-        await WaitingForConnection(galleryWSContext);
+// export const connectToGallerySocket = async () => {
+//     try {
+//         await WaitingForConnection(galleryWSContext);
 
-        if (galleryWSContext.connection.state === 'Connected') {
-            await galleryWSContext.connection.invoke("Join", localStorage.getItem("system_access_token"));
-        }
-    } catch (error) {
-        console.error('Failed to connect or join:', error);
-    }
-};
+//         if (galleryWSContext.connection.state === 'Connected') {
+//             await galleryWSContext.connection.invoke("Join", localStorage.getItem("system_access_token"));
+//         }
+//     } catch (error) {
+//         console.error('Failed to connect or join:', error);
+//     }
+// };
 
 const Layout = observer(() => {
-    const [isLoading, setIsLoading] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [isErrorExist, setErrorExistingState] = useState(false);
     const [errorTitle, setErrorTitle] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [song, setSong] = useState(null);
-    
+
     const navigate = useNavigate();
 
     globalWSContext.useSignalREffect("CreateFolder", WebsocketListener.CreateFolderListener);
@@ -115,35 +108,33 @@ const Layout = observer(() => {
     globalWSContext.useSignalREffect("ConnetToGroup", WebsocketListener.ConnectToGroupListner);
     globalWSContext.useSignalREffect("LeaveGroup", WebsocketListener.LeaveGroupListner);
 
-    useEffect(() => {
-        setSong(GetCurrentSong());
-    }, [musicState.songQueue, musicState.currentSongIndex]);
+    const authorizeDependencyArray = [UserState.isAuthorize];
+    // const songDependencyArray = [MusicState.songQueue, MusicState.currentSongIndex];
+    const errorDependencyArray = [isErrorExist, ApplicationState.errorQueue, ApplicationState.errorQueue.length];
+
+    // useEffect(() => {
+    //     setSong(GetCurrentSong());
+    // }, songDependencyArray);
 
     useLayoutEffect(() => {
-        if (userState.isAuthorize === false)
+        if (UserState.isAuthorize === false)
             navigate('/main');
-    }, [userState.isAuthorize]);
+    }, authorizeDependencyArray);
     
     useEffect(() => {
         const isErrorNotExist = isErrorExist === false;
-        const isApplicationHasErrors = applicationState.GetCountErrors() > 0;
+        const isApplicationHasErrors = ApplicationState.GetCountErrors() > 0;
 
         if (isErrorNotExist && isApplicationHasErrors) {
-            const [title, message] = applicationState.GetErrorFromQueue();
+            const [title, message] = ApplicationState.GetErrorFromQueue();
 
             setErrorTitle(title);
             setErrorMessage(message);
             setErrorExistingState(true);
 
-            applicationState.RemoveErrorFromQueue();
+            ApplicationState.RemoveErrorFromQueue();
         }
-    }, 
-    [
-        isErrorExist, 
-        applicationState, 
-        applicationState.errorQueue, 
-        applicationState.errorQueue.length
-    ]);
+    }, errorDependencyArray);
 
     useEffect(() => {
         const handleResize = () => {
@@ -156,23 +147,16 @@ const Layout = observer(() => {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
-    
-    useEffect(() => {
-        connectToFoldersListener();
-    }, [storageWSContext.connection]);
 
     return (
         <globalWSContext.Provider url={process.env.REACT_APP_SERVER_URL + '/global-hub-connection'}>
             <layoutContext.Provider value={{song: song}}>
-                <div className='cloud-wrapper' style={{'--disconnected-height': applicationState.connectionState === 0 ? '0px' : '15px'}}>
-                    {isLoading && <Loader />}
+                <div className='cloud-wrapper' style={{'--disconnected-height': ApplicationState.connectionState === 0 ? '0px' : '15px'}}>
+                    <title>Instend</title>
                     <MusicPlayer />
-                    <Helmet>
-                        <title>Instend</title>
-                    </Helmet>
-                    {applicationState.connectionState !== 0 && <Disconnected />}
+                    {ApplicationState.connectionState !== 0 && <Disconnected />}
                     {windowWidth > 700 ? <Desktop /> : <Mobile />}
-                    <Information
+                    <InformationPopUp
                         open={isErrorExist}
                         close={() => setErrorExistingState(false)}
                         title={errorTitle}

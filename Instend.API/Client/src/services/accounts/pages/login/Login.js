@@ -1,17 +1,17 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useEffect, useState } from 'react';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { useLocation } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
 import GoogleOAuth from '../../features/google-oauth/GoogleOAuth';
 import Button from '../../shared/button/Button';
 import InputText from "../../shared/input/InputText";
 import InputPassword from "../../shared/password/InputPassword";
 import Line from '../../shared/line/Line';
 import Error from '../../shared/error/Error'
-import { useTranslation } from 'react-i18next';
-import { useEffect, useState } from 'react';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import userState from '../../../../states/user-state';
-import { useLocation } from 'react-router-dom';
+import UserState from '../../../../state/entities/UserState';
 import ValidationHandler from '../../../../utils/handlers/ValidationHandler';
-import { observer } from 'mobx-react-lite';
 import './main.css';
 
 const ValidateLoginForm = (email, password) => {
@@ -20,14 +20,14 @@ const ValidateLoginForm = (email, password) => {
 };
 
 const Login = observer(() => {
-    const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [formState, setFormState] = useState('invalid');
     const [isError, setErrorState] = useState(false);
-    const { UpdateAuthorizeState } = userState;
+    const { t } = useTranslation();
+    const { UpdateAuthorizeState } = UserState;
     const navigate = useNavigate();
-    let location = useLocation();
+    const location = useLocation();
 
     useEffect(() => {
         setFormState(ValidateLoginForm(email, password) === true ? 'valid' : 'invalid');

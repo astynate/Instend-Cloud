@@ -3,10 +3,6 @@ import { Link, useLocation  } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
 import { ConvertBytesToMb } from '../../../../utils/handlers/StorageSpaceHandler';
-import './css/navigation.buttons.css';
-import './css/main.css';
-import './css/progress-bar.css';
-import './css/media-queries.css';
 import styles from './css/main.module.css';
 import logo from './images/logo/main-logo-black.svg';
 import home_passive from './images/buttons/home_passive.svg';
@@ -27,6 +23,10 @@ import userState from '../../../../states/user-state';
 import musicState from '../../../../states/music-state';
 import storageState from '../../../../states/storage-state';
 import createImage from './images/buttons/create.png';
+import './css/navigation.buttons.css';
+import './css/main.css';
+import './css/progress-bar.css';
+import './css/media-queries.css';
 
 export const useIsActiveButton = (name) => 
     useIsCurrentRoute(name) ? 'active' : 'passive'
@@ -59,25 +59,21 @@ export const GetSongData = (song) => {
 const NavigationPanel = observer((props) => {
     const [isOpened, setOpenedState] = useState(false);
     const [occupiedSpace, setOccupiedSpace] = useState();
-
     const { user } = userState;
     const { t } = useTranslation();
-
     const ref = useRef();
 
     const occupiedPercentage = () => {
-        if (user && user.occupiedSpace && user.storageSpace) {
+        if (user && user.occupiedSpace && user.storageSpace)
             return Math.floor((user.occupiedSpace / user.storageSpace) * 100);
-        } 
         
         return 0;
     }
 
     useEffect(() => {
         const clickHandler = (event) => {
-            if (ref.current && !ref.current.contains(event.target)) {
+            if (ref.current && !ref.current.contains(event.target))
                 setOpenedState(false);
-            }
         }
 
         document.addEventListener('click', clickHandler);
