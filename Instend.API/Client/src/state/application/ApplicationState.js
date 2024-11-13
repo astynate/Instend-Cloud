@@ -1,23 +1,40 @@
+import i18next from "i18next";
 import { makeAutoObservable } from "mobx";
 
 class ApplicationState {
     errorQueue = [];
     connectionState = 0;
+    language = 'en-UK';
+    theme = 'dark-mode';
     isMobile = false;
 
     constructor() {
+        this.language = localStorage.getItem('language') ?? 'en-UK';
+        this.theme = localStorage.getItem('color-mode') ?? 'dark-mode';
+
         makeAutoObservable(this);
     }
 
-    SetConnectionState(state) {
-        this.connectionState = state;
+    ChangeLanguage(language) {
+        i18next.changeLanguage(language, () => {
+            localStorage.setItem('language', language);
+            this.language = language;
+        });
     }
 
-    AddErrorInQueue(title, message) {
-        if (!message) {
-            message = 'Something went wrong';
-        }
-        this.errorQueue = [...this.errorQueue, [title, message]];
+    ChangeTheme = (theme) => {
+        localStorage.setItem('color-mode', theme);
+        this.theme = theme;
+    }
+
+    AddErrorInQueue = (title, message) => {
+        this.errorQueue = [
+            ...this.errorQueue, 
+            [
+                title, 
+                message ?? 'Something went wrong'
+            ]
+        ];
     }
 
     AddErrorInQueueByError(title, error) {
@@ -28,21 +45,11 @@ class ApplicationState {
         }
     }
 
-    RemoveErrorFromQueue() {
-        this.errorQueue  = this.errorQueue.slice(1);
-    }
-
-    GetErrorFromQueue() {
-        return this.errorQueue[0];
-    }
-
-    GetCountErrors() {
-        return this.errorQueue.length;
-    }
-
-    setIsMobile(state) {
-        this.isMobile = state;
-    }
+    SetConnectionState = (state) => this.connectionState = state;
+    RemoveErrorFromQueue = () => this.errorQueue = this.errorQueue.slice(1);
+    GetErrorFromQueue = () => this.errorQueue[0];
+    GetCountErrors = () => this.errorQueue.length;
+    setIsMobile = (state) => this.isMobile = state;
 }
 
 export default new ApplicationState();

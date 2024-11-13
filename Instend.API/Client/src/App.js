@@ -6,7 +6,7 @@ import Cloud from './services/cloud/layout/Layout';
 import UserState from './state/entities/UserState';
 import Main from './services/main/layout/Layout';
 import Support from './services/support/layout/Layout';
-import TopLineLoaderAnimation from './services/cloud/shared/animations/top-line-loader-animation/TopLineLoaderAnimation';
+import ApplicationState from './state/application/ApplicationState';
 
 const App = observer(() => {
     let navigate = useNavigate();
@@ -15,10 +15,7 @@ const App = observer(() => {
     useEffect(() => {
         document.querySelector('#root').className = localStorage.getItem('color-mode');
         UserState.UpdateAuthorizeState(location.pathname, navigate);
-    }, []);
-
-    if (UserState.isLoading)
-        return (<TopLineLoaderAnimation />);
+    }, [ApplicationState.theme]);
 
     return (
         <Routes>

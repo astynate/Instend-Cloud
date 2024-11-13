@@ -7,6 +7,6 @@ const PublicationsWrapper = ({children}) => {
             {(children)}
         </div>
     );
- };
+};
 
 export default PublicationsWrapper;

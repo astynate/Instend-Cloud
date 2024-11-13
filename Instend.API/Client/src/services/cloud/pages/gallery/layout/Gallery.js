@@ -1,20 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react'
-import Header from '../../../widgets/header/Header';
+import React, { useEffect, useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { toJS } from 'mobx';
 import { Route, Routes } from 'react-router-dom';
-import Search from '../../../features/search/Search';
-import Menu from '../../../widgets/menu/Menu';
+import Header from '../../../widgets/header/Header';
+import Search from '../../../widgets/search/Search';
 import styles from './main.module.css';
 import Photos from '../pages/photos/Photos.js';
-import Albums from '../pages/Albums/Albums';
-import Range from '../../../shared/range/Range';
-import SelectItems from '../../../shared/ui-kit/header/select-items/SelectItems.js';
-import sort from './images/sort.png';
-import grid from './images/grid.png';
-import Album from '../pages/Album/Album';
+import Albums from '../pages/albums/Albums';
+import Album from '../pages/album/Album';
 import storageState from '../../../../../state/entities/StorageState.js';
-import FileAPI from '../../../api/FileAPI';
 import GalleryHeader from '../widgets/gallery-header/GalleryHeader.jsx';
 
 export const GetPhotoById = async (id) => {

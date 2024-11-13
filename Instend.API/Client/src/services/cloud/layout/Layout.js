@@ -6,82 +6,24 @@ import { useNavigate } from 'react-router-dom';
 import Desktop from './Desktop';
 import Mobile from './Mobile';
 import ApplicationState from '../../../state/application/ApplicationState';
-import InformationPopUp from '../shared/popup-windows/information-pop-up/InformationPopUp';
 import UserState from '../../../state/entities/UserState';
-import MusicPlayer from '../singletones/music-player/MusicPlayer';
 import WebsocketListener from '../api/WebsocketListener';
+import InformationPopUp from '../features/pop-up-windows/information-pop-up/InformationPopUp';
+import MusicPlayer from '../singletons/music-player/MusicPlayer';
+import ConnectedState from '../singletons/connected-state/ConnectedState';
+import AccountController from '../../../api/AccountController';
 import './css/fonts.css';
 import './css/colors.css';
 import './css/main.css';
 import './css/animations.css';
 
 export const globalWSContext = createSignalRContext();
-export const layoutContext = createContext(); 
-
-// export const WaitingForConnection = async (signalRContext, onSuccessCallback = async () => {}) => {
-//     while (signalRContext.connection.state === 'Connecting') {
-//         applicationState.SetConnectionState(1);
-//         await new Promise(resolve => setTimeout(resolve, 2000));
-//     }
-
-//     if (signalRContext.connection.state === 'Disconnected') {
-//         applicationState.SetConnectionState(2);
-        
-//         await signalRContext.connection.start();
-//         await WaitingForConnection(signalRContext);
-//     }
-
-//     if (signalRContext.connection.state === 'Connected') {
-//         await onSuccessCallback();
-//     }
-
-//     applicationState.SetConnectionState(0);
-// }
-
-// export const connectToDirectListener = async (id) => {
-//     try {
-//         await WaitingForConnection(storageWSContext);
-
-//         if (storageWSContext.connection.state === 'Connected') {
-//             await globalWSContext.connection.invoke("ConnectToDirect", id, localStorage.getItem("system_access_token"));
-//         }
-//     } catch (error) {
-//         console.error('Failed to connect or join:', error);
-//     }
-// };
-
-// export const connectToFoldersListener = async () => {
-//     try {
-//         await WaitingForConnection(storageWSContext);
-
-//         if (storageWSContext.connection.state === 'Connected') {
-//             await storageWSContext.connection.invoke("Join", localStorage.getItem("system_access_token"));
-//         }
-//     } catch (error) {
-//         console.error('Failed to connect or join:', error);
-//     }
-// };
-
-// export const connectToGallerySocket = async () => {
-//     try {
-//         await WaitingForConnection(galleryWSContext);
-
-//         if (galleryWSContext.connection.state === 'Connected') {
-//             await galleryWSContext.connection.invoke("Join", localStorage.getItem("system_access_token"));
-//         }
-//     } catch (error) {
-//         console.error('Failed to connect or join:', error);
-//     }
-// };
 
 const Layout = observer(() => {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [isErrorExist, setErrorExistingState] = useState(false);
     const [errorTitle, setErrorTitle] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [song, setSong] = useState(null);
-
-    const navigate = useNavigate();
 
     globalWSContext.useSignalREffect("CreateFolder", WebsocketListener.CreateFolderListener);
     globalWSContext.useSignalREffect("RenameFolder", WebsocketListener.RenameFolderListener); 
@@ -108,18 +50,21 @@ const Layout = observer(() => {
     globalWSContext.useSignalREffect("ConnetToGroup", WebsocketListener.ConnectToGroupListner);
     globalWSContext.useSignalREffect("LeaveGroup", WebsocketListener.LeaveGroupListner);
 
-    const authorizeDependencyArray = [UserState.isAuthorize];
-    // const songDependencyArray = [MusicState.songQueue, MusicState.currentSongIndex];
-    const errorDependencyArray = [isErrorExist, ApplicationState.errorQueue, ApplicationState.errorQueue.length];
+    useEffect(() => {
+        if (UserState.user === null || UserState.user === undefined) {
+            UserState.SetLoadingState(true);
 
-    // useEffect(() => {
-    //     setSong(GetCurrentSong());
-    // }, songDependencyArray);
+            AccountController.GetAccountData(
+                UserState.GetUserOnSuccessCallback,
+                UserState.GetUserOnFailureCallback
+            );
+        }
+    }, [UserState.user]);
 
     useLayoutEffect(() => {
-        if (UserState.isAuthorize === false)
-            navigate('/main');
-    }, authorizeDependencyArray);
+        if (UserState.isAuthorize === false && UserState.isLoading === false)
+            useNavigate('/main');
+    }, [UserState.isAuthorize]);
     
     useEffect(() => {
         const isErrorNotExist = isErrorExist === false;
@@ -134,13 +79,10 @@ const Layout = observer(() => {
 
             ApplicationState.RemoveErrorFromQueue();
         }
-    }, errorDependencyArray);
+    }, [isErrorExist, ApplicationState.errorQueue, ApplicationState.errorQueue.length]);
 
     useEffect(() => {
-        const handleResize = () => {
-            setWindowWidth(window.innerWidth);
-        };
-
+        const handleResize = () => setWindowWidth(window.innerWidth);
         window.addEventListener('resize', handleResize);
 
         return () => {
@@ -150,11 +92,13 @@ const Layout = observer(() => {
 
     return (
         <globalWSContext.Provider url={process.env.REACT_APP_SERVER_URL + '/global-hub-connection'}>
-            <layoutContext.Provider value={{song: song}}>
+            {UserState.isAuthorize === false ?
+                <></>
+            :
                 <div className='cloud-wrapper' style={{'--disconnected-height': ApplicationState.connectionState === 0 ? '0px' : '15px'}}>
                     <title>Instend</title>
                     <MusicPlayer />
-                    {ApplicationState.connectionState !== 0 && <Disconnected />}
+                    {ApplicationState.connectionState !== 0 && <ConnectedState />}
                     {windowWidth > 700 ? <Desktop /> : <Mobile />}
                     <InformationPopUp
                         open={isErrorExist}
@@ -163,7 +107,7 @@ const Layout = observer(() => {
                         message={errorMessage}
                     />
                 </div>
-            </layoutContext.Provider>
+            }
         </globalWSContext.Provider>
     );
 });

@@ -3,31 +3,16 @@ import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toJS } from 'mobx';
-import { AdaptId } from '../../../../../state/entities/StorageState';
 import { autorun } from 'mobx';
-import { SendFilesFromDragEvent } from '../api/FileRequests';
-import { Delete, RenameFolder } from '../api/FolderRequests';
-import { instance } from '../../../../../state/Interceptors';
-import { DownloadFromResponse } from '../../../../../utils/DownloadFromResponse';
-import storageState from '../../../../../state/entities/StorageState';
+import StorageState, { AdaptId } from '../../../../../state/entities/StorageState';
 import userState from '../../../../../state/entities/UserState';
-import Search from '../../../features/search/Search';
-import Header from '../../../widgets/header/Header';
 import styles from './main.module.css';
-import CloudHeader from '../widgets/header/Header';
-import File from '../shared/file/File';
-import Open from './images/context-menu/open.png';
-import Rename from './images/context-menu/rename.png';
-import DeleteImage from './images/context-menu/delete.png';
-import PopUpField from '../../../shared/pop-up-filed/PopUpField';
-import Preview from '../../../../preview/layout/Preview';
-import Folder from '../shared/folder/Folder';
-import PropertiesWindow from '../widgets/properties/Properties';
-import Information from '../../../shared/information/Information';
-import SelectBox from '../../../shared/interaction/select-box/SelectBox';
-import DragFiles from '../../../features/drag-files/DragFiles';
-import Placeholder from '../../../shared/placeholder/Placeholder';
-import download from './images/context-menu/download.png';
+import File from '../../../components/file/File';
+import Folder from '../../../components/folder/Folder';
+import Header from '../../../widgets/header/Header';
+import Search from '../../../widgets/search/Search';
+import CloudHeader from '../widgets/cloud-header/CloudHeader';
+import AddInFolder from '../features/add-in-folder/AddInFolder';
 
 export const ByDate = (a, b, isAcendng) => {
   const dateA = new Date(a.creationTime);
@@ -53,9 +38,6 @@ export const ByName = (a, b, isAcendng) => {
 }
 
 const Cloud = observer((props) => {
-  const navigate = useNavigate();
-  const { user } = userState;
-  const { files, folders } = storageState;
   const [isFolderProperties, setFolderProperties] = useState(false);
   const [fileName, setFilename] = useState('');
   const [isRenameOpen, setRenameState] = useState(false);
@@ -67,11 +49,20 @@ const Cloud = observer((props) => {
   const [errorTitle, setErrorTitle] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setLoadingState] = useState(false);
-  const [items, setItems] = useState([...Object.values(toJS(storageState.files)).flat(), ...Object.values(toJS(storageState.folders)).flat()]);
   const [sortingType, setSortingType] = useState(0);
+
+  const { user } = userState;
+  const { files, folders } = StorageState;
+
+  const [items, setItems] = useState([
+    ...Object.values(toJS(files)).flat(), 
+    ...Object.values(toJS(folders)).flat()
+  ]);
+  
   const params = useParams();
   const selectPlaceWrapper = useRef();
   const selectPlace = useRef();
+  const navigate = useNavigate();
 
   const ErrorMessage = (title, message) => {
     setErrorTitle(title);
@@ -80,39 +71,29 @@ const Cloud = observer((props) => {
   }
 
   const single = [
-    [Open, "Open", () => OpenPreview()],
-    [Rename, "Rename", () => setRenameState(true)],
-    [download, "Download", () => {
-      setActiveItems(prev => {
-        if (prev[0].id) {
-          (async () => await instance
-            .get(`/file/download?id=${prev[0].id}`, {
-                responseType: "blob"
-            })
-            .then((response) => {
-                DownloadFromResponse(response);
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-          )();
-        }
-        return prev;
-      });
-    }],
-    [DeleteImage, "Delete", () => {
-      setActiveItems(prev => {
-        Delete(prev); return prev;
-      })
-    }]
+    // [Open, "Open", () => OpenPreview()],
+    // [Rename, "Rename", () => setRenameState(true)],
+    // [download, "Download", () => {
+    //   setActiveItems(prev => {
+    //     if (prev[0].id)
+    //       StorageController.DownloadFile(prev[0].id);
+    //     return prev;
+    //   });
+    // }],
+    // [DeleteImage, "Delete", () => {
+    //   setActiveItems(prev => {
+    //     Delete(prev); 
+    //     return prev;
+    //   })
+    // }]
   ]
 
   const multiple = [
-    [DeleteImage, "Delete", () => {
-      setActiveItems(prev => {
-        Delete(prev); return prev;
-      })
-    }]
+    // [DeleteImage, "Delete", () => {
+    //   setActiveItems(prev => {
+    //     Delete(prev); return prev;
+    //   })
+    // }]
   ]
 
   const OpenPreview = () => {
@@ -128,15 +109,15 @@ const Cloud = observer((props) => {
   };
 
   useEffect(() => {
-    if (!storageState.files || !storageState.files[params.id]) {
+    if (!files || !files[params.id]) {
       (async () => {
         setLoadingState(true);
-        await storageState.SetFolderItemsById(params.id);
+        await StorageState.SetFolderItemsById(params.id);
         setLoadingState(false);
       })();
     }
 
-    storageState.SetFolderItemsById(params.id, ErrorMessage);
+    StorageState.SetFolderItemsById(params.id, ErrorMessage);
   }, [params.id]);
 
   useEffect(() => {
@@ -145,8 +126,10 @@ const Cloud = observer((props) => {
 
   useEffect(() => {
     const disposer = autorun(() => {
-      setItems([...Object.values(toJS(storageState.files)).flat(), 
-        ...Object.values(toJS(storageState.folders)).flat()]);
+      setItems([
+        ...Object.values(toJS(files)).flat(), 
+        ...Object.values(toJS(folders)).flat()
+      ]);
     });
 
     return () => disposer();
@@ -154,12 +137,8 @@ const Cloud = observer((props) => {
 
   return (
     <div className={styles.wrapper} ref={selectPlaceWrapper}>
-      {props.isMobile === false && 
-        <Header>
-          <Search />
-        </Header>
-      }
-      {isPreview && 
+      {props.isMobile === false && <Header><Search /></Header>}
+      {/* {isPreview && 
         <Preview
           close={() => setPreviewState(false)} 
           files={toJS(files)[AdaptId(params.id)].sort((a, b) => {
@@ -176,8 +155,8 @@ const Cloud = observer((props) => {
           index={indexState}
           fullFileLoadEndpoint={'/api/files/full'}
           partialFileLoadEndpoint={'/api/files/stream'}
-        />}
-      <DragFiles 
+        />} */}
+      {/* <DragFiles 
         items={[
           {title: "Current collection", description: "", callback: (event) => {
             SendFilesFromDragEvent(event, params.id);
@@ -186,19 +165,13 @@ const Cloud = observer((props) => {
             SendFilesFromDragEvent(event);
           }},
         ]}
-      />
+      /> */}
       <CloudHeader
         name={user.nickname}
         isMobile={props.isMobile}
-        path={storageState.path && storageState.path[AdaptId(params.id)] ? 
-          storageState.path[AdaptId(params.id)] : null}
+        path={StorageState.path && StorageState.path[AdaptId(params.id)] ? 
+          StorageState.path[AdaptId(params.id)] : null}
         setSortingType={setSortingType}
-      />
-      <Information
-        open={isError}
-        close={() => setErrorState(false)}
-        title={errorTitle}
-        message={errorMessage}
       />
       <div className={styles.content} ref={selectPlace}>
         {isLoading ? 
@@ -223,7 +196,7 @@ const Cloud = observer((props) => {
                       }
                   })
                   .map((element, index) => (
-                    <Folder 
+                    <Folder
                       key={element.id != null ? element.id : index}
                       id={element.id}
                       isSelected={selectedItems.map(element => element.id).includes(element.id)}
@@ -273,30 +246,31 @@ const Cloud = observer((props) => {
             </div>
         }
       </div>
-    {isFolderProperties === true &&
-      <PropertiesWindow 
-        file={selectedItems[0]}
-        close={() => setFolderProperties(false)} 
-        items={[]}
-      />}
-    <SelectBox
-      selectPlace={[selectPlaceWrapper, selectPlace]}
-      selectedItems={[selectedItems, setSelectedItems]}
-      activeItems={[activeItems, setActiveItems]}
-      itemsWrapper={selectPlace}
-      items={items}
-      single={single}
-      multiple={multiple}
-    />
-    {isRenameOpen === true &&
-      <PopUpField
-        title={'Rename'}
-        text={'This field is require'}
-        field={[fileName, setFilename]}
-        open={isRenameOpen}
-        close={() => setRenameState(false)}
-        callback={async () => {await RenameFolder(fileName, activeItems[0])}}
-      />}
+      {isFolderProperties === true &&
+        <PropertiesWindow 
+          file={selectedItems[0]}
+          close={() => setFolderProperties(false)} 
+          items={[]}
+        />}
+      <SelectBox
+        selectPlace={[selectPlaceWrapper, selectPlace]}
+        selectedItems={[selectedItems, setSelectedItems]}
+        activeItems={[activeItems, setActiveItems]}
+        itemsWrapper={selectPlace}
+        items={items}
+        single={single}
+        multiple={multiple}
+      />
+      {isRenameOpen === true &&
+        <PopUpField
+          title={'Rename'}
+          text={'This field is require'}
+          field={[fileName, setFilename]}
+          open={isRenameOpen}
+          close={() => setRenameState(false)}
+          callback={async () => {await RenameFolder(fileName, activeItems[0])}}
+        />}
+      <AddInFolder />
     </div>
   )
 });

@@ -1,4 +1,5 @@
 import axios from "axios";
+import ApplicationState from "./ApplicationState";
 
 export const instance = axios.create({
   withCredentials: true,
@@ -19,9 +20,13 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
   (response) => {
-    if (response.headers && response.headers.refresh) {
+    if (response.headers && response.headers.refresh)
       localStorage.setItem("system_access_token", response.headers.refresh);
-    }
+
     return response;
+  },
+  (error) => {
+    console.error(error);
+    ApplicationState.AddErrorInQueueByError('Attention!', error);
   }
 );

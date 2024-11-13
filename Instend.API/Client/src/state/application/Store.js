@@ -1,13 +1,13 @@
 import { createStore } from 'redux';
-import languages from './Languages';
-import { GetCurrentLanguage, IsLanguageSelected, GetAuthorizationState } from './Operations';
+import { GetCurrentLanguage, IsLanguageSelected } from './Operations';
+import GlobalContext from '../../global/GlobalContext';
 
 const initialState = {
     currentLanguage: GetCurrentLanguage(),
     selectedLanguage: GetCurrentLanguage(),
     isLanguageSelect: IsLanguageSelected(),
     isAuthenticated: false,
-    languages: languages
+    languages: GlobalContext.supportedLanguages
 };
 
 const reducer = (state = initialState, action) => {

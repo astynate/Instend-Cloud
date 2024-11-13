@@ -1,0 +1,31 @@
+.switch {
+    height: 21px;
+    width: 40px;
+    background: var(--pop-up-accent-color);
+    border-radius: 30px;
+    transition: 0.25s ease-in-out;
+    margin-left: auto;
+    outline: 1px solid var(--main-border-color);
+}
+
+.switch[id="active"] {
+    background: var(--main-blue-color);
+}
+
+.circle {
+    height: 21px;
+    width: 21px;
+    border: 2px solid var(--pop-up-accent-color);
+    background: white;
+    border-radius: 100%;
+    margin-left: 0;
+    margin-right: 20px;
+    transition: 0.15s ease-in-out;
+}
+
+.switch[id="active"] .circle {
+    justify-self: flex-end;
+    border: 2px solid var(--main-blue-color);
+    margin-left: 20px;
+    margin-right: 0px;
+}

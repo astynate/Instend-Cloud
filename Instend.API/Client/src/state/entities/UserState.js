@@ -1,6 +1,4 @@
-import { instance } from '../application/Interceptors';
 import { makeAutoObservable } from "mobx";
-import storageState from './StorageState';
 
 class UserState {
     isAccessibleRoute = false;
@@ -26,30 +24,23 @@ class UserState {
         this.publicationQueueId = 0;
         this.countNotifications = 0;
         this.isAccessibleRoute = false;
+
+        localStorage.setItem('system_access_token', undefined);
+        localStorage.setItem('system_refresh_token', undefined);
     }
 
-    SetPublications = (publications) => {
-        this.publications = publications;
-    }
-
-    setPublicationQueueId = (id) => {
-        this.publicationQueueId = id;
-    }
-
-    GetPublications = async () => {
-        await instance
-            .get(`/api/user-publications?id=${this.user.id}`)
-            .then(reponse => {
-                if (reponse && reponse.data && reponse.data.length && reponse.data.length > 0) {
-                    this.publications = reponse.data;
-                }
-            })
-    }
+    DeletePublication = (id) => this.publications = this.publications.filter(element => element.comment.id !== id);
+    RemoveCommunity = (community) => this.communities = this.communities.filter(element => element.id !== community.id);
+    FindFriendById = (fiendId) => this.friends.find((f) => f.userId === fiendId || f.ownerId === fiendId);
+    SetPublications = (publications) => this.publications = publications;
+    SetPublicationQueueId = (id) => this.publicationQueueId = id;
+    FindCommunityById = (id) => this.communities.find(c => c.id === id);
+    SetLoadingState = (state) => this.isLoading = state;
 
     AddPublication = (comment, queueId) => {
         if (comment) {
             this.publications = this.publications.map(element => {
-                if (element.queueId === queueId){
+                if (element.queueId === queueId) {
                     element = comment;
                 }
 
@@ -58,50 +49,29 @@ class UserState {
         }
     }
 
-    DeletePublication = (id) => {
-        this.publications = this.publications
-            .filter(element => element.comment.id !== id);
+    GetUserOnSuccessCallback = (userData) => {
+        this.user = userData[0];
+        this.friends = userData[1];
+        this.communities = userData[2];
+        this.isAuthorize = true;
     }
 
-    UpdateUserData = async (location, navigate) => {
-        try {
-            await instance.get('/accounts')
-                .then(async response => {
-                    if (response.data && response.data.length > 2) {
-                        this.user = response.data[0];
-                        this.friends = response.data[1];
-                        this.communities = response.data[2];
-                        this.isAuthorize = true;
-
-                        await storageState.SetFolderItemsById(null);
-                    } else {
-                        this.isAuthorize = false;
-                        navigate('/main');
-                        // throw new Error("Insufficient data received");
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                    this.isAuthorize = false;
-                    navigate('/main');
-                });
-        } 
-        catch (exception) {
-            this.isAuthorize = false;
-            navigate('/main');
-        }
-    }
-
-    UpdateAuthorizeState = async (location, navigate) => {
-        this.isLoading = true;
-        await this.UpdateUserData(location, navigate);
+    GetUserOnFailureCallback = () => {
+        this.isAuthorize = false;
         this.isLoading = false;
     }
 
+    UpdateAuthorizeState = async (location, navigate) => {
+        // this.isLoading = true;
+        // await this.UpdateUserData(location, navigate);
+        // this.isLoading = false;
+    }
+
     ChangeOccupiedSpace(occupiedSpace) {
-        if (this.user) {
-            this.user.occupiedSpace = occupiedSpace;
-        }
+        if (!this.user) 
+            return false;
+
+        this.user.occupiedSpace = occupiedSpace;
     }
 
     IsUserInFriends = (userId) => {
@@ -111,79 +81,61 @@ class UserState {
         return user != null;
     }
 
-    AddFriend = (friendValue) => {
-        let friend = this.friends.find(element => 
-            (element.userId === friendValue.userId && element.ownerId == friendValue.ownerId) || 
-            (element.ownerId === friendValue.userId && element.userId === friendValue.ownerId));
+    AddFriend = (targetFriend) => {
+        const friend = this.FindFriendById(targetFriend.userId);
 
-        if (!friend) {
-            this.friends = [friendValue, ...this.friends];
-        }
+        if (friend)
+            return false;
+
+        this.friends = [targetFriend, ...this.friends];
     }
 
     RemoveFriend = (userId, ownerId) => {
-        this.friends = this.friends.filter(element => 
-            !((element.userId === userId && element.ownerId == ownerId) || 
-              (element.ownerId === userId && element.userId === ownerId)));
+        const IsCurrentFriendNotTarget = (friend) => {
+            const isUserOwner = friend.userId === userId && friend.ownerId == ownerId;
+            const isFriendOwner = friend.ownerId === userId && friend.userId === ownerId;
+
+            return !(isUserOwner || isFriendOwner);
+        }
+
+        this.friends = this.friends.filter(IsCurrentFriendNotTarget);
     }
 
     GetFriendsRequests = () => {
-        return this.friends
-            .filter(element => element.isSubmited === false && element.userId === this.user.id);
+        // return this.friends
+        //     .filter(element => element.isSubmited === false && element.userId === this.user.id);
     }
 
     SetCountNotifications = () => {
-        this.countNotifications = this.GetFriendsRequests().length;
+        // this.countNotifications = this.GetFriendsRequests().length;
     }
 
-    GetFriend = (id) => {
-        instance.get(`/accounts/id/${id}`)
-            .then(response => {
-                if (response.data) {
-                    let index = this.friends.findIndex(f => f.userId === id || f.ownerId === id);
-        
-                    if (index !== -1) {
-                        this.friends[index] = {...this.friends[index], ...response.data};
-                    }
-                }
-            });    
+    SetFriend = (friend) => {
+        const targetFriend = this.FindFriendById(friend.id)
+
+        if (!targetFriend)
+            return false;
+
+        targetFriend = {...targetFriend, ...friend};
     }
 
-    ChangeFriendState = (userId, id) => {
-        let index = this.friends.findIndex(element => 
-            (element.userId === userId && element.ownerId == id) || 
-            (element.ownerId === userId && element.userId === id));
+    ChangeFriendState = (id) => {
+        const friend = this.FindFriendById(id);
 
-        if (index !== -1) {
-            this.friends[index].isSubmited = true;
-            this.user.friendCount++;
-        }
-    }
+        if (!friend) 
+            return false;
 
-    GetCommunity = async (id) => {
-        await instance
-            .get(`/api/community/single?id=${id}`)
-            .then((response) => {
-                if (response.status === 200 && response.data && response.data.ownerId) {
-                    const index = this.communities.findIndex(c => c.id === id);
-
-                    if (index !== -1) {
-                        this.communities[index] = response.data;
-                        return true;
-                    }
-                }
-            })
-
-        return false;
+        friend.isSubmited = true;
+        this.user.friendCount++;
     }
 
     AddCommunity = (community) => {
-        this.communities = [community, ...this.communities];
-    }
+        const targetCommunity = this.FindCommunityById(community.id);
 
-    RemoveCommunity = (community) => {
-        this.communities = this.communities
-            .filter(element => element.id !== community.id)
+        if (!targetCommunity)
+            return false;
+
+        this.communities = [community, ...this.communities];
     }
 }
 

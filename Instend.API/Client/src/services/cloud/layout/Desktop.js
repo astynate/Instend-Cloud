@@ -7,24 +7,11 @@ import ApplicationState from '../../../state/application/ApplicationState';
 import UserState from '../../../state/entities/UserState';
 
 const Desktop = observer(({ }) => {
-    const { user, UpdateAuthorizeState, isAuthorize } = UserState;
     const [isPanelRolledUp, setPanelState] = useState(true);
-    const location = useLocation();
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        if (user === null)
-            UpdateAuthorizeState(location.pathname, navigate);
-    }, [user]);
 
     useEffect(() => {
         ApplicationState.setIsMobile(false);
     }, []);
-
-    if (isAuthorize === false) {
-        navigate('/account/login');
-        return null;
-    }
 
     return (
         <div className='wrapper'>

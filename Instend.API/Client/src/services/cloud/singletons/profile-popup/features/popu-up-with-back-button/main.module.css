@@ -1,0 +1,41 @@
+.header {
+    height: auto;
+    display: flex;
+    color: var(--main-font-color);
+    padding-left: 10px;
+    padding-right: 20px;
+    padding-bottom: 5px;
+    align-items: center;
+    grid-gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.header button {
+    height: 45px;
+    width: 45px;
+    background: none;
+    border: none;
+    outline: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100%;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: 0.15s ease;
+}
+
+.header button:hover {
+    background: var(--pop-up-accent-color);
+}
+
+.header button:active {
+    border: 1px solid var(--main-border-color);
+}
+
+.header img {
+    height: 18px;
+    filter: var(--main-filter);
+    object-fit: contain;
+}

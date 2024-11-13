@@ -1,8 +1,7 @@
 import React from 'react';
-import { ConvertFullDate } from '../../../../utils/DateHandler';
 import { Link } from 'react-router-dom';
+import { ConvertFullDate } from '../../../../utils/handlers/DateHandler';
 import styles from './main.module.css';
-import Loader from '../../../../shared/loader/Loader';
 
 const Album = (props) => {
     return (
@@ -10,9 +9,6 @@ const Album = (props) => {
             {props.album.isLoading === true ?
                 <div className={styles.album} id="loading">
                     <div className={styles.coverWrapper}>
-                        <div className={styles.loader}>
-                            <Loader />
-                        </div>
                         <div className={styles.cover}>
                         </div>
                     </div>

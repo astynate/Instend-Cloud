@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import styles from './main.module.css';
 import { Link } from 'react-router-dom';
-import { ConvertDate } from '../../../../utils/DateHandler';
+import { ConvertDate } from '../../../../utils/handlers/DateHandler';
+import styles from './main.module.css';
 import system from './images/gear.png';
-import Loader from '../../../../shared/loader/Loader';
-import SelectUIElements from '../../../../elements/select/SelectUIElements';
+import SelectElementWithCheckmark from '../../elements/select-element-with-checkmark/SelectElementWithCheckmark';
 
 const Folder = (props) => {
   const [files, setFiles] = useState([]);
@@ -35,9 +34,6 @@ const Folder = (props) => {
           onContextMenu={props.onContextMenu}
         >
         <div className={styles.content} id='loading'>
-          <div className={styles.loader}>
-            <Loader />
-          </div>
           {Array.from({ length: 4 }).map((_, index) => {
               return (
                 <div className={styles.file} key={index}></div>
@@ -69,7 +65,7 @@ const Folder = (props) => {
           onMouseEnter={() => setSelectOpenState(true)}
           onMouseLeave={() => setSelectOpenState(false)}
         >
-          <SelectUIElements 
+          <SelectElementWithCheckmark 
             isSelected={isSelected}
             setSelectedState={setSelectedState}
             isSelectedOpen={isSelectedOpen}

@@ -20,7 +20,7 @@ const SimpleRange = ({step, minValue, maxValue, value, setValue, loadPercentage,
                             width: '100%',
                             overflow: 'visible',
                             position: 'relative',                
-                            backgroundColor: 'var(--main-accent-color)',
+                            backgroundColor: 'var(--pop-up-accent-color)',
                             cursor: 'pointer',
                             color: 'transparent'
                         }}

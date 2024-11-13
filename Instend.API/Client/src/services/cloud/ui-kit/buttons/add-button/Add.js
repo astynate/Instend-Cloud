@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
 import add from './Add.png';
-import Create from '../../create/Create';
+import CreateItemsListPopUp from '../../../features/pop-up-windows/create-items-list-popup/CreateItemsListPopUp';
 
 const AddButton = (props) => {
     const createWindow = useRef();
@@ -18,12 +18,12 @@ const AddButton = (props) => {
 
         return () => {
             document.removeEventListener('click', handleClickOutside);
-            };
+        };
     }, []);
 
     return (
         <div className={styles.add}>
-            <Create
+            <CreateItemsListPopUp
                 isOpen={isCreateOpen}
                 items={props.items}
             />

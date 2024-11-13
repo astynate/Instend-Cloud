@@ -1,0 +1,96 @@
+.miniProfile {
+    height: auto;
+    width: 300px;
+    border-radius: 20px;
+    background: var(--main-accent-color);
+    position: absolute;
+    top: 45px;
+    right: -5px;
+    z-index: 2;
+    display: flex;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    flex-direction: column;
+    user-select: none;
+}
+
+.miniProfile hr {
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+
+.header {
+    display: flex;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-bottom: 10px;
+    grid-gap: 20px;
+}
+
+.information {
+    display: flex;
+    flex-direction: column;
+}
+
+.avatar {
+    height: 45px;
+    width: 45px;
+    border-radius: 100%;
+}
+
+.nickname {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--main-font-color);
+}
+
+.name {
+    font-size: 15px;
+    color: var(--main-paragraph-color);
+}
+
+.link {
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--main-blue-color);
+}
+
+.button {
+    width: 100%;
+    padding: 12.5px 20px;
+    display: flex;
+    opacity: 0.8;
+    align-items: center;
+    grid-gap: 15px;
+    cursor: pointer;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    transition: 0.15s ease;
+}
+
+.button:hover {
+    background: var(--pop-up-accent-color);
+}
+
+.button:active {
+    border-top: 1px solid var(--main-border-color);
+    border-bottom: 1px solid var(--main-border-color);
+}
+
+.button span {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--main-font-color);
+}
+
+.buttonImage {
+    height: 22px;
+    width: 22px;
+    object-fit: contain;
+    filter: var(--main-filter);
+}
+
+.imagePlaceholder {
+    height: 22px;
+    width: 22px;
+}

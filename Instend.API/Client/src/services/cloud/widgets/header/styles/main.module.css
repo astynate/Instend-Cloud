@@ -1,0 +1,90 @@
+.header {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    position: sticky;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    top: 0;
+    font-family: 'Open Sans', sans-serif;
+    left: 0;
+    background: var(--main-background-color);
+    z-index: 2;
+}
+
+.buttons {
+    height: 60px;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    padding-right: 15px;
+    grid-gap: 15px;
+    user-select: none;
+}
+
+.button {
+    height: 35px;
+    width: 35px;
+    border-radius: 100%;
+    transition: 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.button:hover .buttonImage {
+    opacity: 1;
+}
+
+.buttonImage {
+    width: 22px;
+    object-fit: contain;
+    filter: var(--main-filter);
+    opacity: 0.8;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.avatar {
+    height: 100%;
+    width: 100%;
+    border-radius: 100%;
+    object-fit: cover;
+    outline: 1px solid var(--main-border-color);
+    cursor: pointer;
+    transition: 0.1s ease;
+}
+
+.avatar:hover {
+    outline-offset: 2px;
+    outline: 2px solid var(--main-blue-color);
+}
+
+.avatar:active {
+    outline-offset: 0px;
+    outline: 4px solid var(--main-blue-color);
+}
+
+.list {
+    top: 35px;
+    right: 0;
+    position: absolute;
+}
+
+.hasNotifications {
+    top: 1px;
+    right: 1px;
+    height: 5px;
+    width: 5px;
+    border-radius: 100%;
+    background: var(--main-red-color);
+    position: absolute;
+}
+
+@media (max-width: 700px) {
+    .header {
+        display: none;
+    }
+}

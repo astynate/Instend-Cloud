@@ -1,21 +1,11 @@
 import React, { useState } from 'react';
-import { instance } from '../../../../state/Interceptors';
 import { observer } from 'mobx-react-lite';
 import { ConvertDate } from '../../../../utils/DateHandler';
-import { PreviewVideo } from '../../../preview/widgets/files/PreviewVideo/PreviewVideo';
 import styles from './main.module.css';
 import UserAvatar from '../../../widgets/avatars/user-avatar/UserAvatar';
 import Loader from '../../loader/Loader';
 import BurgerMenu from '../../ui-kit/burger-menu/BurgerMenu';
-import StatisticButton from './elements/statistic-button/StatisticButton';
-import save from './images/save.png';
-import commentImage from './images/comment.png';
-import like from './images/like.png';
-import likeFill from './images/like-fill.png';
 import Preview from '../../../preview/layout/Preview';
-import FileAPI from '../../api/FileAPI';
-import Base64Handler from '../../../../utils/handlers/Base64Handler';
-import statistic from './images/statistics.png';
 
 const Comment = observer(({
         user, 

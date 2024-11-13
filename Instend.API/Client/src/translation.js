@@ -9,9 +9,10 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
+    lng: localStorage.getItem('language') || 'en-UK',
     returnEmptyString: false,
     debug: true,
-    fallbackLng: 'en',
+    fallbackLng: 'en-UK',
   });
 
 i18n.services.formatter.add('DATE_LONG', (value, lng, _options) => {

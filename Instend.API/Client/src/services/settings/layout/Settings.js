@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import styles from './styles/main.module.css';
+import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
+import styles from './styles/main.module.css';
 import Profile from '../pages/profile/Profile';
 import Interface from '../pages/interface/Interface';
 import Language from '../pages/language/Language';
@@ -8,9 +11,6 @@ import Security from '../pages/security/Security';
 import MiniProfile from '../widgets/mini-profile/MiniProfile';
 import Button from '../shared/button/Button';
 import Header from '../widgets/header/Header';
-import { observer } from 'mobx-react-lite';
-import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
 
 const Settings = observer((props) => {
 

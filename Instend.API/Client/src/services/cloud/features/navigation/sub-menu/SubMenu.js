@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { NavLink, useLocation, useParams } from 'react-router-dom';
 import styles from './main.module.css';
 
-const Menu = (props) => {
+const SubMenu = (props) => {
     const [pointerOffset, setPointerOffset] = useState(0);
     const [width, setWidth] = useState(0);
     const [current, setCurrent] = useState();
@@ -63,4 +63,4 @@ const Menu = (props) => {
     );
 };
 
-export default Menu;
+export default SubMenu;

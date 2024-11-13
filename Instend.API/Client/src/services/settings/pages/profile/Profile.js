@@ -2,7 +2,9 @@ import React, { createContext, useContext, useEffect, useRef, useState } from 'r
 import { observer } from 'mobx-react-lite';
 import { setName, setSurname, setNickname } from './operations/Set/SetTextFields';
 import { UpdateAvatar, UpdateHeader } from './operations/Set/SetImages';
-import { instance } from '../../../../state/Interceptors';
+import { instance } from '../../../../state/application/Interceptors';
+import { useNavigate, useLocation} from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import styles from './styles/main.module.css';
 import SettingType from '../../shared/setting-type/SettingType';
 import userState from '../../../../state/entities/UserState';
@@ -13,14 +15,10 @@ import profile from './images/avatar.png';
 import UploadAvatarProcess from './processes/upload-avatar/UploadAvatarProcess';
 import Input from '../../shared/input/Input';
 import avatarImage from './images/avatar.png';
-import { CancelToken } from 'axios';
-import { useNavigate, useLocation} from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 
 const ProfileSettingsContext = createContext();
 
 const Profile = observer((props) => {
-
     const name = useRef();
     const surname = useRef();
     const nickname = useRef();
@@ -48,62 +46,43 @@ const Profile = observer((props) => {
     const [profileSettings, setProfileSettings] = useState(defaultProfileSettings);
 
     useEffect(() => {
-
         if (user.avatar != null) {
             setAvatar(`data:image/png;base64,${user.avatar || ""}`);
         }
-
     }, [user.avatar]);
 
     useEffect(() => {
-
         const Save = async () => {
-
             const source = CancelToken.source();
-
+            
             const timeoutId = setTimeout(() => {
-    
                 source.cancel("Request timeout");
-    
             }, 20000);
     
-            try {
-    
-                const response = await instance({
-                    method: 'put',
-                    url: '/accounts',
-                    data: profileSettings,
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                    cancelToken: source.token
-                });
-    
-                clearTimeout(timeoutId);
-    
-                if (response.status === 200) {
-    
-                    UpdateUserData(location, navigate);
-    
-                } else {
-    
-                    UpdateUserData(location, navigate);
-    
-                }
-    
-            } catch { }
+            const response = await instance({
+                method: 'put',
+                url: '/accounts',
+                data: profileSettings,
+                headers: { 'Content-Type': 'multipart/form-data' },
+                cancelToken: source.token
+            });
 
+            clearTimeout(timeoutId);
+
+            if (response.status === 200) {
+                UpdateUserData(location, navigate);
+            } else {
+                UpdateUserData(location, navigate);
+            }
         };
 
         if (props.isSaving) {
-
             Save();
             props.setSavingState(false);
-
         }
-
     }, [props.isSaving]);
 
     useEffect(() => {
-
         const SetDefault = async () => {
             setAvatar(`data:image/png;base64,${user.avatar || ""}`);
             setHeader(`data:image/png;base64,${user.header || ""}`);
@@ -121,43 +100,33 @@ const Profile = observer((props) => {
         if (props.cancel) {
             SetDefault();
         }
-
     }, [props.cancel]);
 
     const DeleteAvatar = async () => {
-
         await UpdateAvatar("delete", setProfileSettings);
         setAvatar("");
-
     };
 
     const DeleteHeader = async () => {
-
         await UpdateHeader("delete", setProfileSettings);
         setHeader("");
-
     };
 
     return (
 
         <ProfileSettingsContext.Provider value={[profileSettings, setProfileSettings]}>
-            { 
-                uploadAvatar ? 
-
-                    <UploadAvatarProcess 
-                        isOpen={uploadAvatar} 
-                        setOpenState={setUploadAvatar}
-                        setAvatar={setAvatar}
-                        aspectRatio={1}
-                        Update={UpdateAvatar}
-                        image={profileSettings.avatar}
-                        img={avatarImage}
-                    /> 
-                
-                : 
-                
-                uploadHeader ?
-
+            {uploadAvatar ? 
+                <UploadAvatarProcess 
+                    isOpen={uploadAvatar} 
+                    setOpenState={setUploadAvatar}
+                    setAvatar={setAvatar}
+                    aspectRatio={1}
+                    Update={UpdateAvatar}
+                    image={profileSettings.avatar}
+                    img={avatarImage}
+                /> 
+            : 
+            uploadHeader ?
                     <UploadAvatarProcess 
                         isOpen={uploadHeader} 
                         setOpenState={setUploadHeader}
@@ -167,9 +136,7 @@ const Profile = observer((props) => {
                         image={profileSettings.header}
                         img={avatarImage}
                     /> 
-
                 :
-
                     null
             }
             <SettingType 

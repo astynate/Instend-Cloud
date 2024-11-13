@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import styles from './main.module.css';
 import Header from '../../../widgets/header/Header';
-import Search from '../../../features/search/Search';
-import Menu from '../../../widgets/menu/Menu';
-import { Route, Routes } from 'react-router-dom';
-import Songs from '../pages/songs/Songs';
-import Playlists from '../pages/playlists/Playlists';
-import Playlist from '../pages/playlist/Playlist';
-import SubContentWrapper from '../../../features/sub-content-wrapper/SubContentWrapper';
+import Search from '../../../widgets/search/Search';
+// import Menu from '../../../widgets/menu/Menu';
+// import Songs from '../pages/songs/Songs';
+// import Playlists from '../pages/playlists/Playlists';
+// import Playlist from '../pages/playlist/Playlist';
+// import SubContentWrapper from '../../../features/sub-content-wrapper/SubContentWrapper';
 
 const Music = (props) => {
   const scroll = useRef();
@@ -18,14 +18,8 @@ const Music = (props) => {
 
   return (
     <div className={styles.music} ref={scroll}>
-      {props.isMobile === false && 
-        <>
-          <Header>
-            <Search />
-          </Header>
-        </>
-      }
-      <div className={styles.header}>
+      {props.isMobile === false && <Header><Search /></Header>}
+      {/* <div className={styles.header}>
         <Menu 
           items={[
             {
@@ -59,7 +53,7 @@ const Music = (props) => {
             />
           </Routes>
         </SubContentWrapper>
-      </div>
+      </div> */}
     </div>
   )
 }

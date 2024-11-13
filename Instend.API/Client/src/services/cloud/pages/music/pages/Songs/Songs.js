@@ -37,7 +37,7 @@ const Songs = observer((props) => {
                 isHasMore={storageState.hasMoreSongs}
                 count={storageState.countSongs}
                 callback={() => {
-                    storageState.GetItems(storageState.hasMoreSongs, storageState.countSongs, "music");
+                    storageState.SetAdditionalFiles(storageState.hasMoreSongs, storageState.countSongs, "music");
                 }}
             />
             <AddInMusic />

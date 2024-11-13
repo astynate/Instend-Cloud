@@ -3,9 +3,7 @@ import external_styles from '../setting/styles/main.module.css';
 import styles from './main.module.css';
 
 const Switch = (props) => {
-
     return (
-        
         <div className={styles.settingBar}>
             <div className={external_styles.setting} id="single" onClick={props.onClick}>
                 <img src={props.img} className={external_styles.descImage} />
@@ -18,9 +16,7 @@ const Switch = (props) => {
                 </div>
             </div>
         </div>
-
     );
-
 };
 
 export default Switch;

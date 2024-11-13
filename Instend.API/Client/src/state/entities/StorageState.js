@@ -1,14 +1,8 @@
-import { instance } from '../application/Interceptors';
 import { makeAutoObservable, runInAction, toJS } from "mobx";
-import applicationState from '../application/ApplicationState';
-
-export const GuidEmpthy = '00000000-0000-0000-0000-000000000000';
 
 export const AdaptId = (id) => {
     return (id === '' || id == null) ? GuidEmpthy : id;
 }
-
-export const SystemFolders = ["Music", "Photos", "Trash"]
 
 class StorageState {
     files = {};
@@ -25,25 +19,13 @@ class StorageState {
         makeAutoObservable(this);
     }
 
-    IsFolderExisitInFolders(folder) {
-        return folder && folder.folderId && this.folders[AdaptId(folder.folderId)];
-    }
+    IsFolderExisitInFolders = (folder) => folder && folder.folderId && this.folders[AdaptId(folder.folderId)];
+    IsFolderExisitInFiles = (folder) =>  folder && folder.folderId && this.files[AdaptId(folder.folderId)];
+    
+    FindFileById = (id) => Object.values(this.files).flat().find(element => element.id === id);
+    FindFolderById = (id) => Object.values(this.folders).flat().find(element => element.id === id);
 
-    IsFolderExisitInFiles(folder) {
-        return folder && folder.folderId && this.files[AdaptId(folder.folderId)];
-    }
-
-    FindFileById(id) {
-        return Object.values(this.files).flat()
-            .find(element => element.id === id);
-    }
-
-    FindFolderById(id) {
-        return Object.values(this.folders).flat()
-            .find(element => element.id === id);
-    }
-
-    CreateLoadingFolder(name, folderId) {
+    CreateLoadingFolder = (name, folderId) => {
         const folder = {
             id: null,
             queueId: this.folderQueueId,
@@ -63,7 +45,7 @@ class StorageState {
         return folder.queueId;
     }
 
-    ReplaceLoadingFolder(folder, queueId) {
+    ReplaceLoadingFolder = (folder, queueId) => {
         if (folder && folder.folderId) {
             folder.strategy = 'folder';
 
@@ -80,27 +62,25 @@ class StorageState {
         }
     }
 
-    SetFolderAsLoaing(id, folderId) {
+    SetFolderAsLoaing = (id, folderId) => {
         this.folders[AdaptId(folderId)] = this.folders[AdaptId(folderId)].map(element => {
-            if (element.id === id) {
+            if (element.id === id)
                 element.isLoading = true;
-            }
 
             return element;
         });
     }
 
-    RemoveFolderLoadingState(id, folderId) {
+    RemoveFolderLoadingState = (id, folderId) => {
         this.folders[AdaptId(folderId)] = this.folders[AdaptId(folderId)].map(element => {
-            if (element.id === id) {
+            if (element.id === id)
                 element.isLoading = false;
-            }
 
             return element;
         });
     }
 
-    DeleteLoadingFolder(queueId, folderId) {
+    DeleteLoadingFolder = (queueId, folderId) => {
         this.folders = this.folders[AdaptId(folderId)]
             .filter(element => element.queueId !== queueId);
     }
@@ -120,9 +100,8 @@ class StorageState {
     }    
 
     DeleteFolder = (id) => {
-        if (this.folders[id]) {
+        if (this.folders[id])
             delete this.folders[id];
-        }
 
         for (let key in this.folders) {
             runInAction(() => {
@@ -133,32 +112,32 @@ class StorageState {
     }
 
     SetFileAsLoaing(id, folderId) {
-        if (this.files && this.files[AdaptId(folderId)]) {
-            this.files[AdaptId(folderId)] = this.files[AdaptId(folderId)].map(element => {
-                if (element.id === id) {
-                    element.isLoading = true;
-                }
-    
-                return element;
-            });
-        }
+        if (!this.files || !this.files[AdaptId(folderId)])
+            return false;
+
+        this.files[AdaptId(folderId)] = this.files[AdaptId(folderId)].map(element => {
+            if (element.id === id)
+                element.isLoading = true;
+
+            return element;
+        });
     }
 
     RemoveFileLoadingState(id, folderId) {
         this.files[AdaptId(folderId)] = this.files[AdaptId(folderId)].map(element => {
-            if (element.id === id) {
+            if (element.id === id)
                 element.isLoading = false;
-            }
 
             return element;
         });
     }
 
     DeleteLoadingFile(queueId, folderId) {
-        if (this.files && this.files[AdaptId(folderId)] && this.files[AdaptId(folderId)].filter) {
-            this.files[AdaptId(folderId)] = this.files[AdaptId(folderId)]
+        if (!this.files || !this.files[AdaptId(folderId)] || !this.files[AdaptId(folderId)].filter)
+            return false;
+
+        this.files[AdaptId(folderId)] = this.files[AdaptId(folderId)]
             .filter(element => element.queueId !== queueId);
-        }
     }
 
     CreateLoadingFile(name, folderId, type) {
@@ -174,17 +153,12 @@ class StorageState {
         }
 
         runInAction(() => {
-            if (SystemFolders.includes(folderId)) {
-                const folder = Object.values(this.folders).flat()
-                    .find(element => (element.name && element.typeId) ? element.name === folderId && element.typeId === 'System' : null);
+            const isFolderExist = this.files[AdaptId(folderId)];
 
-                if (folder && folder.id && this.files[AdaptId(folder.id)]) {
-                    this.files[AdaptId(folder.id)] = [file, ...this.files[AdaptId(folder.id)]];
-                } else {
-                    this.files[AdaptId(folder.id)] = [file];
-                }
-            } else {
+            if (isFolderExist === true) {
                 this.files[AdaptId(folderId)] = [file, ...this.files[AdaptId(folderId)]];
+            } else {
+                this.files[AdaptId(folderId)] = [file];
             }
             
             this.fileQueueId++;
@@ -197,18 +171,16 @@ class StorageState {
         const object = Object.values(this.files).flat()
             .find(element => element.queueId == queueId);
 
-        if (object && object.perscentage !== null && object.perscentage !== undefined) {
+        if (object && object.perscentage !== null && object.perscentage !== undefined)
             object.perscentage = perscentage;
-        }
     }
 
     SetFileBytes(id, bytes) {
         const object = Object.values(this.files).flat()
             .find(element => element.id == id);
 
-        if (object && object.fileAsBytes !== null && object.fileAsBytes !== undefined) {
+        if (object && object.fileAsBytes !== null && object.fileAsBytes !== undefined)
             object.fileAsBytes = bytes;
-        }
     }
 
     ReplaceLoadingFile(file, queueId) {
@@ -252,86 +224,56 @@ class StorageState {
         }
     }
 
-    async SetFolderItemsById(id) {
+    SetFolderItemsById = (id, itemsAsLists) => {
         id = AdaptId(id);
 
-        if (!this.folders || !this.folders[id]) {
-            try {
-                const response = await instance.get(`/storage?id=${id ? id : ""}`)
-                    .catch((error) => applicationState.AddErrorInQueue('Attention!', error.response.data));
+        runInAction(() => {
+            this.folders[id] = itemsAsLists[0] ? itemsAsLists[0]
+                .map(folder => { 
+                    return {...folder, strategy: 'folder'} 
+                }) : [];
 
-                runInAction(() => {
-                    this.folders[id] = response.data[0] ? 
-                        response.data[0].map(folder => {folder.strategy = 'folder'; return folder}) : [];
+            this.files[id] = itemsAsLists[1] ? itemsAsLists[1]
+                .map(file => {
+                    if (file.file !== undefined && file.meta !== undefined)
+                        return {...file.file, ...file.meta, strategy: 'file'}
 
-                    this.files[id] = response.data[1] ? 
-                        response.data[1].map(file => 
-                        {
-                            if (file.file !== undefined && file.meta !== undefined) {
-                                return {...file.file, ...file.meta, strategy: 'file'}
-                            }
-                        }) : [];
+                    return null;
+                })
+                .filter(e => e) : [];
 
-                    this.path[id] = response.data[2] ? 
-                        response.data[2] : [];
-                });
-
-            } catch (error) {
-                applicationState.AddErrorInQueue('Attention!', 'Something went wrong 😎');
-                console.error('Error fetching file:', error);
-
-                runInAction(() => {
-                    this.folders[id] = [];
-                    this.files[id] = [];
-                });
-            }
-        }
+            this.path[id] = itemsAsLists[2] ? 
+                itemsAsLists[2] : [];
+        });
     }
 
-    async GetItems(hasMore = this.hasMorePhotos, count=this.countPhotos, type='gallery') {
-        await instance
-            .get(`api/pagination?from=${count}&count=${20}&type=${type}`)
-            .then(response => {
-                if (response.data && response.data.length && response.data.length < 20) {
-                    hasMore = false;
-                }
+    SetAdditionalFiles = (files) => {
+        if (files.length <= 0)
+            return false;
 
-                runInAction(() => {
-                    for (let i in response.data) {
-                        let file = response.data[i];
-                        
-                        if (file.file !== undefined && file.meta !== undefined) {
-                            file = {...file.file, ...file.meta, strategy: 'file'}
-                        }
+        for (let i = 0; i < files.length; i++) {
+            let file = response.data[i];
+            
+            if (file.file !== undefined && file.meta !== undefined)
+                file = {...file.file, ...file.meta, strategy: 'file'}
 
-                        if (file.id && file.folderId) {
-                            if (this.files[file.folderId] && this.files[file.folderId].filter) {
-                                this.files[file.folderId] = this.files[file.folderId]
-                                    .filter(element => element.id !== file.id);
+            if (!file.id || !file.folderId)
+                continue;
 
-                                this.files[file.folderId] = [file, ...this.files[file.folderId]];
-                            } else {
-                                this.files[file.folderId] = [file];
-                            }
-                        }
-                    }
+            if (!this.files[file.folderId] || !this.files[file.folderId].filter) {
+                this.files[file.folderId] = [file];
+                continue;
+            }
+                
+            this.files[file.folderId] = this.files[file.folderId]
+                .filter(element => element.id !== file.id);
 
-                    if (response.data.length) {
-                        count += response.data.length;
-                    }
-
-                    hasMore = true;
-                });
-            })
-            .catch(error => {
-                applicationState.AddErrorInQueue('Attention!', error.response.data);
-            });
+            this.files[file.folderId] = [file, ...this.files[file.folderId]];
+        }
     };
 
-    GetSelectionByType(type) {
-        return Object.values(this.files).flat()
-            .filter(element => element.type ? type.includes(element.type) === true : null); 
-    }
+    GetSelectionByType = (type) => Object.values(this.files).flat()
+        .filter(element => element.type ? type.includes(element.type) === true : null); 
 }
 
 export default new StorageState();

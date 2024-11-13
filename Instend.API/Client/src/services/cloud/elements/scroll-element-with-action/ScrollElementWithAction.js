@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-const Scroll = (props) => {
+const ScrollElementWithAction = (props) => {
     const ref = useRef();
     const hasMoreRef = useRef(props.hasMore);
 
@@ -37,4 +37,4 @@ const Scroll = (props) => {
     return <div ref={ref}></div>;
  };
 
-export default Scroll;
+export default ScrollElementWithAction;

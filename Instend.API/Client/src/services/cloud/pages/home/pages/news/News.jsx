@@ -1,29 +1,24 @@
+import { observer } from 'mobx-react-lite';
+import PublicationList from '../../../../features/lists/publication-list/PublicationList';
+import MainContentWrapper from '../../../../features/wrappers/main-content-wrapper/MainContentWrapper';
 import styles from './main.module.css';
-import userState from "../../../../../../state/entities/UserState";
-import MainContentWrapper from "../../../../features/main-content-wrapper/MainContentWrapper";
-import Comments from "../../../../widgets/social/comments/Comments";
-import Pagination from '../../../../elements/pagination/Pagination';
-import newsState from '../../../../../../states/NewsState';
-import { observer } from "mobx-react-lite";
-import checkMark from './check-mark.png';
+import UserState from '../../../../../../state/entities/UserState';
 
 const News = observer(() => {
     return (
         <MainContentWrapper>
             <div className={styles.border}>
-                <Comments 
-                    setLike={newsState.setLike}
+                <PublicationList
+                    setLike={() => {}}
                     isPublications={true}
                     isPublicationAvailable={false}
-                    fetch_callback={newsState.setNews}
-                    comments={newsState.news}
-                    id={userState.user.id}
+                    fetch_callback={() => {}}
+                    comments={() => {}}
+                    id={UserState.user.id}
                     setUploadingComment={() => {}}
-                    deleteCallback={async (id) => {
-                        // await instance.delete(`/api/album-comments?id=${id}&albumId=${userState.user.id}&type=${2}`)
-                    }}
+                    deleteCallback={() => {}}
                 />
-                <Pagination 
+                {/* <Pagination 
                     fetchRequest={newsState.setNews} 
                     isHasMore={newsState.isHasMore}
                     placeholder={
@@ -35,7 +30,7 @@ const News = observer(() => {
                             <span className={styles.information}>This news includes communities you follow.</span>
                         </div>
                     }
-                />
+                /> */}
             </div>
         </MainContentWrapper>
     );

@@ -2,7 +2,7 @@
 import { Link, useLocation  } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
-import { ConvertBytesToMb } from '../../../../utils/handlers/StorageSpaceHandler';
+import { ConvertBytesToMb } from '../../../../../utils/handlers/StorageSpaceHandler';
 import styles from './css/main.module.css';
 import logo from './images/logo/main-logo-black.svg';
 import home_passive from './images/buttons/home_passive.svg';
@@ -19,9 +19,9 @@ import messages_passive from './images/buttons/messages_passive.svg';
 import messages_active from './images/buttons/messages_active.svg';
 import profile_passive from './images/buttons/profile_passive.svg';
 import profile_active from './images/buttons/profile_active.svg';
-import userState from '../../../../states/user-state';
-import musicState from '../../../../states/music-state';
-import storageState from '../../../../states/storage-state';
+import UserState from '../../../../../state/entities/UserState';
+import MusicState from '../../../../../state/entities/MusicState';
+import StorageState from '../../../../../state/entities/StorageState';
 import createImage from './images/buttons/create.png';
 import './css/navigation.buttons.css';
 import './css/main.css';
@@ -35,8 +35,8 @@ export const useIsCurrentRoute = (name) =>
     useLocation()['pathname'] === '/' + name;
 
 export const GetCurrentSong = () => {
-    if (musicState.songQueue && musicState.songQueue.length > 0 && musicState.songQueue[musicState.currentSongIndex]) {
-        return storageState.FindFileById(musicState.songQueue[musicState.currentSongIndex].id);
+    if (MusicState.songQueue && MusicState.songQueue.length > 0 && MusicState.songQueue[MusicState.currentSongIndex]) {
+        return StorageState.FindFileById(MusicState.songQueue[MusicState.currentSongIndex].id);
     }
 
     return null;
@@ -59,7 +59,7 @@ export const GetSongData = (song) => {
 const NavigationPanel = observer((props) => {
     const [isOpened, setOpenedState] = useState(false);
     const [occupiedSpace, setOccupiedSpace] = useState();
-    const { user } = userState;
+    const { user } = UserState;
     const { t } = useTranslation();
     const ref = useRef();
 

@@ -1,9 +1,7 @@
 import React, { useLayoutEffect, useState } from 'react';
-import styles from './main.module.css';
-import { ConvertDate } from '../../../../utils/DateHandler';
-import Loader from '../../../../shared/loader/Loader';
 import { CircularProgress } from '@mui/joy';
-import SelectUIElements from '../../../../elements/select/SelectUIElements';
+import { ConvertDate } from '../../../../utils/handlers/DateHandler';
+import styles from './main.module.css';
 
 const File = (props) => {
   const [aspectRatio, setAspectRatio] = useState(1);
@@ -24,7 +22,6 @@ const File = (props) => {
   }, [props.image]);
 
   if (props.isPlaceholder === true) {
-
     return (
       <div className={styles.wrapper}>
         <div className={styles.content} id="placeholder">
@@ -32,8 +29,9 @@ const File = (props) => {
         </div>
       </div>
     );
-
-  } else if (props.isLoading === true) {
+  }
+  
+  if (props.isLoading === true) {
     return (
       <>
         <div 
@@ -67,7 +65,6 @@ const File = (props) => {
                     }}
                   />
                 </div>
-                {/* <span>{props.type}</span> */}
               </div>}
           </div>
           <div className={styles.description}>
@@ -77,43 +74,43 @@ const File = (props) => {
         </div>
       </>
     );
-  } else {
-    return (
-      <div 
-        className={styles.wrapper} 
-        onClick={props.callback} 
-        onContextMenu={props.onContextMenu}
-        data={props.file.id}
-        onMouseEnter={() => setSelectedOpenState(true)}
-        onMouseLeave={() => setSelectedOpenState(false)}
-      >
-        <SelectUIElements 
-          isSelected={isSelected} 
-          setSelectedState={setSelectedState}
-          isSelectedOpen={isSelectedOpen}
-          setSelectedFiles={props.setSelectedFiles ? props.setSelectedFiles : () => {}}
-          element={props.file}
-        />
-        <div className={styles.content} id={props.isSelected === true ? 'selected' : null}>
-          {props.image != null ? 
-            <img 
-              src={`data:image/png;base64,${props.image}`} 
-              className={styles.image}
-              draggable={false}
-              id={aspectRatio < 1 ? 'width' : 'height'}
-            />
-          : 
-            <div className={styles.file}>
-              <span>{props.type}</span>
-            </div>}
-        </div>
-        <div className={styles.description}>
-          <span className={styles.name}>{props.name}</span>
-          <span className={styles.time}>{ConvertDate(props.time)}</span>
-        </div>
-      </div>
-    );
   }
+    
+  return (
+    <div 
+      className={styles.wrapper} 
+      onClick={props.callback} 
+      onContextMenu={props.onContextMenu}
+      data={props.file.id}
+      onMouseEnter={() => setSelectedOpenState(true)}
+      onMouseLeave={() => setSelectedOpenState(false)}
+    >
+      <SelectUIElements 
+        isSelected={isSelected} 
+        setSelectedState={setSelectedState}
+        isSelectedOpen={isSelectedOpen}
+        setSelectedFiles={props.setSelectedFiles ? props.setSelectedFiles : () => {}}
+        element={props.file}
+      />
+      <div className={styles.content} id={props.isSelected === true ? 'selected' : null}>
+        {props.image != null ? 
+          <img 
+            src={`data:image/png;base64,${props.image}`} 
+            className={styles.image}
+            draggable={false}
+            id={aspectRatio < 1 ? 'width' : 'height'}
+          />
+        : 
+          <div className={styles.file}>
+            <span>{props.type}</span>
+          </div>}
+      </div>
+      <div className={styles.description}>
+        <span className={styles.name}>{props.name}</span>
+        <span className={styles.time}>{ConvertDate(props.time)}</span>
+      </div>
+    </div>
+  );
 };
 
 export default File;

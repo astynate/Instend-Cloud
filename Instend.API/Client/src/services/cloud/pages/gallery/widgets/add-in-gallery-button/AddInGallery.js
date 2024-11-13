@@ -24,7 +24,7 @@ const AddInGallery = (props) => {
             />}
             <Add 
                 items={[
-                    {image: album, title: "Album", callback: () => {setCreateAlbumOpen(true)}},
+                    {image: album, title: "Album", callback: () => setCreateAlbumOpen(true)},
                     {image: image, title: "Image", callback: () => {}, type: "upload", sendFiles: (event) => {
                         if (props.id) {
                             UploadPhotosInAlbum(event, 'Photos', props.id);

@@ -103,27 +103,23 @@ app.UseMiddleware<LoggingMiddleware>();
 
 app.Use(async (context, next) =>
 {
-    string? accessToken = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-    string? refreshToken = context.Request.Cookies["system_refresh_token"];
+    var accessToken = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+    var refreshToken = context.Request.Cookies["system_refresh_token"];
 
     ITokenService tokenService = context.RequestServices.GetRequiredService<ITokenService>();
 
-    if 
-    (
-        string.IsNullOrEmpty(accessToken) == false && 
-        string.IsNullOrEmpty(refreshToken) == false && 
-        tokenService.IsTokenValid(accessToken) == true && 
-        tokenService.IsTokenAlive(accessToken) == false
-    )
+    var isTokensEmpthy = string.IsNullOrEmpty(accessToken) == false && string.IsNullOrEmpty(refreshToken) == false;
+    var isTokensValid = tokenService.IsTokenValid(accessToken) == true && tokenService.IsTokenAlive(accessToken) == false;
+
+    if (isTokensEmpthy && isTokensValid)
     {
-        ISessionsRepository sessionsRepository = context.RequestServices.GetRequiredService<ISessionsRepository>();
+        var sessionsRepository = context.RequestServices.GetRequiredService<ISessionsRepository>();
+        var userId = tokenService.GetUserIdFromToken(accessToken);
 
-        string userId = tokenService.GetUserIdFromToken(accessToken);
-
-        if (tokenService.IsTokenValid(accessToken))
+        if (tokenService.IsTokenValid(accessToken) && string.IsNullOrEmpty(userId) == false)
         {
             SessionModel? sessionModel = await sessionsRepository
-                .GetSessionByTokenAndUserId(Guid.Parse(userId), refreshToken);
+                .GetSessionByTokenAndUserId(Guid.Parse(userId), refreshToken ?? "");
 
             if (sessionModel != null && sessionModel.EndTime >= DateTime.Now)
             {
@@ -153,7 +149,7 @@ app.MapFallbackToFile("index.html");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapHub<MessageHub>("/message-hub").RequireCors("CorsPolicy");
-app.MapHub<StorageHub>("storage-hub").RequireCors("CorsPolicy");
-app.MapHub<GalleryHub>("/gallery-hub").RequireCors("CorsPolicy");
+app.MapHub<MessageHub>("/global-hub-connection")
+    .RequireCors("CorsPolicy");
+
 app.Run();

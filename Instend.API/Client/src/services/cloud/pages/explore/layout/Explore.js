@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import styles from './main.module.css';
 import Header from '../../../widgets/header/Header';
-import Search from '../../../features/search/Search';
+import Search from '../../../widgets/search/Search';
 
 const Explore = (props) => {
   useEffect(() => {
