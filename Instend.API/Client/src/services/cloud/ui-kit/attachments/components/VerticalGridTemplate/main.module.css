@@ -1,0 +1,26 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 3px;
+}
+
+.wrapper img {
+    height: 100%;
+    width: 100%;
+    aspect-ratio: 1 / 1; 
+    user-select: none;
+    cursor: pointer;
+    object-fit: cover;
+}
+
+.top {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
+    grid-gap: 3px;
+}
+
+.bottom {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20%, 1fr));
+    grid-gap: 3px;
+}

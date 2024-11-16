@@ -6,7 +6,6 @@
     overflow: hidden;
     user-select: none;
     flex-shrink: 0;
-    /* border: 1px solid var(--main-border-color) */
 }
 
 .userAvatar img {

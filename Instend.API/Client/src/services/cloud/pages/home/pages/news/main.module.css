@@ -38,7 +38,3 @@
     width: 25px;
     filter: var(--sub-filter);
 }
-
-.border {
-    /* border-top: 1px solid var(--main-border-color); */
-}

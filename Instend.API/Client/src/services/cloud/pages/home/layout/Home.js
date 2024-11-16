@@ -6,6 +6,7 @@ import Header from '../../../widgets/header/Header';
 import Search from '../../../widgets/search/Search';
 import SubMenu from '../../../features/navigation/sub-menu/SubMenu';
 import News from '../pages/news/News';
+import MainContentWrapper from '../../../features/wrappers/main-content-wrapper/MainContentWrapper';
 
 const Home = observer((props) => {
   useEffect(() => {
@@ -18,14 +19,23 @@ const Home = observer((props) => {
     <div className={styles.home}>
       <Header />
       <Search />
-      <div className={styles.header}>
-        <SubMenu 
-          items={[
-            {'name': 'News', 'route': '/'},
-            {'name': 'Communities', 'route': '/communities'}, 
-            {'name': 'People', 'route': '/people'}
-          ]}
-        />
+      <div className={styles.headerWrapper}>
+        <MainContentWrapper>
+          <div className={styles.header}>
+            <SubMenu 
+              items={[
+                {'name': 'News', 'route': '/'},
+                {'name': 'People', 'route': '/people'}
+              ]}
+            />
+            <div className={styles.overlay}>
+              <div className={styles.circle}></div>
+            </div>
+            <div className={styles.overlay}>
+              <div className={styles.circle}></div>
+            </div>
+          </div>
+        </MainContentWrapper>
       </div>
       <Routes>
         <Route path='' element={<News />} />

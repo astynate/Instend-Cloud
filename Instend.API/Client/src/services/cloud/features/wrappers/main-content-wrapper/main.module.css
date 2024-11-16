@@ -1,8 +1,6 @@
 .wrapper {
     width: 100%;
-    /* display: flex;
-    align-items: center;
-    justify-content: center; */
+    position: relative;
 }
 
 .content {
@@ -12,13 +10,6 @@
     margin-right: calc(31vw);
     margin-left: auto;
 }
-
-/* @media (max-width: 1300px) {
-    .content {
-        width: 90%;
-        margin-right: 0%;
-    }
-} */
 
 @media (max-width: 950px) {
     .content {

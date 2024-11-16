@@ -1,10 +1,17 @@
 .wrapper {
     width: 100%;
     height: fit-content;
-    border-radius: 15px;
     overflow: hidden;
     border-bottom: none;
-    /* border: 1px solid var(--main-border-color); */
-    margin-bottom: 50px;
     /* background: var(--main-accent-color); */
+    /* border: 1px solid var(--not-transparent-border-color); */
+    border-top: 0;
+    margin-bottom: 50px;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+    position: relative;
+}
+
+.wrapper::-webkit-scrollbar {
+    display: none;
 }

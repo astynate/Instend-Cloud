@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './main.module.css';
 import PublicationsWrapper from '../../wrappers/publications-wrapper/PublicationsWrapper';
+import Publication from '../../../components/publication/Publication';
 
 const PublicationList = ({
         setLike = () => {}, 
@@ -16,12 +17,24 @@ const PublicationList = ({
     return (
         <PublicationsWrapper>
             <div className={styles.publications}>
-                <Comment 
-                    // key={element.comment.id + "comment"}
-                    isUploading={false}
-                    comment={{}} 
-                    user={{}} 
-                />
+                <Publication />
+                <Publication />
+                <Publication />
+                <Publication />
+                <Publication />
+                <Publication />
+                <Publication />
+                <Publication />
+                <Publication />
+                <Publication />
+                <Publication />
+                <Publication />
+                <Publication />
+                <Publication />
+                <Publication />
+                <Publication />
+                <Publication />
+                <Publication />
                 {/* {isPublicationAvailable && 
                     <CommentField 
                         id={id} 

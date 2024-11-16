@@ -36,8 +36,7 @@ const BurgerMenu = ({items}) => {
                     <PopUpList 
                         items={items}
                         close={() => setOpenState(false)}
-                    />
-                }
+                    />}
             </div>
         </div>
     );

@@ -41,6 +41,8 @@
 
     --search-border-color: rgba(0, 0, 0, 0.15);
     --search-font-color: #bebebe;
+
+    --not-transparent-border-color: rgba(255, 255, 255, 0.2);
 }
 
 .dark-mode {
@@ -86,6 +88,8 @@
 
     --search-border-color: rgba(255, 255, 255, 0.3);
     --search-font-color: #777777;
+
+    --not-transparent-border-color: rgb(64, 68, 72);
 }
 
 .cloud-wrapper {
