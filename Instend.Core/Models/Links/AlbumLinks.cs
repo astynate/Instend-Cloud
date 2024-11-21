@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Instend.Core.Models.Abstraction;
 
-namespace Exider.Core.Models.Links
+namespace Instend.Core.Models.Links
 {
     public class AlbumLinks
     {

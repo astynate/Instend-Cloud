@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
+using Instend.Core.Dependencies.Services.Internal.Services;
 
-namespace Exider_Version_2._0._0.ServerApp.Services
+namespace Instend_Version_2._0._0.ServerApp.Services
 {
     public class ValidationService : IValidationService
     {

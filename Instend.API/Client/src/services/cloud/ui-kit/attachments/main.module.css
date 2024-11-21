@@ -1,4 +1,8 @@
 .attachments {
+    --main-gap: 4px;
+}
+
+.attachments {
     height: auto;
     width: 100%;
 }

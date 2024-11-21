@@ -12,7 +12,7 @@ import i5 from './5.jpg';
 import i6 from './6.jpg';
 import i7 from './7.jpg';
 
-const Attachments = ({attachments = [i3, i4, i5]}) => {
+const Attachments = ({attachments = [i2, i3, i4, i6, i7]}) => {
     const handlers = [
         { condition: async () => await TypeHelper.IsColumnTemplate(attachments), handler: ColumnsTemplate },
         { condition: async () => await TypeHelper.IsHorizontalGridTemplate(attachments), handler: HorizontalGridTemplate },
@@ -25,8 +25,6 @@ const Attachments = ({attachments = [i3, i4, i5]}) => {
         const DetermineHandler = async () => {
             for (const handler of handlers) {
                 const result = await handler.condition();
-
-                console.log(result, handler);
                 
                 if (result) {
                     setCurrentHandler(() => handler.handler);

@@ -1,9 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core.Models.Links;
-using Exider.Core.Models.Storage;
+using Instend.Core.Models.Storage;
+using Instend.Core.Models.Abstraction;
 using Microsoft.AspNetCore.Http;
 
-namespace Exider.Core.Dependencies.Repositories.Storage
+namespace Instend.Core.Dependencies.Repositories.Storage
 {
     public interface IAttachmentsRepository<T> where T : LinkBase, new()
     {

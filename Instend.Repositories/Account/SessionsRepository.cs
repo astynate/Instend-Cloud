@@ -1,8 +1,8 @@
-﻿using Exider.Core;
-using Exider.Core.Models.Account;
+﻿using Instend.Core;
+using Instend.Core.Models.Account;
 using Microsoft.EntityFrameworkCore;
 
-namespace Exider.Repositories.Repositories
+namespace Instend.Repositories.Repositories
 {
     public class SessionsRepository : ISessionsRepository
     {

@@ -1,6 +1,6 @@
-import styles from './main.module.css';
-import ChatInformation from '../../../../features/chat-information/ChatInformation';
-import ChatAvatar from '../../../../elements/chat-avatar/ChatAvatar';
+// import styles from './main.module.css';
+// import ChatInformation from '../../../../features/chat-information/ChatInformation';
+// import ChatAvatar from '../../../../elements/chat-avatar/ChatAvatar';
 
 const ChatHeader = ({
         avatar, 
@@ -14,7 +14,7 @@ const ChatHeader = ({
 
     return (
         <>
-            <ChatInformation 
+            {/* <ChatInformation 
                 open={isChatInformation}
                 close={() => setChatInformation(false)}
                 name={title}
@@ -31,7 +31,7 @@ const ChatHeader = ({
                             src={back} 
                             className={styles.back} 
                             onClick={close}
-                        />} */}
+                        />} 
                     <div className={styles.avatar}>
                         {avatar ? 
                             <img 
@@ -52,9 +52,9 @@ const ChatHeader = ({
                         className={styles.buttonImage} 
                         draggable="false"
                         // onClick={() => setOpenState(true)}
-                    /> */}
+                    />
                 </div>
-            </div>
+            </div> */}
         </>
     );
 }

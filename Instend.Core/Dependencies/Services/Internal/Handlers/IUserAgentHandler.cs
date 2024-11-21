@@ -1,4 +1,4 @@
-﻿namespace Exider.Services.Internal.Handlers
+﻿namespace Instend.Services.Internal.Handlers
 {
     public interface IUserAgentHandler
     {

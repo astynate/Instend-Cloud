@@ -29,6 +29,7 @@ class UserState {
         localStorage.setItem('system_refresh_token', undefined);
     }
 
+    SetUser = (user) => this.user = user;
     DeletePublication = (id) => this.publications = this.publications.filter(element => element.comment.id !== id);
     RemoveCommunity = (community) => this.communities = this.communities.filter(element => element.id !== community.id);
     FindFriendById = (fiendId) => this.friends.find((f) => f.userId === fiendId || f.ownerId === fiendId);

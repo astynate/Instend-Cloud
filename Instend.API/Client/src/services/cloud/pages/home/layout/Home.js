@@ -7,6 +7,7 @@ import Search from '../../../widgets/search/Search';
 import SubMenu from '../../../features/navigation/sub-menu/SubMenu';
 import News from '../pages/news/News';
 import MainContentWrapper from '../../../features/wrappers/main-content-wrapper/MainContentWrapper';
+import PublicationPage from '../../publication/PublicationPage';
 
 const Home = observer((props) => {
   useEffect(() => {
@@ -39,9 +40,7 @@ const Home = observer((props) => {
       </div>
       <Routes>
         <Route path='' element={<News />} />
-        {/* <Route path='/communities' element={<Communities />} />
-        <Route path='/community/:id' element={<Community isMobile={props.isMobile} />} />
-        <Route path='/people' element={<People />} /> */}
+        <Route path='/publication' element={<PublicationPage />} />
       </Routes>
     </div>
   );

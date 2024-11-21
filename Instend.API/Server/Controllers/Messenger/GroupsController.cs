@@ -1,16 +1,16 @@
-﻿using Exider.Core.Models.Messenger;
-using Exider.Repositories.Messenger;
-using Exider.Services.Internal.Handlers;
-using Exider_Version_2._0._0.Server.Hubs;
+﻿using Instend.Core.Models.Messenger;
+using Instend.Repositories.Messenger;
+using Instend.Services.Internal.Handlers;
+using Instend_Version_2._0._0.Server.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Exider.Services.External.FileService;
+using Instend.Services.External.FileService;
 using Microsoft.AspNetCore.Authorization;
-using Exider.Core.Models.Messages;
-using Exider.Services.Internal;
+using Instend.Core.Models.Messages;
+using Instend.Core.Dependencies.Services.Internal.Helpers;
 
-namespace Exider_Version_2._0._0.Server.Controllers.Messenger
+namespace Instend_Version_2._0._0.Server.Controllers.Messenger
 {
     [ApiController]
     [Route("api/[controller]")]

@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Http;
 
-namespace Exider.Services.Internal.Handlers
+namespace Instend.Services.Internal.Handlers
 {
     public interface IRequestHandler
     {

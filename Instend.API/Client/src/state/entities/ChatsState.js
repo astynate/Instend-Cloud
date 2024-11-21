@@ -1,8 +1,6 @@
 import { makeAutoObservable } from "mobx";
-import { instance } from "../state/Interceptors";
 import userState from "./UserState";
 import ChatHandler from "../../utils/handlers/ChatHandler";
-import ChatTypes from "../../services/cloud/pages/messages/widgets/chat/ChatTypes";
 
 class ChatsState {
     chats = [];
@@ -16,6 +14,10 @@ class ChatsState {
 
     constructor() {
         makeAutoObservable(this);
+    }
+
+    IsDraftWithTargetUser = (id) => {
+        return this.draft && this.draft.id && id === ChatsState.draft.id;
     }
 
     SetChats = (chatsValue) => {
@@ -78,8 +80,8 @@ class ChatsState {
         });
     }
 
-    addGroup = (groupModel, messageModel=null) => {
-        this.chats = [...this.chats, ChatTypes.group.adapt(groupModel, messageModel)];
+    addGroup = (group, message = null) => {
+        // this.chats = [...this.chats, ChatTypes.group.adapt(groupModel, messageModel)];
     }
 
     setChatsLoadedState = (state) => {
@@ -190,29 +192,29 @@ class ChatsState {
 
         const chat = ChatHandler.GetChat(chatId);
 
-        if (chat && chat.hasMore === true && chat.messages) {
-            this.isBusy = true;
+        // if (chat && chat.hasMore === true && chat.messages) {
+        //     this.isBusy = true;
 
-            await instance
-                .get(`/api/${chat.type}s?destination=${chatId}&from=${chat.messages.length}&count=${20}`)
-                .then(response => {
-                    if (!response || !response.data) {
-                        return;
-                    } 
+        //     await instance
+        //         .get(`/api/${chat.type}s?destination=${chatId}&from=${chat.messages.length}&count=${20}`)
+        //         .then(response => {
+        //             if (!response || !response.data) {
+        //                 return;
+        //             } 
 
-                    if (response.data.length === 0) {
-                        chat.hasMore = false;
-                    }
+        //             if (response.data.length === 0) {
+        //                 chat.hasMore = false;
+        //             }
 
-                    if (response.data.map && response.data.length > 0) {                    
-                        response.data.map(element => {
-                            chat.messages = [element, ...chat.messages];
-                        });
-                    }
+        //             if (response.data.map && response.data.length > 0) {                    
+        //                 response.data.map(element => {
+        //                     chat.messages = [element, ...chat.messages];
+        //                 });
+        //             }
 
-                    this.isBusy = false;
-                });
-        }
+        //             this.isBusy = false;
+        //         });
+        // }
     }
 
     ViewMessage = (id, chatId) => {

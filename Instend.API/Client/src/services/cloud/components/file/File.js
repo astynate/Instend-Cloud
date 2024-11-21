@@ -2,6 +2,7 @@ import React, { useLayoutEffect, useState } from 'react';
 import { CircularProgress } from '@mui/joy';
 import { ConvertDate } from '../../../../utils/handlers/DateHandler';
 import styles from './main.module.css';
+import SelectElementWithCheckmark from '../../elements/select/select-element-with-checkmark/SelectElementWithCheckmark';
 
 const File = (props) => {
   const [aspectRatio, setAspectRatio] = useState(1);
@@ -44,7 +45,7 @@ const File = (props) => {
             {props.image != null ? 
               <div className={styles.loaderWrapper}>
                   <div className={styles.loader}>
-                    <Loader />
+                    {/* <Loader /> */}
                   </div>
                     <img 
                       src={`data:image/png;base64,${props.image}`} 
@@ -85,7 +86,7 @@ const File = (props) => {
       onMouseEnter={() => setSelectedOpenState(true)}
       onMouseLeave={() => setSelectedOpenState(false)}
     >
-      <SelectUIElements 
+      <SelectElementWithCheckmark 
         isSelected={isSelected} 
         setSelectedState={setSelectedState}
         isSelectedOpen={isSelectedOpen}

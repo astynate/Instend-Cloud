@@ -1,10 +1,10 @@
-﻿using Exider.Core;
-using Exider.Core.Models.Account;
-using Exider.Repositories.Account;
-using Exider_Version_2._0._0.ServerApp.Services;
+﻿using Instend.Core;
+using Instend.Core.Models.Account;
+using Instend.Repositories.Account;
+using Instend_Version_2._0._0.ServerApp.Services;
 using System.Transactions;
 
-namespace Exider.Tests.Database.Repositories
+namespace Instend.Tests.Database.Repositories
 {
 
     [TestClass]
@@ -13,8 +13,8 @@ namespace Exider.Tests.Database.Repositories
 
         private readonly static DatabaseContext _context = new DatabaseContext();
 
-        private readonly static IEmailRepository _emailRepository = 
-            new EmailRepository(_context, new ValidationService());
+        private readonly static IConfirmationsRepository _emailRepository = 
+            new ConfirmationsRepository(_context, new ValidationService());
 
         [TestMethod]
         public void EmailCreationWithCorrectConditions()

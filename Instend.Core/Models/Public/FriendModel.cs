@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Exider.Core.Models.Public
+namespace Instend.Core.Models.Public
 {
     [Table("friends")]
     public class FriendModel

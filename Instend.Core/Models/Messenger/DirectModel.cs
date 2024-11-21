@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Exider.Core.Models.Messenger
+namespace Instend.Core.Models.Messenger
 {
     [Table("directs")]
     public class DirectModel

@@ -1,26 +1,33 @@
 .wrapper {
-    display: flex;
-    flex-direction: column;
-    grid-gap: 3px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: var(--main-gap);
+}
+
+.wrapper[state="one"] {
+    grid-template-columns: 1.3fr 1fr;
 }
 
 .wrapper img {
     height: 100%;
     width: 100%;
-    aspect-ratio: 1 / 1; 
     user-select: none;
     cursor: pointer;
     object-fit: cover;
 }
 
-.top {
+.left {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
-    grid-gap: 3px;
+    grid-template-rows: repeat(auto-fit, minmax(30%, 1fr));
+    grid-gap: var(--main-gap);
 }
 
-.bottom {
+.right {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(20%, 1fr));
-    grid-gap: 3px;
+    grid-template-rows: repeat(auto-fit, minmax(20%, 1fr));
+    grid-gap: var(--main-gap);
+}
+
+.wrapper[state="one"] .right img {
+    aspect-ratio: 1.4 / 1;
 }

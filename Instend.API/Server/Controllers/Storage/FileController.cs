@@ -1,19 +1,18 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core;
-using Exider.Core.Dependencies.Repositories.Storage;
-using Exider.Core.Models.Links;
-using Exider.Core.Models.Messenger;
-using Exider.Core.Models.Storage;
-using Exider.Repositories.Comments;
-using Exider.Repositories.Storage;
-using Exider.Services.External.FileService;
-using Exider.Services.Internal.Handlers;
+using Instend.Core;
+using Instend.Core.Dependencies.Repositories.Storage;
+using Instend.Core.Models.Links;
+using Instend.Core.Models.Storage;
+using Instend.Repositories.Comments;
+using Instend.Repositories.Storage;
+using Instend.Services.External.FileService;
+using Instend.Services.Internal.Handlers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
-using static Exider.Core.Models.Links.AlbumLinks;
+using static Instend.Core.Models.Links.AlbumLinks;
 
-namespace Exider_Version_2._0._0.Server.Controllers.Storage
+namespace Instend_Version_2._0._0.Server.Controllers.Storage
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -25,11 +24,9 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IFileRespository _fileRepository;
 
-        private readonly ICommentsRepository<AlbumCommentLink, AttachmentCommentLink> _commentsRepository;
+        private readonly IPublicationRepository<AlbumCommentLink, AttachmentCommentLink> _commentsRepository;
 
-        private readonly ICommentsRepository<ComminityPublicationLink, AttachmentCommentLink> _publicationRepository;
-
-        private readonly ICommentsRepository<UserPublicationLink, AttachmentCommentLink> _userPublicationRepository;
+        private readonly IPublicationRepository<UserPublicationLink, AttachmentCommentLink> _userPublicationRepository;
 
         private readonly IAttachmentsRepository<MessageAttachmentLink> _messageAttachmentRepository;
 
@@ -41,9 +38,8 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             IFileRespository fileRespository,
             IAccessHandler accessHandler,
             IRequestHandler requestHandler,
-            ICommentsRepository<AlbumCommentLink, AttachmentCommentLink> commentsRepository,
-            ICommentsRepository<ComminityPublicationLink, AttachmentCommentLink> publicationRepository,
-            ICommentsRepository<UserPublicationLink, AttachmentCommentLink> userPublicationRepository,
+            IPublicationRepository<AlbumCommentLink, AttachmentCommentLink> commentsRepository,
+            IPublicationRepository<UserPublicationLink, AttachmentCommentLink> userPublicationRepository,
             IAttachmentsRepository<MessageAttachmentLink> messageAttachmentRepository
         )
         {
@@ -52,7 +48,6 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             _fileRepository = fileRespository;
             _requestHandler = requestHandler;
             _commentsRepository = commentsRepository;
-            _publicationRepository = publicationRepository;
             _userPublicationRepository = userPublicationRepository;
             _messageAttachmentRepository = messageAttachmentRepository;
         }
@@ -128,7 +123,6 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
             Dictionary<int, Configuration.GetAttachmentDelegate> handlers = new Dictionary<int, Configuration.GetAttachmentDelegate>
             {
-                { 0, _publicationRepository.GetAttachmentAsync },
                 { 1, _commentsRepository.GetAttachmentAsync },
                 { 2, _userPublicationRepository.GetAttachmentAsync },
                 { 3, _messageAttachmentRepository.GetAttachmentAsync }

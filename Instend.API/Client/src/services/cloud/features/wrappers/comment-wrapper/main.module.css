@@ -1,0 +1,14 @@
+.wrapper {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 20px auto;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--main-border-color);
+}
+
+.border {
+    height: 100%;
+    width: 4px;
+    border-radius: 5px;
+    background: var(--main-border-color);
+}

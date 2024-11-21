@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
-namespace Exider.Core.TransferModels.Messenger
+namespace Instend.Core.TransferModels.Messenger
 {
     public record MessageTransferModel
     (

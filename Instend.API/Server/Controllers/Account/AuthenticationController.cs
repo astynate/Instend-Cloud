@@ -1,15 +1,14 @@
-﻿using Exider.Core;
-using Exider.Core.Dependencies.Repositories.Account;
-using Exider.Core.Models.Account;
-using Exider.Core.Models.Email;
-using Exider.Dependencies.Services;
-using Exider.Repositories.Account;
-using Exider.Repositories.Email;
-using Exider.Repositories.Repositories;
-using Exider_Version_2._0._0.ServerApp.Services;
+﻿using Instend.Core;
+using Instend.Core.Dependencies.Repositories.Account;
+using Instend.Core.Dependencies.Services.Internal.Services;
+using Instend.Core.Models.Account;
+using Instend.Core.Models.Email;
+using Instend.Dependencies.Services;
+using Instend.Repositories.Account;
+using Instend.Repositories.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Exider_Version_2._0._0.Server.Controllers.Account
+namespace Instend_Version_2._0._0.Server.Controllers.Account
 {
     [ApiController]
     [Route("[controller]")]
@@ -17,90 +16,80 @@ namespace Exider_Version_2._0._0.Server.Controllers.Account
     {
         private readonly ITokenService _tokenService;
 
-        private readonly IUsersRepository _usersRepository;
+        private readonly IAccountsRepository _accountsRepository;
 
-        private readonly IEmailRepository _emailRepository;
+        private readonly IConfirmationsRepository _confirmationRepository;
 
         private readonly IEmailService _emailService;
 
         public AuthenticationController
         (
             ITokenService tokenService,
-            IUsersRepository usersRepository,
-            IEmailRepository emailRepository,
+            IAccountsRepository usersRepository,
+            IConfirmationsRepository emailRepository,
             IEmailService emailService
         )
         {
             _tokenService = tokenService;
-            _usersRepository = usersRepository;
-            _emailRepository = emailRepository;
+            _accountsRepository = usersRepository;
+            _confirmationRepository = emailRepository;
             _emailService = emailService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAuthenticationState(ISessionsRepository sessionsRepository, string accessToken)
         {
-            string? refreshToken = Request.Cookies["system_refresh_token"]?.ToString();
+            var refreshToken = Request.Cookies["system_refresh_token"]?.ToString();
 
             if (string.IsNullOrEmpty(accessToken) || string.IsNullOrEmpty(refreshToken))
-            {
                 return Unauthorized();
-            }
 
-            Guid userId = Guid.Parse(_tokenService.GetUserIdFromToken(accessToken));
+            var userId = Guid.Parse(_tokenService.GetUserIdFromToken(accessToken) ?? "");
 
             if (_tokenService.IsTokenValid(accessToken) == false || userId == Guid.Empty)
-            {
                 return Unauthorized();
-            }
 
-            if (_tokenService.IsTokenAlive(accessToken) == false)
-            {
-                SessionModel? sessionModel = await sessionsRepository
-                    .GetSessionByTokenAndUserId(userId, refreshToken);
+            if (_tokenService.IsTokenAlive(accessToken) == true)
+                return Ok(accessToken);
 
-                if (sessionModel is null || sessionModel.EndTime <= DateTime.Now)
-                    return Unauthorized();
+            var sessionModel = await sessionsRepository
+                .GetSessionByTokenAndUserId(userId, refreshToken);
 
-                accessToken = _tokenService.GenerateAccessToken(userId.ToString(),
-                    Configuration.accessTokenLifeTimeInMinutes, Configuration.TestEncryptionKey);
-            }
+            if (sessionModel == null || sessionModel.EndTime <= DateTime.Now)
+                return Unauthorized();
+
+            accessToken = _tokenService.GenerateAccessToken(userId.ToString(),
+                Configuration.accessTokenLifeTimeInMinutes, Configuration.TestEncryptionKey);
 
             return Ok(accessToken);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(IEncryptionService encryptionService, ISessionsRepository sessionsRepository, IConfirmationRespository confirmationRespository)
+        public async Task<IActionResult> Login(IEncryptionService encryptionService, ISessionsRepository sessionsRepository, IConfirmationsRespository confirmationRespository)
         {
-            string? username = Request.Form["username"];
-            string? password = Request.Form["password"];
+            var username = Request.Form["username"];
+            var password = Request.Form["password"];
 
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 return BadRequest("Ivalid form data");
 
-            UserModel? user = await _usersRepository.GetUserByEmailOrNicknameAsync(username);
+            var user = await _accountsRepository.GetByEmailOrNicknameAsync(username);
 
             if (user is null)
-            {
                 return BadRequest("User not found");
-            }
 
-            var getEmailResult = await _emailRepository.GetByEmailAsync(user.Email);
+            var account = await _accountsRepository.GetByEmailAsync(user.Email);
 
-            if (getEmailResult.IsFailure)
-            {
-                return Conflict(getEmailResult.Error);
-            }
+            if (account == null)
+                return Conflict("User not found");
 
-            if (getEmailResult.Value.IsConfirmed == false)
+            if (account.IsConfirmed == false)
             {
                 var confirmationCreationResult = ConfirmationModel
-                    .Create(getEmailResult.Value.Email, encryptionService.GenerateSecretCode(6), getEmailResult.Value.UserId);
+                    .Create(account.Email, encryptionService.GenerateSecretCode(6), account.Id);
 
                 if (confirmationCreationResult.IsFailure)
-                {
                     return BadRequest(confirmationCreationResult.Error);
-                }
 
                 await confirmationRespository.AddAsync(confirmationCreationResult.Value);
 

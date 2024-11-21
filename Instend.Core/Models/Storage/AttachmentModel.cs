@@ -1,9 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Services.External.FileService;
+using Instend.Services.External.FileService;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Exider.Core.Models.Storage
+namespace Instend.Core.Models.Storage
 {
     [Table("attachments")]
     public class AttachmentModel

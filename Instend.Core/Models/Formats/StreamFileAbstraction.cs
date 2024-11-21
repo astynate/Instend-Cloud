@@ -1,4 +1,4 @@
-﻿namespace Exider.Services.External.FileService
+﻿namespace Instend.Core.Models.Formats
 {
     internal class StreamFileAbstraction : TagLib.File.IFileAbstraction
     {

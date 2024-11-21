@@ -4,8 +4,8 @@ import UserState from "../state/entities/UserState";
 class AccountController {
     static GetAccountData = async (onSuccessCallback = () => {}, onErrorCallback = () => {}) => {
         await instance.get('/accounts')
-            .then(async response => {
-                if (response.data && response.data.length > 2) {
+            .then((response) => {
+                if (response && response.data && response.data.length > 2) {
                     onSuccessCallback(response.data);
                 } else {
                     onErrorCallback();

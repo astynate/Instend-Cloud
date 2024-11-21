@@ -1,11 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core;
-using Exider.Core.Models.Access;
-using Exider.Core.TransferModels;
-using Exider.Services.External.FileService;
+using Instend.Core;
+using Instend.Services.External.FileService;
+using Instend.Core.Models.Abstraction;
 using Microsoft.EntityFrameworkCore;
+using Instend.Core.TransferModels.Access;
 
-namespace Exider.Repositories.Storage
+namespace Instend.Repositories.Storage
 {
     public class AccessRepository<Access, Item> : IAccessRepository<Access, Item>
         where Access : AccessBase, new()
@@ -39,27 +39,27 @@ namespace Exider.Repositories.Storage
 
         public async Task<AccessTransferModel[]> GetUsersWithAccess(Guid folderId)
         {
-            AccessTransferModel[] result = await _accessEntities
-                .Where(x => x.ItemId == folderId)
-                .Join(_context.Users, accessTable => accessTable.UserId, usersTable => usersTable.Id, (access, user) => new { access, user })
-                .Join(_context.UserData, mergedTable => mergedTable.user.Id, data => data.UserId, (merged, data)
-                    => new AccessTransferModel(merged.access, merged.user, data))
-                .ToArrayAsync();
+            //AccessTransferModel[] result = await _accessEntities
+            //    .Where(x => x.ItemId == folderId)
+            //    .Join(_context.Users, accessTable => accessTable.UserId, usersTable => usersTable.Id, (access, user) => new { access, user })
+            //    .Join(_context.UserData, mergedTable => mergedTable.user.Id, data => data.UserId, (merged, data)
+            //        => new AccessTransferModel(merged.access, merged.user, data))
+            //    .ToArrayAsync();
 
-            foreach (AccessTransferModel item in result)
-            {
-                if (item.data.Avatar == Configuration.DefaultAvatarPath)
-                {
-                    item.base64Avatar = Configuration.DefaultAvatar;
-                }
-                else if (string.IsNullOrEmpty(item.data.Avatar) == false)
-                {
-                    var avatarReadingResult = await _fileService.ReadFileAsync(item.data.Avatar);
-                    item.base64Avatar = Convert.ToBase64String(avatarReadingResult.Value);
-                }
-            }
+            //foreach (AccessTransferModel item in result)
+            //{
+            //    if (item.data.Avatar == Configuration.DefaultAvatarPath)
+            //    {
+            //        item.base64Avatar = Configuration.DefaultAvatar;
+            //    }
+            //    else if (string.IsNullOrEmpty(item.data.Avatar) == false)
+            //    {
+            //        var avatarReadingResult = await _fileService.ReadFileAsync(item.data.Avatar);
+            //        item.base64Avatar = Convert.ToBase64String(avatarReadingResult.Value);
+            //    }
+            //}
 
-            return result;
+            return [];
         }
 
         public async Task<Result> UpdateAccessState(Configuration.AccessTypes type, Guid userId, Guid folderId)
@@ -69,13 +69,7 @@ namespace Exider.Repositories.Storage
                 .ExecuteUpdateAsync(folder => folder.SetProperty(p => p.AccessId, type.ToString()));
 
             await _context.SaveChangesAsync();
-
-            if (result <= 0)
-            {
-                return Result.Failure("Folder not found or access denied");
-            }
-
-            return Result.Success();
+            return result <= 0 ? Result.Failure("Folder not found or access denied") :  Result.Success();
         }
 
         public async Task CrearAccess(Guid folderId)

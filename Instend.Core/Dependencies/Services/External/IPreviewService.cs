@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace Exider.Services.External.FileService
+namespace Instend.Services.External.FileService
 {
     public interface IPreviewService
     {

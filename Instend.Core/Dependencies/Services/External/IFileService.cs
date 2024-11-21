@@ -1,8 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core.Models.Storage;
-using Exider.Repositories.Storage;
+using Instend.Core.Models.Storage;
+using Instend.Repositories.Storage;
 
-namespace Exider.Services.External.FileService
+namespace Instend.Services.External.FileService
 {
     public interface IFileService
     {

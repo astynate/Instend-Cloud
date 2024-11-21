@@ -1,14 +1,14 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core.Models.Formats;
-using Exider.Core.Models.Storage;
-using Exider.Repositories.Storage;
-using Exider.Services.Internal.Handlers;
-using Exider_Version_2._0._0.Server.Hubs;
+using Instend.Core.Models.Formats;
+using Instend.Core.Models.Storage;
+using Instend.Repositories.Storage;
+using Instend.Services.Internal.Handlers;
+using Instend_Version_2._0._0.Server.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
 
-namespace Exider_Version_2._0._0.Server.Controllers.Storage
+namespace Instend_Version_2._0._0.Server.Controllers.Storage
 {
     [ApiController]
     [Route("api/[controller]")]

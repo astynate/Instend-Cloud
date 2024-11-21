@@ -1,9 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core;
-using Exider.Core.Models.Access;
-using Exider.Core.TransferModels;
+using Instend.Core;
+using Instend.Core.Models.Abstraction;
+using Instend.Core.TransferModels.Access;
 
-namespace Exider.Repositories.Storage
+namespace Instend.Repositories.Storage
 {
     public interface IAccessRepository<Access, Item>
         where Access : AccessBase, new()

@@ -1,30 +1,24 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core.Models.Account;
-using Exider.Repositories.Account;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace Exider.Services.External.FileService
+namespace Instend.Services.External.FileService
 {
     public class ImageService : IImageService
     {
         private bool ValidateImage(byte[] inputImage)
         {
-            try
+            using (MemoryStream ms = new MemoryStream(inputImage))
             {
-                using (MemoryStream ms = new MemoryStream(inputImage))
+                using (Image image = Image.FromStream(ms))
                 {
-                    using (Image image = Image.FromStream(ms))
+                    if (ImageFormat.Png.Equals(image.RawFormat))
                     {
-                        if (ImageFormat.Png.Equals(image.RawFormat))
-                        {
-                            return image.Width >= 64 && image.Height >= 64 &&
-                                   image.Width <= 5000 && image.Height <= 5000;
-                        }
+                        return image.Width >= 64 && image.Height >= 64 &&
+                               image.Width <= 5000 && image.Height <= 5000;
                     }
                 }
             }
-            catch { }
 
             return false;
         }
@@ -66,7 +60,7 @@ namespace Exider.Services.External.FileService
             }
             catch
             {
-                return new byte[0];
+                return [];
             }
         }
 
@@ -85,14 +79,8 @@ namespace Exider.Services.External.FileService
 
             ImageFormat format = ImageFormat.Png;
 
-            if (keyValuePairs.ContainsKey(type.ToLower()))
-            {
-                format = keyValuePairs[type];
-            }
-            else
-            {
+            if (keyValuePairs.ContainsKey(type.ToLower()) == false)
                 return inputImage;
-            }
 
             using (var inputStream = new MemoryStream(inputImage))
             {
@@ -125,60 +113,6 @@ namespace Exider.Services.External.FileService
             }
 
             return null;
-        }
-
-        public async Task<Result> UpdateAvatar(IUserDataRepository repository, Guid userId, string path, string image)
-        {
-            var user = await repository.GetUserAsync(userId);
-
-            if (user.IsFailure == true)
-                return Result.Failure("User not found");
-
-            var imageAsByteArray = Convert.FromBase64String(image);
-
-            await repository.UpdateAvatarAsync(userId, path);
-
-            if (user.Value.Avatar != null && File.Exists(user.Value.Avatar) == true)
-                File.Delete(user.Value.Avatar);
-
-            await File.WriteAllBytesAsync(path, imageAsByteArray);
-
-            return Result.Success();
-        }
-
-        public async Task<Result> DeleteAvatar(IUserDataRepository repository, Guid userId, string path)
-        {
-            await repository.UpdateAvatarAsync(userId, path);
-            await Task.Run(() => File.Delete(path));
-
-            return Result.Success();
-        }
-
-        public async Task<Result> UpdateHeader(IUserDataRepository repository, Guid userId, string path, string image)
-        {
-            var user = await repository.GetUserAsync(userId);
-
-            if (user.IsFailure == true)
-                return Result.Failure("User not found");
-
-            var imageAsByteArray = Convert.FromBase64String(image);
-
-            await repository.UpdateHeaderAsync(userId, path);
-
-            if (user.Value.Header != null && File.Exists(user.Value.Header) == true)
-                File.Delete(user.Value.Header);
-
-            await File.WriteAllBytesAsync(path, imageAsByteArray);
-
-            return Result.Success();
-        }
-
-        public async Task<Result> DeleteHeader(IUserDataRepository repository, Guid userId, string path)
-        {
-            await repository.UpdateHeaderAsync(userId, "");
-            await Task.Run(() => File.Delete(path));
-
-            return Result.Success();
         }
 
         public async Task<Result<string>> ReadImageAsBase64(string path)

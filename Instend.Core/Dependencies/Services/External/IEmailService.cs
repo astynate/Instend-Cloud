@@ -1,6 +1,6 @@
-﻿using Exider.Core.Models.Account;
+﻿using Instend.Core.Models.Account;
 
-namespace Exider.Dependencies.Services
+namespace Instend.Dependencies.Services
 {
     public interface IEmailService
     {

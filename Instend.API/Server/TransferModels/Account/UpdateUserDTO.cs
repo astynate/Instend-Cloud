@@ -1,4 +1,4 @@
-﻿namespace Exider_Version_2._0._0.Server.TransferModels.Account
+﻿namespace Instend_Version_2._0._0.Server.TransferModels.Account
 {
     public record UpdateUserDTO 
     (

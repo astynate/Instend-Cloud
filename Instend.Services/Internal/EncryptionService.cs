@@ -1,9 +1,10 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Instend.Core.Dependencies.Services.Internal.Services;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Exider_Version_2._0._0.ServerApp.Services
+namespace Instend_Version_2._0._0.ServerApp.Services
 {
 
     public class EncryptionService : IEncryptionService

@@ -1,21 +1,19 @@
-﻿using Exider.Core;
-using Exider.Core.Models.Storage;
-using Exider.Repositories.Gallery;
-using Exider.Repositories.Storage;
-using Exider.Services.External.FileService;
-using Exider.Services.Internal.Handlers;
-using Exider_Version_2._0._0.Server.Hubs;
+﻿using Instend.Core;
+using Instend.Core.Models.Storage;
+using Instend.Repositories.Gallery;
+using Instend.Repositories.Storage;
+using Instend.Services.External.FileService;
+using Instend.Services.Internal.Handlers;
+using Instend_Version_2._0._0.Server.Hubs;
+using Instend.Core.Dependencies.Repositories.Account;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Exider.Repositories.Account;
 using Microsoft.AspNetCore.Authorization;
-using Exider.Repositories.Links;
-using static Exider.Core.Models.Links.AlbumLinks;
-using Exider.Core.Models.Albums;
-using Exider.Core.Models.Links;
+using Instend.Repositories.Links;
+using static Instend.Core.Models.Links.AlbumLinks;
 
-namespace Exider_Version_2._0._0.Server.Controllers.Storage
+namespace Instend_Version_2._0._0.Server.Controllers.Storage
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -27,15 +25,15 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IRequestHandler _requestHandler;
 
-        private readonly IUserDataRepository _userDataRepository;
+        private readonly IAccountsRepository _accountsRepository;
 
         private readonly IAlbumRepository _albumRepository;
-
-        private readonly ILinkBaseRepository<AlbumLink> _linkBaseRepository;
 
         private readonly IAccessHandler _accessHandler;
 
         private readonly IImageService _imageService;
+
+        private readonly ILinkBaseRepository<AlbumLink> _linkBaseRepository;
 
         private readonly IHubContext<GalleryHub> _galleryHub;
 
@@ -51,7 +49,7 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             IFolderRepository folderRepository,
             IHubContext<GalleryHub> galleryHub,
             IHubContext<StorageHub> storageHub,
-            IUserDataRepository userDataRepository,
+            IAccountsRepository accountsRepository,
             ILinkBaseRepository<AlbumLink> linkBaseRepository,
             IAccessHandler accessHandler,
             IImageService imageService,
@@ -64,46 +62,277 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             _folderRespository = folderRepository;
             _galleryHub = galleryHub;
             _context = context;
-            _userDataRepository = userDataRepository;
+            _accountsRepository = accountsRepository;
             _accessHandler = accessHandler;
             _storageHub = storageHub;
             _linkBaseRepository = linkBaseRepository;
             _imageService = imageService;
         }
 
-        private async Task<ActionResult<AlbumModel[]>> GetAlbums(IImageService imageService, Configuration.AlbumTypes type)
+        public class CreateAlbumTransferObject
         {
-            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
-
-            if (userId.IsFailure)
-            {
-                return BadRequest(userId.Error);
-            }
-
-            var result = await _albumRepository.GetAlbums(imageService, Guid.Parse(userId.Value), type);
-
-            if (result.IsFailure)
-            {
-                BadRequest(result.Error);
-            }
-
-            return Ok(result.Value);
+            public IFormFile? cover { get; init; }
+            public string? name { get; init; }
+            public string? description { get; init; }
+            public int queueid { get; init; }
         }
 
         [HttpGet]
         [Route("/api/albums")]
         [Authorize]
-        public async Task<ActionResult<AlbumModel[]>> GetAlbumsWithDefaultType(IImageService imageService)
-        {
-            return await GetAlbums(imageService, Configuration.AlbumTypes.Album);
-        }
+        public async Task<ActionResult<AlbumModel[]>> GetAlbumsWithDefaultType() 
+            => await GetAlbums(Configuration.AlbumTypes.Album);
 
         [HttpGet]
         [Route("/api/playlists")]
         [Authorize]
-        public async Task<ActionResult<AlbumModel[]>> GetAlbumsWithPlaylistType(IImageService imageService)
+        public async Task<ActionResult<AlbumModel[]>> GetAlbumsWithPlaylistType() 
+            => await GetAlbums(Configuration.AlbumTypes.Playlist);
+
+        [HttpGet]
+        [Authorize]
+        [Route("/api/album")]
+        public async Task<IActionResult> GetAlbum(string id, int from, int count)
         {
-            return await GetAlbums(imageService, Configuration.AlbumTypes.Playlist);
+            if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
+                return BadRequest("Invalid album id");
+
+            var userId = _requestHandler
+                .GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+                return BadRequest(userId.Error);
+
+            var result = await _fileRespository.GetLastItemsFromAlbum
+            (
+                Guid.Parse(userId.Value),
+                Guid.Parse(id),
+                from,
+                count
+            );
+
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("/api/albums/create")]
+        public async Task<IActionResult> CreateAlbumWithDefaultType([FromForm] CreateAlbumTransferObject createTO)
+            => await CreateAlbumWithType(createTO, Configuration.AlbumTypes.Album);
+
+        [HttpPost]
+        [Authorize]
+        [Route("/api/playlists/create")]
+        public async Task<IActionResult> CreateAlbumWithPlaylistType([FromForm] CreateAlbumTransferObject createTO)
+            => await CreateAlbumWithType(createTO, Configuration.AlbumTypes.Playlist);
+
+        private async Task<ActionResult<AlbumModel[]>> GetAlbums(Configuration.AlbumTypes type)
+        {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+                return BadRequest(userId.Error);
+
+            var result = await _albumRepository.GetAlbums(_imageService, Guid.Parse(userId.Value), type);
+
+            if (result.IsFailure)
+                BadRequest(result.Error);
+
+            return Ok(result.Value);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("/api/gallery/upload")]
+        public async Task<IActionResult> UploadToGallery
+        (
+            IPreviewService previewService,
+            IHubContext<StorageHub> storageHub,
+            [FromForm] IFormFile file,
+            [FromForm] string? albumId,
+            [FromForm] int queueId
+        )
+        {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+                return Unauthorized(userId.Error);
+
+            var splitedName = file.FileName.Split(".");
+            var fileName = splitedName[0] ?? "Not set";
+            var fileType = splitedName.Length >= 2 ? splitedName[splitedName.Length - 1] : null;
+
+            if (fileType == null || Configuration.imageTypes.Contains(fileType.ToLower()) == false)
+                return BadRequest("Invalid fileType");
+
+            return await _context.Database.CreateExecutionStrategy().ExecuteAsync<IActionResult>(async () =>
+            {
+                using (var transaction = _context.Database.BeginTransaction())
+                {
+                    var fileModel = await _fileRespository.AddPhotoAsync
+                    (
+                        fileName, 
+                        fileType, 
+                        file.Length, 
+                        Guid.Parse(userId.Value)
+                    );
+
+                    if (fileModel.IsFailure)
+                        return Conflict(fileModel.Error);
+
+                    if (file.Length > 0 && fileModel.IsFailure == false)
+                    {
+                        using (var fileStream = new FileStream(fileModel.Value.Path, FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
+
+                        await fileModel.Value.SetPreview(previewService);
+                    }
+
+                    if (string.IsNullOrEmpty(albumId) == false && string.IsNullOrWhiteSpace(albumId) == false)
+                    {
+                        var result = await _linkBaseRepository.UploadFileToAlbum(fileModel.Value, Guid.Parse(albumId));
+
+                        if (result.IsFailure)
+                            return Conflict(result.Error);
+
+                        await _galleryHub.Clients.Group(albumId)
+                            .SendAsync("Upload", new object[] { fileModel.Value, albumId, queueId });
+                    }
+
+                    var user = await _accountsRepository
+                        .GetByIdAsync(Guid.Parse(userId.Value));
+
+                    if (user == null)
+                        return BadRequest("User not found");
+
+                    var space = await _accountsRepository
+                        .ChangeOccupiedSpaceValue(Guid.Parse(userId.Value), file.Length);
+
+                    if (space.IsFailure)
+                        return Conflict(space.Error);
+
+                    await storageHub.Clients.Group(fileModel.Value.OwnerId.ToString())
+                        .SendAsync("UploadFile", new object[] { fileModel.Value, queueId });
+
+                    await _storageHub.Clients.Group(fileModel.Value.OwnerId.ToString())
+                        .SendAsync("UpdateOccupiedSpace", user.OccupiedSpace + file.Length);
+
+                    transaction.Commit();
+                    
+                    return Ok();
+                }
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("/api/albums")]
+        public async Task<IActionResult> AddToAlbum(string fileId, string albumId)
+        {
+            if (string.IsNullOrEmpty(fileId) || string.IsNullOrWhiteSpace(fileId))
+                return BadRequest("Invalid file id");
+
+            if (string.IsNullOrEmpty(albumId) || string.IsNullOrWhiteSpace(albumId))
+                return BadRequest("Invalid album id");
+
+            var result = await _linkBaseRepository
+                .AddFileToAlbum(Guid.Parse(fileId), Guid.Parse(albumId));
+
+            if (result.IsFailure)
+                return Conflict(result.Error);
+
+            await _galleryHub.Clients.Group(albumId)
+                .SendAsync("AddToAlbum", new object[] { result.Value, albumId });
+
+            return Ok();
+        }
+
+        private async Task<IActionResult> CreateAlbumWithType(CreateAlbumTransferObject createTO, Configuration.AlbumTypes type)
+        {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+                return BadRequest(userId.Error);
+
+            if (string.IsNullOrEmpty(createTO.name) || string.IsNullOrWhiteSpace(createTO.name))
+                return BadRequest("Name is required.");
+
+            var coverAsBytes = new byte[0];
+
+            using (var coverStream = new MemoryStream())
+            {
+                if (createTO.cover != null && createTO.cover.Length > 0)
+                {
+                    await createTO.cover.CopyToAsync(coverStream);
+                    coverAsBytes = coverStream.ToArray();
+                }
+            }
+
+            var result = await _albumRepository.AddAsync
+            (
+                Guid.Parse(userId.Value), 
+                coverAsBytes,
+                createTO.name,
+                createTO.description, 
+                type
+            );
+
+            if (result.IsFailure)
+                return BadRequest(result.Error);
+
+            await result.Value.SetCover(_imageService);
+
+            await _galleryHub.Clients.Group(result.Value.OwnerId.ToString())
+                .SendAsync("Create", new object[] { result.Value, createTO.queueid });
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> EditAlbum
+        (
+            IImageService imageService,
+            [FromForm] IFormFile? cover,
+            [FromForm] string? name,
+            [FromForm] string? description,
+            [FromForm] string? id
+        )
+        {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
+                return BadRequest("Album not found");
+
+            if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
+                return BadRequest("Name is required");
+
+            if (userId.IsFailure)
+                return BadRequest(userId.Error);
+
+            var coverAsBytes = new byte[0];
+
+            using (var coverStream = new MemoryStream())
+            {
+                if (cover != null && cover.Length > 0)
+                {
+                    await cover.CopyToAsync(coverStream);
+                    coverAsBytes = coverStream.ToArray();
+                }
+            }
+
+            var result = await _albumRepository
+                .UpdateAlbum(Guid.Parse(id), coverAsBytes, name, description);
+
+            if (result.IsFailure)
+                return Conflict(result.Error);
+
+            await _galleryHub.Clients.Group(id.ToString())
+                .SendAsync("Update", new { id, coverAsBytes, name, description });
+
+            return Ok();
         }
 
         [Authorize]
@@ -124,281 +353,10 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             if (result.IsFailure)
                 return BadRequest(result.Error);
 
-            await _galleryHub.Clients.Group(userId.Value.ToString()).SendAsync("DeleteAlbum", id);
+            await _galleryHub.Clients
+                .Group(userId.Value.ToString())
+                .SendAsync("DeleteAlbum", id);
 
-            return Ok();
-        }
-
-        [HttpPost]
-        [Authorize]
-        [Route("/api/gallery/upload")]
-        public async Task<IActionResult> UploadToGallery
-        (
-            IPreviewService previewService,
-            IHubContext<StorageHub> storageHub,
-            [FromForm] IFormFile file,
-            [FromForm] string? albumId,
-            [FromForm] int queueId
-        )
-        {
-            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
-
-            if (userId.IsFailure)
-            {
-                return BadRequest(userId.Error);
-            }
-
-            string[] nameSplit = file.FileName.Split(".");
-
-            string name = nameSplit[0] ?? "Not set";
-            string? type = nameSplit.Length >= 2 ? nameSplit[nameSplit.Length - 1] : null;
-
-            if (type == null)
-            {
-                return BadRequest("Invalid type");
-            }
-
-            if (Configuration.imageTypes.Contains(type.ToLower()) == false)
-            {
-                return BadRequest("Invalid type");
-            }
-
-            try
-            {
-                return await _context.Database.CreateExecutionStrategy().ExecuteAsync<IActionResult>(async () =>
-                {
-                    using (var transaction = _context.Database.BeginTransaction())
-                    {
-                        var fileModel = await _fileRespository.AddPhotoAsync(name, type, file.Length, Guid.Parse(userId.Value));
-
-                        if (fileModel.IsFailure)
-                        {
-                            return Conflict(fileModel.Error);
-                        }
-
-                        if (file.Length > 0 && fileModel.IsFailure == false)
-                        {
-                            using (var fileStream = new FileStream(fileModel.Value.Path, FileMode.Create))
-                            {
-                                await file.CopyToAsync(fileStream);
-                            }
-
-                            await fileModel.Value.SetPreview(previewService);
-                        }
-
-                        if (string.IsNullOrEmpty(albumId) == false && string.IsNullOrWhiteSpace(albumId) == false)
-                        {
-                            var result = await _linkBaseRepository.UploadFileToAlbum(fileModel.Value, Guid.Parse(albumId));
-
-                            if (result.IsFailure)
-                            {
-                                return Conflict(result.Error);
-                            }
-
-                            await _galleryHub.Clients.Group(albumId).SendAsync("Upload", new object[] { fileModel.Value, albumId, queueId });
-                        }
-                        else
-                        {
-                            await storageHub.Clients.Group(fileModel.Value.OwnerId.ToString()).SendAsync("UploadFile", new object[] { fileModel.Value, queueId });
-                        }
-
-                        var user = await _userDataRepository.GetUserAsync(Guid.Parse(userId.Value));
-
-                        if (user.IsFailure)
-                        {
-                            return BadRequest("User not found");
-                        }
-
-                        var space = await _userDataRepository.IncreaseOccupiedSpace(Guid.Parse(userId.Value), file.Length);
-
-                        if (space.IsFailure)
-                        {
-                            return Conflict(space.Error);
-                        }
-
-                        await _storageHub.Clients.Group(fileModel.Value.OwnerId.ToString())
-                            .SendAsync("UpdateOccupiedSpace", space.Value.OccupiedSpace);
-
-                        transaction.Commit();
-                        return Ok();
-                    }
-                });
-            }
-            catch (Exception exception)
-            {
-                await Console.Out.WriteLineAsync(exception.Message);
-                return Conflict("Something went wrong while trying to save image");
-            }
-        }
-
-        [HttpPost]
-        [Authorize]
-        [Route("/api/albums")]
-        public async Task<IActionResult> AddToAlbum(string fileId, string albumId)
-        {
-            if (string.IsNullOrEmpty(fileId) || string.IsNullOrWhiteSpace(fileId))
-            {
-                return BadRequest("Invalid file id");
-            }
-
-            if (string.IsNullOrEmpty(albumId) || string.IsNullOrWhiteSpace(albumId))
-            {
-                return BadRequest("Invalid album id");
-            }
-
-            var result = await _linkBaseRepository.AddFileToAlbum(Guid.Parse(fileId), Guid.Parse(albumId));
-
-            if (result.IsFailure)
-            {
-                return Conflict(result.Error);
-            }
-
-            await _galleryHub.Clients.Group(albumId).SendAsync("AddToAlbum", new object[] { result.Value, albumId });
-
-            return Ok();
-        }
-
-        [HttpGet]
-        [Authorize]
-        [Route("/api/album")]
-        public async Task<IActionResult> GetAlbum(string id, int from, int count)
-        {
-            if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
-            {
-                return BadRequest("Invalid album id");
-            }
-
-            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
-
-            if (userId.IsFailure)
-            {
-                return BadRequest(userId.Error);
-            }
-
-            var views = await _albumRepository.ViewAlbumWithUserId(Guid.Parse(id), Guid.Parse(userId.Value));
-
-            if (views.IsFailure)
-            {
-                return BadRequest(views.Error);
-            }
-
-            if (views.Value != -1)
-            {
-                await _galleryHub.Clients.Group(id).SendAsync("UpdateAlbumViews", new object[] { id, views.Value });
-            }
-
-            return Ok(await _fileRespository.GetLastItemsFromAlbum(Guid.Parse(userId.Value), Guid.Parse(id), from, count));
-        }
-
-        private async Task<IActionResult> CreateAlbumWithType(IImageService imageService, IFormFile? cover, string? name, string? description, int queueId, Configuration.AlbumTypes type)
-        {
-            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
-
-            if (userId.IsFailure)
-            {
-                return BadRequest(userId.Error);
-            }
-
-            if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
-            {
-                return BadRequest("Name is required.");
-            }
-
-            byte[] coverAsBytes = [];
-
-            using (var coverStream = new MemoryStream())
-            {
-                if (cover != null && cover.Length > 0)
-                {
-                    await cover.CopyToAsync(coverStream);
-                    coverAsBytes = coverStream.ToArray();
-                }
-            }
-
-            var result = await _albumRepository.AddAsync(Guid.Parse(userId.Value), coverAsBytes, name, description, type);
-
-            if (result.IsFailure)
-            {
-                return BadRequest(result.Error);
-            }
-
-            await result.Value.SetCover(imageService);
-            await _galleryHub.Clients.Group(result.Value.OwnerId.ToString()).SendAsync("Create", new object[] { result.Value, queueId });
-
-            return Ok();
-        }
-
-        [HttpPost]
-        [Authorize]
-        [Route("/api/albums/create")]
-        public async Task<IActionResult> CreateAlbumWithDefaultType
-        (
-            [FromForm] IFormFile? cover,
-            [FromForm] string? name,
-            [FromForm] string? description,
-            [FromForm] int queueid
-        )
-        {
-            return await CreateAlbumWithType(_imageService, cover, name, description, queueid, Configuration.AlbumTypes.Album);
-        }
-
-        [HttpPost]
-        [Authorize]
-        [Route("/api/playlists/create")]
-        public async Task<IActionResult> CreateAlbumWithPlaylistType
-        (
-            [FromForm] IFormFile? cover,
-            [FromForm] string? name,
-            [FromForm] string? description,
-            [FromForm] int queueId
-        )
-        {
-            return await CreateAlbumWithType(_imageService, cover, name, description, queueId, Configuration.AlbumTypes.Playlist);
-        }
-
-        [HttpPut]
-        [Authorize]
-        public async Task<IActionResult> EditAlbum
-        (
-            IImageService imageService,
-            [FromForm] IFormFile? cover,
-            [FromForm] string? name,
-            [FromForm] string? description,
-            [FromForm] string? id
-        )
-        {
-            if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
-                return BadRequest("Album not found");
-
-            if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
-                return BadRequest("Name is required");
-
-            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
-
-            if (userId.IsFailure)
-            {
-                return BadRequest(userId.Error);
-            }
-
-            byte[] coverAsBytes = [];
-
-            using (var coverStream = new MemoryStream())
-            {
-                if (cover != null && cover.Length > 0)
-                {
-                    await cover.CopyToAsync(coverStream);
-                    coverAsBytes = coverStream.ToArray();
-                }
-            }
-
-            var result = await _albumRepository.UpdateAlbum(Guid.Parse(id), coverAsBytes, name, description);
-
-            if (result.IsFailure)
-            {
-                return Conflict(result.Error);
-            }
-
-            await _galleryHub.Clients.Group(id.ToString()).SendAsync("Update", new { id, coverAsBytes, name, description });
             return Ok();
         }
     }

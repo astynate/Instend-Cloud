@@ -1,9 +1,9 @@
-﻿//using Exider.Core;
-//using Exider.Core.Models.Email;
-//using Exider.Repositories.Email;
-//using Exider_Version_2._0._0.ServerApp.Services;
+﻿//using Instend.Core;
+//using Instend.Core.Models.Email;
+//using Instend.Repositories.Email;
+//using Instend_Version_2._0._0.ServerApp.Services;
 
-//namespace Exider.Tests.Database.Repositories
+//namespace Instend.Tests.Database.Repositories
 //{
 
 //    [TestClass]

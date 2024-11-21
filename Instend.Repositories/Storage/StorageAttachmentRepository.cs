@@ -1,10 +1,10 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core;
-using Exider.Core.Models.Links;
-using Exider.Core.Models.Storage;
-using Exider.Repositories.Storage;
-using Exider.Services.Internal.Handlers;
+using Instend.Core;
 using Instend.Core.Models.Storage;
+using Instend.Repositories.Storage;
+using Instend.Services.Internal.Handlers;
+using Instend.Core.Models.Abstraction;
+using Instend.Core.Models.Links;
 using Microsoft.EntityFrameworkCore;
 
 namespace Instend.Repositories.Storage
@@ -59,8 +59,8 @@ namespace Instend.Repositories.Storage
                 {
                     for (int i = 0; i < folderIds.Length; i++)
                     {
-                        var folder = await _folderRepository.GetByIdAsync(folderIds[i]
-                            .ToString(), Guid.Parse(userId.Value));
+                        var folder = await _folderRepository
+                            .GetByIdAsync(folderIds[i], Guid.Parse(userId.Value));
 
                         if (folder == null)
                             return Result.Failure<(FolderModel[] folders, FileModel[] files)>("Folder not found");

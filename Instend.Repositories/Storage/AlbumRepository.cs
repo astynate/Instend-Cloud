@@ -1,12 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core;
-using Exider.Core.Models.Albums;
-using Exider.Core.Models.Links;
-using Exider.Repositories.Gallery;
-using Exider.Services.External.FileService;
+using Instend.Core;
+using Instend.Repositories.Gallery;
+using Instend.Services.External.FileService;
+using Instend.Core.Models.Storage;
 using Microsoft.EntityFrameworkCore;
 
-namespace Exider.Repositories.Storage
+namespace Instend.Repositories.Storage
 {
     public class AlbumRepository : IAlbumRepository
     {
@@ -37,9 +36,7 @@ namespace Exider.Repositories.Storage
             );
 
             if (albumModel.IsFailure)
-            {
                 return Result.Failure<AlbumModel>(albumModel.Error);
-            }
 
             await File.WriteAllBytesAsync(albumModel.Value.Cover, cover);
 
@@ -51,10 +48,10 @@ namespace Exider.Repositories.Storage
 
         public async Task<Result<AlbumModel[]>> GetAlbums(IImageService imageService, Guid userId, Configuration.AlbumTypes type)
         {
-            AlbumModel[] albums = await _context.Albums.AsNoTracking()
+            var albums = await _context.Albums.AsNoTracking()
                 .Where(x => x.OwnerId == userId && x.TypeId == type.ToString()).ToArrayAsync();
 
-            AlbumModel[] accessAlbums = await _context.AlbumAccess.AsNoTracking()
+            var accessAlbums = await _context.AlbumAccess.AsNoTracking()
                 .Where(x => x.UserId == userId)
                 .Join(_context.Albums,
                     access => access.ItemId,
@@ -127,40 +124,6 @@ namespace Exider.Repositories.Storage
                     (access, album) => album).ToArrayAsync();
 
             return albums.Concat(accessAlbums).ToArray();
-        }
-
-        public async Task<Result<long>> ViewAlbumWithUserId(Guid albumId, Guid userId)
-        {
-            var isViewExistRequest = await _context.Albums
-                .Where(x => x.Id == albumId)
-                .GroupJoin(_context.ViewsLinks,
-                    albums => albums.Id,
-                    links => links.ItemId,
-                    (album, link) => new { Album = album, Link = link })
-                .ToArrayAsync();
-
-            if (isViewExistRequest.Length >= 0)
-            {
-                AlbumModel album = isViewExistRequest[0].Album;
-                AlbumViewLink[] links = isViewExistRequest[0].Link.ToArray();
-
-                if (album.OwnerId == userId || links.Length > 0)
-                    return -1;
-
-                var link = LinkBase.Create<AlbumViewLink>(albumId, userId);
-
-                if (link.IsFailure)
-                    return Result.Failure<long>(link.Error);
-
-                album.IncrementViews();
-
-                await _context.ViewsLinks.AddAsync(link.Value);
-                await _context.SaveChangesAsync();
-                
-                return album.Views;
-            }
-
-            return -1;
         }
     }
 }

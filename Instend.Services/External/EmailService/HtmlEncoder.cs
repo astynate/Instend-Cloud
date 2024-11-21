@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Exider.Services.External.EmailService
+namespace Instend.Services.External.EmailService
 {
 
     public static class HtmlEncoder

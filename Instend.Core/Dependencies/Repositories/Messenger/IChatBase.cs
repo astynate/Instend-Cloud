@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core.TransferModels;
+using Instend.Core.TransferModels.Messenger;
 
-namespace Exider.Core.Dependencies.Repositories.Messenger
+namespace Instend.Core.Dependencies.Repositories.Messenger
 {
     public interface IChatBase
     {

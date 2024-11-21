@@ -1,9 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core.Models.Messages;
-using Exider.Core.TransferModels;
-using Exider.Services.External.FileService;
+using Instend.Core.Models.Messages;
+using Instend.Core.TransferModels.Messenger;
+using Instend.Services.External.FileService;
 
-namespace Exider.Repositories.Messenger
+namespace Instend.Repositories.Messenger
 {
     public interface IMessengerRepository
     {

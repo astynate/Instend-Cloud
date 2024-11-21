@@ -1,68 +1,77 @@
+import GlobalContext from "../../../global/GlobalContext";
+import ChatsState from "../../../state/entities/ChatsState";
+import GalleryState from "../../../state/entities/GalleryState";
+import MusicState from "../../../state/entities/MusicState";
+import StorageState from "../../../state/entities/StorageState";
+import UserState from "../../../state/entities/UserState";
+// import { globalWSContext } from "../layout/Layout";
+
 class WebsocketListener {
     static CreateFolderListener = async ([folder, queueId]) => {
-        await connectToFoldersListener();
-        await storageState.ReplaceLoadingFolder(folder, queueId);
+        // await connectToFoldersListener();
+        await StorageState.ReplaceLoadingFolder(folder, queueId);
     };
 
     static UploadFileListener = async ([file, queueId, occupiedSpace, meta]) => {
         file.meta = meta;
-        userState.ChangeOccupiedSpace(occupiedSpace);
-        storageState.ReplaceLoadingFile(file, queueId);
+        
+        UserState.ChangeOccupiedSpace(occupiedSpace);
+        StorageState.ReplaceLoadingFile(file, queueId);
 
-        if (imageTypes.includes(file.type)) {
-            galleryState.ReplaceLoadingPhoto(file, queueId);
+        if (GlobalContext.supportedImageTypes.includes(file.type)) {
+            GalleryState.ReplaceLoadingPhoto(file, queueId);
         }
     };
 
     static DeleteFileListener = (data) => {
-        storageState.DeleteFile(data);
-        musicState.DeleteSong(data);
+        StorageState.DeleteFile(data);
+        MusicState.DeleteSong(data);
     };
 
     static PinnedStateChangesListener = (data) => {
         const { chatId, messageId, state } = JSON.parse(data);
-        chatsState.UpdateMessagePinnedState(chatId, messageId, state);
+        ChatsState.UpdateMessagePinnedState(chatId, messageId, state);
     };
 
     static DeleteMessageListener = (data) => {
         const { chatId, messageId } = JSON.parse(data);
-        chatsState.DeleteMessage(chatId, messageId);
+        ChatsState.DeleteMessage(chatId, messageId);
     };
 
     static UploadFileListener = ([file, albumId, queueId]) => {
-        storageState.ReplaceLoadingFile(file, queueId);
-        galleryState.ReplaceLoadingPhoto(file, queueId, albumId);
+        StorageState.ReplaceLoadingFile(file, queueId);
+        GalleryState.ReplaceLoadingPhoto(file, queueId, albumId);
     };
 
     static AddCommentListner = ({comment, user, albumId, queueId}) => {
-        galleryState.ReplaceLoadingComment({comment: comment, user: user}, queueId, albumId);
+        GalleryState.ReplaceLoadingComment({comment: comment, user: user}, queueId, albumId);
     };
 
     static DirectAccessChangeListner = (data) => {
         const { id, state } = JSON.parse(data);
-        chatsState.UpdateDirectAccessState(id, state);
+        ChatsState.UpdateDirectAccessState(id, state);
     };
 
     static GetChatsListner = (chats) => {
-        chatsState.SetChats(chats);
-        chatsState.setChatsLoadedState(true);
+        ChatsState.SetChats(chats);
+        ChatsState.setChatsLoadedState(true);
     };
 
     static ReceiveMessageListner = (data) => {
-        const { model, messageModel, userPublic, queueId } = JSON.parse(data);
+        const { model, message, account, queueId } = JSON.parse(data);
 
         if (model) {
-            chatsState.AddMessage(
+            ChatsState.AddMessage(
                 model, 
-                messageModel, 
-                userPublic, 
+                message, 
+                account, 
                 queueId
             );
         }
 
-        if (chatsState.draft && chatsState.draft.id && userPublic.id === chatsState.draft.id) {
-            navigate(`/messages/${userPublic.id}`);
-            chatsState.setDraft(null);
+        if (ChatsState.IsDraftWithTargetUser(account.id)) {
+            // navigate(`/messages/${account.id}`);
+            ChatsState.setDraft(null);
         }
     };
 
@@ -72,26 +81,26 @@ class WebsocketListener {
             authorization: localStorage.getItem('system_access_token')
         };
 
-        globalWSContext.connection.invoke('ConnectToGroup', object);
+        // globalWSContext.connection.invoke('ConnectToGroup', object);
     };
 
     static LeaveGroupListner = (data) => {
         const { id, user } = JSON.parse(data);
-        chatsState.DeleteChat(id, user);
+        ChatsState.DeleteChat(id, user);
     };
 
-    static DeleteDirectoryListner = (id) => chatsState.DeleteChat(id, userState.user.id);
-    static ViewMessageListner = ({ id, chatId }) => chatsState.ViewMessage(id, chatId);
-    static NewConnectionListner = async (id) => await connectToDirectListener(id);
-    static UpdateOccupiedSpaceListner = (space) => userState.ChangeOccupiedSpace(space);
-    static DeleteCommentListner = (id) => galleryState.DeleteCommentById(id);
-    static AddToAlbumListner = ([file, albumId]) => galleryState.AddToAlbum(file, albumId);
-    static DeleteAlbumListner = (id) => galleryState.DeleteAlbumById(id);
-    static UpdateAlbumListner = ({id, coverAsBytes, name, description}) => galleryState.UpdateAlbum(id, coverAsBytes, name, description);
-    static CreateAlbumListner = ([album, queueId]) => galleryState.ReplaceLoadingAlbum(album, queueId);
-    static RenameFileListener = (data) => storageState.RenameFile(data);
-    static RenameFolderListener = (data) => storageState.RenameFolder(data);
-    static DeleteFolderListener = (data) => storageState.DeleteFolder(data);
+    static DeleteDirectoryListner = (id) => ChatsState.DeleteChat(id, UserState.user.id);
+    static ViewMessageListner = ({ id, chatId }) => ChatsState.ViewMessage(id, chatId);
+    static NewConnectionListner = async (id) => {};
+    static UpdateOccupiedSpaceListner = (space) => UserState.ChangeOccupiedSpace(space);
+    static DeleteCommentListner = (id) => GalleryState.DeleteCommentById(id);
+    static AddToAlbumListner = ([file, albumId]) => GalleryState.AddToAlbum(file, albumId);
+    static DeleteAlbumListner = (id) => GalleryState.DeleteAlbumById(id);
+    static UpdateAlbumListner = ({id, coverAsBytes, name, description}) => GalleryState.UpdateAlbum(id, coverAsBytes, name, description);
+    static CreateAlbumListner = ([album, queueId]) => GalleryState.ReplaceLoadingAlbum(album, queueId);
+    static RenameFileListener = (data) => StorageState.RenameFile(data);
+    static RenameFolderListener = (data) => StorageState.RenameFolder(data);
+    static DeleteFolderListener = (data) => StorageState.DeleteFolder(data);
 }
 
 export default WebsocketListener;

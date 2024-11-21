@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace Exider.Repositories.Storage
+namespace Instend.Repositories.Storage
 {
     public interface IFileAccessRepository
     {

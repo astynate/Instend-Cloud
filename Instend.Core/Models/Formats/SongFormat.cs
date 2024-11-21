@@ -1,8 +1,8 @@
-﻿using NAudio.Wave;
+﻿using Instend.Core.Models.Abstraction;
+using NAudio.Wave;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.IO;
 
-namespace Exider.Core.Models.Formats
+namespace Instend.Core.Models.Formats
 {
     [Table("songs_meta")]
     public class SongFormat : FormatBase

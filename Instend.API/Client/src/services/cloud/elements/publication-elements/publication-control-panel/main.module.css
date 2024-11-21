@@ -1,0 +1,50 @@
+.control {
+    width: auto;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    user-select: none;
+    margin-left: var(--width-padding);
+    margin-right: var(--width-padding);
+}
+
+
+.buttons {
+    display: flex;
+    grid-gap: 12.5px;
+    align-items: center;
+}
+
+.button {
+    background: none;
+    outline: none;
+    border: none;
+    cursor: pointer;
+}
+
+.button img {
+    height: 22px;
+    width: 22px;
+    object-fit: contain;
+    filter: var(--main-filter);
+}
+
+.button img:hover {
+    opacity: 0.8;
+}
+
+.button img:active {
+    opacity: 0.6;
+}
+
+.statistics {
+    display: flex;
+    grid-gap: 20px;
+    color: var(--main-font-color);
+}
+
+.statistics span:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}

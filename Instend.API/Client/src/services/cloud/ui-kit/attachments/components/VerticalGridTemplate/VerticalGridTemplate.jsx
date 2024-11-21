@@ -1,25 +1,43 @@
 import { useState, useEffect } from 'react';
 import styles from './main.module.css';
 import ImageHelper from '../../helpers/ImageHelper';
+import TypeHelper from '../../helpers/TypeHelper';
 
 const VerticalGridTemplate = ({attachments = []}) => {
     const [sortedAttachments, setSortedAttachments] = useState([]);
+    const [endIndex, setEndIndex] = useState(1);
+
+    const GetEndIndex = async () => {{
+        const isCountLessThanTwo = await TypeHelper.CompareCountWithDimention(
+            attachments, 
+            0, 
+            1.3, 
+            (count) => count < 2
+        );
+
+        if (attachments.length < 5) 
+            return 1;
+
+        return isCountLessThanTwo ? 1 : 2;
+    }}
 
     useEffect(() => { 
         const UpdateAttachments = async () => {
             setSortedAttachments(await ImageHelper.SortAttachments(
                 attachments, 
-                (a, b) => b.aspectRatio - a.aspectRatio)
+                (a, b) => a.aspectRatio - b.aspectRatio)
             );
+
+            setEndIndex(await GetEndIndex());
         }; 
             
         UpdateAttachments(); 
     }, [attachments]);
 
     return (
-        <div className={styles.wrapper}>
-            <div className={styles.top}>
-                {sortedAttachments.slice(0, 2).map((image, index) => (
+        <div className={styles.wrapper} state={endIndex === 1 ? "one" : ""}>
+            <div className={styles.left}>
+                {sortedAttachments.slice(0, endIndex).map((image, index) => (
                     <img 
                         key={index} 
                         src={image} 
@@ -28,8 +46,8 @@ const VerticalGridTemplate = ({attachments = []}) => {
                     />
                 ))}
             </div>
-            <div className={styles.bottom}>
-                {sortedAttachments.slice(2, Math.min(sortedAttachments.length, 5)).map((image, index) => (
+            <div className={styles.right}>
+                {sortedAttachments.slice(endIndex, Math.min(sortedAttachments.length, 5)).map((image, index) => (
                     <img 
                         key={index} 
                         src={image} 

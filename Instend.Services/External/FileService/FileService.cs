@@ -1,10 +1,10 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core;
-using Exider.Core.Models.Storage;
-using Exider.Repositories.Storage;
+using Instend.Core;
+using Instend.Core.Models.Storage;
+using Instend.Repositories.Storage;
 using System.IO.Compression;
 
-namespace Exider.Services.External.FileService
+namespace Instend.Services.External.FileService
 {
     public class FileService : IFileService
     {
@@ -63,7 +63,7 @@ namespace Exider.Services.External.FileService
             await DeleteFolderContent(folderRepository, fileRespository, id);
 
             FolderModel[] folders = await folderRepository
-                .GetFoldersByFolderId(preview, Guid.Empty, id);
+                .GetFoldersByFolderId(Guid.Empty, id);
 
             foreach (FolderModel folder in folders)
             {

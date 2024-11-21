@@ -1,5 +1,5 @@
 ﻿
-namespace Exider.Services.Middleware
+namespace Instend.Services.Middleware
 {
     public class LoggingMiddleware : IMiddleware
     {

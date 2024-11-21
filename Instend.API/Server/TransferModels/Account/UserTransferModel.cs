@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Exider.Core.TransferModels.Account
+namespace Instend.Core.TransferModels.Account
 {
     public record UserTransferModel(
          [Required][MaxLength(45)] string name,

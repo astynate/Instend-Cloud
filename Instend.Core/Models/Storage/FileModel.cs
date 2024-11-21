@@ -1,9 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core.Models.Access;
-using Exider.Services.External.FileService;
+using Instend.Services.External.FileService;
+using Instend.Core.Models.Abstraction;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Exider.Core.Models.Storage
+namespace Instend.Core.Models.Storage
 {
     public class FileModel : AccessItemBase
     {

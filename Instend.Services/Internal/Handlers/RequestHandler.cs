@@ -1,8 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Dependencies.Services;
+using Instend.Core.Dependencies.Services.Internal.Services;
 using System.Reflection.Metadata.Ecma335;
 
-namespace Exider.Services.Internal.Handlers
+namespace Instend.Services.Internal.Handlers
 {
     public class RequestHandler : IRequestHandler
     {

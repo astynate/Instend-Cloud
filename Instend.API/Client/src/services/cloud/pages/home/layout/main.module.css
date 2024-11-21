@@ -42,7 +42,7 @@
 .circle {
     height: 100%;
     width: 100%;
-    top: -1px;
+    top: -5px;
     position: absolute;
     border-top-left-radius: 27px;
     border-top: 1px solid var(--main-background-color);
@@ -54,7 +54,7 @@
     left: auto;
     right: -14px;
     border-top-left-radius: 0px;
-    border-top-right-radius: 39px;
+    border-top-right-radius: 40px;
     border-left: 1px solid transparent;
     border-top: 15px solid var(--main-background-color);
     border-right: 15px solid var(--main-background-color);
@@ -63,8 +63,8 @@
 .overlay:last-child .circle {
     border-top-left-radius: 0px;
     border-top-right-radius: 27px;
-    top: -1px;
-    right: -1px;
+    top: -15px;
+    right: -10px;
     border-left: 0;
     border-top: 1px solid var(--main-background-color);
     border-right: 1px solid var(--main-background-color);

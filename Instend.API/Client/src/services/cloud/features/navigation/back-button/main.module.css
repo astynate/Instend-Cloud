@@ -1,0 +1,40 @@
+.button {
+    color: var(--main-font-color);
+    font-size: 17px;
+    font-weight: 600;
+    width: fit-content;
+    display: flex;
+    grid-gap: 20px;
+    align-items: center;
+    padding: 10px;
+    border-radius: 100%;
+}
+
+.button a {
+    height: 45px;
+    width: 45px;
+    background: none;
+    border: none;
+    outline: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100%;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: 0.15s ease;
+}
+
+.button a:hover {
+    background: var(--pop-up-accent-color);
+}
+
+.button a:active {
+    border: 1px solid var(--main-border-color);
+}
+
+.button img {
+    height: 18px;
+    filter: var(--main-filter);
+    object-fit: contain;
+}

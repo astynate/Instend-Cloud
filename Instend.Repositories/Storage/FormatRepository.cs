@@ -1,11 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core;
-using Exider.Core.Models.Formats;
-using Exider.Core.Models.Storage;
-using Exider.Services.External.FileService;
+using Instend.Core;
+using Instend.Core.Models.Storage;
+using Instend.Services.External.FileService;
+using Instend.Core.Models.Abstraction;
 using Microsoft.EntityFrameworkCore;
 
-namespace Exider.Repositories.Storage
+namespace Instend.Repositories.Storage
 {
     public class FormatRepository<Format> : IFormatRepository<Format> where Format : FormatBase, new()
     {

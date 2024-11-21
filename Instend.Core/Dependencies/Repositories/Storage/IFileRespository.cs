@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core.Models.Storage;
+using Instend.Core.Models.Storage;
 
-namespace Exider.Repositories.Storage
+namespace Instend.Repositories.Storage
 {
     public interface IFileRespository
     {

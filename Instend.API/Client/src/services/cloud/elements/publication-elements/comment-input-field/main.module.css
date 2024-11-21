@@ -1,0 +1,28 @@
+.inputWrapper {
+    padding-left: 0px;
+    display: flex;
+    flex-direction: column;
+}
+
+.inputWrapper hr {
+    height: 1px;
+    width: 100%;
+    background: var(--main-border-color);
+}
+
+.block {
+    display: flex;
+    align-items: center;
+}
+
+.block button {
+    font-weight: 600;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    color: var(--main-blue-color);
+    user-select: none;
+    cursor: pointer;
+    background: none;
+    border: none;
+    outline: none;
+}

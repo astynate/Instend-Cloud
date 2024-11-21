@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Instend.Core.Models.Abstraction;
 
-namespace Exider.Core.Models.Access
+namespace Instend.Core.Models.Access
 {
     [Table("folder_access")] public class FolderAccess : AccessBase { }
     [Table("file_access")] public class FileAccess : AccessBase { }

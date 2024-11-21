@@ -1,14 +1,15 @@
-﻿using Exider.Core;
-using Exider.Core.Models.Storage;
-using Exider.Repositories.Account;
-using Exider.Repositories.Storage;
-using Exider.Services.External.FileService;
-using Exider.Services.Internal.Handlers;
-using Exider_Version_2._0._0.Server.Hubs;
+﻿using Instend.Core;
+using Instend.Core.Dependencies.Repositories.Account;
+using Instend.Core.Models.Storage;
+using Instend.Repositories.Storage;
+using Instend.Services.External.FileService;
+using Instend.Services.Internal.Handlers;
+using Instend_Version_2._0._0.Server.Hubs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Exider_Version_2._0._0.Server.Controllers.Storage
+namespace Instend_Version_2._0._0.Server.Controllers.Storage
 {
     [ApiController]
     [Route("[controller]")]
@@ -18,44 +19,51 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IFolderRepository _folderRepository;
 
+        private readonly IAccountsRepository _accountsRepository;
+
         private readonly IAccessHandler _accessHandler;
+
+        private readonly IFileService _fileService;
+
+        private readonly IFileRespository _fileRespository;
+
+        private readonly IPreviewService _previewService;
 
         private readonly IHubContext<StorageHub> _storageHub;
 
         public FoldersController
         (
             IHubContext<StorageHub> storageHub, 
-            IFolderRepository folderRepository, 
+            IFolderRepository folderRepository,
+            IAccountsRepository accountsRepository,
+            IFileService fileService,
+            IFileRespository fileRespository,
             IRequestHandler requestHandler,
+            IPreviewService previewService,
             IAccessHandler accessHandler
         )
         {
-            _requestHandler = requestHandler;
-            _folderRepository = folderRepository;
             _storageHub = storageHub;
             _accessHandler = accessHandler;
+            _requestHandler = requestHandler;
+            _folderRepository = folderRepository;
+            _fileRespository = fileRespository;
+            _fileService = fileService;
+            _previewService = previewService;
+            _accountsRepository = accountsRepository;
         }
 
         [HttpGet]
-        [Microsoft.AspNetCore.Authorization.Authorize]
-        public async Task<ActionResult> Download(string? id, IFileRespository fileRespository, IFileService fileService)
+        [Authorize]
+        public async Task<ActionResult> Download(Guid id, IFileRespository fileRespository, IFileService fileService)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
             if (userId.IsFailure)
-            {
                 return BadRequest("Invalid user id");
-            }
 
-            FileModel[] files = await fileRespository.GetByFolderId(Guid.Parse(userId.Value), 
-                id == null ? Guid.Empty : Guid.Parse(id));
-
-            FolderModel? folder = null;
-
-            if (id != null)
-            {
-                folder = await _folderRepository.GetByIdAsync(id, Guid.Parse(userId.Value));
-            }
+            var files = await fileRespository.GetByFolderId(Guid.Parse(userId.Value),id);
+            var folder = await _folderRepository.GetByIdAsync(id, Guid.Parse(userId.Value));
 
             if (folder != null)
             {
@@ -68,54 +76,48 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
                 }
             }
 
-            string zipName = folder == null ? "Instend Cloud.zip" : folder.Name + ".zip";
-
-            byte[] zipArchive = fileService.CreateZipFromFiles(files);
+            var name = folder == null ? "Instend Cloud.zip" : folder.Name + ".zip";
+            var archive = fileService.CreateZipFromFiles(files);
             
-            return File(zipArchive, System.Net.Mime.MediaTypeNames.Application.Zip, zipName);
+            return File(archive, System.Net.Mime.MediaTypeNames.Application.Zip, name);
         }
 
         [HttpPost]
         [Microsoft.AspNetCore.Authorization.Authorize]
         public async Task<ActionResult> CreateFolder([FromForm] string? folderId, [FromForm] string name, [FromForm] int queueId)
         {
-            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+            var userId = _requestHandler
+                .GetUserId(Request.Headers["Authorization"]);
 
             if (userId.IsFailure)
-            {
                 return BadRequest("Invalid user id");
-            }
 
-            Guid folder = Guid.Empty;
-
-            if (string.IsNullOrEmpty(folderId) == false && string.IsNullOrWhiteSpace(folderId) == false)
-            {
-                folder = Guid.Parse(folderId);
-            }
+            Guid.TryParse(folderId, out Guid folder);
 
             if (folder != Guid.Empty)
             {
-                FolderModel? folderModel = await _folderRepository.GetByIdAsync(folder.ToString(), Guid.Parse(userId.Value));
+                FolderModel? folderModel = await _folderRepository
+                    .GetByIdAsync(folder, Guid.Parse(userId.Value));
 
                 if (folderModel == null)
-                {
                     return BadRequest("Folder not found");
-                }
 
-                var available = await _accessHandler.GetAccessStateAsync(folderModel, Configuration.Abilities.Write, Request.Headers["Authorization"]);
+                var available = await _accessHandler.GetAccessStateAsync
+                (
+                    folderModel, 
+                    Configuration.Abilities.Write, 
+                    Request.Headers["Authorization"]
+                );
 
                 if (available.IsFailure)
-                {
                     return BadRequest(available.Error);
-                }
             }
 
-            var result = await _folderRepository.AddAsync(name, Guid.Parse(userId.Value), folder);
+            var result = await _folderRepository
+                .AddAsync(name, Guid.Parse(userId.Value), folder);
 
             if (result.IsFailure)
-            {
                 return BadRequest("Failed to create folder");
-            }
 
             folderId = string.IsNullOrEmpty(folderId) ? userId.Value : folderId;
 
@@ -132,30 +134,28 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
             if (userId.IsFailure)
-            {
                 return BadRequest("Invalid user id");
-            }
 
             if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
-            {
                 return BadRequest("Invalid name");
-            }
 
             if (id != Guid.Empty)
             {
-                FolderModel? folderModel = await _folderRepository.GetByIdAsync(id.ToString(), Guid.Parse(userId.Value));
+                FolderModel? folderModel = await _folderRepository
+                    .GetByIdAsync(id, Guid.Parse(userId.Value));
 
                 if (folderModel == null)
-                {
                     return BadRequest("Folder not found");
-                }
 
-                var available = await _accessHandler.GetAccessStateAsync(folderModel, Configuration.Abilities.Write, Request.Headers["Authorization"]);
+                var available = await _accessHandler.GetAccessStateAsync
+                (
+                    folderModel,
+                    Configuration.Abilities.Write,
+                    Request.Headers["Authorization"]
+                );
 
                 if (available.IsFailure)
-                {
                     return BadRequest(available.Error);
-                }
             }
 
             await _folderRepository.UpdateName(id, name);
@@ -168,60 +168,49 @@ namespace Exider_Version_2._0._0.Server.Controllers.Storage
 
         [HttpDelete]
         [Microsoft.AspNetCore.Authorization.Authorize]
-        public async Task<IActionResult> Delete
-        (
-            IFileService fileService, 
-            IFileRespository fileRespository,
-            IFolderRepository folderRepository,
-            IUserDataRepository userDataRepository,
-            IPreviewService preview,
-            Guid folderId,
-            string id
-        )
+        public async Task<IActionResult> Delete(Guid folderId, Guid id)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
             if (userId.IsFailure)
-            {
                 return BadRequest("Invalid user id");
-            }
 
-            Guid ownerId = Guid.Parse(userId.Value);
+            var ownerId = Guid.Parse(userId.Value);
+            var folderModel = await _folderRepository.GetByIdAsync(id, Guid.Parse(userId.Value));
 
-            if (string.IsNullOrEmpty(id) == false || string.IsNullOrWhiteSpace(id))
-            {
-                FolderModel? folderModel = await _folderRepository.GetByIdAsync(id.ToString(), Guid.Parse(userId.Value));
+            if (folderModel == null)
+                return BadRequest("Folder not found");
 
-                if (folderModel == null)
-                {
-                    return BadRequest("Folder not found");
-                }
+            var available = await _accessHandler.GetAccessStateAsync
+            (
+                folderModel, 
+                Configuration.Abilities.Write, 
+                Request.Headers["Authorization"]
+            );
 
-                var available = await _accessHandler.GetAccessStateAsync(folderModel, Configuration.Abilities.Write, Request.Headers["Authorization"]);
+            if (available.IsFailure)
+                return BadRequest(available.Error);
 
-                if (available.IsFailure)
-                {
-                    return BadRequest(available.Error);
-                }
+            ownerId = folderModel.OwnerId;
 
-                ownerId = folderModel.OwnerId;
-            }
-
-            await fileService.DeleteFolderById
-                (fileRespository, folderRepository, preview, Guid.Parse(id));
+            await _fileService.DeleteFolderById
+            (
+                _fileRespository, 
+                _folderRepository, 
+                _previewService, 
+                id
+            );
 
             await _storageHub.Clients.Group(folderId.ToString())
                 .SendAsync("DeleteFolder", id);
 
-            var owner = await userDataRepository.GetUserAsync(ownerId);
+            var owner = await _accountsRepository.GetByIdAsync(ownerId);
 
-            if (owner.IsFailure)
-            {
+            if (owner == null)
                 return Conflict("Owner not found");
-            }
 
             await _storageHub.Clients.Group(ownerId.ToString())
-                .SendAsync("UpdateOccupiedSpace", owner.Value.OccupiedSpace);
+                .SendAsync("UpdateOccupiedSpace", owner.OccupiedSpace);
 
             return Ok();
         }

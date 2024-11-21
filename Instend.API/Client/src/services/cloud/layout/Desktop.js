@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import NavigationPanel from './components/navigation-panel/NavigationPanel';
 import PrivateRoutes from '../../../routes/PrivateRoutes';
 import ApplicationState from '../../../state/application/ApplicationState';
-import UserState from '../../../state/entities/UserState';
 
 const Desktop = observer(({ }) => {
     const [isPanelRolledUp, setPanelState] = useState(true);

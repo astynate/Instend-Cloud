@@ -1,8 +1,8 @@
 ﻿
 using CSharpFunctionalExtensions;
-using Exider.Core.Models.Links;
+using Instend.Core.Models.Abstraction;
 
-namespace Exider.Core.Dependencies.Repositories.Comments
+namespace Instend.Core.Dependencies.Repositories.Comments
 {
     public interface ILinkBase
     {

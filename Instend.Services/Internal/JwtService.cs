@@ -1,10 +1,10 @@
-﻿using Exider.Core;
-using Exider.Dependencies.Services;
+﻿using Instend.Core;
+using Instend.Core.Dependencies.Services.Internal.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Exider_Version_2._0._0.ServerApp.Services
+namespace Instend_Version_2._0._0.ServerApp.Services
 {
     public class JwtService : ITokenService
     {

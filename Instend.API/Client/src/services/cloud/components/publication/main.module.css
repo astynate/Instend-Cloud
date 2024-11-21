@@ -1,11 +1,15 @@
 .comment {
+    --width-padding: 0px;
+}
+
+.comment[paddingState="visible"] {
     --width-padding: 15px;
 }
 
 .comment {
     display: flex;
     flex-direction: column;
-    grid-gap: 7px;
+    grid-gap: 0px;
     border-bottom: 1px solid var(--main-border-color);
 }
 
@@ -50,7 +54,6 @@
 .postContent {
     display: flex;
     flex-direction: column;
-    grid-gap: 10px;
 }
 
 .textWrapper {
@@ -61,6 +64,8 @@
 .text {
     font-size: 16px;
     font-weight: 500;
+    margin-top: 5px;
+    margin-bottom: 10px;
     color: var(--main-font-color);
     padding-left: var(--width-padding);
     padding-right: var(--width-padding);
@@ -96,17 +101,6 @@
     width: 100%;
 }
 
-.control {
-    width: auto;
-    display: flex;
-    justify-content: space-between;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    border-top: 1px solid var(--main-border-color);
-    margin-left: var(--width-padding);
-    margin-right: var(--width-padding);
-}
-
 .left {
     height: fit-content;
     display: flex;
@@ -132,34 +126,6 @@
     image-rendering: pixelated;
     border: 1px solid var(--main-border-color);
     cursor: pointer;
-}
-
-.buttons {
-    display: flex;
-    grid-gap: 12.5px;
-    align-items: center;
-}
-
-.button {
-    background: none;
-    outline: none;
-    border: none;
-    cursor: pointer;
-}
-
-.button img {
-    height: 22px;
-    width: 22px;
-    object-fit: contain;
-    filter: var(--main-filter);
-}
-
-.button img:hover {
-    opacity: 0.8;
-}
-
-.button img:active {
-    opacity: 0.6;
 }
 
 .statistics {

@@ -1,9 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core.Models.Links;
-using Exider.Core.Models.Storage;
-using Instend.Repositories.Storage;
+using Instend.Core.Models.Storage;
+using Instend.Core.Models.Abstraction;
 
-namespace Exider.Repositories.Links
+namespace Instend.Repositories.Links
 {
     public interface ILinkBaseRepository<Link> where Link : LinkBase, new()
     {

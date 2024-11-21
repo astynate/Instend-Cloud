@@ -1,90 +1,90 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="Exider.Core.Models.Access.AccessBase">
+  <Class Name="Instend.Core.Models.Access.AccessBase">
     <Position X="6.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAAAgAAgAAAAAgAAAAAAEAAAAAAAAAAEAA=</HashCode>
       <FileName>Models\Access\AccessBase.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Core.Models.Access.AccessItemBase">
+  <Class Name="Instend.Core.Models.Access.AccessItemBase">
     <Position X="11.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAIAAAAAEAAAAAAIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Access\AccessItemBase.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Core.Models.Access.FolderAccess" Collapsed="true">
+  <Class Name="Instend.Core.Models.Access.FolderAccess" Collapsed="true">
     <Position X="7.75" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Access\AccessTypes.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Core.Models.Access.FileAccess" Collapsed="true">
+  <Class Name="Instend.Core.Models.Access.FileAccess" Collapsed="true">
     <Position X="4.25" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Access\AccessTypes.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Core.Models.Access.AlbumAccess" Collapsed="true">
+  <Class Name="Instend.Core.Models.Access.AlbumAccess" Collapsed="true">
     <Position X="6" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Access\AccessTypes.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Core.Models.Access.PlaylistAccess" Collapsed="true">
+  <Class Name="Instend.Core.Models.Access.PlaylistAccess" Collapsed="true">
     <Position X="9.5" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Access\AccessTypes.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Core.Models.Account.EmailModel">
+  <Class Name="Instend.Core.Models.Account.EmailModel">
     <Position X="4.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAAAAAAAgAAAAAAEAAAAAggAAAAAA=</HashCode>
       <FileName>Models\Account\EmailModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Core.Models.Account.SessionModel">
+  <Class Name="Instend.Core.Models.Account.SessionModel">
     <Position X="6" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAAQAAAAgAAAAAAAAgAAAAgAEAAAAAAgAAEAAA=</HashCode>
       <FileName>Models\Account\SessionModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Core.Models.Account.UserDataModel">
+  <Class Name="Instend.Core.Models.Account.UserDataModel">
     <Position X="4.25" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BAAAAQAAAAAgAAAAAAwAAAgAAAABQEEAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Account\UserDataModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Core.Models.Account.UserModel">
+  <Class Name="Instend.Core.Models.Account.UserModel">
     <Position X="2.5" Y="6" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAADAAAAECAEAAAAAAAAAAQABAAAAEACAAAAAAAAAAI=</HashCode>
       <FileName>Models\Account\UserModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Core.Models.Comments.AlbumCommentLink">
+  <Class Name="Instend.Core.Models.Comments.AlbumCommentLink">
     <Position X="4.25" Y="10.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Comments\AlbumCommentLink.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Core.Models.Comments.PlaylistCommentLink">
+  <Class Name="Instend.Core.Models.Comments.PlaylistCommentLink">
     <Position X="6" Y="9.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Comments\AlbumCommentLink.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Core.Models.Comments.CommentLinkBase">
+  <Class Name="Instend.Core.Models.Comments.CommentLinkBase">
     <Position X="4.25" Y="8.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAAAAAAgAAAAAAAAAAAAEAgAAAAAAAAAAA=</HashCode>
@@ -92,35 +92,35 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Exider.Core.Models.Comments.CommentModel">
+  <Class Name="Instend.Core.Models.Comments.CommentModel">
     <Position X="8.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAIAAAAAAAAAAAAAAAAAAAAAEABAAAACAAAAAA=</HashCode>
       <FileName>Models\Comments\CommentModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Core.Models.Email.ConfirmationModel">
+  <Class Name="Instend.Core.Models.Email.ConfirmationModel">
     <Position X="7.75" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAAAAIACAAAAAAAAAgAAgAAAAgAEAAAAAAwAAAAAA=</HashCode>
       <FileName>Models\Email\ConfirmationModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Core.Models.Formats.FormatBase">
+  <Class Name="Instend.Core.Models.Formats.FormatBase">
     <Position X="9.5" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAIAAAAAAAAAAAAAAAAAAAAABAAEAAAAAAAAIAAAA=</HashCode>
       <FileName>Models\Formats\FormatBase.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Core.Models.Formats.SongFormat">
+  <Class Name="Instend.Core.Models.Formats.SongFormat">
     <Position X="9.5" Y="9" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAYAAAAAACAESAAAIEAAAAAIBAAAAAAAAASAAAAAA=</HashCode>
       <FileName>Models\Formats\SongFormat.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Services.External.FileService.StreamFileAbstraction">
+  <Class Name="Instend.Services.External.FileService.StreamFileAbstraction">
     <Position X="9.5" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AhAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAEAAAAA=</HashCode>
@@ -128,70 +128,70 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Exider.Core.Models.Gallery.AlbumLink">
+  <Class Name="Instend.Core.Models.Gallery.AlbumLink">
     <Position X="13" Y="7.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAAAAAAAAAAAAAAgAAAAEAAAAAAAAIAAAA=</HashCode>
       <FileName>Models\Gallery\AlbumLink.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Core.Models.Gallery.AlbumModel">
+  <Class Name="Instend.Core.Models.Gallery.AlbumModel">
     <Position X="13" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAAAAAAAAgAAAAAAAAAAQAIAAAAEAAAgAAgCAAAAA=</HashCode>
       <FileName>Models\Gallery\AlbumModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Core.Models.Storage.FileModel">
+  <Class Name="Instend.Core.Models.Storage.FileModel">
     <Position X="11.25" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAABAAAgAIAAQAAAAQAIAAQQEAIAQAAgAAAgAA=</HashCode>
       <FileName>Models\Storage\FileModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Core.Models.Storage.FolderModel">
+  <Class Name="Instend.Core.Models.Storage.FolderModel">
     <Position X="13" Y="3.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AEAAABAAAAAAAAAABAAAAAQAAAAAAEAoAAQAgAAAAAA=</HashCode>
       <FileName>Models\Storage\FolderModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Core.TransferModels.AccessTransferModel">
+  <Class Name="Instend.Core.TransferModels.AccessTransferModel">
     <Position X="11.25" Y="7.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAQAAAAAAAAAABAAAAAAAAAAAAAAAQAAAAAQA=</HashCode>
       <FileName>TransferModels\AccessTransferModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Exider.Core.Configuration">
+  <Class Name="Instend.Core.Configuration">
     <Position X="2.5" Y="0.5" Width="1.5" />
     <NestedTypes>
-      <Delegate Name="Exider.Core.Configuration.HandleFileCover" Collapsed="true">
+      <Delegate Name="Instend.Core.Configuration.HandleFileCover" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>Configuration.cs</NewMemberFileName>
         </TypeIdentifier>
       </Delegate>
-      <Delegate Name="Exider.Core.Configuration.ConvertToHtml" Collapsed="true">
+      <Delegate Name="Instend.Core.Configuration.ConvertToHtml" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>Configuration.cs</NewMemberFileName>
         </TypeIdentifier>
       </Delegate>
-      <Enum Name="Exider.Core.Configuration.Months" Collapsed="true">
+      <Enum Name="Instend.Core.Configuration.Months" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>Configuration.cs</NewMemberFileName>
         </TypeIdentifier>
       </Enum>
-      <Enum Name="Exider.Core.Configuration.AccessTypes" Collapsed="true">
+      <Enum Name="Instend.Core.Configuration.AccessTypes" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>Configuration.cs</NewMemberFileName>
         </TypeIdentifier>
       </Enum>
-      <Enum Name="Exider.Core.Configuration.FolderTypes" Collapsed="true">
+      <Enum Name="Instend.Core.Configuration.FolderTypes" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>Configuration.cs</NewMemberFileName>
         </TypeIdentifier>
       </Enum>
-      <Enum Name="Exider.Core.Configuration.Abilities" Collapsed="true">
+      <Enum Name="Instend.Core.Configuration.Abilities" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>Configuration.cs</NewMemberFileName>
         </TypeIdentifier>
@@ -202,161 +202,161 @@
       <FileName>Configuration.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Interface Name="Exider.Repositories.Account.IEmailRepository">
+  <Interface Name="Instend.Repositories.Account.IEmailRepository">
     <Position X="13" Y="9.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAQAAAAAEIAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Dependencies\Repositories\Account\IEmailRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider.Repositories.Account.IUserDataRepository">
+  <Interface Name="Instend.Repositories.Account.IUserDataRepository">
     <Position X="7.75" Y="10" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAQAAgAAAAAAAAAAgAAEAAAAAAAEAAAAAAYAAAAA=</HashCode>
       <FileName>Dependencies\Repositories\Account\IUserDataRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider.Repositories.Repositories.ISessionsRepository">
+  <Interface Name="Instend.Repositories.Repositories.ISessionsRepository">
     <Position X="6" Y="7.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAACAAACAAAAAAAAAAAAAAEAA=</HashCode>
       <FileName>Dependencies\Repositories\Account\ISessionsRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider.Core.Dependencies.Repositories.Account.IUsersRepository">
+  <Interface Name="Instend.Core.Dependencies.Repositories.Account.IUsersRepository">
     <Position X="7.75" Y="7.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAAAQAAAAAAQAAAAAAAAGAAAAAAAAAAAAAAEAAAAI=</HashCode>
       <FileName>Dependencies\Repositories\Account\IUsersRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider.Repositories.Comments.ICommentBaseRepository">
+  <Interface Name="Instend.Repositories.Comments.ICommentBaseRepository">
     <Position X="11.25" Y="9.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
       <FileName>Dependencies\Repositories\Comments\ICommentBaseRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider.Repositories.Comments.ICommentsRepository&lt;T&gt;">
+  <Interface Name="Instend.Repositories.Comments.ICommentsRepository&lt;T&gt;">
     <Position X="11.25" Y="11" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Dependencies\Repositories\Comments\ICommentsRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider.Core.Dependencies.Repositories.Comments.ICommentLinkBase">
+  <Interface Name="Instend.Core.Dependencies.Repositories.Comments.ICommentLinkBase">
     <Position X="13" Y="11.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
       <FileName>Dependencies\Repositories\Comments\ICommentLinkBase.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider.Repositories.Email.IConfirmationRespository">
+  <Interface Name="Instend.Repositories.Email.IConfirmationRespository">
     <Position X="2.5" Y="9.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAEICAAAAAAAAAIAAAAAAIA=</HashCode>
       <FileName>Dependencies\Repositories\Email\IConfirmationRespository.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider.Repositories.Gallery.IAlbumRepository">
+  <Interface Name="Instend.Repositories.Gallery.IAlbumRepository">
     <Position X="0.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAgAAAAIAAAAAEAAAAAEAAAAgAAAAAAAAAAAAIAg=</HashCode>
       <FileName>Dependencies\Repositories\Gallery\IAlbumRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider.Repositories.Storage.IAccessRepository&lt;Access, Item&gt;">
+  <Interface Name="Instend.Repositories.Storage.IAccessRepository&lt;Access, Item&gt;">
     <Position X="0.75" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAIAAAABAAABgAAAAEAAABAAAAA=</HashCode>
       <FileName>Dependencies\Repositories\Storage\IAccessRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider.Repositories.Storage.IFileAccessRepository">
+  <Interface Name="Instend.Repositories.Storage.IFileAccessRepository">
     <Position X="0.75" Y="8" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAIAAAABAAAAgAAAAAAAAAAAAAA=</HashCode>
       <FileName>Dependencies\Repositories\Storage\IFileAccessRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider.Repositories.Storage.IFileRespository">
+  <Interface Name="Instend.Repositories.Storage.IFileRespository">
     <Position X="0.75" Y="11.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAgCAAAAAAAAAAAAAAACAAEAAAEACAAAAAAAACAAIAw=</HashCode>
       <FileName>Dependencies\Repositories\Storage\IFileRespository.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider.Repositories.Storage.IFolderRepository">
+  <Interface Name="Instend.Repositories.Storage.IFolderRepository">
     <Position X="0.75" Y="5.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AABAAAAAQAAAAAAAAEAAAAEAAAEAAAAABAAAAAAAIAQ=</HashCode>
       <FileName>Dependencies\Repositories\Storage\IFolderRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider.Repositories.Storage.IFormatRepository&lt;T&gt;">
+  <Interface Name="Instend.Repositories.Storage.IFormatRepository&lt;T&gt;">
     <Position X="0.75" Y="9.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAgAAAAA=</HashCode>
       <FileName>Dependencies\Repositories\Storage\IFormatRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider.Dependencies.Services.IEmailService">
+  <Interface Name="Instend.Dependencies.Services.IEmailService">
     <Position X="14.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BAAAAEAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Dependencies\Services\External\IEmailService.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider.Services.External.FileService.IFileService">
+  <Interface Name="Instend.Services.External.FileService.IFileService">
     <Position X="14.75" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>CAAAAAAAhAAAAAAEAQACEAAAAAIAAAAQAAAAgAAAAAA=</HashCode>
       <FileName>Dependencies\Services\External\IFileService.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider.Services.External.FileService.IImageService">
+  <Interface Name="Instend.Services.External.FileService.IImageService">
     <Position X="14.75" Y="2.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>RAAAAAAQAAABAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Dependencies\Services\External\IImageService.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider_Version_2._0._0.ServerApp.Services.IEncryptionService">
+  <Interface Name="Instend_Version_2._0._0.ServerApp.Services.IEncryptionService">
     <Position X="14.75" Y="7.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAIAAAACAAAAAIEAAAAAAAAAAAAACBAAAAAAAAAAAAA=</HashCode>
       <FileName>Dependencies\Services\Internal\IEncryptionService.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider_Version_2._0._0.ServerApp.Services.IValidationService">
+  <Interface Name="Instend_Version_2._0._0.ServerApp.Services.IValidationService">
     <Position X="14.75" Y="9.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAIAAAAAAAAAAAAIAAAAA=</HashCode>
       <FileName>Dependencies\Services\Internal\IValidationService.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider.Dependencies.Services.ITokenService">
+  <Interface Name="Instend.Dependencies.Services.ITokenService">
     <Position X="6" Y="10.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAEBAAAAAAAAAAAAAAABAAAgAAACAAAA=</HashCode>
       <FileName>Dependencies\Services\Internal\ITokenService.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider.Services.Internal.Handlers.IAccessHandler">
+  <Interface Name="Instend.Services.Internal.Handlers.IAccessHandler">
     <Position X="2.5" Y="11.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAA=</HashCode>
       <FileName>Dependencies\Services\Internal\Handlers\IAccessHandler.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider.Services.Internal.Handlers.IRequestHandler">
+  <Interface Name="Instend.Services.Internal.Handlers.IRequestHandler">
     <Position X="2.5" Y="12.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Dependencies\Services\Internal\Handlers\IRequestHandler.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Exider.Services.Internal.Handlers.IUserAgentHandler">
+  <Interface Name="Instend.Services.Internal.Handlers.IUserAgentHandler">
     <Position X="4.25" Y="12" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAACAAABAAAAAAAAAAAAAAAAAAAAA=</HashCode>

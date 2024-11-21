@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import Base64Handler from '../../../../../../utils/handlers/Base64Handler';
-import FileAPI from '../../../../api/FileAPI';
 import styles from './main.module.css';
 
 export const validateMediaTypes = (type) => {

@@ -1,14 +1,14 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core.Dependencies.Repositories.Messenger;
-using Exider.Core.TransferModels;
-using Exider.Repositories.Messenger;
-using Exider.Services.External.FileService;
-using Exider.Services.Internal;
-using Exider.Services.Internal.Handlers;
+using Instend.Core.Dependencies.Repositories.Messenger;
+using Instend.Core.Dependencies.Services.Internal.Helpers;
+using Instend.Core.TransferModels.Messenger;
+using Instend.Repositories.Messenger;
+using Instend.Services.External.FileService;
+using Instend.Services.Internal.Handlers;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 
-namespace Exider_Version_2._0._0.Server.Hubs
+namespace Instend_Version_2._0._0.Server.Hubs
 {
     public class MessageHub : Hub
     {

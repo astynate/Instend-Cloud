@@ -1,7 +1,7 @@
-﻿using Exider.Core.Models.Account;
-using Exider_Version_2._0._0.ServerApp.Services;
+﻿using Instend.Core.Models.Account;
+using Instend_Version_2._0._0.ServerApp.Services;
 
-namespace Exider.Tests.Services.External
+namespace Instend.Tests.Services.External
 {
 
     [TestClass]

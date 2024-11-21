@@ -1,7 +1,7 @@
 import ImageHelper from "./ImageHelper";
 
 class TypeHelper {
-    static CompareCountWithDimention = async (attachments, maxAspectRatio, minAspectRatio, callback = () => {}) => {
+    static CompareCountWithDimention = async (attachments, minAspectRatio, maxAspectRatio, callback = () => {}) => {
         const dimentions = await ImageHelper.GetImageDimentions(attachments);
         
         const itemsWithSpecificDimention = dimentions
@@ -12,29 +12,29 @@ class TypeHelper {
     }
 
     static IsColumnTemplate = async (attachments) => {
-        const isAllImagesHasPortraitOrienation = TypeHelper.CompareCountPortraitImages(
+        const isAllImagesHasPortraitOrienation = await TypeHelper.CompareCountPortraitImages(
             attachments, 
             (countImages) => countImages === attachments.length
         );
 
-        const isAllNotHorizontal = TypeHelper.CompareCountWithDimention(
+        const isAllNotHorizontal = await TypeHelper.CompareCountWithDimention(
             attachments,
             0, 
-            1.4,
+            1.3,
             (countImages) => countImages === attachments.length,
         );
 
-        return (isAllNotHorizontal && attachments.length === 3) && isAllImagesHasPortraitOrienation;
+        return (isAllNotHorizontal && attachments.length === 3) || isAllImagesHasPortraitOrienation;
     }
 
     static IsVerticalGridTemplate = async (attachments) => 
-        TypeHelper.CompareCountPortraitImages(attachments, (countImages) => countImages > 1);
+        await TypeHelper.CompareCountPortraitImages(attachments, (countImages) => countImages > 1);
 
     static IsHorizontalGridTemplate = async (attachments) => 
-        TypeHelper.IsVerticalGridTemplate(attachments) === false;
+        await TypeHelper.IsVerticalGridTemplate(attachments) === false;
 
     static CompareCountPortraitImages = async (attachments, callback = () => {}) =>
-        TypeHelper.CompareCountWithDimention(attachments, 0, 1, callback);
+        await TypeHelper.CompareCountWithDimention(attachments, 0, 1, callback);
 }
 
 export default TypeHelper;

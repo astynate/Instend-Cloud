@@ -1,9 +1,9 @@
-﻿using Exider.Core.Models.Storage;
-using Exider.Repositories.Storage;
-using Exider.Services.Internal.Handlers;
+﻿using Instend.Core.Models.Storage;
+using Instend.Repositories.Storage;
+using Instend.Services.Internal.Handlers;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Exider_Version_2._0._0.Server.Hubs
+namespace Instend_Version_2._0._0.Server.Hubs
 {
     public class StorageHub : Hub
     {

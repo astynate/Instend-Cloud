@@ -1,4 +1,4 @@
-﻿namespace Exider.Tests.Database.Repositories
+﻿namespace Instend.Tests.Database.Repositories
 {
 
     //[TestClass]

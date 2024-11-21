@@ -1,5 +1,5 @@
 import ChatTypes from "../../services/cloud/pages/messages/widgets/chat/helpers/ChatTypes";
-import chatsState from "../../states/ChatsState"
+import ChatsState from "../../state/entities/ChatsState";
 import userState from "../../state/entities/UserState";
 import { SpecialTypes } from "./SpecialType";
 
@@ -13,7 +13,7 @@ class ChatHandler {
             return userState.user;
         }
 
-        const user = chatsState.users
+        const user = ChatsState.users
             .find(x => x.id === message.userId);
 
         if (!user) {
@@ -30,7 +30,7 @@ class ChatHandler {
     static GetChat(id) {
         if (!id) return null;
 
-        return chatsState.chats
+        return ChatsState.chats
             .find(x => x && (x.directId === id || x.id === id || x.Id === id));
     }
 

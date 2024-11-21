@@ -1,12 +1,12 @@
-﻿using Exider.Core;
-using Exider.Core.Models.Storage;
-using Exider.Repositories.Storage;
-using Exider.Services.External.FileService;
-using Exider.Services.Internal.Handlers;
+﻿using Instend.Core;
+using Instend.Core.Models.Storage;
+using Instend.Repositories.Storage;
+using Instend.Services.External.FileService;
+using Instend.Services.Internal.Handlers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Exider_Version_2._0._0.Server.Controllers.Storage
+namespace Instend_Version_2._0._0.Server.Controllers.Storage
 {
     [ApiController]
     [Route("[controller]")]

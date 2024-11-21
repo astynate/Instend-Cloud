@@ -1,17 +1,19 @@
 ﻿using CSharpFunctionalExtensions;
 using CSharpFunctionalExtensions.ValueTasks;
-using Exider.Core;
-using Exider.Core.Dependencies.Repositories.Storage;
-using Exider.Core.Models.Links;
-using Exider.Core.Models.Messages;
-using Exider.Core.Models.Messenger;
-using Exider.Core.TransferModels;
-using Exider.Core.TransferModels.Account;
-using Exider.Repositories.Account;
-using Exider.Services.External.FileService;
+using Instend.Core;
+using Instend.Core.Dependencies.Repositories.Storage;
+using Instend.Core.Models.Messages;
+using Instend.Core.Models.Messenger;
+using Instend.Core.TransferModels.Account;
+using Instend.Services.External.FileService;
+using Instend.Core.Models.Abstraction;
+using Instend.Core.Models.Links;
 using Microsoft.EntityFrameworkCore;
+using Instend.Core.TransferModels.Messenger;
+using Instend.Core.Dependencies.Repositories.Account;
+using Instend.Core.Models.Account;
 
-namespace Exider.Repositories.Messenger
+namespace Instend.Repositories.Messenger
 {
     public class GroupsRepository : IGroupsRepository
     {
@@ -19,7 +21,7 @@ namespace Exider.Repositories.Messenger
 
         private readonly IFileService _fileService;
 
-        private readonly IUserDataRepository _userDateRepository;
+        private readonly IAccountsRepository _accountRespository;
 
         private readonly IAttachmentsRepository<MessageAttachmentLink> _attachmentsRepository;
 
@@ -31,16 +33,16 @@ namespace Exider.Repositories.Messenger
         (
             DatabaseContext context, 
             IFileService fileService, 
-            IUserDataRepository userDataRepository, 
             IImageService imageService,
+            IAccountsRepository accountsRepository,
             IAttachmentsRepository<MessageAttachmentLink> attachmentsRepository,
             IMessengerRepository messengerRepository
         )
         {
             _context = context;
             _fileService = fileService;
-            _userDateRepository = userDataRepository;
             _imageService = imageService;
+            _accountRespository = accountsRepository;
             _attachmentsRepository = attachmentsRepository;
             _messengerRepository = messengerRepository;
         }
@@ -134,32 +136,29 @@ namespace Exider.Repositories.Messenger
                 .Select(prev => new GroupTransferModel()
                 {
                     model = prev.group,
-                    messageModel = prev.messageLink != null ? _context.Messages
+                    message = prev.messageLink != null ? _context.Messages
                         .FirstOrDefault(message => message.Id == prev.messageLink.LinkedItemId) : null
                 })
                 .FirstOrDefaultAsync();
 
             if (result == null || result.model == null) return null;
 
-            result.model.Members = new UserPublic[members.Length];
+            result.model.Members = new AccountModel[members.Length];
 
             for (int i = 0; i < members.Length; i++)
             {
-                var user = await _userDateRepository.GetUserAsync(members[i].LinkedItemId);
+                var user = await _accountRespository.GetByIdAsync(members[i].LinkedItemId);
 
-                if (user.IsFailure)
-                {
+                if (user == null)
                     return null;
-                }
 
-                user.Value.Header = null;
-                result.model.Members[i] = user.Value;
+                result.model.Members[i] = user;
             }
 
-            if (result.messageModel != null)
+            if (result.message != null)
             {
-                result.messageModel.attachments = await _attachmentsRepository
-                    .GetItemAttachmentsAsync(result.messageModel.Id);
+                result.message.attachments = await _attachmentsRepository
+                    .GetItemAttachmentsAsync(result.message.Id);
             }
 
             var avatar = await _fileService.ReadFileAsync(result.model.AvatarPath);
@@ -246,7 +245,7 @@ namespace Exider.Repositories.Messenger
                     await _context.GroupMessageLink.AddAsync(link.Value);
                     await _context.SaveChangesAsync();
 
-                    group.messageModel = messageModel.Value;
+                    group.message = messageModel.Value;
                     transaction.Commit();
 
                     return group;

@@ -1,13 +1,12 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core;
-using Exider.Core.Models.Links;
-using Exider.Core.Models.Storage;
-using Exider.Services.External.FileService;
-using Instend.Repositories.Storage;
+using Instend.Core;
+using Instend.Core.Models.Storage;
+using Instend.Services.External.FileService;
+using Instend.Core.Models.Abstraction;
 using Microsoft.EntityFrameworkCore;
-using static Exider.Core.Models.Links.AlbumLinks;
+using static Instend.Core.Models.Links.AlbumLinks;
 
-namespace Exider.Repositories.Links
+namespace Instend.Repositories.Links
 {
     public class LinkBaseRepository<Link> : ILinkBaseRepository<Link> where Link : LinkBase, new()
     {

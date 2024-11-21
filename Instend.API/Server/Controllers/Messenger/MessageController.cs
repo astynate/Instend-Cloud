@@ -1,19 +1,18 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
-using Exider.Core.Dependencies.Repositories.Messenger;
-using Exider.Core.Dependencies.Repositories.Storage;
-using Exider.Core.Models.Messenger;
-using Exider.Core.TransferModels;
-using Exider.Core.TransferModels.Messenger;
-using Exider.Repositories.Messenger;
-using Exider.Services.Internal;
-using Exider.Services.Internal.Handlers;
-using Exider_Version_2._0._0.Server.Hubs;
+using Instend.Core.Dependencies.Repositories.Messenger;
+using Instend.Core.Dependencies.Repositories.Storage;
+using Instend.Core.TransferModels.Messenger;
+using Instend.Repositories.Messenger;
+using Instend.Services.Internal.Handlers;
+using Instend_Version_2._0._0.Server.Hubs;
+using Instend.Core.Models.Links;
 using Instend.Repositories.Storage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Instend.Core.Dependencies.Services.Internal.Helpers;
 
-namespace Exider_Version_2._0._0.Server.Controllers.Messenger
+namespace Instend_Version_2._0._0.Server.Controllers.Messenger
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -83,22 +82,22 @@ namespace Exider_Version_2._0._0.Server.Controllers.Messenger
 
             result.Value.queueId = model.queueId;
 
-            if (model.attachments != null && model.attachments.Length > 0 && result.Value.messageModel != null)
+            if (model.attachments != null && model.attachments.Length > 0 && result.Value.message != null)
             {
-                var attachments = await _attachmentRepository.AddAsync(model.attachments, Guid.Parse(userId.Value), result.Value.messageModel.Id);
+                var attachments = await _attachmentRepository.AddAsync(model.attachments, Guid.Parse(userId.Value), result.Value.message.Id);
 
                 if (attachments.IsSuccess)
                 {
-                    result.Value.messageModel.attachments = attachments.Value;
+                    result.Value.message.attachments = attachments.Value;
                 }
             }
 
-            if (result.Value.messageModel != null && model.fileIds != null || model.folderIds != null)
+            if (result.Value.message != null && model.fileIds != null || model.folderIds != null)
             {
                 await _storageAttachmentRepository.AddStorageMessageLinks(
                     model.folderIds ?? [],
                     model.fileIds ?? [],
-                    result.Value.messageModel!.Id,
+                    result.Value.message!.Id,
                     Request.Headers["Authorization"]!
                 );
             }

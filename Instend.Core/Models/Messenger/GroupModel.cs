@@ -1,8 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core.TransferModels.Account;
+using Instend.Core.Models.Account;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Exider.Core.Models.Messenger
+namespace Instend.Core.Models.Messenger
 {
     [Table("groups")]
     public class GroupModel
@@ -14,7 +14,7 @@ namespace Exider.Core.Models.Messenger
         [Column("number_of_participants")] public int NumberOfParticipants { get; private set; } = 1;
         [Column("owner_id")] public Guid OwnerId { get; private set; }
 
-        [NotMapped] public UserPublic[] Members { get; set; } = new UserPublic[0];
+        [NotMapped] public AccountModel[] Members { get; set; } = [];
         [NotMapped] public byte[] Avatar { get; set; } = new byte[0];
         [NotMapped] public string Type { get; set; } = "group";
 

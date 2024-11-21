@@ -1,9 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core;
-using Exider.Core.Models.Albums;
-using Exider.Services.External.FileService;
+using Instend.Core;
+using Instend.Services.External.FileService;
+using Instend.Core.Models.Storage;
 
-namespace Exider.Repositories.Gallery
+namespace Instend.Repositories.Gallery
 {
     public interface IAlbumRepository
     {
@@ -13,6 +13,5 @@ namespace Exider.Repositories.Gallery
         Task<Result<AlbumModel[]>> GetAlbums(IImageService imageService, Guid userId, Configuration.AlbumTypes type);
         Task<Result> UpdateAlbum(Guid id, byte[] cover, string? name, string? description);
         Task<AlbumModel[]> GetAlbums(Guid userId);
-        Task<Result<long>> ViewAlbumWithUserId(Guid albumId, Guid userId);
     }
 }

@@ -1,6 +1,6 @@
-﻿using Exider.Core.Models.Account;
+﻿using Instend.Core.Models.Account;
 
-namespace Exider.Repositories.Repositories
+namespace Instend.Repositories.Repositories
 {
     public interface ISessionsRepository
     {

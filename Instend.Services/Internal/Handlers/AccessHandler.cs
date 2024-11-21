@@ -1,18 +1,17 @@
-﻿using CSharpFunctionalExtensions;
-using CSharpFunctionalExtensions.ValueTasks;
-using Exider.Core;
-using Exider.Core.Models.Access;
-using Exider.Core.Models.Storage;
-using Exider.Repositories.Account;
-using Exider.Repositories.Storage;
+﻿using Instend.Core;
+using Instend.Core.Dependencies.Repositories.Account;
+using Instend.Core.Models.Access;
+using Instend.Core.Models.Storage;
+using Instend.Repositories.Storage;
+using CSharpFunctionalExtensions;
 
-namespace Exider.Services.Internal.Handlers
+namespace Instend.Services.Internal.Handlers
 {
     public class AccessHandler : IAccessHandler
     {
         private readonly IRequestHandler _requestHandler;
 
-        private readonly IUserDataRepository _userDataRepository;
+        private readonly IAccountsRepository _accountsRepository;
 
         private readonly IAccessRepository<FolderAccess, FolderModel> _folderAccessRepository;
 
@@ -23,13 +22,13 @@ namespace Exider.Services.Internal.Handlers
             IRequestHandler requestHandler,
             IAccessRepository<FolderAccess, FolderModel> folderAccessRepository,
             IAccessRepository<Core.Models.Access.FileAccess, FileModel> fileAccessRepository,
-            IUserDataRepository userDataRepository
+            IAccountsRepository accountRespotiroy
         )
         {
             _requestHandler = requestHandler;
             _folderAccessRepository = folderAccessRepository;
             _fileAccessRepository = fileAccessRepository;
-            _userDataRepository = userDataRepository;
+            _accountsRepository = accountRespotiroy;
         }
 
         public async Task<Result> GetAccessStateAsync(FileModel file, Configuration.Abilities operation, string? bearer)

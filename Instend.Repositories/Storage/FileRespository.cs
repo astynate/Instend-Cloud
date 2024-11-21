@@ -1,11 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core;
-using Exider.Core.Models.Storage;
-using Exider.Repositories.Account;
-using Exider.Services.External.FileService;
+using Instend.Core;
+using Instend.Core.Dependencies.Repositories.Account;
+using Instend.Core.Models.Storage;
+using Instend.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
 
-namespace Exider.Repositories.Storage
+namespace Instend.Repositories.Storage
 {
     public class FileRespository : IFileRespository
     {
@@ -13,17 +13,17 @@ namespace Exider.Repositories.Storage
 
         private readonly IPreviewService _previewService;
 
-        private readonly IUserDataRepository _userDataRepository;
+        private readonly IAccountsRepository _accountsRepository;
 
         public FileRespository
         (
-            DatabaseContext context, 
-            IUserDataRepository userDataRepository, 
+            DatabaseContext context,
+            IAccountsRepository accountsRepository, 
             IPreviewService previewService
         )
         {
             _context = context;
-            _userDataRepository = userDataRepository;
+            _accountsRepository = accountsRepository;
             _previewService = previewService;
         }
 
@@ -35,9 +35,7 @@ namespace Exider.Repositories.Storage
             var fileCreationResult = FileModel.Create(name, type, size, ownerId, folderId);
 
             if (fileCreationResult.IsFailure == true)
-            {
                 return Result.Failure<FileModel>(fileCreationResult.Error);
-            }
 
             await _context.AddAsync(fileCreationResult.Value);
             await _context.SaveChangesAsync();
@@ -51,16 +49,12 @@ namespace Exider.Repositories.Storage
                 .FirstOrDefaultAsync(x => x.TypeId == Configuration.FolderTypes.System.ToString() && x.Name == "Photos" && x.OwnerId == ownerId);
 
             if (photoFolder == null)
-            {
                 return Result.Failure<FileModel>("The system folder \"Photos\" could not be found, please try again later. If it doesn't help, contact support.");
-            }
 
             var fileCreationResult = FileModel.Create(name, type, size, ownerId, photoFolder.Id);
 
             if (fileCreationResult.IsFailure == true)
-            {
                 return Result.Failure<FileModel>(fileCreationResult.Error);
-            }
 
             await _context.AddAsync(fileCreationResult.Value);
             await _context.SaveChangesAsync();
@@ -68,25 +62,21 @@ namespace Exider.Repositories.Storage
             return Result.Success(fileCreationResult.Value);
         }
 
+        private async Task SetFilesPreview(FileModel[] files)
+        {
+            foreach (var file in files)
+            {
+                await file.SetPreview(_previewService);
+            }
+        }
+
         public async Task<FileModel[]> GetByFolderId(Guid userId, Guid folderId)
         {
-            FileModel[] files;
+            var files = await _context.Files
+                .AsNoTracking()
+                .Where(file => file.FolderId == folderId).ToArrayAsync();
 
-            if (folderId == Guid.Empty)
-            {
-                files = await _context.Files.AsNoTracking()
-                    .Where(x => x.FolderId == folderId && x.OwnerId == userId).ToArrayAsync();
-            }
-            else
-            {
-                files = await _context.Files.AsNoTracking()
-                    .Where(x => x.FolderId == folderId).ToArrayAsync();
-            }
-
-            Array.ForEach(files, async
-                x => await x.SetPreview(_previewService));
-
-            return files;
+            await SetFilesPreview(files); return files;
         }
 
         public async Task<object[]> GetByFolderIdWithMetaData(Guid userId, Guid folderId)
@@ -102,8 +92,9 @@ namespace Exider.Repositories.Storage
                         (x, y) => new { x.File, Meta = y })
                     .ToArrayAsync();
 
-            Array.ForEach(files, async
-                x => await x.File.SetPreview(_previewService));
+            await SetFilesPreview(files
+                .Select(x => x.File)
+                .ToArray());
 
             return files;
         }
@@ -113,11 +104,9 @@ namespace Exider.Repositories.Storage
             var getFileOperation = await GetByIdAsync(id);
 
             if (getFileOperation.IsFailure)
-            {
                 return Result.Failure<FileModel>(getFileOperation.Error);
-            }
 
-            FileModel fileModel = getFileOperation.Value;
+            var fileModel = getFileOperation.Value;
             fileModel.Rename(name);
 
             _context.Files.Update(fileModel);
@@ -128,23 +117,23 @@ namespace Exider.Repositories.Storage
 
         public async Task<Result> Delete(Guid id)
         {
-            FileModel? file = await _context.Files.AsNoTracking()
+            var file = await _context.Files.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (file == null)
-            {
                 return Result.Failure("File not found");
-            }
 
-            string path = file.Path;
-            await _context.Files.Where(x => x.Id == id).ExecuteDeleteAsync();
+            var path = file.Path;
+
+            await _context.Files
+                .Where(x => x.Id == id)
+                .ExecuteDeleteAsync();
             
-            var result = await _userDataRepository.DecreaseOccupiedSpace(file.OwnerId, file.Size);
+            var result = await _accountsRepository
+                .ChangeOccupiedSpaceValue(file.OwnerId, file.Size);
 
             if (result.IsFailure)
-            {
                 return Result.Failure(result.Error);
-            }
 
             File.Delete(path);
 
@@ -175,14 +164,6 @@ namespace Exider.Repositories.Storage
                 .ToArrayAsync();
         }
 
-        /// <summary>
-        /// Get files with metadata and set preview
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="albumId"></param>
-        /// <param name="from"></param>
-        /// <param name="count"></param>
-        /// <returns></returns>
         public async Task<object[]> GetLastItemsFromAlbum(Guid userId, Guid albumId, int from, int count)
         {
             var result = await _context.AlbumLinks.AsNoTracking()
@@ -223,8 +204,9 @@ namespace Exider.Repositories.Storage
                         (x, y) => new { x.File, Meta = y })
                     .ToArrayAsync();
 
-            Array.ForEach(result, async
-                x => await x.File.SetPreview(_previewService));
+            await SetFilesPreview(result
+                .Select(x => x.File)
+                .ToArray());
 
             return result;
         }
@@ -243,8 +225,9 @@ namespace Exider.Repositories.Storage
                         (x, y) => new { x.File, Meta = y })
                     .ToArrayAsync();
 
-            Array.ForEach(result, async
-                x => await x.File.SetPreview(_previewService));
+            await SetFilesPreview(result
+                .Select(x => x.File)
+                .ToArray());
 
             return result;
         }

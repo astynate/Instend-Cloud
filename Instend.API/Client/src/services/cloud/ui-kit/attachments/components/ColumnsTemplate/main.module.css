@@ -1,13 +1,11 @@
-.attachments {
-    height: auto;
-    width: 100%;
+.wrapper {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 3px;
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    grid-gap: var(--main-gap);
 }
 
-.block {
-    height: auto;
+.wrapper img {
+    height: 100%;
     width: 100%;
-    background: white;
+    object-fit: cover;
 }

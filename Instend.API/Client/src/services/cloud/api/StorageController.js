@@ -1,23 +1,32 @@
 import { instance } from "../../../state/application/Interceptors";
+import ApplicationState from "../../../state/application/ApplicationState";
+import StorageState from "../../../state/entities/StorageState";
+import ResponseHandler from "../../../utils/handlers/ResponseHandler";
 
 class StorageController {
     static CreateFile = async (name, type, folderId) => {
         let formData = new FormData();        
-        let queueId = storageState.CreateLoadingFile(name, folderId);
+        let queueId = StorageState.CreateLoadingFile(name, folderId);
     
         formData.append("folderId", folderId ? folderId : "");
         formData.append("name", name);
         formData.append("type", type);
         formData.append('queueId', queueId);
+
+        const headers = {
+            'Content-Type': 'multipart/form-data'
+        };
+
+        const data = {
+            headers: headers
+        };
     
-        await instance.post(`/file`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        }).catch(response => {
-            applicationState.AddErrorInQueue('Attention!', response.data);
-            storageState.DeleteLoadingFile(queueId, folderId);
-        });
+        await instance
+            .post(`/file`, formData, data)
+            .catch(response => {
+                ApplicationState.AddErrorInQueue('Attention!', response.data);
+                StorageState.DeleteLoadingFile(queueId, folderId);
+            });
     };
 
     static UploadFilesAsync = async (files, folderId) => {
@@ -36,7 +45,7 @@ class StorageController {
     
             const files = new FormData();
             const fileName = file.name ? file.name : null;
-            const queueId = await storageState.CreateLoadingFile(fileName, folderId, type);
+            const queueId = await StorageState.CreateLoadingFile(fileName, folderId, type);
     
             files.append('file', file);
             files.append('folderId', folderId ? folderId : "");
@@ -46,21 +55,21 @@ class StorageController {
                 .post('/storage', files, {
                     onUploadProgress: (progressEvent) => {
                         const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                        storageState.SetLoadingFilePerscentage(queueId, percentCompleted);
+                        StorageState.SetLoadingFilePerscentage(queueId, percentCompleted);
                     },
                 })
                 .catch(error => {
-                    applicationState.AddErrorInQueue('Attention!', error.response.data);
-                    storageState.DeleteLoadingFile(queueId, file.folderId);
+                    ApplicationState.AddErrorInQueue('Attention!', error.response.data);
+                    StorageState.DeleteLoadingFile(queueId, file.folderId);
                 });
         });
     };
 
-    static GetFilesByType = async () => {
+    static GetFilesByType = async (from, type) => {
         let files = [];
 
         await instance
-            .get(`api/pagination?from=${count}&count=${20}&type=${type}`)
+            .get(`api/pagination?from=${from}&count=${20}&type=${type}`)
             .then(response => {
 
             });
@@ -74,18 +83,18 @@ class StorageController {
                 responseType: "blob"
             })
             .then((response) => {
-                DownloadFromResponse(response);
+                ResponseHandler.DownloadFromResponse(response);
             });
     }
 
     static UploadFilesFromEvent = async (event, folderId) => {
         event.preventDefault();
-        await SendFilesAsync(event.target.files, folderId);
+        await StorageController.UploadFilesAsync(event.target.files, folderId);
     };
 
     static UploadFilesFromDragEvent = async (event, folderId) => {
         const files = event.dataTransfer.files;
-        await SendFilesAsync(files, folderId);
+        await StorageController.UploadFilesAsync(files, folderId);
     }
 }
 

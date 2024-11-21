@@ -1,5 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core.Models.Storage;
+using Instend.Core.Models.Storage;
 
 namespace Instend.Repositories.Storage
 {

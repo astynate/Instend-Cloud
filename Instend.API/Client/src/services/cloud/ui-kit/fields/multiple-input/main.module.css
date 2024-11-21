@@ -1,24 +1,21 @@
 .textArea {
-    resize: none;
-}
-
-.textArea {
-    height: 120px;
-    width: 100%;
-    padding: 14px;
-    border: 1px solid var(--input-border);
+    border: none;
     outline: none;
     background: none;
-    border-radius: 12px;
+    resize: none;
+    width: 100%;
+    max-height: 200px;
+    display: flex;
+    justify-content: center;
+    padding-top: 13px;
+    padding-bottom: 13px;
+    font-size: 16px;
+    font-family: 'Open Sans', sans-serif !important;
     color: var(--main-font-color);
-    transition: 0.25s ease;
-    font-size: 17px;
-    font-family: 'Open Sans', sans-serif;
-    background: var(--input-background);
 }
 
-.textArea:focus {
-    border: 1px solid var(--main-font-color);
+.textArea::-webkit-scrollbar {
+    display: none;
 }
 
 .textArea::placeholder {

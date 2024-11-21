@@ -1,9 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core.Models.Storage;
+using Instend.Core.Models.Storage;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace Exider.Core
+namespace Instend.Core
 {
     public static class Configuration
     {

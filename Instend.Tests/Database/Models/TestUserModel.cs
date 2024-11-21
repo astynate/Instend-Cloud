@@ -1,15 +1,15 @@
-using Exider.Core;
-using Exider.Core.Models.Account;
+using Instend.Core;
+using Instend.Core.Models.Account;
 using Microsoft.EntityFrameworkCore;
 
-namespace Exider.Tests.Database.Models
+namespace Instend.Tests.Database.Models
 {
 
     [TestClass]
     public class TestUserModel
     {
 
-        private static UserModel _user = UserModel.Create("Test", "Test", "Test", "sicome.a.s23123@gmail.com", "asdas").Value;
+        private static AccountModel _user = AccountModel.Create("Test", "Test", "Test", "sicome.a.s23123@gmail.com", "asdas").Value;
 
         private static readonly DatabaseContext _context = new DatabaseContext();
 
@@ -30,8 +30,8 @@ namespace Exider.Tests.Database.Models
         public async Task TestGetModel()
         {
 
-            UserModel? user = await _context
-                .Users.FirstOrDefaultAsync(user => user.Nickname == "Test2");
+            AccountModel? user = await _context
+                .Accounts.FirstOrDefaultAsync(user => user.Nickname == "Test2");
 
             if (user != null) 
             {

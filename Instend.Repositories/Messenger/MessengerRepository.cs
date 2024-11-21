@@ -1,17 +1,16 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core;
-using Exider.Core.Dependencies.Repositories.Storage;
-using Exider.Core.Models.Messages;
-using Exider.Core.Models.Messenger;
-using Exider.Core.Models.Storage;
-using Exider.Core.TransferModels;
-using Exider.Core.TransferModels.Account;
-using Exider.Repositories.Links;
-using Exider.Services.External.FileService;
+using Instend.Core;
+using Instend.Core.Dependencies.Repositories.Storage;
+using Instend.Core.Models.Messages;
 using Instend.Core.Models.Storage;
+using Instend.Core.TransferModels.Account;
+using Instend.Repositories.Links;
+using Instend.Services.External.FileService;
+using Instend.Core.Models.Links;
 using Microsoft.EntityFrameworkCore;
+using Instend.Core.TransferModels.Messenger;
 
-namespace Exider.Repositories.Messenger
+namespace Instend.Repositories.Messenger
 {
     public class MessengerRepository : IMessengerRepository
     {
@@ -39,153 +38,83 @@ namespace Exider.Repositories.Messenger
 
         public async Task<DirectTransferModel[]> GetDirects(IFileService fileService, Guid userId, int count)
         {
-            DirectTransferModel[] directs = await _context.Directs
-                .Where(direct => direct.UserId == userId || direct.OwnerId == userId)
-                .Skip(count)
-                .Take(1)
-                .Join(_context.Users,
-                    direct => (direct.OwnerId == userId ? direct.UserId : direct.OwnerId),
-                    user => user.Id,
-                    (direct, user) => new
-                    {
-                        direct,
-                        user
-                    })
-                .Join(_context.UserData,
-                    prev => prev.user.Id,
-                    userData => userData.UserId,
-                    (prev, userData) => new
-                    {
-                        prev.direct,
-                        prev.user,
-                        userData
-                    })
-                .GroupJoin(_context.DirectLinks,
-                    prev => prev.direct.Id,
-                    link => link.ItemId,
-                    (prev, links) => new
-                    {
-                        prev,
-                        link = links.OrderByDescending(l => l.Date).FirstOrDefault()
-                    })
-                .Join(_context.Messages,
-                    prev => prev.link.LinkedItemId,
-                    message => message.Id,
-                    (prev, message) =>
-                        new DirectTransferModel
-                        (
-                            prev.prev.direct,
-                            message,
-                            new UserPublic()
-                            {
-                                Id = prev.prev.user.Id,
-                                Name = prev.prev.user.Name,
-                                Surname = prev.prev.user.Surname,
-                                Nickname = prev.prev.user.Nickname,
-                                Email = prev.prev.user.Email,
-                                Avatar = prev.prev.userData.Avatar,
-                                Header = prev.prev.userData.Header,
-                                Description = prev.prev.userData.Description,
-                                StorageSpace = prev.prev.userData.StorageSpace,
-                                OccupiedSpace = prev.prev.userData.OccupiedSpace,
-                                Balance = prev.prev.userData.Balance,
-                                FriendCount = prev.prev.userData.FriendCount
-                            }
-                        ))
-                .ToArrayAsync();
-
-            foreach (var direct in directs)
-            {
-                if (direct.userPublic!.Avatar == null)
-                {
-                    direct.userPublic.Avatar = Configuration.DefaultAvatar;
-                }
-                else
-                {
-                    var avatar = await fileService.ReadFileAsync(direct.userPublic.Avatar);
-                    direct.userPublic.Avatar = avatar.IsSuccess ? Convert.ToBase64String(avatar.Value) : Configuration.DefaultAvatar;
-                }
-
-                await SetAttachments(direct.messageModel);
-            }
-
-            return directs;
+            return [];
         }
 
         public async Task<DirectTransferModel?> GetDirect(IFileService fileService, Guid id, Guid userId)
         {
-            DirectTransferModel? model = await _context.Directs
-                .Where(direct => (direct.UserId == userId || direct.OwnerId == userId) && direct.Id == id)
-                .Join(_context.Users,
-                    direct => (direct.OwnerId == userId ? direct.UserId : direct.OwnerId),
-                    user => user.Id,
-                    (direct, user) => new
-                    {
-                        direct,
-                        user
-                    })
-                .Join(_context.UserData,
-                    prev => prev.user.Id,
-                    userData => userData.UserId,
-                    (prev, userData) => new
-                    {
-                        prev.direct,
-                        prev.user,
-                        userData
-                    })
-                .GroupJoin(_context.DirectLinks,
-                    prev => prev.direct.Id,
-                    link => link.ItemId,
-                    (prev, links) => new
-                    {
-                        prev,
-                        link = links.OrderByDescending(l => l.Date).FirstOrDefault()
-                    })
-                .Join(_context.Messages,
-                    prev => prev.link.LinkedItemId,
-                    message => message.Id,
-                    (prev, message) =>
-                        new DirectTransferModel
-                        (
-                            prev.prev.direct,
-                            message,
-                            new UserPublic()
-                            {
-                                Id = prev.prev.user.Id,
-                                Name = prev.prev.user.Name,
-                                Surname = prev.prev.user.Surname,
-                                Nickname = prev.prev.user.Nickname,
-                                Email = prev.prev.user.Email,
-                                Avatar = prev.prev.userData.Avatar,
-                                Header = prev.prev.userData.Header,
-                                Description = prev.prev.userData.Description,
-                                StorageSpace = prev.prev.userData.StorageSpace,
-                                OccupiedSpace = prev.prev.userData.OccupiedSpace,
-                                Balance = prev.prev.userData.Balance,
-                                FriendCount = prev.prev.userData.FriendCount
-                            }
-                        ))
-                .FirstOrDefaultAsync();
+            //DirectTransferModel? model = await _context.Directs
+            //    .Where(direct => (direct.UserId == userId || direct.OwnerId == userId) && direct.Id == id)
+            //    .Join(_context.Users,
+            //        direct => (direct.OwnerId == userId ? direct.UserId : direct.OwnerId),
+            //        user => user.Id,
+            //        (direct, user) => new
+            //        {
+            //            direct,
+            //            user
+            //        })
+            //    .Join(_context.UserData,
+            //        prev => prev.user.Id,
+            //        userData => userData.UserId,
+            //        (prev, userData) => new
+            //        {
+            //            prev.direct,
+            //            prev.user,
+            //            userData
+            //        })
+            //    .GroupJoin(_context.DirectLinks,
+            //        prev => prev.direct.Id,
+            //        link => link.ItemId,
+            //        (prev, links) => new
+            //        {
+            //            prev,
+            //            link = links.OrderByDescending(l => l.Date).FirstOrDefault()
+            //        })
+            //    .Join(_context.Messages,
+            //        prev => prev.link.LinkedItemId,
+            //        message => message.Id,
+            //        (prev, message) =>
+            //            new DirectTransferModel
+            //            (
+            //                prev.prev.direct,
+            //                message,
+            //                new AccountTransferModel()
+            //                {
+            //                    Id = prev.prev.user.Id,
+            //                    Name = prev.prev.user.Name,
+            //                    Surname = prev.prev.user.Surname,
+            //                    Nickname = prev.prev.user.Nickname,
+            //                    Email = prev.prev.user.Email,
+            //                    Avatar = prev.prev.userData.Avatar,
+            //                    Header = prev.prev.userData.Header,
+            //                    Description = prev.prev.userData.Description,
+            //                    StorageSpace = prev.prev.userData.StorageSpace,
+            //                    OccupiedSpace = prev.prev.userData.OccupiedSpace,
+            //                    Balance = prev.prev.userData.Balance,
+            //                    FriendCount = prev.prev.userData.FriendCount
+            //                }
+            //            ))
+            //    .FirstOrDefaultAsync();
 
-            if (model == null) return null;
+            //if (model == null) return null;
 
-            if (model.userPublic != null && model.userPublic.Avatar == null)
-            {
-                model.userPublic.Avatar = Configuration.DefaultAvatar;
-            }
-            else
-            {
-                var avatar = await fileService
-                    .ReadFileAsync(model.userPublic.Avatar);
+            //if (model.userPublic != null && model.userPublic.Avatar == null)
+            //{
+            //    model.userPublic.Avatar = Configuration.DefaultAvatar;
+            //}
+            //else
+            //{
+            //    var avatar = await fileService
+            //        .ReadFileAsync(model.userPublic.Avatar);
                
-                model.userPublic.Avatar = avatar.IsSuccess ? 
-                    Convert.ToBase64String(avatar.Value) :
-                    Configuration.DefaultAvatar;
-            }
+            //    model.userPublic.Avatar = avatar.IsSuccess ? 
+            //        Convert.ToBase64String(avatar.Value) :
+            //        Configuration.DefaultAvatar;
+            //}
 
-            await SetAttachments(model.messageModel); 
+            //await SetAttachments(model.messageModel); 
 
-            return model;
+            return null;
         }
 
         public async Task SetAttachments(MessageModel? model)

@@ -3,10 +3,8 @@ import { observer } from 'mobx-react-lite';
 import styles from './main.module.css';
 import UserAvatar from '../../shared/avatars/user-avatar/UserAvatar';
 import BurgerMenu from '../../shared/context-menus/burger-menu/BurgerMenu';
-import likeImage from './images/like.png';
-import commentImage from './images/comment.png';
-import shareImage from './images/share.png';
 import Attachments from '../../ui-kit/attachments/Attachments';
+import PublicationControlPanel from '../../elements/publication-elements/publication-control-panel/PublicationControlPanel';
 
 const Publication = observer(({
         user, 
@@ -15,11 +13,14 @@ const Publication = observer(({
         isUploading, 
         deleteCallback, 
         type = 0, 
-        setLike = () => {}
+        setLike = () => {},
+        isControlHidden = false,
+        isHasPaddings = false,
+        isAttachmentsHidden = false
     }) => {
 
     return (
-        <div className={styles.comment}>
+        <div className={styles.comment} paddingstate={isHasPaddings ? 'visible': 'hidden'}>
             <div className={styles.header}>
                 <div className={styles.left}>
                     <UserAvatar size={42} />
@@ -38,25 +39,10 @@ const Publication = observer(({
             </div>
             <div className={styles.postContent}>
                 <span className={styles.text}>Some text</span>
-                <Attachments />
+                {isAttachmentsHidden === false && 
+                    <Attachments />}
             </div>
-            <div className={styles.control}>
-                <div className={styles.buttons}>
-                    <button className={styles.button}>
-                        <img src={likeImage} />
-                    </button>
-                    <button className={styles.button}>
-                        <img src={commentImage} />
-                    </button>
-                    <button className={styles.button}>
-                        <img src={shareImage} />
-                    </button>
-                </div>
-                <div className={styles.statistics}>
-                    <span><b>120K </b>Comments</span>
-                    <span><b>100M </b>Views</span>
-                </div>
-            </div>
+            {isControlHidden === false && <PublicationControlPanel />}
         </div>
     );
 });

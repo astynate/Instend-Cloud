@@ -1,8 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core.Models.Formats;
-using Exider.Core.Models.Storage;
+using Instend.Core.Models.Storage;
+using Instend.Core.Models.Abstraction;
 
-namespace Exider.Repositories.Storage
+namespace Instend.Repositories.Storage
 {
     public interface IFormatRepository<T> where T : FormatBase
     {

@@ -1,3 +1,4 @@
+import { useParams } from "react-router-dom";
 import StorageController from "../../../../api/StorageController";
 import AddButton from "../../../../ui-kit/buttons/add-button/Add";
 import excel from './images/types/excel.png';
@@ -9,7 +10,9 @@ import powerpoint from './images/types/powerpoint.png';
 import upload from './images/types/upload.png';
 import word from './images/types/word.png';
 
-const AddInFolder = () => {
+const AddInFolder = ({OpenDialog = () => {}}) => {
+    let params = useParams();
+    
     const types = {
         "folder": {
             title: "Create folder",

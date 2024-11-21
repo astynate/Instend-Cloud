@@ -7,14 +7,19 @@ import UserState from './state/entities/UserState';
 import Main from './services/main/layout/Layout';
 import Support from './services/support/layout/Layout';
 import ApplicationState from './state/application/ApplicationState';
+import AccountController from './api/AccountController';
 
 const App = observer(() => {
-    let navigate = useNavigate();
-    let location = useLocation();
+    const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         document.querySelector('#root').className = localStorage.getItem('color-mode');
-        UserState.UpdateAuthorizeState(location.pathname, navigate);
+        
+        AccountController.GetAccountData(
+            UserState.SetUser, 
+            () => navigate('/main')
+        );
     }, [ApplicationState.theme]);
 
     return (

@@ -24,17 +24,6 @@ const PublicationList = ({
                 <Publication />
                 <Publication />
                 <Publication />
-                <Publication />
-                <Publication />
-                <Publication />
-                <Publication />
-                <Publication />
-                <Publication />
-                <Publication />
-                <Publication />
-                <Publication />
-                <Publication />
-                <Publication />
                 {/* {isPublicationAvailable && 
                     <CommentField 
                         id={id} 

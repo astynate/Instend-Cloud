@@ -1,26 +1,25 @@
-using Exider.Core;
-using Exider.Core.Dependencies.Repositories.Account;
-using Exider.Core.Dependencies.Repositories.Storage;
-using Exider.Core.Models.Account;
-using Exider.Dependencies.Services;
-using Exider.Repositories.Account;
-using Exider.Repositories.Comments;
-using Exider.Repositories.Email;
-using Exider.Repositories.Gallery;
-using Exider.Repositories.Links;
-using Exider.Repositories.Messenger;
-using Exider.Repositories.Public;
-using Exider.Repositories.Repositories;
-using Exider.Repositories.Storage;
-using Exider.Services.External.FileService;
-using Exider.Services.Internal;
-using Exider.Services.Internal.Handlers;
-using Exider.Services.Middleware;
-using Exider_Version_2._0._0.Server.Hubs;
-using Exider_Version_2._0._0.ServerApp.Services;
+using Instend.Core;
+using Instend.Core.Dependencies.Repositories.Account;
+using Instend.Core.Dependencies.Repositories.Storage;
+using Instend.Core.Models.Account;
+using Instend.Dependencies.Services;
+using Instend.Repositories.Account;
+using Instend.Repositories.Comments;
+using Instend.Repositories.Gallery;
+using Instend.Repositories.Links;
+using Instend.Repositories.Messenger;
+using Instend.Repositories.Repositories;
 using Instend.Repositories.Storage;
+using Instend.Services.External.FileService;
+using Instend.Services.Internal;
+using Instend.Services.Internal.Handlers;
+using Instend.Services.Middleware;
+using Instend_Version_2._0._0.Server.Hubs;
+using Instend_Version_2._0._0.ServerApp.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Instend.Core.Dependencies.Services.Internal.Services;
+using Instend.Core.Dependencies.Services.Internal.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,22 +38,21 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<DatabaseContext>();
-builder.Services.AddScoped<IUsersRepository, UsersRepository>();
-builder.Services.AddScoped<IEmailRepository, EmailRepository>();
+
+builder.Services.AddScoped<IAccountsRepository, AccountsRepository>();
 builder.Services.AddScoped<ISessionsRepository, SessionsRepository>();
-builder.Services.AddScoped<IConfirmationRespository, ConfirmationRespository>();
-builder.Services.AddScoped<IUserDataRepository, UserDataRepository>();
+builder.Services.AddScoped<IConfirmationsRespository, ConfirmationsRespository>();
 builder.Services.AddScoped<IFolderRepository, FolderRepository>();
 builder.Services.AddScoped<IFileRespository, FileRespository>();
 builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
 builder.Services.AddScoped<IDirectRepository, DirectRepository>();
 builder.Services.AddScoped<IMessengerRepository, MessengerRepository>();
-builder.Services.AddScoped<ICommunityRepository, CommunityRepository>();
 builder.Services.AddScoped<IFriendsRepository, FriendsRepository>();
 builder.Services.AddScoped<IGroupsRepository, GroupsRepository>();
+builder.Services.AddScoped<IAccessHandler, AccessHandler>();
 builder.Services.AddScoped<IStorageAttachmentRepository, StorageAttachmentRepository>();
-builder.Services.AddScoped(typeof(ICommentsRepository<,>), typeof(CommentsRepository<,>));
-builder.Services.AddScoped(typeof(ICommentBaseRepository<>), typeof(CommentBaseRepository<>));
+builder.Services.AddScoped(typeof(IPublicationRepository<,>), typeof(PublicationRepository<,>));
+builder.Services.AddScoped(typeof(IPublicationBaseRepository<>), typeof(PublicationBaseRepository<>));
 builder.Services.AddScoped(typeof(IAccessRepository<,>), typeof(AccessRepository<,>));
 builder.Services.AddScoped(typeof(IAttachmentsRepository<>), typeof(AttachmentsRepository<>));
 builder.Services.AddScoped(typeof(IFormatRepository<>), typeof(FormatRepository<>));
@@ -70,8 +68,6 @@ builder.Services.AddSingleton<IUserAgentHandler, UserAgentHandler>();
 builder.Services.AddSingleton<IRequestHandler, RequestHandler>();
 builder.Services.AddSingleton<IFileService, FileService>();
 builder.Services.AddSingleton<IImageService, ImageService>();
-
-builder.Services.AddScoped<IAccessHandler, AccessHandler>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -1,9 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core.Dependencies.Repositories.Messenger;
-using Exider.Core.Models.Messages;
-using Exider.Core.TransferModels;
+using Instend.Core.Dependencies.Repositories.Messenger;
+using Instend.Core.Models.Messages;
+using Instend.Core.TransferModels.Messenger;
 
-namespace Exider.Repositories.Messenger
+namespace Instend.Repositories.Messenger
 {
     public interface IDirectRepository : IChatBase
     {

@@ -1,13 +1,13 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core;
-using Exider.Core.Models.Formats;
+using Instend.Core;
+using Instend.Core.Models.Formats;
 using System.Drawing;
 using System.Drawing.Imaging;
 using Spire.Doc.Documents;
 using NReco.VideoConverter;
 using Document = Spire.Doc.Document;
 
-namespace Exider.Services.External.FileService
+namespace Instend.Services.External.FileService
 {
     public class PreviewService : IPreviewService
     {

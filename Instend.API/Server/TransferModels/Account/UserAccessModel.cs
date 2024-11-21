@@ -1,7 +1,7 @@
-﻿using Exider.Core;
+﻿using Instend.Core;
 using System.ComponentModel.DataAnnotations;
 
-namespace Exider_Version_2._0._0.Server.TransferModels.Account
+namespace Instend_Version_2._0._0.Server.TransferModels.Account
 {
     public class UserAccessModel
     {

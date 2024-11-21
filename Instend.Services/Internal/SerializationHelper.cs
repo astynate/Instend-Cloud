@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using Instend.Core.Dependencies.Services.Internal.Helpers;
 
-namespace Exider.Services.Internal
+namespace Instend.Services.Internal
 {
     public class SerializationHelper : ISerializationHelper
     {

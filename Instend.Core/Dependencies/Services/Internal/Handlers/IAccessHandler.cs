@@ -1,8 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
-using Exider.Core;
-using Exider.Core.Models.Storage;
+using Instend.Core;
+using Instend.Core.Models.Storage;
 
-namespace Exider.Services.Internal.Handlers
+namespace Instend.Services.Internal.Handlers
 {
     public interface IAccessHandler
     {
