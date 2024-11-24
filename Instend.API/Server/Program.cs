@@ -41,7 +41,7 @@ builder.Services.AddDbContext<DatabaseContext>();
 
 builder.Services.AddScoped<IAccountsRepository, AccountsRepository>();
 builder.Services.AddScoped<ISessionsRepository, SessionsRepository>();
-builder.Services.AddScoped<IConfirmationsRespository, ConfirmationsRespository>();
+builder.Services.AddScoped<IConfirmationsRepository, ConfirmationsRespository>();
 builder.Services.AddScoped<IFolderRepository, FolderRepository>();
 builder.Services.AddScoped<IFileRespository, FileRespository>();
 builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();

@@ -1,12 +1,7 @@
-﻿using CSharpFunctionalExtensions;
-using Instend.Core;
+﻿using Instend.Core;
 using Instend.Core.Dependencies.Repositories.Account;
-using Instend.Core.Dependencies.Services.Internal.Services;
 using Instend.Core.Models.Account;
-using Instend.Core.Models.Email;
 using Instend.Core.TransferModels.Account;
-using Instend.Dependencies.Services;
-using Instend.Repositories.Account;
 using Instend.Repositories.Storage;
 using Instend.Services.External.FileService;
 using Instend.Services.Internal.Handlers;
@@ -14,6 +9,9 @@ using Instend_Version_2._0._0.Server.TransferModels.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using CSharpFunctionalExtensions;
+using Instend.Core.Dependencies.Services.Internal.Services;
+using Instend.Dependencies.Services;
 
 namespace Instend_Version_2._0._0.Server.Controllers.Account
 {
@@ -21,11 +19,15 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
     [Route("[controller]")]
     public class AccountsController : ControllerBase
     {
-        private readonly IConfirmationsRespository _confirmationRepository;
+        private readonly IConfirmationsRepository _confirmationRepository;
 
         private readonly IAccountsRepository _accountsRepository;
 
         private readonly IImageService _imageService;
+
+        private readonly IEmailService _emailService;
+
+        private readonly IEncryptionService _encryptionService;
 
         private readonly IFolderRepository _folderRepository;
 
@@ -35,25 +37,29 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
         public AccountsController
         (
-            IConfirmationsRespository confirmation,
+            IConfirmationsRepository confirmationsRepository,
             IImageService imageService,
             IAccountsRepository accountsRepository,
             IFolderRepository folderRepository,
+            IEmailService emailService,
+            IEncryptionService encryptionService,
             IFriendsRepository friendsRepository,
             DatabaseContext context
         )
         {
-            _confirmationRepository = confirmation;
+            _confirmationRepository = confirmationsRepository;
             _imageService = imageService;
+            _encryptionService = encryptionService;
             _accountsRepository = accountsRepository;
             _folderRepository = folderRepository;
             _friendsRepository = friendsRepository;
+            _emailService = emailService;
             _context = context;
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetUserDataAsync(IRequestHandler requestHandler)
+        public async Task<IActionResult> GetAccount(IRequestHandler requestHandler)
         {
             var userId = requestHandler.GetUserId(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
 
@@ -73,7 +79,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
         [Authorize]
         [HttpGet("all/{prefix}")]
-        public async Task<IActionResult> GetUsersByPrefixAsync(string prefix)
+        public async Task<IActionResult> GetAccountsByPrefix(string prefix)
         {
             if (string.IsNullOrEmpty(prefix))
                 return BadRequest("Prefix required");
@@ -83,9 +89,10 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
         [Authorize]
         [HttpGet("popular")]
-        public async Task<IActionResult> GetUsersByPrefixAsync(int from, int count) 
+        public async Task<IActionResult> GetPopuplarAccounts(int from, int count) 
             => Ok(await _accountsRepository.GetPopuplarPeopleAsync(from, count));
 
+        [Authorize]
         [HttpGet("email/{email}")]
         public async Task<IActionResult> GetAccountByEmail(string email)
         {
@@ -100,6 +107,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             return Ok();
         }
 
+        [Authorize]
         [HttpGet("id/{id}")]
         public async Task<IActionResult> GetAccountById(string id)
         {
@@ -114,6 +122,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             return Ok(account);
         }
 
+        [Authorize]
         [HttpGet("nickname/{nickname}")]
         public async Task<IActionResult> GetAccountByNickname(string nickname)
         {
@@ -129,73 +138,52 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAccount
-        (
-            [FromBody] UserTransferModel user, 
-            IEmailService emailService, 
-            IEncryptionService encryptionService
-        )
+        public async Task<IActionResult> CreateAccount([FromBody] UserTransferModel user)
         {
             return await _context.Database.CreateExecutionStrategy().ExecuteAsync(async Task<IActionResult> () =>
             {
                 using (var transaction = _context.Database.BeginTransaction())
                 {
-                    //var userCreationResult = AccountModel.Create
-                    //(
-                    //    user.name,
-                    //    user.surname,
-                    //    user.nickname,
-                    //    user.email,
-                    //    user.password
-                    //);
+                    var account = AccountModel.Create
+                    (
+                        user.name,
+                        user.surname,
+                        user.nickname,
+                        user.email,
+                        user.password
+                    );
 
-                    //if (userCreationResult.IsFailure)
-                    //    return BadRequest(userCreationResult.Error);
+                    if (account.IsFailure)
+                        return BadRequest(account.Error);
 
-                    //await _usersRepository.AddAsync(userCreationResult.Value);
+                    await _accountsRepository.AddAsync(account.Value);
 
-                    //var emailCreationResult = ConfirmationModel.Create
-                    //(
-                    //    userCreationResult.Value.Email,
-                    //    false,
-                    //    userCreationResult.Value.Id
-                    //);
+                    var confirmation = Instend.Core.Models.Email.ConfirmationModel.Create
+                    (
+                        account.Value.Email,
+                        _encryptionService.GenerateSecretCode(6),
+                        account.Value.Id
+                    );
 
-                    //if (emailCreationResult.IsFailure)
-                    //    return BadRequest(emailCreationResult.Error);
+                    if (confirmation.IsFailure)
+                        return BadRequest(confirmation.Error);
 
-                    //await _emailRepository.AddAsync(emailCreationResult.Value);
+                    await _confirmationRepository.AddAsync(confirmation.Value);
 
-                    //var confirmationCreationResult = Instend.Core.Models.Email.ConfirmationModel.Create
-                    //(
-                    //    userCreationResult.Value.Email,
-                    //    encryptionService.GenerateSecretCode(6),
-                    //    userCreationResult.Value.Id
-                    //);
+                    var systemResult = await CreateSystemFolders(account.Value.Id);
 
-                    //if (confirmationCreationResult.IsFailure)
-                    //    return BadRequest(confirmationCreationResult.Error);
+                    if (systemResult.IsFailure)
+                        return Conflict(systemResult.Error);
 
-                    //await _confirmationRepository.AddAsync(confirmationCreationResult.Value);
+                    var email = account.Value.Email;
+                    var code = confirmation.Value.Code;
+                    var link = "account/email/confirmationsRepository/" + confirmation.Value.Link.ToString();
 
-                    //var userDataCreationResult = UserDataModel.Create(userCreationResult.Value.Id);
-
-                    //if (userDataCreationResult.IsFailure)
-                    //    return BadRequest(userDataCreationResult.Error);
-
-                    //await _userDataRepository.AddAsync(userDataCreationResult.Value);
-
-                    //await emailService.SendEmailConfirmation(userCreationResult.Value.Email, confirmationCreationResult.Value.Code,
-                    //    Configuration.URL + "account/email/confirmation/" + confirmationCreationResult.Value.Link.ToString());
-
-                    //var systemResult = await CreateSystemFolders(userCreationResult.Value.Id);
-
-                    //if (systemResult.IsFailure)
-                    //    return Conflict(systemResult.Error);
+                    await _emailService.SendEmailConfirmation(email, code, Configuration.URL + link);
 
                     transaction.Commit();
 
-                    return Ok(); // confirmationCreationResult.Value.Link.ToString()
+                    return Ok(link);
                 }
             });
         }
@@ -284,14 +272,13 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
         {
             string[] systemFolders = ["Music", "Photos", "Trash"];
 
-            foreach (string systemFolder in systemFolders)
+            foreach (var systemFolder in systemFolders)
             {
-                var photos = await _folderRepository.AddAsync(systemFolder, userId, Guid.Empty, Configuration.FolderTypes.System, false);
+                var photos = await _folderRepository
+                    .AddAsync(systemFolder, userId, Guid.Empty, Configuration.FolderTypes.System, false);
 
                 if (photos.IsFailure)
-                {
                     return Result.Failure(photos.Error);
-                }
             }
 
             return Result.Success();

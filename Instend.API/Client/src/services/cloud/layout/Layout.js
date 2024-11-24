@@ -1,4 +1,4 @@
-﻿import React, { createContext, useLayoutEffect } from 'react'
+﻿import React, { useLayoutEffect } from 'react'
 import { useState, useEffect } from 'react';
 import { createSignalRContext } from "react-signalr/signalr";
 import { observer } from 'mobx-react-lite';
@@ -16,6 +16,7 @@ import './css/fonts.css';
 import './css/colors.css';
 import './css/main.css';
 import './css/animations.css';
+import ApplicationLoaderAnimation from '../shared/application-loader-animation/ApplicationLoaderAnimation';
 
 export const globalWSContext = createSignalRContext();
 
@@ -24,6 +25,7 @@ const Layout = observer(() => {
     const [isErrorExist, setErrorExistingState] = useState(false);
     const [errorTitle, setErrorTitle] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const navigate = useNavigate();
 
     globalWSContext.useSignalREffect("CreateFolder", WebsocketListener.CreateFolderListener);
     globalWSContext.useSignalREffect("RenameFolder", WebsocketListener.RenameFolderListener); 
@@ -56,7 +58,7 @@ const Layout = observer(() => {
 
             AccountController.GetAccountData(
                 UserState.GetUserOnSuccessCallback,
-                UserState.GetUserOnFailureCallback
+                UserState.GetUserOnFailureCallback,
             );
         }
     }, [UserState.user]);
@@ -93,7 +95,7 @@ const Layout = observer(() => {
     return (
         <globalWSContext.Provider url={process.env.REACT_APP_SERVER_URL + '/global-hub-connection'}>
             {UserState.isAuthorize === false ?
-                <></>
+                <ApplicationLoaderAnimation />
             :
                 <div className='cloud-wrapper' style={{'--disconnected-height': ApplicationState.connectionState === 0 ? '0px' : '15px'}}>
                     <title>Instend</title>
@@ -106,8 +108,7 @@ const Layout = observer(() => {
                         title={errorTitle}
                         message={errorMessage}
                     />
-                </div>
-            }
+                </div>}
         </globalWSContext.Provider>
     );
 });

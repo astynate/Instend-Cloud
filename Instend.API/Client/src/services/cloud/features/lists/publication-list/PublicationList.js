@@ -4,8 +4,8 @@ import PublicationsWrapper from '../../wrappers/publications-wrapper/Publication
 import Publication from '../../../components/publication/Publication';
 
 const PublicationList = ({
+        publications = [],
         setLike = () => {}, 
-        comments, 
         id, 
         setUploadingComment, 
         deleteCallback, 
@@ -17,41 +17,13 @@ const PublicationList = ({
     return (
         <PublicationsWrapper>
             <div className={styles.publications}>
-                <Publication />
-                <Publication />
-                <Publication />
-                <Publication />
-                <Publication />
-                <Publication />
-                <Publication />
-                {/* {isPublicationAvailable && 
-                    <CommentField 
-                        id={id} 
-                        isPublications={isPublications}
-                        setUploadingComment={setUploadingComment.bind(this)}
-                    />} */}
-                {/* {comments && comments.map && comments.map((element, index) => {
-                    if (element.isUploading) {
-                        return (
-                            <Comment 
-                                key={element.comment.id + "comment"}
-                                isUploading={true}
-                                comment={element.comment} 
-                                user={element.user} 
-                            />
-                        )
-                    } else {
-                        return (
-                            <Comment 
-                                key={element.comment.id + "comment"}
-                                comment={element.comment} 
-                                user={element.user}
-                                deleteCallback={deleteCallback}
-                                setLike={setLike}
-                            />
-                        )
-                    }
-                })} */}
+                {publications.map((publication, index) => {
+                    return (
+                        <Publication 
+                            key={index}
+                        />
+                    );
+                })}
             </div>
         </PublicationsWrapper>
     );

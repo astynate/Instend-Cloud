@@ -27,6 +27,7 @@ import './css/navigation.buttons.css';
 import './css/main.css';
 import './css/progress-bar.css';
 import './css/media-queries.css';
+import CreatePublicationPopup from '../../../features/pop-up-windows/create-publication-popup/CreatePublicationPopup';
 
 export const useIsActiveButton = (name) => 
     useIsCurrentRoute(name) ? 'active' : 'passive'
@@ -59,9 +60,12 @@ export const GetSongData = (song) => {
 const NavigationPanel = observer((props) => {
     const [isOpened, setOpenedState] = useState(false);
     const [occupiedSpace, setOccupiedSpace] = useState();
+    const [isCreatePostWindowOpen, setCreatePostWindowState] = useState(false);
+
     const { user } = UserState;
     const { t } = useTranslation();
-    const ref = useRef();
+
+    const createButtonRef = useRef();
 
     const occupiedPercentage = () => {
         if (user && user.occupiedSpace && user.storageSpace)
@@ -72,7 +76,7 @@ const NavigationPanel = observer((props) => {
 
     useEffect(() => {
         const clickHandler = (event) => {
-            if (ref.current && !ref.current.contains(event.target))
+            if (createButtonRef.current && !createButtonRef.current.contains(event.target))
                 setOpenedState(false);
         }
 
@@ -91,6 +95,10 @@ const NavigationPanel = observer((props) => {
 
     return (
         <div className="left-panel" id={props.isPanelRolledUp ? 'rolled-up' : null}>
+            <CreatePublicationPopup 
+                isOpen={isCreatePostWindowOpen}
+                close={() => setCreatePostWindowState(false)}
+            />
             <div className="left-panel-logo">
                 <img src={logo} alt="logo" draggable="false" />
             </div>
@@ -130,13 +138,14 @@ const NavigationPanel = observer((props) => {
                         state={isOpened ? 'opened' : null}
                         className={styles.create} 
                         onClick={() => setOpenedState(prev => !prev)}
-                        ref={ref}
+                        ref={createButtonRef}
                     >
                         <img src={createImage} />
                         <span>Create</span>
                     </button>
                     <div className={styles.panel} state={isOpened ? 'opened' : null}>
-
+                        <button onClick={() => setCreatePostWindowState(true)}>Publication</button>
+                        <button>Transaction</button>
                     </div>
                 </div>
                 <div className='progress-bar'>

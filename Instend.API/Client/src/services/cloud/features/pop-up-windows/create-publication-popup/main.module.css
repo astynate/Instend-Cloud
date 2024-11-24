@@ -1,0 +1,116 @@
+.wrapper {
+    width: 500px;
+    padding-left: 17px;
+    padding-bottom: 17px;
+    grid-gap: 10px;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--main-border-color);
+}
+
+.wrapper button {
+    width: 100%;
+    cursor: pointer;
+    background: var(--main-font-color);
+    border: none;
+    outline: none;
+    color: black;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border-radius: 30px;
+    transition: 0.15s ease;
+}
+
+.wrapper button:hover {
+    opacity: 0.8;
+}
+
+.wrapper button:active {
+    opacity: 0.6;
+}
+
+.header {
+    display: flex;
+    grid-gap: 10px;
+}
+
+.avatar {
+    height: 45px;
+    width: 45px;
+    border-radius: 100%;
+}
+
+.information {
+    display: flex;
+    flex-direction: column;
+}
+
+.nickname {
+    font-weight: 700;
+    color: var(--main-font-color);
+}
+
+.name {
+    color: var(--main-paragraph-color);
+}
+
+.content {
+    min-height: 300px;
+    max-height: 400px;
+    padding-top: 17px;
+    padding-right: 15px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.textarea {
+    height: auto;
+    width: 100%;
+    margin-top: 12px;
+    font-size: 18px;
+    font-weight: 500;
+    font-family: 'Open Sans', sans-serif;
+    background: none;
+    resize: none;
+    border: none;
+    outline: none;
+}
+
+.controlAttachments {
+    display: flex;
+    grid-gap: 5px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    color: var(--main-paragraph-color);
+    justify-content: space-between;
+    border: 1px solid var(--main-border-color);
+}
+
+.controlAttachments img {
+    height: 21px;
+    width: 21px;
+    object-fit: contain;
+    flex-shrink: 1;
+    filter: var(--main-filter);
+    cursor: pointer;
+}
+
+.control {
+    display: flex;
+    grid-gap: 10px;
+}
+
+.bottom {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 10px;
+    padding-right: 17px;
+}
+
+.attachments {
+    margin-top: 10px;
+    border-radius: 5px;
+}

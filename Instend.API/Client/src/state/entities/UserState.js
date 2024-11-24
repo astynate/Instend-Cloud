@@ -39,22 +39,23 @@ class UserState {
     SetLoadingState = (state) => this.isLoading = state;
 
     AddPublication = (comment, queueId) => {
-        if (comment) {
-            this.publications = this.publications.map(element => {
-                if (element.queueId === queueId) {
-                    element = comment;
-                }
+        if (!!comment === false)
+            return false;
 
-                return element;
-            });
-        }
+        this.publications = this.publications.map(element => {
+            if (element.queueId === queueId) {
+                element = comment;
+            }
+
+            return element;
+        });
     }
 
-    GetUserOnSuccessCallback = (userData) => {
-        this.user = userData[0];
-        this.friends = userData[1];
-        this.communities = userData[2];
+    GetUserOnSuccessCallback = (data) => {
+        this.user = data[0];
+        this.friends = data[1];
         this.isAuthorize = true;
+        this.isLoading = false;
     }
 
     GetUserOnFailureCallback = () => {
@@ -62,16 +63,10 @@ class UserState {
         this.isLoading = false;
     }
 
-    UpdateAuthorizeState = async (location, navigate) => {
-        // this.isLoading = true;
-        // await this.UpdateUserData(location, navigate);
-        // this.isLoading = false;
-    }
-
     ChangeOccupiedSpace(occupiedSpace) {
         if (!this.user) 
             return false;
-
+        
         this.user.occupiedSpace = occupiedSpace;
     }
 
@@ -100,15 +95,6 @@ class UserState {
         }
 
         this.friends = this.friends.filter(IsCurrentFriendNotTarget);
-    }
-
-    GetFriendsRequests = () => {
-        // return this.friends
-        //     .filter(element => element.isSubmited === false && element.userId === this.user.id);
-    }
-
-    SetCountNotifications = () => {
-        // this.countNotifications = this.GetFriendsRequests().length;
     }
 
     SetFriend = (friend) => {

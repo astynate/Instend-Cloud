@@ -4,7 +4,6 @@ using Instend.Core.Dependencies.Services.Internal.Services;
 using Instend.Core.Models.Account;
 using Instend.Core.Models.Email;
 using Instend.Dependencies.Services;
-using Instend.Repositories.Account;
 using Instend.Repositories.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +19,10 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
         private readonly IConfirmationsRepository _confirmationRepository;
 
+        private readonly ISessionsRepository _sessionsRepository;
+
+        private readonly IEncryptionService _encryptionService;
+
         private readonly IEmailService _emailService;
 
         public AuthenticationController
@@ -27,17 +30,21 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             ITokenService tokenService,
             IAccountsRepository usersRepository,
             IConfirmationsRepository emailRepository,
-            IEmailService emailService
+            IEmailService emailService,
+            IEncryptionService encryptionService,
+            ISessionsRepository sessionsRepository
         )
         {
             _tokenService = tokenService;
             _accountsRepository = usersRepository;
             _confirmationRepository = emailRepository;
+            _sessionsRepository = sessionsRepository;
+            _encryptionService = encryptionService;
             _emailService = emailService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAuthenticationState(ISessionsRepository sessionsRepository, string accessToken)
+        public async Task<IActionResult> GetAuthenticationState(string accessToken)
         {
             var refreshToken = Request.Cookies["system_refresh_token"]?.ToString();
 
@@ -52,7 +59,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             if (_tokenService.IsTokenAlive(accessToken) == true)
                 return Ok(accessToken);
 
-            var sessionModel = await sessionsRepository
+            var sessionModel = await _sessionsRepository
                 .GetSessionByTokenAndUserId(userId, refreshToken);
 
             if (sessionModel == null || sessionModel.EndTime <= DateTime.Now)
@@ -65,62 +72,51 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(IEncryptionService encryptionService, ISessionsRepository sessionsRepository, IConfirmationsRespository confirmationRespository)
+        public async Task<IActionResult> Login([FromForm] string username, [FromForm] string password)
         {
-            var username = Request.Form["username"];
-            var password = Request.Form["password"];
-
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-                return BadRequest("Ivalid form data");
-
-            var user = await _accountsRepository.GetByEmailOrNicknameAsync(username);
-
-            if (user is null)
-                return BadRequest("User not found");
-
-            var account = await _accountsRepository.GetByEmailAsync(user.Email);
+            var account = await _accountsRepository.GetByEmailOrNicknameAsync(username);
 
             if (account == null)
-                return Conflict("User not found");
+                return BadRequest("User not found");
 
             if (account.IsConfirmed == false)
             {
-                var confirmationCreationResult = ConfirmationModel
-                    .Create(account.Email, encryptionService.GenerateSecretCode(6), account.Id);
+                var confirmation = ConfirmationModel
+                    .Create(account.Email, _encryptionService.GenerateSecretCode(6), account.Id);
 
-                if (confirmationCreationResult.IsFailure)
-                    return BadRequest(confirmationCreationResult.Error);
+                if (confirmation.IsFailure)
+                    return BadRequest(confirmation.Error);
 
-                await confirmationRespository.AddAsync(confirmationCreationResult.Value);
+                await _confirmationRepository.AddAsync(confirmation.Value);
 
-                await _emailService.SendEmailConfirmation(confirmationCreationResult.Value.Email,
-                    confirmationCreationResult.Value.Code, confirmationCreationResult.Value.Link.ToString());
+                await _emailService.SendEmailConfirmation(confirmation.Value.Email,
+                    confirmation.Value.Code, confirmation.Value.Link.ToString());
 
-                return StatusCode(470, confirmationCreationResult.Value.Link.ToString());
+                return StatusCode(470, confirmation.Value.Link.ToString());
             }
 
-            if (user.Password != encryptionService.HashUsingSHA256(password))
+            if (account.Password != _encryptionService.HashUsingSHA256(password))
                 return StatusCode(StatusCodes.Status401Unauthorized);
 
             string accessToken = _tokenService
-                .GenerateAccessToken(user.Id.ToString(), 30, Configuration.TestEncryptionKey);
+                .GenerateAccessToken(account.Id.ToString(), 30, Configuration.TestEncryptionKey);
 
             string refreshToken = _tokenService
-                .GenerateRefreshToken(user.Id.ToString());
+                .GenerateRefreshToken(account.Id.ToString());
 
             var sessionCreationResult = SessionModel.Create
             (
                 "",
                 "",
                 refreshToken,
-                user.Id
+                account.Id
             );
 
             if (sessionCreationResult.IsFailure)
                 return BadRequest(sessionCreationResult.Error);
 
-            await sessionsRepository.AddSessionAsync(sessionCreationResult.Value);
-            await _emailService.SendLoginNotificationEmail(user.Email, sessionCreationResult.Value);
+            await _sessionsRepository.AddSessionAsync(sessionCreationResult.Value);
+            await _emailService.SendLoginNotificationEmail(account.Email, sessionCreationResult.Value);
 
             Response.Cookies.Append("system_refresh_token", refreshToken, new CookieOptions
             {

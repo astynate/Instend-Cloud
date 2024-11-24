@@ -1,6 +1,5 @@
 import React, { useLayoutEffect } from "react";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import styles from './main.module.css';
 import background from './images/background.png';
 import Header from "../../accounts/widgets/header/Header";
@@ -8,8 +7,6 @@ import logo from './images/logo.png';
 import UserState from "../../../state/entities/UserState";
 
 const Layout = () => {
-    const { t } = useTranslation();
-
     useLayoutEffect(() => {
         document.getElementById('root').className = 'light-mode';
         localStorage.setItem('color-mode', 'light-mode');

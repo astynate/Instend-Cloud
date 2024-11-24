@@ -1,7 +1,7 @@
 .wrapper {
     display: flex;
-    color: var(--main-font-color);
     grid-gap: 10px;
+    flex-shrink: 1;
 }
 
 .point {
@@ -9,8 +9,9 @@
     width: 6px;
     background-color: var(--main-font-color);
     border-radius: 100%;
-    animation: bounce 0.4s infinite alternate;
+    flex-shrink: 1;
     opacity: 1;
+    animation: bounce 0.4s infinite alternate;
 }
 
 .point:nth-child(2) {
@@ -23,7 +24,7 @@
 
 @keyframes bounce {
     to {
-        transform: translateY(-15px);
+        transform: translateY(-15px) scale(125%);
         opacity: 0.5;
     }
 }

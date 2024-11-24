@@ -40,7 +40,9 @@ const Publication = observer(({
             <div className={styles.postContent}>
                 <span className={styles.text}>Some text</span>
                 {isAttachmentsHidden === false && 
-                    <Attachments />}
+                    <div className={styles.attachments}>
+                        <Attachments />
+                    </div>}
             </div>
             {isControlHidden === false && <PublicationControlPanel />}
         </div>

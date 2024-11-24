@@ -9,16 +9,13 @@ import musicActive from './images/music-active.png';
 import HeaderMusicPlayer from '../../singletons/header-music-player/HeaderMusicPlayer';
 import Notifications from '../../singletons/notifications-popup/Notifications';
 import ProfilePopUp from '../../singletons/profile-popup/ProfilePopUp.jsx';
+import defaultAvatar from './images/default-avatar.png';
 
 const Header = observer((props) => {
     const [current, setCurrect] = useState(-1);
     const { user } = userState;
     const wrapper = useRef();
     const profileRef = useRef();
-
-    useEffect(() => {
-        userState.SetCountNotifications();
-    }, [userState, userState.friends, userState.friends.length]);
 
     useEffect(() => {
         const handleClick = (event) => {
@@ -59,7 +56,7 @@ const Header = observer((props) => {
                 </div>
                 <div className={styles.button} onClick={() => setCurrect(2)}>
                     <img 
-                        src={`data:image/png;base64,${user.avatar}`} 
+                        src={`data:image/png;base64,${user.avatar ?? defaultAvatar}`} 
                         draggable='false' 
                         className={styles.avatar} 
                     />

@@ -13,6 +13,7 @@ import Error from '../../shared/error/Error'
 import UserState from '../../../../state/entities/UserState';
 import ValidationHandler from '../../../../utils/handlers/ValidationHandler';
 import './main.css';
+import AccountController from '../../../../api/AccountController';
 
 const ValidateLoginForm = (email, password) => {
     return ValidationHandler.ValidateVarchar(email, 45) &&
@@ -24,8 +25,9 @@ const Login = observer(() => {
     const [password, setPassword] = useState('');
     const [formState, setFormState] = useState('invalid');
     const [isError, setErrorState] = useState(false);
+
     const { t } = useTranslation();
-    const { UpdateAuthorizeState } = UserState;
+
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -59,29 +61,26 @@ const Login = observer(() => {
             clearTimeout(timeoutId);
         
             if (response.status === 200) {
-                const accessToken = await response.text();
-                localStorage.setItem('system_access_token', accessToken);
+                localStorage.setItem('system_access_token', await response.text());
 
-                UpdateAuthorizeState(location.pathname, navigate);
+                await AccountController.GetAccountData(
+                    UserState.GetUserOnSuccessCallback,
+                    UserState.GetUserOnFailureCallback,
+                    () => UserState.SetLoadingState(false)
+                );
 
-                setFormState('valid');
                 navigate('/');
-            } 
-            
-            else if (response.status === 470) {
+                setFormState('valid');
+            } else if (response.status === 470) {
                 const confirmationLink = await response.text();
                 navigate('/account/email/confirmation/' + confirmationLink);
-            } 
-            
-            else {
+            } else {
                 setErrorState(true);
                 setFormState('invalid');
             }
-
         } catch (error) {
             clearTimeout(timeoutId);
             setFormState('invalid');
-
             setErrorState(true);
         }
     };

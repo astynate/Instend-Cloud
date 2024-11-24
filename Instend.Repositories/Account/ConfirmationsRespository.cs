@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Instend.Repositories.Account
 {
-    public class ConfirmationsRespository : IConfirmationsRespository
+    public class ConfirmationsRespository : IConfirmationsRepository
     {
         private readonly DatabaseContext _context = null!;
 
@@ -27,10 +27,10 @@ namespace Instend.Repositories.Account
             _encryptionService = encryptionService;
         }
 
-        public async Task<Result<ConfirmationModel>> GetByLinkAsync(string link)
+        public async Task<Result<ConfirmationModel>> GetByLinkAsync(Guid link)
         {
-            ConfirmationModel? confirmation = await _context.Confirmations.AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Link == Guid.Parse(link));
+            var confirmation = await _context.Confirmations.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Link == link);
 
             if (confirmation == null)
                 return Result.Failure<ConfirmationModel>("Confirmation not found");
@@ -66,8 +66,10 @@ namespace Instend.Repositories.Account
             if (confirmation is null) 
                 return Result.Failure("Confirmation cannot be null");
 
-            await _context.Confirmations.AsNoTracking()
-                .Where(x => x.Link == confirmation.Link).ExecuteDeleteAsync();
+            await _context.Confirmations
+                .AsNoTracking()
+                .Where(x => x.Link == confirmation.Link)
+                .ExecuteDeleteAsync();
 
             await _context.SaveChangesAsync();
             return Result.Success();
@@ -113,6 +115,11 @@ namespace Instend.Repositories.Account
             }
 
             return Result.Success(confirmation);
+        }
+
+        public Task ConfirmEmailAddressAsync(string email)
+        {
+            throw new NotImplementedException();
         }
     }
 }

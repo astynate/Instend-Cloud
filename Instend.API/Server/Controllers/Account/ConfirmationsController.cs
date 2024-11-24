@@ -2,7 +2,6 @@
 using Instend.Core.Dependencies.Repositories.Account;
 using Instend.Core.Dependencies.Services.Internal.Services;
 using Instend.Dependencies.Services;
-using Instend.Repositories.Account;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,31 +11,37 @@ namespace Instend.Server.Controllers.Account
     [Route("[controller]")]
     public class ConfirmationsController : ControllerBase
     {
-        private readonly IConfirmationsRespository _confirmationRespository;
+        private readonly IAccountsRepository _accountsRepository;
+
+        private readonly IConfirmationsRepository _confirmationRespository;
 
         private readonly DatabaseContext _context;
 
-        public ConfirmationsController(DatabaseContext context, IConfirmationsRespository confirmationRespository)
+        public ConfirmationsController
+        (
+            DatabaseContext context, 
+            IAccountsRepository accountsRepository, 
+            IConfirmationsRepository confirmationRespository
+        )
         {
-            _confirmationRespository = confirmationRespository;
             _context = context;
+            _accountsRepository = accountsRepository;
+            _confirmationRespository = confirmationRespository;
         }
 
         [HttpGet("link/{link}")]
-        public async Task<IActionResult> GetConfirmationByLink(string link)
+        public async Task<IActionResult> GetConfirmationByLink(Guid link)
         {
             var confirmation = await _confirmationRespository.GetByLinkAsync(link);
 
             if (confirmation.IsFailure)
-            {
                 return BadRequest(confirmation.Error);
-            }
 
             return Ok(confirmation.Value.Email);
         }
 
         [HttpPost]
-        public async Task<IActionResult> ConfirmEmailAddress(IConfirmationsRepository emailRepository, string link, string code)
+        public async Task<IActionResult> ConfirmEmailAddress(Guid link, string code)
         {
             var confirmation = await _confirmationRespository.GetByLinkAsync(link);
 
@@ -46,23 +51,16 @@ namespace Instend.Server.Controllers.Account
             if (confirmation.Value.Code.ToLower() != code.ToLower())
                 return BadRequest("Incorrect code");
 
-            try
+            await _context.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
             {
-                await _context.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
+                using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
-                    using (var transaction = await _context.Database.BeginTransactionAsync())
-                    {
-                        await _confirmationRespository.DeleteAsync(confirmation.Value);
-                        await emailRepository.ConfirmEmailAddressAsync(confirmation.Value.Email);
+                    await _confirmationRespository.DeleteAsync(confirmation.Value);
+                    await _accountsRepository.Confirm(confirmation.Value.Email);
 
-                        transaction.Commit();
-                    }
-                });
-            }
-            catch
-            {
-                return BadRequest();
-            }
+                    transaction.Commit();
+                }
+            });
 
             return Ok();
         }

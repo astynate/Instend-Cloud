@@ -13,14 +13,14 @@ namespace Instend.Server.Controllers.Account
     {
         private readonly IEmailService _emailService;
 
-        private readonly IConfirmationsRespository _confirmationRespository;
+        private readonly IConfirmationsRepository _confirmationRespository;
 
         private readonly IAccountsRepository _accountsRepository;
 
         public PasswordRecoveryController
         (
             IEmailService emailService,
-            IConfirmationsRespository confirmationRespository,
+            IConfirmationsRepository confirmationRespository,
             IAccountsRepository usersRepository
         )
         {
@@ -57,9 +57,9 @@ namespace Instend.Server.Controllers.Account
         }
 
         [HttpPut]
-        public async Task<IActionResult> RecoverPassword(IValidationService validationService, string link, string code, string password)
+        public async Task<IActionResult> RecoverPassword(IValidationService validationService, Guid link, string code, string password)
         {
-            if (validationService.ValidateVarchar(link, code, password) == false)
+            if (validationService.ValidateVarchar(code, password) == false)
                 return BadRequest("Invalid data");
 
             var searchConfirmationResult = await _confirmationRespository
@@ -84,7 +84,7 @@ namespace Instend.Server.Controllers.Account
         }
 
         [HttpGet]
-        public async Task<IActionResult> RecoverConfirmation(string link, string code)
+        public async Task<IActionResult> RecoverConfirmation(Guid link, string code)
         {
             var confirmation = await _confirmationRespository.GetByLinkAsync(link);
 

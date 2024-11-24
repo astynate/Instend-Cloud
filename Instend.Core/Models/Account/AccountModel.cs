@@ -14,8 +14,8 @@ namespace Instend.Core.Models.Account
         [Column("surname")] public string Surname { get; private set; } = null!;
         [Column("nickname")] public string Nickname { get; private set; } = null!;
         [Column("email")] public string Email { get; private set; } = null!;
-        [Column("avatar")] public string? Avatar { get; private set; } = Configuration.DefaultAvatarPath;
-        [Column("header")] public string Header { get; private set; } = string.Empty;
+        [Column("avatar")] public string? Avatar { get; set; } = string.Empty;
+        [Column("header")] public string Header { get; set; } = string.Empty;
         [Column("balance")] public decimal Balance { get; private set; } = 0;
         [Column("password")] public string Password { get; private set; } = null!;
         [Column("storage_space")] public double StorageSpace { get; private set; } = 1073741824;

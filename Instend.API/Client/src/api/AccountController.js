@@ -5,7 +5,7 @@ class AccountController {
     static GetAccountData = async (onSuccessCallback = () => {}, onErrorCallback = () => {}) => {
         await instance.get('/accounts')
             .then((response) => {
-                if (response && response.data && response.data.length > 2) {
+                if (response && response.data && response.data.length > 1) {
                     onSuccessCallback(response.data);
                 } else {
                     onErrorCallback();

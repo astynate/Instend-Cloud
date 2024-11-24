@@ -118,14 +118,8 @@
 
 .attachments {
     width: 100%;
-    margin-top: 5px;
-    display: flex;
-    grid-gap: 4px;
-    border-radius: 3px;
+    border-radius: 7px;
     overflow: hidden;
-    image-rendering: pixelated;
-    border: 1px solid var(--main-border-color);
-    cursor: pointer;
 }
 
 .statistics {

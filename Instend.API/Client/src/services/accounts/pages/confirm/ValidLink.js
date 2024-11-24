@@ -7,7 +7,6 @@ import Button from '../../shared/button/Button';
 import Error from '../../shared/error/Error';
 
 const ValidLink = (props) => {
-
     const [code, setCode] = useState('');
     const [loading, setLoading] = useState(false);
     const [resendingState, setResendingState] = useState('valid');
@@ -15,7 +14,6 @@ const ValidLink = (props) => {
     const navigate = useNavigate();
 
     const ResendConfirmation = async () => {
-
         const controller = new AbortController();
         const { signal } = controller;
 
@@ -39,47 +37,36 @@ const ValidLink = (props) => {
         }, 60000);
 
         clearTimeout(timeoutId);
-
     }
 
     useEffect(() => {
-
         const ConfirmEmail = async () => {
-
             const controller = new AbortController();
             const { signal } = controller;
-
+            
             const timeoutId = setTimeout(() => {
-
                 controller.abort();
-
             }, 5000);
 
-            const response = await fetch(`/confirmations?link=${props.link}&code=${code}`, 
-                {method: 'POST', signal});
+            const response = await fetch(`/confirmations?link=${props.link}&code=${code}`, {method: 'POST', signal})
+                .catch(error => {
+                    console.log(error);
+                });
             
-            if (response.status === 200) {
-
+            if (response && response.status === 200) {
                 navigate('/account/login');
-
             } else {
-
                 setErrorState(true);
-
             }
 
             setLoading(false);
             clearTimeout(timeoutId);
-
         };
 
         if (code.length === 6) {
-
             setLoading(true);
             ConfirmEmail();
-
         }
-
     }, [code]);
 
     return (
