@@ -1,5 +1,5 @@
 ﻿using Instend.Core.Models.Account;
-using Instend.Core.Models.Messages;
+using Instend.Core.Models.Messenger.Message;
 
 namespace Instend.Core.TransferModels.Messenger
 {
@@ -9,8 +9,8 @@ namespace Instend.Core.TransferModels.Messenger
 
         public int queueId = 1;
 
-        public MessageModel? message;
+        public Message? message;
 
-        public AccountModel? account;
+        public Models.Account.Account? account;
     }
 }

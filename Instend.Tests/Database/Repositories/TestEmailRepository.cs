@@ -1,6 +1,6 @@
-﻿using Instend.Core;
-using Instend.Core.Models.Account;
+﻿using Instend.Core.Models.Account;
 using Instend.Repositories.Account;
+using Instend.Repositories.Contexts;
 using Instend_Version_2._0._0.ServerApp.Services;
 using System.Transactions;
 
@@ -11,7 +11,7 @@ namespace Instend.Tests.Database.Repositories
     public class TestEmailRepository
     {
 
-        private readonly static DatabaseContext _context = new DatabaseContext();
+        private readonly static AccountsContext _context = new AccountsContext();
 
         private readonly static IConfirmationsRepository _emailRepository = 
             new ConfirmationsRepository(_context, new ValidationService());

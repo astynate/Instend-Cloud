@@ -6,9 +6,9 @@ using Instend.Services.Internal.Handlers;
 using Instend_Version_2._0._0.Server.TransferModels.Account;
 using Instend.Core.Dependencies.Repositories.Account;
 using Instend.Core.Models.Abstraction;
-using Instend.Core.Models.Storage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Instend.Core.Models.Storage.Album;
 
 namespace Instend_Version_2._0._0.Server.Controllers.Access
 {
@@ -22,14 +22,14 @@ namespace Instend_Version_2._0._0.Server.Controllers.Access
 
         private readonly IRequestHandler _requestHandler;
 
-        private readonly IAccessRepository<AlbumAccess, AlbumModel> _albumAccess;
+        private readonly IAccessRepository<AlbumAccess, Album> _albumAccess;
 
         public AlbumAccessController
         (
             IAlbumRepository albumRepository,
             IRequestHandler requestHandler,
             IAccountsRepository accountsRepository,
-            IAccessRepository<AlbumAccess, AlbumModel> albumAccess
+            IAccessRepository<AlbumAccess, Album> albumAccess
         )
         {
             _albumRepository = albumRepository;
@@ -43,12 +43,12 @@ namespace Instend_Version_2._0._0.Server.Controllers.Access
         [Route("/api/album-access")]
         public async Task<IActionResult> GetAccess(Guid id)
         {
-            AlbumModel? album = await _albumRepository.GetByIdAsync(id);
+            Album? album = await _albumRepository.GetByIdAsync(id);
 
             if (album == null)
                 return BadRequest("Folder not found");
 
-            var owner = await _accountsRepository.GetByIdAsync(album.OwnerId);
+            var owner = await _accountsRepository.GetByIdAsync(album.AccountId);
 
             if (owner == null)
                 return Conflict("User not found");

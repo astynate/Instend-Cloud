@@ -1,9 +1,10 @@
 ﻿using Instend.Core;
 using Instend.Core.Dependencies.Repositories.Account;
 using Instend.Core.Models.Access;
-using Instend.Core.Models.Storage;
 using Instend.Repositories.Storage;
 using CSharpFunctionalExtensions;
+using Instend.Core.Models.Storage.File;
+using Instend.Core.Models.Storage.Collection;
 
 namespace Instend.Services.Internal.Handlers
 {
@@ -13,15 +14,15 @@ namespace Instend.Services.Internal.Handlers
 
         private readonly IAccountsRepository _accountsRepository;
 
-        private readonly IAccessRepository<FolderAccess, FolderModel> _folderAccessRepository;
+        private readonly IAccessRepository<FolderAccess, Collection> _folderAccessRepository;
 
-        private readonly IAccessRepository<Core.Models.Access.FileAccess, FileModel> _fileAccessRepository;
+        private readonly IAccessRepository<Core.Models.Access.FileAccess, Core.Models.Storage.File.File> _fileAccessRepository;
 
         public AccessHandler
         (
             IRequestHandler requestHandler,
-            IAccessRepository<FolderAccess, FolderModel> folderAccessRepository,
-            IAccessRepository<Core.Models.Access.FileAccess, FileModel> fileAccessRepository,
+            IAccessRepository<FolderAccess, Collection> folderAccessRepository,
+            IAccessRepository<Core.Models.Access.FileAccess, Core.Models.Storage.File.File> fileAccessRepository,
             IAccountsRepository accountRespotiroy
         )
         {
@@ -31,17 +32,17 @@ namespace Instend.Services.Internal.Handlers
             _accountsRepository = accountRespotiroy;
         }
 
-        public async Task<Result> GetAccessStateAsync(FileModel file, Configuration.Abilities operation, string? bearer)
+        public async Task<Result> GetAccessStateAsync(Core.Models.Storage.File.File file, Configuration.Abilities operation, string? bearer)
         {
             var userId = _requestHandler.GetUserId(bearer);
 
             if (userId.IsFailure)
                 return Result.Failure("Invalid usser id");
 
-            if (file.OwnerId == Guid.Parse(userId.Value))
+            if (file.AccountId == Guid.Parse(userId.Value))
                 return Result.Success();
 
-            if (file.Access == Configuration.AccessTypes.Private && Guid.Parse(userId.Value) != file.OwnerId)
+            if (file.Access == Configuration.AccessTypes.Private && Guid.Parse(userId.Value) != file.AccountId)
             {
                 bool folderAccess = file.FolderId != Guid.Empty ? await _folderAccessRepository
                     .GetUserAccess(Guid.Parse(userId.Value), file.FolderId) : false;
@@ -71,20 +72,20 @@ namespace Instend.Services.Internal.Handlers
             return Result.Success();
         }
 
-        public async Task<Result> GetAccessStateAsync(FolderModel folder, Configuration.Abilities operation, string bearer)
+        public async Task<Result> GetAccessStateAsync(Collection folder, Configuration.Abilities operation, string bearer)
         {
             var userId = _requestHandler.GetUserId(bearer);
 
-            if (folder.FolderType == Configuration.FolderTypes.System && operation != Configuration.Abilities.Read)
+            if (folder.FolderType == Configuration.CollectionTypes.System && operation != Configuration.Abilities.Read)
                 return Result.Failure("You cannot perform this operation on the system folder.");
 
             if (userId.IsFailure)
                 return Result.Failure("Invalid user id");
 
-            if (folder.OwnerId == Guid.Parse(userId.Value))
+            if (folder.AccountId == Guid.Parse(userId.Value))
                 return Result.Success();
 
-            if (folder.Access == Configuration.AccessTypes.Private && Guid.Parse(userId.Value) != folder.OwnerId)
+            if (folder.Access == Configuration.AccessTypes.Private && Guid.Parse(userId.Value) != folder.AccountId)
                 return Result.Failure("Only owner haves an access to private folder");
 
             if (folder.Access == Configuration.AccessTypes.Favorites && await _folderAccessRepository.GetUserAccess(Guid.Parse(userId.Value), folder.Id) == false)

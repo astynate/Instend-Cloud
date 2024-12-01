@@ -1,32 +1,32 @@
-﻿using Instend.Core;
-using Instend.Core.Models.Account;
+﻿using Instend.Core.Models.Account;
+using Instend.Repositories.Contexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Instend.Repositories.Repositories
 {
     public class SessionsRepository : ISessionsRepository
     {
-        private readonly DatabaseContext _context = null!;
+        private readonly AccountsContext _context = null!;
 
-        public SessionsRepository(DatabaseContext context)
+        public SessionsRepository(AccountsContext context)
         {
             _context = context;
         }
 
-        public async Task<List<SessionModel>> GetSessionsByUserId(Guid userId)
+        public async Task<List<AccountSession>> GetSessionsByUserId(Guid userId)
         {
             return await _context.Sessions
                 .Where(x => x.UserId == userId)
                 .ToListAsync();
         }
 
-        public async Task<SessionModel?> GetSessionByTokenAndUserId(Guid userId, string token)
+        public async Task<AccountSession?> GetSessionByTokenAndUserId(Guid userId, string token)
         {
             return await _context.Sessions.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.UserId == userId && x.RefreshToken == token);
         }
 
-        public async Task AddSessionAsync(SessionModel session)
+        public async Task AddSessionAsync(AccountSession session)
         {
             await _context.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
             {
@@ -37,7 +37,7 @@ namespace Instend.Repositories.Repositories
                         transaction.Rollback(); return;
                     }
 
-                    List<SessionModel> userSessions = await GetSessionsByUserId(session.UserId);
+                    List<AccountSession> userSessions = await GetSessionsByUserId(session.UserId);
 
                     if (userSessions != null && userSessions.Count >= 5)
                     {

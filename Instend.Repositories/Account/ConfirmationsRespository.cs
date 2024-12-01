@@ -1,15 +1,15 @@
 ﻿using CSharpFunctionalExtensions;
-using Instend.Core;
 using Instend.Core.Dependencies.Repositories.Account;
 using Instend.Core.Dependencies.Services.Internal.Services;
 using Instend.Core.Models.Email;
+using Instend.Repositories.Contexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Instend.Repositories.Account
 {
     public class ConfirmationsRespository : IConfirmationsRepository
     {
-        private readonly DatabaseContext _context = null!;
+        private readonly AccountsContext _context = null!;
 
         private readonly IValidationService _validationService;
 
@@ -17,7 +17,7 @@ namespace Instend.Repositories.Account
 
         public ConfirmationsRespository
         (
-            DatabaseContext context, 
+            AccountsContext context, 
             IValidationService validationService, 
             IEncryptionService encryptionService
         )
@@ -27,25 +27,25 @@ namespace Instend.Repositories.Account
             _encryptionService = encryptionService;
         }
 
-        public async Task<Result<ConfirmationModel>> GetByLinkAsync(Guid link)
+        public async Task<Result<AccountConfirmation>> GetByLinkAsync(Guid link)
         {
             var confirmation = await _context.Confirmations.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Link == link);
 
             if (confirmation == null)
-                return Result.Failure<ConfirmationModel>("Confirmation not found");
+                return Result.Failure<AccountConfirmation>("Confirmation not found");
 
             if (DateTime.Now < confirmation.EndTime)
                 return Result.Success(confirmation);
 
             await DeleteAsync(confirmation);
             
-            return Result.Failure<ConfirmationModel>("Link has expired");
+            return Result.Failure<AccountConfirmation>("Link has expired");
         }
 
-        public async Task<Result> AddAsync(ConfirmationModel confirmation)
+        public async Task<Result> AddAsync(AccountConfirmation confirmation)
         {
-            ConfirmationModel? confirmationModel = await _context.Confirmations
+            AccountConfirmation? confirmationModel = await _context.Confirmations
                 .AsNoTracking().FirstOrDefaultAsync(x => x.Email == confirmation.Email);
 
             if (confirmationModel != null && confirmationModel.CreationTime.AddMinutes(1) >= DateTime.Now)
@@ -61,7 +61,7 @@ namespace Instend.Repositories.Account
             return Result.Success();
         }
 
-        public async Task<Result> DeleteAsync(ConfirmationModel confirmation)
+        public async Task<Result> DeleteAsync(AccountConfirmation confirmation)
         {
             if (confirmation is null) 
                 return Result.Failure("Confirmation cannot be null");
@@ -75,16 +75,16 @@ namespace Instend.Repositories.Account
             return Result.Success();
         }
 
-        public async Task<Result<ConfirmationModel>> UpdateByLinkAsync(IEncryptionService encryptionService, string link)
+        public async Task<Result<AccountConfirmation>> UpdateByLinkAsync(IEncryptionService encryptionService, string link)
         {
             if (string.IsNullOrEmpty(link) || string.IsNullOrWhiteSpace(link))
-                return Result.Failure<ConfirmationModel>("Invalid link");
+                return Result.Failure<AccountConfirmation>("Invalid link");
 
-            ConfirmationModel? confirmationModel = await _context.Confirmations
+            AccountConfirmation? confirmationModel = await _context.Confirmations
                 .FirstOrDefaultAsync(x => x.Link == Guid.Parse(link) && x.CreationTime.AddMinutes(1) <= DateTime.Now);
 
             if (confirmationModel == null)
-                return Result.Failure<ConfirmationModel>("Confirmation not found");
+                return Result.Failure<AccountConfirmation>("Confirmation not found");
 
             confirmationModel.Update(encryptionService);
             _context.Entry(confirmationModel).State = EntityState.Modified;
@@ -96,22 +96,22 @@ namespace Instend.Repositories.Account
             }
             catch (DbUpdateException ex)
             {
-                return Result.Failure<ConfirmationModel>($"Failed to update confirmation: {ex.Message}");
+                return Result.Failure<AccountConfirmation>($"Failed to update confirmation: {ex.Message}");
             }
         }
 
-        public async Task<Result<ConfirmationModel>> GetByEmailAsync(string email)
+        public async Task<Result<AccountConfirmation>> GetByEmailAsync(string email)
         {
-            ConfirmationModel? confirmation = await _context.Confirmations.AsNoTracking()
+            AccountConfirmation? confirmation = await _context.Confirmations.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Email == email);
 
             if (confirmation == null)
-                return Result.Failure<ConfirmationModel>("Confirmation not found");
+                return Result.Failure<AccountConfirmation>("Confirmation not found");
 
             if (DateTime.Now > confirmation.EndTime)
             {
                 await DeleteAsync(confirmation);
-                return Result.Failure<ConfirmationModel>("Link has expired");
+                return Result.Failure<AccountConfirmation>("Link has expired");
             }
 
             return Result.Success(confirmation);

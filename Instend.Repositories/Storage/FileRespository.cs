@@ -1,7 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
 using Instend.Core;
 using Instend.Core.Dependencies.Repositories.Account;
-using Instend.Core.Models.Storage;
+using Instend.Core.Models.Storage.File;
+using Instend.Repositories.Contexts;
 using Instend.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +10,7 @@ namespace Instend.Repositories.Storage
 {
     public class FileRespository : IFileRespository
     {
-        private readonly DatabaseContext _context = null!;
+        private readonly StorageContext _storageContext = null!;
 
         private readonly IPreviewService _previewService;
 
@@ -17,52 +18,52 @@ namespace Instend.Repositories.Storage
 
         public FileRespository
         (
-            DatabaseContext context,
+            StorageContext storageContext,
             IAccountsRepository accountsRepository, 
             IPreviewService previewService
         )
         {
-            _context = context;
+            _storageContext = storageContext;
             _accountsRepository = accountsRepository;
             _previewService = previewService;
         }
 
-        public async Task<Result<FileModel>> GetByIdAsync(Guid id) => await _context.Files.AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == id) ?? Result.Failure<FileModel>("Not found");
+        public async Task<Result<Core.Models.Storage.File.File>> GetByIdAsync(Guid id) => await _storageContext.Files.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == id) ?? Result.Failure<File>("Not found");
 
-        public async Task<Result<FileModel>> AddAsync(string name, string? type, double size, Guid ownerId, Guid folderId)
+        public async Task<Result<Core.Models.Storage.File.File>> AddAsync(string name, string? type, double size, Guid ownerId, Guid folderId)
         {
-            var fileCreationResult = FileModel.Create(name, type, size, ownerId, folderId);
+            var fileCreationResult = Core.Models.Storage.File.File.Create(name, type, size, ownerId, folderId);
 
             if (fileCreationResult.IsFailure == true)
-                return Result.Failure<FileModel>(fileCreationResult.Error);
+                return Result.Failure<File>(fileCreationResult.Error);
 
-            await _context.AddAsync(fileCreationResult.Value);
-            await _context.SaveChangesAsync();
+            await _storageContext.AddAsync(fileCreationResult.Value);
+            await _storageContext.SaveChangesAsync();
 
             return Result.Success(fileCreationResult.Value);
         }
 
-        public async Task<Result<FileModel>> AddPhotoAsync(string name, string? type, double size, Guid ownerId)
+        public async Task<Result<Core.Models.Storage.File.File>> AddPhotoAsync(string name, string? type, double size, Guid ownerId)
         {
-            var photoFolder = await _context.Folders.AsNoTracking()
-                .FirstOrDefaultAsync(x => x.TypeId == Configuration.FolderTypes.System.ToString() && x.Name == "Photos" && x.OwnerId == ownerId);
+            var photoFolder = await _storageContext.Folders.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.TypeId == Configuration.CollectionTypes.System.ToString() && x.Name == "Photos" && x.AccountId == ownerId);
 
             if (photoFolder == null)
-                return Result.Failure<FileModel>("The system folder \"Photos\" could not be found, please try again later. If it doesn't help, contact support.");
+                return Result.Failure<File>("The system folder \"Photos\" could not be found, please try again later. If it doesn't help, contact support.");
 
-            var fileCreationResult = FileModel.Create(name, type, size, ownerId, photoFolder.Id);
+            var fileCreationResult = Core.Models.Storage.File.File.Create(name, type, size, ownerId, photoFolder.Id);
 
             if (fileCreationResult.IsFailure == true)
-                return Result.Failure<FileModel>(fileCreationResult.Error);
+                return Result.Failure<File>(fileCreationResult.Error);
 
-            await _context.AddAsync(fileCreationResult.Value);
-            await _context.SaveChangesAsync();
+            await _storageContext.AddAsync(fileCreationResult.Value);
+            await _storageContext.SaveChangesAsync();
 
             return Result.Success(fileCreationResult.Value);
         }
 
-        private async Task SetFilesPreview(FileModel[] files)
+        private async Task SetFilesPreview(Core.Models.Storage.File.File[] files)
         {
             foreach (var file in files)
             {
@@ -70,9 +71,9 @@ namespace Instend.Repositories.Storage
             }
         }
 
-        public async Task<FileModel[]> GetByFolderId(Guid userId, Guid folderId)
+        public async Task<Core.Models.Storage.File.File[]> GetByFolderId(Guid userId, Guid folderId)
         {
-            var files = await _context.Files
+            var files = await _storageContext.Files
                 .AsNoTracking()
                 .Where(file => file.FolderId == folderId).ToArrayAsync();
 
@@ -81,9 +82,9 @@ namespace Instend.Repositories.Storage
 
         public async Task<object[]> GetByFolderIdWithMetaData(Guid userId, Guid folderId)
         {
-            var files = await _context.Files.AsNoTracking()
-                    .Where(x => (folderId == Guid.Empty) ? x.FolderId == folderId && x.OwnerId == userId : x.FolderId == folderId)
-                    .GroupJoin(_context.SongsMeta,
+            var files = await _storageContext.Files.AsNoTracking()
+                    .Where(x => (folderId == Guid.Empty) ? x.FolderId == folderId && x.AccountId == userId : x.FolderId == folderId)
+                    .GroupJoin(_storageContext.SongsMeta,
                         file => file.Id,
                         meta => meta.FileId,
                         (x, y) => new { File = x, Meta = y })
@@ -99,25 +100,25 @@ namespace Instend.Repositories.Storage
             return files;
         }
 
-        public async Task<Result<FileModel>> UpdateName(Guid id, string name)
+        public async Task<Result<Core.Models.Storage.File.File>> UpdateName(Guid id, string name)
         {
-            var getFileOperation = await GetByIdAsync(id);
+            var file = await GetByIdAsync(id);
 
-            if (getFileOperation.IsFailure)
-                return Result.Failure<FileModel>(getFileOperation.Error);
+            if (file.IsFailure)
+                return Result.Failure<File>(file.Error);
 
-            var fileModel = getFileOperation.Value;
+            var fileModel = file.Value;
             fileModel.Rename(name);
 
-            _context.Files.Update(fileModel);
+            _storageContext.Files.Update(fileModel);
 
-            await _context.SaveChangesAsync();
+            await _storageContext.SaveChangesAsync();
             return Result.Success(fileModel);
         }
 
         public async Task<Result> Delete(Guid id)
         {
-            var file = await _context.Files.AsNoTracking()
+            var file = await _storageContext.Files.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (file == null)
@@ -125,39 +126,38 @@ namespace Instend.Repositories.Storage
 
             var path = file.Path;
 
-            await _context.Files
+            await _storageContext.Files
                 .Where(x => x.Id == id)
                 .ExecuteDeleteAsync();
             
             var result = await _accountsRepository
-                .ChangeOccupiedSpaceValue(file.OwnerId, file.Size);
+                .ChangeOccupiedSpaceValue(file.AccountId, file.Size);
 
             if (result.IsFailure)
                 return Result.Failure(result.Error);
 
-            File.Delete(path);
+            System.IO.File.Delete(path);
 
-            await _context.SaveChangesAsync();
+            await _storageContext.SaveChangesAsync();
             return Result.Success();
         }
 
-        public async Task<FileModel[]> GetLastPhotoByUserIdAsync(Guid userId, int from, int count)
+        public async Task<Core.Models.Storage.File.File[]> GetLastPhotoByUserIdAsync(Guid userId, int from, int count)
         {
-            return await _context.Files.AsNoTracking()
-                //.OrderByDescending(x => x.CreationTime)
-                .Where(x => x.OwnerId == userId && Configuration.imageTypes.Contains(x.Type))
+            return await _storageContext.Files.AsNoTracking()
+                .Where(x => x.AccountId == userId && Configuration.imageTypes.Contains(x.Type))
                 .Skip(from)
                 .Take(count)
                 .ToArrayAsync();
         }
 
-        public async Task<FileModel[]> GetLastPhotoFromAlbum(Guid userId, Guid albumId, int from, int count)
+        public async Task<Core.Models.Storage.File.File[]> GetLastPhotoFromAlbum(Guid userId, Guid albumId, int from, int count)
         {
-            return await _context.AlbumLinks.AsNoTracking()
+            return await _storageContext.AlbumFiles.AsNoTracking()
                 .Where(x => x.ItemId == albumId)
                 .Skip(from)
                 .Take(count)
-                .Join(_context.Files,
+                .Join(_storageContext.Files,
                     albumLink => albumLink.LinkedItemId,
                     fileModel => fileModel.Id,
                     (albumLink, fileModel) => fileModel)
@@ -166,15 +166,15 @@ namespace Instend.Repositories.Storage
 
         public async Task<object[]> GetLastItemsFromAlbum(Guid userId, Guid albumId, int from, int count)
         {
-            var result = await _context.AlbumLinks.AsNoTracking()
+            var result = await _storageContext.AlbumFiles.AsNoTracking()
                 .Where(x => x.ItemId == albumId)
                 .Skip(from)
                 .Take(count)
-                .Join(_context.Files,
+                .Join(_storageContext.Files,
                     albumLink => albumLink.LinkedItemId,
                     fileModel => fileModel.Id,
                     (albumLink, fileModel) => new { AlbumLink = albumLink, File = fileModel })
-                .GroupJoin(_context.SongsMeta,
+                .GroupJoin(_storageContext.SongsMeta,
                     combined => combined.File.Id,
                     meta => meta.FileId,
                     (combined, meta) => new { combined.File, Meta = meta.DefaultIfEmpty() })
@@ -191,11 +191,11 @@ namespace Instend.Repositories.Storage
 
         public async Task<object[]> GetLastFilesWithType(Guid userId, int from, int count, string[] type)
         {
-            var result = await _context.Files.AsNoTracking()
-                .Where(x => x.OwnerId == userId && type.Contains(x.Type))
+            var result = await _storageContext.Files.AsNoTracking()
+                .Where(x => x.AccountId == userId && type.Contains(x.Type))
                 .Skip(from)
                 .Take(count)
-                .GroupJoin(_context.SongsMeta,
+                .GroupJoin(_storageContext.SongsMeta,
                         file => file.Id,
                         meta => meta.FileId,
                         (x, y) => new { File = x, Meta = y })
@@ -213,10 +213,10 @@ namespace Instend.Repositories.Storage
 
         public async Task<object[]> GetFilesByPrefix(Guid userId, string prefix)
         {
-            var result = await _context.Files.AsNoTracking()
-                .Where(x => x.OwnerId == userId && x.Name.ToLower().Contains(prefix.ToLower()))
+            var result = await _storageContext.Files.AsNoTracking()
+                .Where(x => x.AccountId == userId && x.Name.ToLower().Contains(prefix.ToLower()))
                 .Take(6)
-                .GroupJoin(_context.SongsMeta,
+                .GroupJoin(_storageContext.SongsMeta,
                         file => file.Id,
                         meta => meta.FileId,
                         (x, y) => new { File = x, Meta = y })

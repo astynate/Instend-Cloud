@@ -1,5 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using Instend.Core.Models.Storage;
+using Instend.Core.Models.Storage.File;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -55,7 +55,7 @@ namespace Instend.Core
 
         public delegate string ConvertToHtml(string path);
 
-        public delegate Task<Result<AttachmentModel>> GetAttachmentDelegate(Guid itemId, Guid attachmentId);
+        public delegate Task<Result<Attachment>> GetAttachmentDelegate(Guid itemId, Guid attachmentId);
 
         public static readonly string[] _drivePaths = { "D:/Instend LLC/System/" };
 
@@ -66,7 +66,7 @@ namespace Instend.Core
 
             foreach (var path in _drivePaths)
             {
-                DriveInfo driveInfo = new DriveInfo(Path.GetPathRoot(path) ?? "");
+                var driveInfo = new DriveInfo(Path.GetPathRoot(path) ?? "");
                 
                 if (driveInfo.IsReady)
                 {
@@ -106,7 +106,7 @@ namespace Instend.Core
             Public,
         }
 
-        public enum FolderTypes
+        public enum CollectionTypes
         {
             Ordinary,
             System,
@@ -125,7 +125,6 @@ namespace Instend.Core
             Playlist
         }
 
-        public static SymmetricSecurityKey GetSecurityKey()
-            => new(Encoding.UTF8.GetBytes(TestEncryptionKey));
+        public static SymmetricSecurityKey GetSecurityKey() => new(Encoding.UTF8.GetBytes(TestEncryptionKey));
     }
 }

@@ -35,13 +35,13 @@ namespace Instend.Server.Controllers.Account
             if (validationService.ValidateEmail(email) == false)
                 return BadRequest("Invalid email");
 
-            AccountModel? user = await _accountsRepository
+            Core.Models.Account.Account? user = await _accountsRepository
                 .GetByEmailAsync(email);
 
             if (user is null)
                 return Conflict("User not found");
 
-            var confirmationCreationResult = ConfirmationModel
+            var confirmationCreationResult = AccountConfirmation
                 .Create(email, encryptionService.GenerateSecretCode(6), user.Id);
 
             if (confirmationCreationResult.IsFailure)

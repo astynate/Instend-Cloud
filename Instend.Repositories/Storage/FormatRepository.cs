@@ -1,15 +1,15 @@
 ﻿using CSharpFunctionalExtensions;
-using Instend.Core;
-using Instend.Core.Models.Storage;
 using Instend.Services.External.FileService;
 using Instend.Core.Models.Abstraction;
 using Microsoft.EntityFrameworkCore;
+using Instend.Repositories.Contexts;
+using Instend.Core.Models.Storage.File;
 
 namespace Instend.Repositories.Storage
 {
     public class FormatRepository<Format> : IFormatRepository<Format> where Format : FormatBase, new()
     {
-        private readonly DatabaseContext _context;
+        private readonly StorageContext _storageContext;
 
         private readonly DbSet<Format> _entities;
 
@@ -17,9 +17,9 @@ namespace Instend.Repositories.Storage
 
         private readonly IPreviewService _previewService;
 
-        public FormatRepository(DatabaseContext context, IFileService fileService, IPreviewService previewService)
+        public FormatRepository(StorageContext context, IFileService fileService, IPreviewService previewService)
         {
-            _context = context;
+            _storageContext = context;
             _entities = context.Set<Format>();
             _fileService = fileService;
             _previewService = previewService;
@@ -35,7 +35,7 @@ namespace Instend.Repositories.Storage
             }
 
             await _entities.AddAsync(result.Value);
-            await _context.SaveChangesAsync();
+            await _storageContext.SaveChangesAsync();
 
             return Result.Success(result.Value);
         }
@@ -52,33 +52,34 @@ namespace Instend.Repositories.Storage
             return result;
         }
 
-        public async Task<Result<(FileModel?, Format?)>> GetByIdWithMetaData(Guid fileId)
+        public async Task<Result<(Core.Models.Storage.File.File?, Format?)>> GetByIdWithMetaData(Guid fileId)
         {
-            var files = await _context.Files.AsNoTracking()
-                    .Where(x => x.Id == fileId)
-                    .GroupJoin(_entities,
-                        file => file.Id,
-                        meta => meta.FileId,
-                        (x, y) => new { File = x, Meta = y })
-                    .SelectMany(
-                        x => x.Meta.DefaultIfEmpty(),
-                        (x, y) => new { x.File, Meta = y })
-                    .ToArrayAsync();
+            var files = await _storageContext.Files.AsNoTracking()
+                .Where(x => x.Id == fileId)
+                .GroupJoin(_entities,
+                    file => file.Id,
+                    meta => meta.FileId,
+                    (x, y) => new { File = x, Meta = y })
+                .SelectMany(
+                    x => x.Meta.DefaultIfEmpty(),
+                    (x, y) => new { x.File, Meta = y })
+                .ToArrayAsync();
 
             if (files.Length > 0)
             {
                 Array.ForEach(files, async
                     x => await x.File.SetPreview(_previewService));
 
-                return Result.Success<(FileModel?, Format?)>(new(files[0].File, files[0].Meta));
+                return Result.Success<(File?, Format?)>(new(files[0].File, files[0].Meta));
             }
 
-            return Result.Failure<(FileModel?, Format?)>("File not found");
+            return Result.Failure<(File?, Format?)>("File not found");
         }
 
         public async Task SaveChanges(Format format)
         {
-            _context.Entry(format).State = EntityState.Modified; await _context.SaveChangesAsync();
+            _storageContext.Entry(format).State = EntityState.Modified; 
+            await _storageContext.SaveChangesAsync();
         }
     }
 }

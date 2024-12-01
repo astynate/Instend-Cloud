@@ -1,6 +1,5 @@
 using Instend.Core;
 using Instend.Core.Dependencies.Repositories.Account;
-using Instend.Core.Dependencies.Repositories.Storage;
 using Instend.Core.Models.Account;
 using Instend.Dependencies.Services;
 using Instend.Repositories.Account;
@@ -20,6 +19,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Instend.Core.Dependencies.Services.Internal.Services;
 using Instend.Core.Dependencies.Services.Internal.Helpers;
+using Instend.Repositories.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +37,11 @@ builder.Services.AddTransient<LoggingMiddleware>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 
-builder.Services.AddDbContext<DatabaseContext>();
+builder.Services.AddDbContext<AccountsContext>();
+builder.Services.AddDbContext<AccessContext>();
+builder.Services.AddDbContext<MessagesContext>();
+builder.Services.AddDbContext<PublicationsContext>();
+builder.Services.AddDbContext<StorageContext>();
 
 builder.Services.AddScoped<IAccountsRepository, AccountsRepository>();
 builder.Services.AddScoped<ISessionsRepository, SessionsRepository>();
@@ -54,7 +58,6 @@ builder.Services.AddScoped<IStorageAttachmentRepository, StorageAttachmentReposi
 builder.Services.AddScoped(typeof(IPublicationRepository<,>), typeof(PublicationRepository<,>));
 builder.Services.AddScoped(typeof(IPublicationBaseRepository<>), typeof(PublicationBaseRepository<>));
 builder.Services.AddScoped(typeof(IAccessRepository<,>), typeof(AccessRepository<,>));
-builder.Services.AddScoped(typeof(IAttachmentsRepository<>), typeof(AttachmentsRepository<>));
 builder.Services.AddScoped(typeof(IFormatRepository<>), typeof(FormatRepository<>));
 builder.Services.AddScoped(typeof(ILinkBaseRepository<>), typeof(LinkBaseRepository<>));
 
@@ -114,7 +117,7 @@ app.Use(async (context, next) =>
 
         if (tokenService.IsTokenValid(accessToken) && string.IsNullOrEmpty(userId) == false)
         {
-            SessionModel? sessionModel = await sessionsRepository
+            AccountSession? sessionModel = await sessionsRepository
                 .GetSessionByTokenAndUserId(Guid.Parse(userId), refreshToken ?? "");
 
             if (sessionModel != null && sessionModel.EndTime >= DateTime.Now)

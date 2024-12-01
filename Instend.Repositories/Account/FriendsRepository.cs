@@ -1,31 +1,31 @@
 ﻿using CSharpFunctionalExtensions;
-using Instend.Core;
 using Instend.Core.Dependencies.Repositories.Account;
-using Instend.Core.Models.Public;
+using Instend.Core.Models.Account;
+using Instend.Repositories.Contexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Instend.Repositories.Account
 {
     public class FriendsRepository : IFriendsRepository
     {
-        private readonly DatabaseContext _context = null!;
+        private readonly AccountsContext _context = null!;
 
-        public FriendsRepository(DatabaseContext context)
+        public FriendsRepository(AccountsContext context)
         {
             _context = context;
         }
 
-        public async Task<FriendModel[]> GetFriendsByUserId(Guid userId)
+        public async Task<AccountFollower[]> GetFriendsByUserId(Guid userId)
         {
             return await _context.Friends.AsNoTracking()
-                .Where(x => x.UserId == userId || x.OwnerId == userId)
+                .Where(x => x.AccountModelId == userId || x.OwnerId == userId)
                 .ToArrayAsync();
         }
 
-        public async Task<Result<FriendModel>> SendRequestAsync(Guid userId, Guid ownerId)
+        public async Task<Result<AccountFollower>> SendRequestAsync(Guid userId, Guid ownerId)
         {
             int result = await _context.Friends
-                .Where(x => x.UserId == userId && x.OwnerId == ownerId || x.OwnerId == userId && x.UserId == ownerId)
+                .Where(x => x.AccountModelId == userId && x.OwnerId == ownerId || x.OwnerId == userId && x.AccountModelId == ownerId)
                 .ExecuteDeleteAsync();
 
             if (result != 0)
@@ -34,14 +34,14 @@ namespace Instend.Repositories.Account
                     .Where(x => x.Id == userId || x.Id == ownerId)
                     .ExecuteUpdateAsync(s => s.SetProperty(p => p.FriendCount, p => p.FriendCount - 1 >= 0 ? p.FriendCount - 1 : 0));
 
-                return Result.Failure<FriendModel>("0");
+                return Result.Failure<AccountFollower>("0");
             }
 
-            var friend = FriendModel.Create(userId, ownerId);
+            var friend = AccountFollower.Create(userId, ownerId);
 
             if (friend.IsFailure)
             {
-                return Result.Failure<FriendModel>(friend.Error);
+                return Result.Failure<AccountFollower>(friend.Error);
             }
 
             await _context.AddAsync(friend.Value);
@@ -53,7 +53,7 @@ namespace Instend.Repositories.Account
         public async Task<bool> SubmitRequestAsync(Guid userId, Guid friendId)
         {
             int result = await _context.Friends
-                .Where(x => x.UserId == userId && x.OwnerId == friendId)
+                .Where(x => x.AccountModelId == userId && x.OwnerId == friendId)
                 .ExecuteUpdateAsync(x => x.SetProperty(p => p.IsSubmited, true));
 
             await _context.Accounts

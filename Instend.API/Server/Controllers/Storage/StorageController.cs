@@ -1,5 +1,4 @@
 ﻿using Instend.Core;
-using Instend.Core.Models.Storage;
 using Instend.Repositories.Storage;
 using Instend.Services.External.FileService;
 using Instend.Services.Internal.Handlers;
@@ -11,7 +10,9 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
-using static Instend.Core.Models.Links.AlbumLinks;
+using Instend.Repositories.Contexts;
+using Instend.Core.Models.Storage.Album;
+using Instend.Core.Models.Storage.Collection;
 
 namespace Instend_Version_2._0._0.Server.Controllers.Storage
 {
@@ -19,7 +20,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
     [Route("[controller]")]
     public class StorageController : ControllerBase
     {
-        private readonly DatabaseContext _context;
+        private readonly AccountsContext _context;
 
         private readonly IFileRespository _fileRespository;
 
@@ -33,8 +34,6 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IRequestHandler _requestHandler;
 
-        private readonly ILinkBaseRepository<AlbumLink> _linkBaseRepository;
-
         private readonly IHubContext<GalleryHub> _galleryHub;
 
         private readonly IHubContext<StorageHub> _storageHub;
@@ -43,13 +42,12 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         public StorageController
         (
-            DatabaseContext context,
+            AccountsContext context,
             IFileRespository fileRespository,
             IFolderRepository folderRepository,
             IHubContext<StorageHub> storageHub,
             IHubContext<GalleryHub> galleryHub,
             IAccessHandler accessHandler,
-            ILinkBaseRepository<AlbumLink> linkBaseRepository,
             IAccountsRepository userDataRepository,
             IRequestHandler requestHandler,
             IFormatRepository<SongFormat> songFormatRepository,
@@ -63,7 +61,6 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             _accessHandler = accessHandler;
             _accountsRepository = userDataRepository;
             _songFormatRepository = songFormatRepository;
-            _linkBaseRepository = linkBaseRepository;
             _requestHandler = requestHandler;
             _previewService = previewService;
             _galleryHub = galleryHub;
@@ -71,7 +68,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         [HttpGet]
         [Authorize]
-        [Route("/api/files/{prefix}")]
+        [Route("/api/Files/{prefix}")]
         public async Task<ActionResult> GetFileByPrevix(IRequestHandler requestHandler, string prefix)
         {
             if (string.IsNullOrEmpty(prefix) || string.IsNullOrWhiteSpace(prefix))
@@ -152,7 +149,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             var userId = Guid.Parse(_requestHandler.GetUserId(Request.Headers["Authorization"]).Value);
             var ownerId = userId;
 
-            FolderModel? folderModel = null;
+            Collection? folderModel = null;
 
             if (folderId != null)
             {
@@ -161,7 +158,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                 if (folderModel == null)
                     return BadRequest("Folder not found");
 
-                if (folderModel.FolderType != Configuration.FolderTypes.System)
+                if (folderModel.FolderType != Configuration.CollectionTypes.System)
                 {
                     var available = await _accessHandler.GetAccessStateAsync(folderModel,
                         Configuration.Abilities.Write, Request.Headers["Authorization"]);
@@ -170,7 +167,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                         return BadRequest(available.Error);
                 }
 
-                ownerId = folderModel.OwnerId;
+                ownerId = folderModel.AccountId;
             }
 
             var nameSplit = file.FileName.Split(".");
@@ -203,7 +200,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                         await fileModel.Value.SetPreview(_previewService);
 
                     var result = await _accountsRepository.ChangeOccupiedSpaceValue(ownerId, file.Length);
-                    var group = fileModel.Value.FolderId == Guid.Empty ? fileModel.Value.OwnerId.ToString() : fileModel.Value.FolderId.ToString();
+                    var group = fileModel.Value.FolderId == Guid.Empty ? fileModel.Value.AccountId.ToString() : fileModel.Value.FolderId.ToString();
 
                     if (result.IsFailure)
                         return Conflict(result.Error);
@@ -270,7 +267,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest(available.Error);
 
             var result = await _fileRespository.AddAsync(name, type, 0, userId, folderId);
-            var group = result.Value.FolderId == Guid.Empty ? result.Value.OwnerId.ToString() : result.Value.FolderId.ToString();
+            var group = result.Value.FolderId == Guid.Empty ? result.Value.AccountId.ToString() : result.Value.FolderId.ToString();
 
             if (result.IsFailure)
                 return BadRequest(result.Error);
@@ -301,7 +298,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             if (result.IsFailure)
                 return BadRequest(result.Error);
 
-            await _storageHub.Clients.Group(result.Value.FolderId == Guid.Empty ? result.Value.OwnerId.ToString() : 
+            await _storageHub.Clients.Group(result.Value.FolderId == Guid.Empty ? result.Value.AccountId.ToString() : 
                 result.Value.FolderId.ToString()).SendAsync("RenameFile", result.Value);
 
             return Ok();
@@ -331,15 +328,15 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                 .SendAsync("DeleteFile", id);
 
             await _accountsRepository
-                .ChangeOccupiedSpaceValue(fileModel.Value.OwnerId, -fileModel.Value.Size);
+                .ChangeOccupiedSpaceValue(fileModel.Value.AccountId, -fileModel.Value.Size);
 
             var user = await _accountsRepository
-                .GetByIdAsync(fileModel.Value.OwnerId);
+                .GetByIdAsync(fileModel.Value.AccountId);
 
             if (user == null)
                 return Conflict("User not found");
 
-            await _storageHub.Clients.Group(fileModel.Value.OwnerId.ToString())
+            await _storageHub.Clients.Group(fileModel.Value.AccountId.ToString())
                 .SendAsync("UpdateOccupiedSpace", user.OccupiedSpace);
 
             return Ok();

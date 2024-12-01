@@ -1,12 +1,9 @@
-﻿using CSharpFunctionalExtensions;
-using Instend.Core.Dependencies.Repositories.Messenger;
+﻿using Instend.Core.Dependencies.Repositories.Messenger;
 using Instend.Core.Dependencies.Services.Internal.Helpers;
-using Instend.Core.TransferModels.Messenger;
 using Instend.Repositories.Messenger;
 using Instend.Services.External.FileService;
 using Instend.Services.Internal.Handlers;
 using Microsoft.AspNetCore.SignalR;
-using Newtonsoft.Json;
 
 namespace Instend_Version_2._0._0.Server.Hubs
 {
@@ -52,23 +49,21 @@ namespace Instend_Version_2._0._0.Server.Hubs
             var userId = _requestHandler.GetUserId(anonymousObject.authorization);
 
             if (userId.IsFailure)
-            {
                 return;
+
+            var directs = await _directRepository.GetAccountDirectsAsync(Guid.Parse(userId.Value), 0, 1);
+            var groups = await _groupsRepository.GetAccountGroups(Guid.Parse(userId.Value));
+
+            foreach (var direct in directs)
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, direct.Id.ToString());
             }
 
-            DirectTransferModel[] directs = await _messengerReposiroty.GetDirects(_fileService, Guid.Parse(userId.Value), anonymousObject.count);
-            GroupTransferModel[] groups = await _groupsRepository.GetUserGroups(Guid.Parse(userId.Value), anonymousObject.count);
-
-            foreach (DirectTransferModel directory in directs)
+            foreach (var group in groups)
             {
-                await Groups.AddToGroupAsync(Context.ConnectionId, directory.model.Id.ToString());
-            }
-
-            foreach (GroupTransferModel group in groups)
-            {
-                if (group.model != null)
+                if (group != null)
                 {
-                    await Groups.AddToGroupAsync(Context.ConnectionId, group.model.Id.ToString());
+                    await Groups.AddToGroupAsync(Context.ConnectionId, group.Id.ToString());
                 }
             }
 
@@ -83,13 +78,13 @@ namespace Instend_Version_2._0._0.Server.Hubs
             if (userId.IsFailure)
                 return;
 
-            DirectTransferModel? direct = await _messengerReposiroty
-                .GetDirect(_fileService, id, Guid.Parse(userId.Value));
+            var direct = await _directRepository
+                .GetAsync(id, Guid.Parse(userId.Value), 0, 1);
 
             if (direct == null)
                 return;
 
-            await Groups.AddToGroupAsync(Context.ConnectionId, direct.model.Id.ToString());
+            await Groups.AddToGroupAsync(Context.ConnectionId, direct.Id.ToString());
             await Clients.Caller.SendAsync("ReceiveMessage", _serializator.SerializeWithCamelCase(direct));
         }
 
@@ -102,30 +97,31 @@ namespace Instend_Version_2._0._0.Server.Hubs
             if (userId.IsFailure)
                 return;
 
-            GroupTransferModel? group = await _groupsRepository
-                .GetGroup(model.id, Guid.Parse(userId.Value));
+            var group = await _groupsRepository
+                .GetByIdAsync(model.id, Guid.Parse(userId.Value), 0, 1);
 
-            if (group == null || group.model == null) 
+            if (group == null) 
                 return;
 
-            await Groups.AddToGroupAsync(Context.ConnectionId, group.model.Id.ToString());
+            await Groups.AddToGroupAsync(Context.ConnectionId, group.Id.ToString());
             await Clients.Caller.SendAsync("ReceiveMessage", _serializator.SerializeWithCamelCase(group));
         }
 
         public async Task ChangeAccessState(Guid id, string authorization, bool isAccept)
         {
-            var userId = _requestHandler.GetUserId(authorization);
+            //var userId = _requestHandler.GetUserId(authorization);
 
-            if (userId.IsFailure)
-                return;
+            //if (userId.IsFailure)
+            //    return;
 
-            Result<bool> state = await _messengerReposiroty
-                .ChangeAcceptState(id, Guid.Parse(userId.Value), isAccept);
+            //var state = await _directRepository
+            //    .Ch(id, Guid.Parse(userId.Value), isAccept);
 
-            if (state.IsFailure)
-                return;
+            //if (state.IsFailure)
+            //    return;
 
-            await Clients.Group(id.ToString()).SendAsync("HandleAccessStateChange", _serializator.SerializeWithCamelCase(new { id, state = state.Value }));
+            //await Clients.Group(id.ToString())
+            //    .SendAsync("HandleAccessStateChange", _serializator.SerializeWithCamelCase(new { id, state = state.Value }));
         }
     }
 }

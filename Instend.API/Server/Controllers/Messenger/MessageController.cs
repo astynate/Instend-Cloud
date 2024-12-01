@@ -1,16 +1,15 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using Instend.Core.Dependencies.Repositories.Messenger;
-using Instend.Core.Dependencies.Repositories.Storage;
+﻿using Instend.Core.Dependencies.Repositories.Messenger;
 using Instend.Core.TransferModels.Messenger;
 using Instend.Repositories.Messenger;
 using Instend.Services.Internal.Handlers;
 using Instend_Version_2._0._0.Server.Hubs;
-using Instend.Core.Models.Links;
 using Instend.Repositories.Storage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Instend.Core.Dependencies.Services.Internal.Helpers;
+using Instend.Core.Models.Messenger.Direct;
+using Instend.Core.Models.Messenger.Group;
 
 namespace Instend_Version_2._0._0.Server.Controllers.Messenger
 {
@@ -32,8 +31,6 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
 
         private readonly IStorageAttachmentRepository _storageAttachmentRepository;
 
-        private readonly IAttachmentsRepository<MessageAttachmentLink> _attachmentRepository;
-
         private readonly IChatBase[] _chatFactory = [];
 
         public MessageController
@@ -42,7 +39,6 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
             IRequestHandler requestHandler, 
             IHubContext<MessageHub> messageHub,
             IDirectRepository directRepository,
-            IAttachmentsRepository<MessageAttachmentLink> attachmentRepository,
             IStorageAttachmentRepository storageAttachmentRepository,
             ISerializationHelper serializator,
             IGroupsRepository group
@@ -55,7 +51,6 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
             _groupRepository = group;
             _chatFactory = [_directRepository, _groupRepository];
             _storageAttachmentRepository = storageAttachmentRepository;
-            _attachmentRepository = attachmentRepository;
             _serializator = serializator;
         }
 
@@ -80,40 +75,16 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
             if (result.IsFailure)
                 return BadRequest(result.Error);
 
-            result.Value.queueId = model.queueId;
-
-            if (model.attachments != null && model.attachments.Length > 0 && result.Value.message != null)
-            {
-                var attachments = await _attachmentRepository.AddAsync(model.attachments, Guid.Parse(userId.Value), result.Value.message.Id);
-
-                if (attachments.IsSuccess)
-                {
-                    result.Value.message.attachments = attachments.Value;
-                }
-            }
-
-            if (result.Value.message != null && model.fileIds != null || model.folderIds != null)
-            {
-                await _storageAttachmentRepository.AddStorageMessageLinks(
-                    model.folderIds ?? [],
-                    model.fileIds ?? [],
-                    result.Value.message!.Id,
-                    Request.Headers["Authorization"]!
-                );
-            }
-
             switch (result.Value)
             {
-                case DirectTransferModel direct:
+                case Direct direct:
                 {
                     await HandleDirectMessgeSend(direct); break;
                 }
-                case GroupTransferModel group:
+                case Group group:
                 {
-                    if (group.model != null)
-                    {
-                        await NotifyAboutMessage(group, group.model.Id.ToString());
-                    }
+                    if (group != null)
+                        await NotifyAboutMessage(group, group.Id.ToString());
 
                     break;
                 }
@@ -122,23 +93,23 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
             return Ok();
         }
 
-        private async Task HandleDirectMessgeSend(DirectTransferModel direct)
+        private async Task HandleDirectMessgeSend(Direct direct)
         {
-            if (direct.isChatCreated)
+            if (direct.IsAccepted == false)
             {
-                await _messageHub.Clients.Group(direct.model.UserId.ToString())
-                    .SendAsync("NewConnection", direct.model.Id);
+                await _messageHub.Clients.Group(direct.AccountModelId.ToString())
+                    .SendAsync("NewConnection", direct.Id);
 
-                await _messageHub.Clients.Group(direct.model.OwnerId.ToString())
-                    .SendAsync("NewConnection", direct.model.Id);
+                await _messageHub.Clients.Group(direct.OwnerId.ToString())
+                    .SendAsync("NewConnection", direct.Id);
 
                 return;
             }
 
-            await NotifyAboutMessage(direct, direct.model.Id.ToString());
+            await NotifyAboutMessage(direct, direct.Id.ToString());
         }
 
-        private async Task NotifyAboutMessage(MessengerTransferModelBase transferModel, string id)
+        private async Task NotifyAboutMessage(object transferModel, string id)
         {
             await _messageHub.Clients.Group(id)
                 .SendAsync("ReceiveMessage", _serializator.SerializeWithCamelCase(transferModel));
@@ -152,16 +123,12 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
             if (userId.IsFailure)
-            {
                 return BadRequest(userId.Error);
-            }
 
-            bool result = await _messengerReposiroty.ViewMessage(id, Guid.Parse(userId.Value));
+            var result = await _messengerReposiroty.ViewMessage(id, Guid.Parse(userId.Value));
 
             if (result == true)
-            {
                 await _messageHub.Clients.Group(chatId.ToString()).SendAsync("ViewMessage", new { id, chatId });
-            }
 
             return Ok();
         }
@@ -173,35 +140,18 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
             if (userId.IsFailure)
-            {
                 return BadRequest(userId.Error);
-            }
 
-            var result = await _messengerReposiroty.DeleteMessage(id, Guid.Parse(userId.Value));
-
-            if (result.IsFailure)
-            {
-                return Conflict(result.Error);
-            }
-
-            await _messageHub.Clients.Group(result.Value.ToString())
-                .SendAsync("DeleteMessage", _serializator.SerializeWithCamelCase(new { chatId = id, messageId = result.Value }));
-
-            return Ok();
-        }
-
-        [HttpPut]
-        [Authorize]
-        public async Task ChangePinnedState(Guid chatId, Guid messageId, bool state)
-        {
-            bool result = await _messengerReposiroty
-                .ChangePinnedState(messageId, state);
+            var result = await _messengerReposiroty
+                .DeleteMessage(id, Guid.Parse(userId.Value));
 
             if (result == false)
-                return;
+                return Conflict("An error occurred while trying to delete a message.");
 
-            await _messageHub.Clients.Group(chatId.ToString()).SendAsync("HandlePinnedStateChanges",
-                _serializator.SerializeWithCamelCase(new { chatId, messageId, state }));
+            await _messageHub.Clients.Group(id.ToString())
+                .SendAsync("DeleteMessage", _serializator.SerializeWithCamelCase(new { chatId = id, messageId = id }));
+
+            return Ok();
         }
     }
 }

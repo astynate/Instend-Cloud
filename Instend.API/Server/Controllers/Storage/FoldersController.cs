@@ -1,6 +1,6 @@
 ﻿using Instend.Core;
 using Instend.Core.Dependencies.Repositories.Account;
-using Instend.Core.Models.Storage;
+using Instend.Core.Models.Storage.Collection;
 using Instend.Repositories.Storage;
 using Instend.Services.External.FileService;
 using Instend.Services.Internal.Handlers;
@@ -96,7 +96,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
             if (folder != Guid.Empty)
             {
-                FolderModel? folderModel = await _folderRepository
+                Collection? folderModel = await _folderRepository
                     .GetByIdAsync(folder, Guid.Parse(userId.Value));
 
                 if (folderModel == null)
@@ -141,7 +141,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
             if (id != Guid.Empty)
             {
-                FolderModel? folderModel = await _folderRepository
+                Collection? folderModel = await _folderRepository
                     .GetByIdAsync(id, Guid.Parse(userId.Value));
 
                 if (folderModel == null)
@@ -191,7 +191,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             if (available.IsFailure)
                 return BadRequest(available.Error);
 
-            ownerId = folderModel.OwnerId;
+            ownerId = folderModel.AccountId;
 
             await _fileService.DeleteFolderById
             (

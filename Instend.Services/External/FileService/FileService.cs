@@ -1,6 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
 using Instend.Core;
-using Instend.Core.Models.Storage;
 using Instend.Repositories.Storage;
 using System.IO.Compression;
 
@@ -19,10 +18,10 @@ namespace Instend.Services.External.FileService
                 if (string.IsNullOrEmpty(path) || string.IsNullOrWhiteSpace(path))
                     return Result.Failure<byte[]>("Invalid path");
 
-                if (File.Exists(path) == false)
+                if (System.IO.File.Exists(path) == false)
                     return Result.Failure<byte[]>("File not found");
 
-                return await File.ReadAllBytesAsync(path);
+                return await System.IO.File.ReadAllBytesAsync(path);
             }
             catch (Exception)
             {
@@ -41,10 +40,9 @@ namespace Instend.Services.External.FileService
             Guid id
         )
         {
-            FileModel[] files = await fileRespository
-                .GetByFolderId(Guid.Empty, id);
+            var files = await fileRespository.GetByFolderId(Guid.Empty, id);
 
-            foreach (FileModel file in files)
+            foreach (var file in files)
             {
                 await fileRespository.Delete(file.Id);
             }
@@ -62,16 +60,16 @@ namespace Instend.Services.External.FileService
         {
             await DeleteFolderContent(folderRepository, fileRespository, id);
 
-            FolderModel[] folders = await folderRepository
+            var folders = await folderRepository
                 .GetFoldersByFolderId(Guid.Empty, id);
 
-            foreach (FolderModel folder in folders)
+            foreach (var folder in folders)
             {
                 await DeleteFolderById(fileRespository, folderRepository, preview, folder.Id);
             }
         }
 
-        public byte[] CreateZipFromFiles(FileModel[] files)
+        public byte[] CreateZipFromFiles(Core.Models.Storage.File.File[] files)
         {
             using (var memoryStream = new MemoryStream())
             {
@@ -79,17 +77,13 @@ namespace Instend.Services.External.FileService
                 {
                     foreach (var file in files)
                     {
-                        ZipArchiveEntry fileToWrite = archive.CreateEntry($"{file.Name}.{file.Type}");
+                        var fileToWrite = archive.CreateEntry($"{file.Name}.{file.Type}");
 
-                        try
+                        using (var entryStream = fileToWrite.Open())
                         {
-                            using (var entryStream = fileToWrite.Open())
-                            {
-                                byte[] fileBytes = File.ReadAllBytes(file.Path);
-                                entryStream.Write(fileBytes, 0, fileBytes.Length);
-                            }
-
-                        } catch { }
+                            var fileBytes = System.IO.File.ReadAllBytes(file.Path);
+                            entryStream.Write(fileBytes, 0, fileBytes.Length);
+                        }
                     }
                 }
 
@@ -97,16 +91,27 @@ namespace Instend.Services.External.FileService
             }
         }
 
+        public void DeleteFile(string path)
+        {
+            if (System.IO.File.Exists(path))
+            {
+                System.IO.File.Delete(path);
+            }
+        }
+
+        public void SaveIFormFile()
+        {
+
+        }
+
         public string ConvertSystemTypeToContentType(string systemType)
         {
             if (Configuration.imageTypes.Contains(systemType.ToLower()))
-            {
                 return "image/" + systemType;
-            }
 
             return "application/" + systemType;
         }
 
-        public async Task WriteFileAsync(string path, byte[] file) => await File.WriteAllBytesAsync(path, file);
+        public async Task WriteFileAsync(string path, byte[] file) => await System.IO.File.WriteAllBytesAsync(path, file);
     }
 }

@@ -1,104 +1,47 @@
 ﻿using CSharpFunctionalExtensions;
-using Instend.Core;
 using Instend.Core.Models.Abstraction;
-using Instend.Core.Models.Links;
 using Instend.Core.Models.Public;
+using Instend.Repositories.Contexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Instend.Repositories.Comments
 {
     public class PublicationBaseRepository<AttachmentLink> : IPublicationBaseRepository<AttachmentLink> where AttachmentLink : LinkBase, new()
     {
-        private readonly DatabaseContext _context;
+        private readonly AccountsContext _accountsContext;
+
+        private readonly PublicationsContext _publicationsContext;
 
         private readonly DbSet<AttachmentLink> _links;
 
-        public PublicationBaseRepository(DatabaseContext context)
+        public PublicationBaseRepository(AccountsContext context, PublicationsContext publicationsContext)
         {
-            _context = context;
+            _accountsContext = context;
             _links = context.Set<AttachmentLink>();
+            _publicationsContext = publicationsContext;
         }
+
+        public async Task<Publication?> GetByIdAsync(Guid id)
+            => await _publicationsContext.Publications.FirstOrDefaultAsync(c => c.Id == id);
 
         public async Task<Result> DeleteAsync(Guid id)
         {
-            PublicationModel[] comments = await _context.Publications
-                .Where(c => c.Id == id).ToArrayAsync();
+            var publication = await _publicationsContext.Publications
+                .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (comments.Length == 0)
-                return Result.Failure("Comment not found");
+            if (publication == null)
+                return Result.Failure("Publication is not found");
 
-            foreach (var comment in comments)
-            {
-                comment.SetAttachment(await _links
-                    .Where(x => x.ItemId == comment.Id)
-                    .Join(_context.Attachments,
-                        link => link.LinkedItemId,
-                        attachment => attachment.Id,
-                        (link, attachments) => attachments)
-                    .ToArrayAsync());
-
-                foreach (var attachment in comment.attechments)
-                {
-                    if (File.Exists(attachment.Path))
-                    {
-                        File.Delete(attachment.Path);
-                    }
-
-                    _context.Remove(attachment);
-                }
-
-                _context.Remove(comment);
-            }
-
-            await _context.SaveChangesAsync();
+            await _publicationsContext.SaveChangesAsync();
             return Result.Success();
         }
 
         public async Task<bool> IsUserLikedPubliction(Guid userId, Guid publictionId)
         {
-            PublictionLikeLink? publictionLikeLink = await _context.PublicationLikeLinks
+            var reaction = await _publicationsContext.PublicationReactions
                 .FirstOrDefaultAsync(x => x.ItemId == publictionId && x.LinkedItemId == userId);
 
-            return publictionLikeLink != null;
-        }
-
-        public async Task<Result<bool>> SetLike(Guid id, Guid userId)
-        {
-            PublicationModel? comment = await _context.Publications.FirstOrDefaultAsync(x => x.Id == id);
-
-            PublictionLikeLink? publictionLikeLink = await _context.PublicationLikeLinks
-                .FirstOrDefaultAsync(x => x.ItemId == id && x.LinkedItemId == userId);
-
-            if (comment == null)
-            {
-                return Result.Failure<bool>("Publiction not found");
-            }
-
-            if (publictionLikeLink == null)
-            {
-                Result<PublictionLikeLink> link = LinkBase.Create<PublictionLikeLink>(id, userId);
-
-                if (link.IsFailure)
-                {
-                    return Result.Failure<bool>("Publiction not found");
-                }
-
-                comment.IncrementLikes();
-
-                await _context.PublicationLikeLinks.AddAsync(link.Value);
-                await _context.SaveChangesAsync();
-
-                return true;
-            }
-            else
-            {
-                comment.DecrementLikes();
-
-                await _context.PublicationLikeLinks.Where(x => x.ItemId == id && x.LinkedItemId == userId).ExecuteDeleteAsync();
-                await _context.SaveChangesAsync();
-
-                return false;
-            }
+            return reaction != null;
         }
     }
 }

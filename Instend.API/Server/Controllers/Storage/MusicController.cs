@@ -1,12 +1,12 @@
 ﻿using CSharpFunctionalExtensions;
 using Instend.Core.Models.Formats;
-using Instend.Core.Models.Storage;
 using Instend.Repositories.Storage;
 using Instend.Services.Internal.Handlers;
 using Instend_Version_2._0._0.Server.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
+using Instend.Core.Models.Storage.File;
 
 namespace Instend_Version_2._0._0.Server.Controllers.Storage
 {
@@ -48,7 +48,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             [FromForm] string? album
         )
         {
-            Result<(FileModel?, SongFormat?)> result = await _songFormat.GetByIdWithMetaData(id);
+            Result<(Instend.Core.Models.Storage.File.File?, SongFormat?)> result = await _songFormat.GetByIdWithMetaData(id);
 
             if (result.IsFailure)
             {
@@ -66,7 +66,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
                 await _songFormat.SaveChanges(result.Value.Item2);
                 
-                await _storageHub.Clients.Group(result.Value.Item1.FolderId == Guid.Empty ? result.Value.Item1.OwnerId.ToString() :
+                await _storageHub.Clients.Group(result.Value.Item1.FolderId == Guid.Empty ? result.Value.Item1.AccountId.ToString() :
                     result.Value.Item1.Id.ToString()).SendAsync("RenameFile", 
                     new {
                         Id = result.Value.Item1.Id,

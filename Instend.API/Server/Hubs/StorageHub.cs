@@ -1,4 +1,4 @@
-﻿using Instend.Core.Models.Storage;
+﻿using Instend.Core.Models.Storage.Collection;
 using Instend.Repositories.Storage;
 using Instend.Services.Internal.Handlers;
 using Microsoft.AspNetCore.SignalR;
@@ -23,7 +23,7 @@ namespace Instend_Version_2._0._0.Server.Hubs
 
             if (userId.IsFailure) return;
 
-            FolderModel[] folders = await _folderRepository
+            Collection[] folders = await _folderRepository
                 .GetFoldersByUserId(Guid.Parse(userId.Value));
 
             Array.ForEach(folders, async x => await Groups
@@ -32,7 +32,7 @@ namespace Instend_Version_2._0._0.Server.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, userId.Value);
         }
 
-        public async Task CreateFolder(FolderModel folder)
+        public async Task CreateFolder(Collection folder)
             => await Clients.Group(folder.Id.ToString()).SendAsync("CreateFolder", folder);
     }
 }

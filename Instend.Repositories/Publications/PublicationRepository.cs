@@ -1,13 +1,7 @@
-﻿using CSharpFunctionalExtensions;
-using CSharpFunctionalExtensions.ValueTasks;
-using Instend.Core;
-using Instend.Core.Dependencies.Repositories.Storage;
-using Instend.Core.Models.Storage;
-using Instend.Services.External.FileService;
+﻿using Instend.Services.External.FileService;
 using Instend.Core.Models.Abstraction;
-using Instend.Core.Models.Public;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Instend.Repositories.Contexts;
 
 namespace Instend.Repositories.Comments
 {
@@ -15,7 +9,7 @@ namespace Instend.Repositories.Comments
         where Publication : LinkBase, new()
         where Attachment : LinkBase, new()
     {
-        private readonly DatabaseContext _context;
+        private readonly AccountsContext _context;
 
         private readonly DbSet<Publication> _entities;
 
@@ -25,16 +19,13 @@ namespace Instend.Repositories.Comments
 
         private readonly IPreviewService _previewService;
 
-        private readonly IAttachmentsRepository<Attachment> _attachmentsRepository;
-
         private readonly IPublicationBaseRepository<Attachment> _commentBaseRepository;
 
         public PublicationRepository
         (
-            DatabaseContext context,
+            AccountsContext context,
             IFileService fileService,
             IPreviewService previewService,
-            IAttachmentsRepository<Attachment> attachmentsRepository,
             IPublicationBaseRepository<Attachment> commentBaseRepository
         )
         {
@@ -42,39 +33,23 @@ namespace Instend.Repositories.Comments
             _entities = context.Set<Publication>();
             _links = context.Set<Attachment>();
             _fileService = fileService;
-            _attachmentsRepository = attachmentsRepository;
             _previewService = previewService;
             _commentBaseRepository = commentBaseRepository;
         }
 
-        public async Task<object[]> GetLastCommentsAsync(Guid[] id, DateTime lastPublictionTime, int count, Guid userId)
-        {
-            return await GetPersonalPublictions(id, lastPublictionTime, count, userId);
-        }
+        //public async Task<Result<AttachmentModel>> GetAttachmentAsync(Guid itemId, Guid attachmentId)
+        //{
+        //    //var model = await _links.FirstOrDefaultAsync(x => x.ItemId == itemId && x.LinkedItemId == attachmentId);
 
-        public async Task<Result<PublicationModel>> AddComment(string text, IFormFile[] files, Guid ownerId, Guid albumId)
-        {
-            return null;
-        }
+        //    //if (model == null)
+        //    //    return Result.Failure<AttachmentModel>("Atachment not found");
 
-        public async Task<Result<AttachmentModel>> GetAttachmentAsync(Guid itemId, Guid attachmentId)
-        {
-            Attachment? model = await _links.FirstOrDefaultAsync(x => x.ItemId == itemId && x.LinkedItemId == attachmentId);
+        //    //var attachment = await _attachmentsRepository.GetByIdAsync(model.LinkedItemId);
 
-            if (model == null)
-                return Result.Failure<AttachmentModel>("Atachment not found");
+        //    //if (attachment == null)
+        //    //    return Result.Failure<AttachmentModel>("Atachment not found");
 
-            AttachmentModel? attachment = await _attachmentsRepository.GetByIdAsync(model.LinkedItemId);
-
-            if (attachment == null)
-                return Result.Failure<AttachmentModel>("Atachment not found");
-
-            return attachment;
-        }
-
-        private async Task<object[]> GetPersonalPublictions(Guid[] id, DateTime lastPublictionTime, int count, Guid userId)
-        {
-            return [];
-        }
+        //    //return attachment;
+        //}
     }
 }

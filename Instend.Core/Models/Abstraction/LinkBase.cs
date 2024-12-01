@@ -16,14 +16,10 @@ namespace Instend.Core.Models.Abstraction
         public static Result<T> Create<T>(Guid itemId, Guid linkedItemId) where T : LinkBase, new()
         {
             if (linkedItemId == Guid.Empty)
-            {
                 return Result.Failure<T>("Invalid id");
-            }
 
             if (itemId == Guid.Empty)
-            {
                 return Result.Failure<T>("Invalid id");
-            }
 
             return new T()
             {

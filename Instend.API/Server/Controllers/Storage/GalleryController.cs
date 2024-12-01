@@ -1,5 +1,4 @@
 ﻿using Instend.Core;
-using Instend.Core.Models.Storage;
 using Instend.Repositories.Gallery;
 using Instend.Repositories.Storage;
 using Instend.Services.External.FileService;
@@ -11,7 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Instend.Repositories.Links;
-using static Instend.Core.Models.Links.AlbumLinks;
+using Instend.Repositories.Contexts;
+using Instend.Core.Models.Storage.Album;
 
 namespace Instend_Version_2._0._0.Server.Controllers.Storage
 {
@@ -33,13 +33,11 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IImageService _imageService;
 
-        private readonly ILinkBaseRepository<AlbumLink> _linkBaseRepository;
-
         private readonly IHubContext<GalleryHub> _galleryHub;
 
         private readonly IHubContext<StorageHub> _storageHub;
 
-        private DatabaseContext _context;
+        private AccountsContext _context;
 
         public GalleryController
         (
@@ -50,10 +48,9 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             IHubContext<GalleryHub> galleryHub,
             IHubContext<StorageHub> storageHub,
             IAccountsRepository accountsRepository,
-            ILinkBaseRepository<AlbumLink> linkBaseRepository,
             IAccessHandler accessHandler,
             IImageService imageService,
-            DatabaseContext context
+            AccountsContext context
         )
         {
             _fileRespository = fileRespository;
@@ -65,7 +62,6 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             _accountsRepository = accountsRepository;
             _accessHandler = accessHandler;
             _storageHub = storageHub;
-            _linkBaseRepository = linkBaseRepository;
             _imageService = imageService;
         }
 
@@ -80,13 +76,13 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         [HttpGet]
         [Route("/api/albums")]
         [Authorize]
-        public async Task<ActionResult<AlbumModel[]>> GetAlbumsWithDefaultType() 
+        public async Task<ActionResult<Album[]>> GetAlbumsWithDefaultType() 
             => await GetAlbums(Configuration.AlbumTypes.Album);
 
         [HttpGet]
         [Route("/api/playlists")]
         [Authorize]
-        public async Task<ActionResult<AlbumModel[]>> GetAlbumsWithPlaylistType() 
+        public async Task<ActionResult<Album[]>> GetAlbumsWithPlaylistType() 
             => await GetAlbums(Configuration.AlbumTypes.Playlist);
 
         [HttpGet]
@@ -126,7 +122,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         public async Task<IActionResult> CreateAlbumWithPlaylistType([FromForm] CreateAlbumTransferObject createTO)
             => await CreateAlbumWithType(createTO, Configuration.AlbumTypes.Playlist);
 
-        private async Task<ActionResult<AlbumModel[]>> GetAlbums(Configuration.AlbumTypes type)
+        private async Task<ActionResult<Album[]>> GetAlbums(Configuration.AlbumTypes type)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
@@ -153,12 +149,19 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             [FromForm] int queueId
         )
         {
-            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+            var accountId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
-            if (userId.IsFailure)
-                return Unauthorized(userId.Error);
+            if (accountId.IsFailure)
+                return Unauthorized(accountId.Error);
+
+            var account = await _accountsRepository
+                .GetByIdAsync(Guid.Parse(accountId.Value));
+
+            if (account == null)
+                return BadRequest("User not found");
 
             var splitedName = file.FileName.Split(".");
+            
             var fileName = splitedName[0] ?? "Not set";
             var fileType = splitedName.Length >= 2 ? splitedName[splitedName.Length - 1] : null;
 
@@ -174,7 +177,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                         fileName, 
                         fileType, 
                         file.Length, 
-                        Guid.Parse(userId.Value)
+                        Guid.Parse(accountId.Value)
                     );
 
                     if (fileModel.IsFailure)
@@ -192,7 +195,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
                     if (string.IsNullOrEmpty(albumId) == false && string.IsNullOrWhiteSpace(albumId) == false)
                     {
-                        var result = await _linkBaseRepository.UploadFileToAlbum(fileModel.Value, Guid.Parse(albumId));
+                        var result = await _albumRepository.(fileModel.Value, Guid.Parse(albumId));
 
                         if (result.IsFailure)
                             return Conflict(result.Error);
@@ -201,23 +204,17 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                             .SendAsync("Upload", new object[] { fileModel.Value, albumId, queueId });
                     }
 
-                    var user = await _accountsRepository
-                        .GetByIdAsync(Guid.Parse(userId.Value));
-
-                    if (user == null)
-                        return BadRequest("User not found");
-
                     var space = await _accountsRepository
-                        .ChangeOccupiedSpaceValue(Guid.Parse(userId.Value), file.Length);
+                        .ChangeOccupiedSpaceValue(Guid.Parse(accountId.Value), file.Length);
 
                     if (space.IsFailure)
                         return Conflict(space.Error);
 
-                    await storageHub.Clients.Group(fileModel.Value.OwnerId.ToString())
+                    await storageHub.Clients.Group(fileModel.Value.AccountId.ToString())
                         .SendAsync("UploadFile", new object[] { fileModel.Value, queueId });
 
-                    await _storageHub.Clients.Group(fileModel.Value.OwnerId.ToString())
-                        .SendAsync("UpdateOccupiedSpace", user.OccupiedSpace + file.Length);
+                    await _storageHub.Clients.Group(fileModel.Value.AccountId.ToString())
+                        .SendAsync("UpdateOccupiedSpace", account.OccupiedSpace + file.Length);
 
                     transaction.Commit();
                     
@@ -231,30 +228,27 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         [Route("/api/albums")]
         public async Task<IActionResult> AddToAlbum(string fileId, string albumId)
         {
-            if (string.IsNullOrEmpty(fileId) || string.IsNullOrWhiteSpace(fileId))
-                return BadRequest("Invalid file id");
+            //if (string.IsNullOrEmpty(fileId) || string.IsNullOrWhiteSpace(fileId))
+            //    return BadRequest("Invalid file id");
 
-            if (string.IsNullOrEmpty(albumId) || string.IsNullOrWhiteSpace(albumId))
-                return BadRequest("Invalid album id");
+            //if (string.IsNullOrEmpty(albumId) || string.IsNullOrWhiteSpace(albumId))
+            //    return BadRequest("Invalid album id");
 
-            var result = await _linkBaseRepository
-                .AddFileToAlbum(Guid.Parse(fileId), Guid.Parse(albumId));
+            //if (result.IsFailure)
+            //    return Conflict(result.Error);
 
-            if (result.IsFailure)
-                return Conflict(result.Error);
-
-            await _galleryHub.Clients.Group(albumId)
-                .SendAsync("AddToAlbum", new object[] { result.Value, albumId });
+            //await _galleryHub.Clients.Group(albumId)
+            //    .SendAsync("AddToAlbum", new object[] { result.Value, albumId });
 
             return Ok();
         }
 
         private async Task<IActionResult> CreateAlbumWithType(CreateAlbumTransferObject createTO, Configuration.AlbumTypes type)
         {
-            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+            var accountId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
-            if (userId.IsFailure)
-                return BadRequest(userId.Error);
+            if (accountId.IsFailure)
+                return BadRequest(accountId.Error);
 
             if (string.IsNullOrEmpty(createTO.name) || string.IsNullOrWhiteSpace(createTO.name))
                 return BadRequest("Name is required.");
@@ -272,7 +266,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
             var result = await _albumRepository.AddAsync
             (
-                Guid.Parse(userId.Value), 
+                Guid.Parse(accountId.Value), 
                 coverAsBytes,
                 createTO.name,
                 createTO.description, 
@@ -284,7 +278,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
             await result.Value.SetCover(_imageService);
 
-            await _galleryHub.Clients.Group(result.Value.OwnerId.ToString())
+            await _galleryHub.Clients.Group(result.Value.AccountId.ToString())
                 .SendAsync("Create", new object[] { result.Value, createTO.queueid });
 
             return Ok();

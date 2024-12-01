@@ -1,11 +1,10 @@
-﻿using Instend.Core.Models.Messages;
-using Instend.Repositories.Messenger;
-using Instend.Services.Internal.Handlers;
+﻿using Instend.Services.Internal.Handlers;
 using Instend_Version_2._0._0.Server.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Instend.Core.Dependencies.Services.Internal.Helpers;
+using Instend.Repositories.Messenger;
 
 namespace Instend_Version_2._0._0.Server.Controllers.Messenger
 {
@@ -43,12 +42,10 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
             if (userId.IsFailure)
-            {
                 return BadRequest(userId.Error);
-            }
 
-            MessageModel[] messages = await _directRepository
-                .GetLastMessages(destination, Guid.Parse(userId.Value), from, count);
+            var messages = await _directRepository
+                .GetAsync(destination, Guid.Parse(userId.Value), from, count);
 
             return Ok(_serialyzer.SerializeWithCamelCase(messages));
         }
@@ -61,17 +58,13 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
             if (userId.IsFailure)
-            {
                 return BadRequest(userId.Error);
-            }
 
             var result = await _directRepository
                 .DeleteDirect(id, Guid.Parse(userId.Value));
 
             if (result.IsFailure)
-            {
                 return BadRequest(result.Error);
-            }
 
             await _messageHub.Clients.Group(result.Value.ToString())
                 .SendAsync("DeleteDirectory", result.Value.ToString());

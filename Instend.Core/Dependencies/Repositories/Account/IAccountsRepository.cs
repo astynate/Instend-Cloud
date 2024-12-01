@@ -5,14 +5,14 @@ namespace Instend.Core.Dependencies.Repositories.Account
 {
     public interface IAccountsRepository
     {
-        Task<AccountModel?> GetByIdAsync(Guid id);
-        Task<AccountModel?> GetByEmailAsync(string email);
-        Task<AccountModel?> GetByEmailOrNicknameAsync(string username);
-        Task<AccountModel?> GetByNicknameAsync(string nickname);
-        Task<AccountModel[]> GetByPrefixAsync(string prefix);
-        Task<AccountModel[]> GetPopuplarPeopleAsync(int from, int count);
+        Task<Models.Account.Account?> GetByIdAsync(Guid id);
+        Task<Models.Account.Account?> GetByEmailAsync(string email);
+        Task<Models.Account.Account?> GetByEmailOrNicknameAsync(string username);
+        Task<Models.Account.Account?> GetByNicknameAsync(string nickname);
+        Task<Models.Account.Account[]> GetByPrefixAsync(string prefix);
+        Task<Models.Account.Account[]> GetPopuplarPeopleAsync(int from, int count);
         Task Confirm(string email);
-        Task AddAsync(AccountModel user);
+        Task AddAsync(Models.Account.Account user);
         Task Update(Guid userId, string name, string surname, string nickname);
         Task<Result> RecoverPassword(Guid user, string password);
         Task<Result<double>> ChangeOccupiedSpaceValue(Guid userId, double value);

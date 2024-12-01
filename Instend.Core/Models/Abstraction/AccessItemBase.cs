@@ -1,13 +1,12 @@
-﻿using Instend.Core;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Instend.Core.Models.Abstraction
 {
-    public class AccessItemBase : DatabaseModelBase
+    public class AccessItemBase : DatabaseModel
     {
-        [Column("owner_id")] public Guid OwnerId { get; protected set; }
+        [Column("account_id")] public Guid AccountId { get; protected set; }
         [Column("access")] public string AccessId { get; protected set; } = Configuration.AccessTypes.Private.ToString();
 
         public AccessItemBase() { }

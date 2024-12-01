@@ -6,10 +6,10 @@ namespace Instend.Core.Dependencies.Repositories.Account
 {
     public interface IConfirmationsRepository
     {
-        Task<Result<ConfirmationModel>> GetByLinkAsync(Guid link);
-        Task<Result<ConfirmationModel>> GetByEmailAsync(string email);
-        Task<Result<ConfirmationModel>> UpdateByLinkAsync(IEncryptionService enctyptionService, string link);
-        Task<Result> AddAsync(ConfirmationModel confirmation);
-        Task<Result> DeleteAsync(ConfirmationModel confirmation);
+        Task<Result<AccountConfirmation>> GetByLinkAsync(Guid link);
+        Task<Result<AccountConfirmation>> GetByEmailAsync(string email);
+        Task<Result<AccountConfirmation>> UpdateByLinkAsync(IEncryptionService enctyptionService, string link);
+        Task<Result> AddAsync(AccountConfirmation confirmation);
+        Task<Result> DeleteAsync(AccountConfirmation confirmation);
     }
 }

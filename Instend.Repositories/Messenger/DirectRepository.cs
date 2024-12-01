@@ -1,192 +1,137 @@
 ﻿using CSharpFunctionalExtensions;
 using CSharpFunctionalExtensions.ValueTasks;
-using Instend.Core;
-using Instend.Core.Dependencies.Repositories.Storage;
-using Instend.Core.Models.Messages;
-using Instend.Core.Models.Messenger;
-using Instend.Core.TransferModels.Account;
-using Instend.Repositories.Account;
-using Instend.Core.Models.Abstraction;
-using Instend.Core.Models.Links;
 using Microsoft.EntityFrameworkCore;
-using Instend.Core.TransferModels.Messenger;
 using Instend.Core.Dependencies.Repositories.Account;
+using Instend.Repositories.Contexts;
+using Instend.Core.Models.Messenger.Direct;
+using Instend.Core.Models.Messenger.Message;
+using System.Linq.Expressions;
 
 namespace Instend.Repositories.Messenger
 {
     public class DirectRepository : IDirectRepository
     {
-        private readonly DatabaseContext _context = null!;
+        private readonly MessagesContext _messagesContext = null!;
 
         private readonly IMessengerRepository _messengerRepository;
 
         private readonly IAccountsRepository _accountsRepository;
 
-        private readonly IAttachmentsRepository<MessageAttachmentLink> _attachmentRepository;
+        private static readonly Func<Direct, Guid, bool> IsUserInvitor = (Direct direct, Guid userId) => direct.OwnerId == userId;
+
+        private static readonly Func<Direct, Guid, bool> IsUserInvited = (Direct direct, Guid userId) => direct.AccountModelId == userId;
+
+        private static readonly Func<Direct, Guid, Guid, bool> IsFirstUserOwner = (Direct d, Guid o, Guid u) => IsUserInvitor(d, o) && IsUserInvited(d, u);
 
         public DirectRepository
         (
-            DatabaseContext context,
-            IAttachmentsRepository<MessageAttachmentLink> attachmentsRepository,
+            MessagesContext messagesContext,
             IAccountsRepository accountsRepository,
             IMessengerRepository messengerRepository
 
         )
         {
-            _context = context;
+            _messagesContext = messagesContext;
             _accountsRepository = accountsRepository;
-            _attachmentRepository = attachmentsRepository;
             _messengerRepository = messengerRepository;
         }
 
-        public async Task<Result<DirectTransferModel>> CreateNewDirect(Guid userId, Guid ownerId)
+        public async Task<Result<Direct>> CreateNewDirect(Guid userId, Guid ownerId)
         {
-            var directModel = DirectModel.Create(userId, ownerId);
+            var direct = Direct.Create(userId, ownerId);
 
-            if (directModel.IsFailure)
-                return Result.Failure<DirectTransferModel>("Failed to create chat");
+            if (direct.IsFailure)
+                return Result.Failure<Direct>("Failed to create chat");
 
             var account = await _accountsRepository.GetByIdAsync(ownerId);
 
-            await _context.Directs.AddAsync(directModel.Value);
-            await _context.SaveChangesAsync();
+            await _messagesContext.Directs.AddAsync(direct.Value);
+            await _messagesContext.SaveChangesAsync();
 
-            return new DirectTransferModel(directModel.Value, null, account);
+            return direct;
         }
 
-        public async Task<Result<Guid>> DeleteDirect(Guid destination, Guid userId)
+        private async Task<List<Direct>> GetAsync(Expression<Func<Direct, bool>> function, int numberOfSkipedMessages, int countMessages)
         {
-            DirectModel? direct = await _context.Directs
-                .FirstOrDefaultAsync(x => (x.UserId == userId && x.OwnerId == destination) ||
-                                          (x.OwnerId == userId && x.UserId == destination));
+            var result = await _messagesContext.Directs
+                .Where(function)
+                .Include(x => x.Messages)
+                    .ThenInclude(x => x.Sender)
+                .OrderByDescending(x => x.Date)
+                .Skip(numberOfSkipedMessages)
+                .Take(countMessages)
+                .Take(1)
+                .ToListAsync();
+
+            return result;
+        }
+
+        public async Task<List<Direct>> GetAccountDirectsAsync(Guid userId, int numberOfSkipedMessages, int countMessages)
+            => await GetAsync((d) => IsUserInvitor(d, userId) || IsUserInvited(d, userId), numberOfSkipedMessages, countMessages);
+
+        public async Task<Direct?> GetAsync(Guid id, Guid userId, int numberOfSkipedMessages, int countMessages)
+        {
+            var result = await GetAsync
+            (
+                (d) => d.Id == id && (IsUserInvitor(d, userId) || IsUserInvited(d, userId)), 
+                numberOfSkipedMessages, 
+                countMessages
+            );
+
+            return result.FirstOrDefault();
+        }
+
+        public async Task<Direct?> GetByAccountIdsAsync(Guid userId, Guid ownerId, int numberOfSkipedMessages, int countMessages)
+        {
+            var result = await GetAsync
+            (
+                (d) => IsFirstUserOwner(d, userId, ownerId) || IsFirstUserOwner(d, ownerId, userId), 
+                numberOfSkipedMessages, 
+                countMessages
+            );
+
+            return result.FirstOrDefault();
+        }
+
+        public async Task<Result<Guid>> DeleteDirect(Guid id, Guid userId)
+        {
+            return Result.Success(id);
+        }
+
+        public async Task<Result<object>> SendMessage(Guid ownerId, Guid userId, string text)
+        {
+            var direct = await GetByAccountIdsAsync(userId, ownerId, 0, 1);
+
+            if (direct != null && direct.IsAccepted == false)
+                return Result.Failure<Direct>("Invite is not accepted");
 
             if (direct == null)
             {
-                return Result.Failure<Guid>("Direct not found");
+                var directCreationResult = await CreateNewDirect(userId, ownerId);
+
+                if (directCreationResult.IsFailure)
+                    return Result.Failure<Direct>(directCreationResult.Error);
+
+                direct = directCreationResult.Value;
             }
 
-            _context.Directs.Remove(direct);
-            await _context.SaveChangesAsync();
-
-            return Result.Success(direct.Id);
-        }
-
-        public async Task<MessageModel[]> GetLastMessages(Guid destination, Guid userId, int from, int count)
-        {
-            var messages = await _context.Directs.AsNoTracking()
-                .Where(direct => (direct.UserId == userId && direct.OwnerId == destination) || 
-                                 (direct.OwnerId == userId && direct.UserId == destination))
-                .Join(_context.DirectLinks,
-                    direct => direct.Id,
-                    link => link.ItemId,
-                    (direct, link) => new
-                    {
-                        direct,
-                        link
-                    })
-                .OrderByDescending(x => x.link.Date)
-                .Skip(from)
-                .Take(count)
-                .Join(_context.Messages,
-                    prev => prev.link.LinkedItemId,
-                    message => message.Id,
-                    (prev, message) => message)
-                .ToArrayAsync();
-
-            foreach(var message in messages)
+            return await _messagesContext.Database.CreateExecutionStrategy().ExecuteAsync(async Task<Result<Direct>> () =>
             {
-                await _messengerRepository.SetAttachments(message);
-            }
+                using (var transaction = _messagesContext.Database.BeginTransaction())
+                {
+                    var message = Message.Create(text, ownerId);
 
-            return messages;
-        }
+                    if (message.IsFailure)
+                        return Result.Failure<Direct>(message.Error);
 
-        public async Task<Result<MessengerTransferModelBase>> SendMessage(Guid ownerId, Guid userId, string text)
-        {
-            //DirectTransferModel? direct = await _context.Directs.AsNoTracking()
-            //    .Where(direct => (direct.UserId == userId && direct.OwnerId == ownerId) || (direct.OwnerId == userId && direct.UserId == ownerId))
-            //    .Join(_context.Users,
-            //        direct => direct.OwnerId == userId ? direct.UserId : direct.OwnerId,
-            //        user => user.Id,
-            //        (direct, user) => new 
-            //        {
-            //            direct,
-            //            user,
-            //        })
-            //    .Join(_context.UserData,
-            //        prev => prev.user.Id,
-            //        user => user.UserId,
-            //        (prev, userData) => new DirectTransferModel
-            //        (
-            //            prev.direct,
-            //            null,
-            //            new AccountTransferModel
-            //            {
-            //                Id = prev.user.Id,
-            //                Name = prev.user.Name,
-            //                Surname = prev.user.Surname,
-            //                Nickname = prev.user.Nickname,
-            //                Email = prev.user.Email,
-            //                Avatar = userData.Avatar,
-            //                Header = userData.Header,
-            //                Description = userData.Description,
-            //                StorageSpace = userData.StorageSpace,
-            //                OccupiedSpace = userData.OccupiedSpace,
-            //                Balance = userData.Balance,
-            //                FriendCount = userData.FriendCount
-            //            }
-            //        ))
-            //    .FirstOrDefaultAsync();
+                    direct.Messages.Append(message.Value);
+                    await _messagesContext.SaveChangesAsync();
 
-            //return await _context.Database.CreateExecutionStrategy().ExecuteAsync(async Task<Result<MessengerTransferModelBase>> () =>
-            //{
-            //    using (var transaction = _context.Database.BeginTransaction())
-            //    {
-            //        if (direct == null)
-            //        {
-            //            var newDirect = await CreateNewDirect(userId, ownerId);
+                    transaction.Commit();
 
-            //            if (newDirect.IsFailure)
-            //            {
-            //                return Result.Failure<MessengerTransferModelBase>(newDirect.Error);
-            //            }
-
-            //            direct = newDirect.Value;
-            //            direct.isChatCreated = true;
-            //        }
-            //        else if (direct.model.IsAccepted == false)
-            //        {
-            //            return Result.Failure<MessengerTransferModelBase>("Invite is not accepted");
-            //        }
-
-            //        var messageModel = MessageModel.Create(text, ownerId);
-
-            //        if (messageModel.IsFailure)
-            //        {
-            //            return Result.Failure<MessengerTransferModelBase>(messageModel.Error);
-            //        }
-
-            //        var link = LinkBase.Create<DirectMessageLink>(direct.model.Id, messageModel.Value.Id);
-
-            //        if (link.IsFailure)
-            //        {
-            //            return Result.Failure<MessengerTransferModelBase>(link.Error);
-            //        }
-
-            //        await _context.DirectLinks.AddAsync(link.Value);
-            //        await _context.SaveChangesAsync();
-
-            //        await _context.Messages.AddAsync(messageModel.Value);
-            //        await _context.SaveChangesAsync();
-
-            //        direct.messageModel = messageModel.Value;
-            //        transaction.Commit();
-
-            //        return direct;
-            //    }
-            //});
-
-            return null;
+                    return direct;
+                }
+            });
         }
     }
 }

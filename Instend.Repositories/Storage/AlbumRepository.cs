@@ -2,21 +2,25 @@
 using Instend.Core;
 using Instend.Repositories.Gallery;
 using Instend.Services.External.FileService;
-using Instend.Core.Models.Storage;
 using Microsoft.EntityFrameworkCore;
+using Instend.Repositories.Contexts;
+using Instend.Core.Models.Storage.Album;
 
 namespace Instend.Repositories.Storage
 {
     public class AlbumRepository : IAlbumRepository
     {
-        private readonly DatabaseContext _context = null!;
+        private readonly StorageContext _storageContext = null!;
 
-        public AlbumRepository(DatabaseContext context)
+        private readonly AccessContext _accessContext = null!;
+
+        public AlbumRepository(StorageContext storageContext, AccessContext accessContext)
         {
-            _context = context;
+            _storageContext = storageContext;
+            _accessContext = accessContext;
         }
 
-        public async Task<Result<AlbumModel>> AddAsync
+        public async Task<Result<Album>> AddAsync
         (
             Guid ownerId, 
             byte[] cover, 
@@ -25,7 +29,7 @@ namespace Instend.Repositories.Storage
             Configuration.AlbumTypes type
         )
         {
-            var albumModel = AlbumModel.Create(
+            var albumModel = Album.Create(
                 name, 
                 description, 
                 DateTime.Now, 
@@ -36,31 +40,33 @@ namespace Instend.Repositories.Storage
             );
 
             if (albumModel.IsFailure)
-                return Result.Failure<AlbumModel>(albumModel.Error);
+                return Result.Failure<Album>(albumModel.Error);
 
             await File.WriteAllBytesAsync(albumModel.Value.Cover, cover);
 
-            await _context.AddAsync(albumModel.Value);
-            await _context.SaveChangesAsync();
+            await _storageContext.AddAsync(albumModel.Value);
+            await _storageContext.SaveChangesAsync();
 
             return Result.Success(albumModel.Value);
         }
 
-        public async Task<Result<AlbumModel[]>> GetAlbums(IImageService imageService, Guid userId, Configuration.AlbumTypes type)
+        public async Task<Result<Album[]>> GetAlbums(IImageService imageService, Guid userId, Configuration.AlbumTypes type)
         {
-            var albums = await _context.Albums.AsNoTracking()
-                .Where(x => x.OwnerId == userId && x.TypeId == type.ToString()).ToArrayAsync();
+            var albums = await _storageContext.Albums
+                .AsNoTracking()
+                .Where(x => x.AccountId == userId && x.TypeId == type.ToString())
+                .ToArrayAsync();
 
-            var accessAlbums = await _context.AlbumAccess.AsNoTracking()
+            var accessAlbums = await _accessContext.AlbumAccess.AsNoTracking()
                 .Where(x => x.UserId == userId)
-                .Join(_context.Albums,
+                .Join(_storageContext.Albums,
                     access => access.ItemId,
                     album => album.Id,
                     (access, album) => album).ToArrayAsync();
 
             var combinedAlbums = albums.Concat(accessAlbums);
 
-            foreach (AlbumModel album in combinedAlbums)
+            foreach (var album in combinedAlbums)
             {
                 await album.SetCover(imageService);
             }
@@ -68,35 +74,36 @@ namespace Instend.Repositories.Storage
             return Result.Success(combinedAlbums.ToArray());
         }
 
-        public async Task<Result<AlbumModel>> DeleteAlbumAsync(Guid id, Guid userId)
+        public async Task<Result<Album>> DeleteAlbumAsync(Guid id, Guid userId)
         {
-            AlbumModel? album = await _context.Albums
+            var album = await _storageContext.Albums
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (album == null)
-                return Result.Failure<AlbumModel>("Album not found");
+                return Result.Failure<Album>("Album not found");
 
-            if (album.OwnerId != userId)
-                return Result.Failure<AlbumModel>("Only owners can delete an album.");
+            if (album.AccountId != userId)
+                return Result.Failure<Album>("Only owners can delete an album.");
 
-            int result = await _context.Albums.Where(x => x.Id == id)
+            var result = await _storageContext.Albums.Where(x => x.Id == id)
                 .ExecuteDeleteAsync();
 
             if (result == 0)
-                return Result.Failure<AlbumModel>("Album not found");
+                return Result.Failure<Album>("Album not found");
 
             File.Delete(album.Cover); return Result.Success(album);
         }
 
-        public async Task<AlbumModel?> GetByIdAsync(Guid id)
+        public async Task<Album?> GetByIdAsync(Guid id)
         {
-            return await _context.Albums.AsNoTracking()
+            return await _storageContext.Albums
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Result> UpdateAlbum(Guid id, byte[] cover, string? name, string? description)
         {
-            AlbumModel? albumModel = await _context.Albums
+            var albumModel = await _storageContext.Albums
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (albumModel == null)
@@ -107,21 +114,24 @@ namespace Instend.Repositories.Storage
             if (cover.Length > 0)
                 await File.WriteAllBytesAsync(albumModel.Cover, cover);
 
-            await _context.SaveChangesAsync();
+            await _storageContext.SaveChangesAsync();
             return Result.Success();
         }
 
-        public async Task<AlbumModel[]> GetAlbums(Guid userId)
+        public async Task<Album[]> GetAlbums(Guid userId)
         {
-            AlbumModel[] albums = await _context.Albums.AsNoTracking()
-                .Where(x => x.OwnerId == userId).ToArrayAsync();
+            var albums = await _storageContext.Albums
+                .AsNoTracking()
+                .Where(x => x.AccountId == userId)
+                .ToArrayAsync();
 
-            AlbumModel[] accessAlbums = await _context.AlbumAccess.AsNoTracking()
+            var accessAlbums = await _accessContext.AlbumAccess.AsNoTracking()
                 .Where(x => x.UserId == userId)
-                .Join(_context.Albums,
+                .Join(_storageContext.Albums,
                     access => access.ItemId,
                     album => album.Id,
-                    (access, album) => album).ToArrayAsync();
+                    (access, album) => album)
+                .ToArrayAsync();
 
             return albums.Concat(accessAlbums).ToArray();
         }

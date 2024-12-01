@@ -4,6 +4,7 @@ using Instend.Services.External.FileService;
 using Instend.Core.Models.Abstraction;
 using Microsoft.EntityFrameworkCore;
 using Instend.Core.TransferModels.Access;
+using Instend.Repositories.Contexts;
 
 namespace Instend.Repositories.Storage
 {
@@ -11,7 +12,7 @@ namespace Instend.Repositories.Storage
         where Access : AccessBase, new()
         where Item : AccessItemBase, new()
     {
-        private readonly DatabaseContext _context;
+        private readonly AccountsContext _context;
 
         private readonly DbSet<Access> _accessEntities;
 
@@ -21,7 +22,7 @@ namespace Instend.Repositories.Storage
 
         public AccessRepository
         (
-            DatabaseContext context, 
+            AccountsContext context, 
             IFileService fileService
         )
         {
@@ -65,7 +66,7 @@ namespace Instend.Repositories.Storage
         public async Task<Result> UpdateAccessState(Configuration.AccessTypes type, Guid userId, Guid folderId)
         {
             int result = await _itemEntities
-                .Where(x => x.Id == folderId && x.OwnerId == userId)
+                .Where(x => x.Id == folderId && x.AccountId == userId)
                 .ExecuteUpdateAsync(folder => folder.SetProperty(p => p.AccessId, type.ToString()));
 
             await _context.SaveChangesAsync();

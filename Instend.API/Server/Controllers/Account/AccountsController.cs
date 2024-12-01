@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using CSharpFunctionalExtensions;
 using Instend.Core.Dependencies.Services.Internal.Services;
 using Instend.Dependencies.Services;
+using Instend.Repositories.Contexts;
 
 namespace Instend_Version_2._0._0.Server.Controllers.Account
 {
@@ -33,7 +34,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
         private readonly IFriendsRepository _friendsRepository;
 
-        private readonly DatabaseContext _context;
+        private readonly AccountsContext _context;
 
         public AccountsController
         (
@@ -44,7 +45,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             IEmailService emailService,
             IEncryptionService encryptionService,
             IFriendsRepository friendsRepository,
-            DatabaseContext context
+            AccountsContext context
         )
         {
             _confirmationRepository = confirmationsRepository;
@@ -144,7 +145,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             {
                 using (var transaction = _context.Database.BeginTransaction())
                 {
-                    var account = AccountModel.Create
+                    var account = Instend.Core.Models.Account.Account.Create
                     (
                         user.name,
                         user.surname,
@@ -158,7 +159,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
                     await _accountsRepository.AddAsync(account.Value);
 
-                    var confirmation = Instend.Core.Models.Email.ConfirmationModel.Create
+                    var confirmation = Instend.Core.Models.Email.AccountConfirmation.Create
                     (
                         account.Value.Email,
                         _encryptionService.GenerateSecretCode(6),
@@ -275,7 +276,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             foreach (var systemFolder in systemFolders)
             {
                 var photos = await _folderRepository
-                    .AddAsync(systemFolder, userId, Guid.Empty, Configuration.FolderTypes.System, false);
+                    .AddAsync(systemFolder, userId, Guid.Empty, Configuration.CollectionTypes.System, false);
 
                 if (photos.IsFailure)
                     return Result.Failure(photos.Error);

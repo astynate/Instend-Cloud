@@ -1,7 +1,7 @@
-﻿using Instend.Core;
-using Instend.Core.Dependencies.Repositories.Account;
+﻿using Instend.Core.Dependencies.Repositories.Account;
 using Instend.Core.Dependencies.Services.Internal.Services;
 using Instend.Dependencies.Services;
+using Instend.Repositories.Contexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,11 +15,11 @@ namespace Instend.Server.Controllers.Account
 
         private readonly IConfirmationsRepository _confirmationRespository;
 
-        private readonly DatabaseContext _context;
+        private readonly AccountsContext _context;
 
         public ConfirmationsController
         (
-            DatabaseContext context, 
+            AccountsContext context, 
             IAccountsRepository accountsRepository, 
             IConfirmationsRepository confirmationRespository
         )

@@ -4,6 +4,7 @@ using Instend.Core;
 using Instend.Core.Dependencies.Repositories.Account;
 using Instend.Core.Dependencies.Services.Internal.Services;
 using Instend.Core.Models.Account;
+using Instend.Repositories.Contexts;
 using Instend.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +12,7 @@ namespace Instend.Repositories.Repositories
 {
     public class AccountsRepository : IAccountsRepository
     {
-        private readonly DatabaseContext _context = null!;
+        private readonly AccountsContext _context = null!;
 
         private readonly IEncryptionService _encryptionService;
 
@@ -19,7 +20,7 @@ namespace Instend.Repositories.Repositories
 
         public AccountsRepository
         (
-            DatabaseContext context, 
+            AccountsContext context, 
             IEncryptionService encryptionService, 
             IImageService imageService
         )
@@ -29,19 +30,19 @@ namespace Instend.Repositories.Repositories
             _imageService = imageService;
         }
 
-        public async Task<AccountModel?> GetByIdAsync(Guid id)
+        public async Task<Core.Models.Account.Account?> GetByIdAsync(Guid id)
             => await GetAccountByExpression(user => user.Id == id);
 
-        public async Task<AccountModel?> GetByEmailAsync(string email)
+        public async Task<Core.Models.Account.Account?> GetByEmailAsync(string email)
             => await GetAccountByExpression(user => user.Email == email);
 
-        public async Task<AccountModel?> GetByEmailOrNicknameAsync(string username)
+        public async Task<Core.Models.Account.Account?> GetByEmailOrNicknameAsync(string username)
             => await GetAccountByExpression(user => user.Email == username || user.Nickname == username);
 
-        public async Task<AccountModel?> GetByNicknameAsync(string nickname)
+        public async Task<Core.Models.Account.Account?> GetByNicknameAsync(string nickname)
             => await GetAccountByExpression(user => user.Nickname == nickname);
 
-        public async Task AddAsync(AccountModel account)
+        public async Task AddAsync(Core.Models.Account.Account account)
         {
             account.HashPassword(_encryptionService);
 
@@ -72,7 +73,7 @@ namespace Instend.Repositories.Repositories
             if (userId == Guid.Empty || string.IsNullOrEmpty(password))
                 return Result.Failure("Invalid data");
 
-            AccountModel? account = await GetByIdAsync(userId);
+            Core.Models.Account.Account? account = await GetByIdAsync(userId);
 
             if (account == null)
                 return Result.Failure("User not found");
@@ -101,12 +102,12 @@ namespace Instend.Repositories.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public Task<AccountModel[]> GetByPrefixAsync(string prefix)
+        public Task<Core.Models.Account.Account[]> GetByPrefixAsync(string prefix)
         {
             throw new NotImplementedException();
         }
 
-        public Task<AccountModel[]> GetPopuplarPeopleAsync(int from, int count)
+        public Task<Core.Models.Account.Account[]> GetPopuplarPeopleAsync(int from, int count)
         {
             throw new NotImplementedException();
         }
@@ -119,7 +120,7 @@ namespace Instend.Repositories.Repositories
                     .SetProperty(p => p.IsConfirmed, true));
         }
 
-        private async Task<AccountModel?> GetAccountByExpression(System.Linq.Expressions.Expression<Func<AccountModel, bool>> expression)
+        private async Task<Core.Models.Account.Account?> GetAccountByExpression(System.Linq.Expressions.Expression<Func<Core.Models.Account.Account, bool>> expression)
         {
             var account = await _context.Accounts
                 .AsNoTracking()

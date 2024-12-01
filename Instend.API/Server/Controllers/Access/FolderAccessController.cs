@@ -1,6 +1,6 @@
 ﻿using Instend.Core;
 using Instend.Core.Models.Access;
-using Instend.Core.Models.Storage;
+using Instend.Core.Models.Storage.Collection;
 using Instend.Core.TransferModels.Access;
 using Instend.Repositories.Storage;
 using Instend.Services.Internal.Handlers;
@@ -18,13 +18,13 @@ namespace Instend_Version_2._0._0.Server.Controllers.Access
 
         private readonly IRequestHandler _requestHandler;
 
-        private readonly IAccessRepository<FolderAccess, FolderModel> _folderAccess;
+        private readonly IAccessRepository<FolderAccess, Collection> _folderAccess;
 
         public FolderAccessController
         (
             IFolderRepository folderRepository,
             IRequestHandler requestHandler,
-            IAccessRepository<FolderAccess, FolderModel> folderAccess
+            IAccessRepository<FolderAccess, Collection> folderAccess
         )
         {
             _folderRepository = folderRepository;
@@ -34,7 +34,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Access
 
         [HttpGet]
         [Authorize]
-        [Route("/folders-access")]
+        [Route("/Folders-access")]
         public async Task<IActionResult> GetAccess(Guid id)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
@@ -57,7 +57,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Access
 
         [HttpPost]
         [Authorize]
-        [Route("/folders-access")]
+        [Route("/Folders-access")]
         public async Task<IActionResult> ChangeAccessState(string? id, Configuration.AccessTypes type, [FromBody] List<UserAccessModel> users)
         {
             if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))

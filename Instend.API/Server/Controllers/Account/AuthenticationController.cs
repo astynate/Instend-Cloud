@@ -81,7 +81,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
             if (account.IsConfirmed == false)
             {
-                var confirmation = ConfirmationModel
+                var confirmation = AccountConfirmation
                     .Create(account.Email, _encryptionService.GenerateSecretCode(6), account.Id);
 
                 if (confirmation.IsFailure)
@@ -104,7 +104,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             string refreshToken = _tokenService
                 .GenerateRefreshToken(account.Id.ToString());
 
-            var sessionCreationResult = SessionModel.Create
+            var sessionCreationResult = AccountSession.Create
             (
                 "",
                 "",
