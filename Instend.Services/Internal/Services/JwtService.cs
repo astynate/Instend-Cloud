@@ -4,7 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Instend_Version_2._0._0.ServerApp.Services
+namespace Instend.Services.Internal.Services
 {
     public class JwtService : ITokenService
     {
@@ -67,15 +67,16 @@ namespace Instend_Version_2._0._0.ServerApp.Services
 
                 return true;
             }
-            catch {
+            catch
+            {
                 return false;
             }
         }
 
-        public bool IsTokenValid(string token) 
+        public bool IsTokenValid(string token)
             => ValidateToken(token, false);
 
-        public bool IsTokenAlive(string token) 
+        public bool IsTokenAlive(string token)
             => ValidateToken(token, true);
     }
 }

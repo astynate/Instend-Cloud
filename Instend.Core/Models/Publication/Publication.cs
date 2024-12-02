@@ -14,7 +14,7 @@ namespace Instend.Core.Models.Public
         [Column("number_of_reactions")] public uint NumberOfReactions { get; private set; } = 0;
         [Column("number_of_comments")] public uint NumberOfComments { get; private set; } = 0;
         [Column("number_of_views")] public uint NumberOfViews { get; private set; } = 0;
-        [Column("owner_id")] public Guid OwnerId { get; private set; }
+        [Column("account_id")] public Guid AccountId { get; private set; }
 
         [NotMapped] public bool IsLiked { get; set; } = false;
 
@@ -33,7 +33,7 @@ namespace Instend.Core.Models.Public
             return new Publication()
             {
                 Text = text,
-                OwnerId = ownerId
+                AccountId = ownerId
             };
         }
 

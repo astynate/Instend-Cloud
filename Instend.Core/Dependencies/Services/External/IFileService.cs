@@ -6,7 +6,7 @@ namespace Instend.Services.External.FileService
 {
     public interface IFileService
     {
-        Task DeleteFolderById(IFileRespository fileRespository, IFolderRepository folderRepository, IPreviewService preview, Guid id);
+        Task DeleteFolderById(IFileRespository fileRespository, ICollectionsRepository folderRepository, IPreviewService preview, Guid id);
         Task<Result<byte[]>> ReadFileAsync(string path);
         byte[] CreateZipFromFiles(Core.Models.Storage.File.File[] files);
         string ConvertSystemTypeToContentType(string systemType);

@@ -14,7 +14,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
     {
         private readonly IDirectRepository _directRepository;
 
-        private readonly IHubContext<MessageHub> _messageHub;
+        private readonly IHubContext<GlobalHub> _messageHub;
         
         private readonly IRequestHandler _requestHandler;
 
@@ -24,7 +24,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
         (
             IDirectRepository directRepository, 
             IRequestHandler requestHandler,
-            IHubContext<MessageHub> messageHub,
+            IHubContext<GlobalHub> messageHub,
             ISerializationHelper serialyzer
         )
         {

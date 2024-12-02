@@ -1,5 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Instend.Core.Dependencies.Services.Internal.Services;
+using Instend.Core.Models.Storage.Album;
+using Instend.Core.Models.Storage.Collection;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
@@ -25,6 +27,8 @@ namespace Instend.Core.Models.Account
         [Column("friend_count")] public uint FriendCount { get; private set; } = 0;
 
         public List<Account> Friends { get; set; } = [];
+        public List<Collection> Collections { get; set; } = [];
+        public List<Album> Albums { get; set; } = [];
 
         private Account() { }
 

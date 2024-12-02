@@ -1,4 +1,5 @@
-﻿using Instend.Core.Models.Formats;
+﻿using Instend.Core.Models.Access;
+using Instend.Core.Models.Formats;
 using Instend.Core.Models.Storage.Album;
 using Instend.Core.Models.Storage.Collection;
 using Instend.Core.Models.Storage.File;
@@ -13,6 +14,7 @@ namespace Instend.Repositories.Contexts
         public DbSet<Collection> Folders { get; set; } = null!;
         public DbSet<Core.Models.Storage.File.File> Files { get; set; } = null!;
         public DbSet<Attachment> Attachments { get; set; } = null!;
+        public DbSet<AlbumsAccounts> AlbumAccounts { get; set; } = null!;
         public DbSet<SongFormat> SongsMeta { get; set; } = null!;
     }
 }

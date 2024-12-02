@@ -1,41 +1,25 @@
-﻿using CSharpFunctionalExtensions;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Instend.Core.Models.Abstraction
 {
-    public class AccessBase
+    public abstract class AccessBase : DatabaseModel
     {
-        [Key][Column("id")] public Guid Id { get; protected set; }
-        [Column("item_id")] public Guid ItemId { get; protected set; }
-        [Column("user_id")] public Guid UserId { get; protected set; }
-        [Column("ability")] public string AbilityId { get; protected set; } = Configuration.Abilities.Read.ToString();
+        [Column("account_id")] public Guid AccountId { get; protected set; }
+        [Column("role")] public string AbilityId { get; protected set; } = Configuration.EntityRoles.Reader.ToString();
 
         [NotMapped]
-        [EnumDataType(typeof(Configuration.Abilities))]
-        public Configuration.Abilities Ability
+        [EnumDataType(typeof(Configuration.EntityRoles))]
+        public Configuration.EntityRoles Ability
         {
-            get => Enum.Parse<Configuration.Abilities>(AbilityId);
+            get => Enum.Parse<Configuration.EntityRoles>(AbilityId);
             set => AbilityId = value.ToString();
         }
 
-        public AccessBase() { }
-
-        public static Result<T> Create<T>(Guid folderId, Guid userId, Configuration.Abilities ability) where T : AccessBase, new()
+        public AccessBase(Guid accountId, Configuration.EntityRoles role) 
         {
-            if (folderId == Guid.Empty)
-                return Result.Failure<T>("Invalid folder id");
-
-            if (userId == Guid.Empty)
-                return Result.Failure<T>("Invalid user id");
-
-            return new T
-            {
-                Id = Guid.NewGuid(),
-                ItemId = folderId,
-                UserId = userId,
-                Ability = ability
-            };
+            AccountId = accountId;
+            Ability = role;
         }
     }
 }

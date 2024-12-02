@@ -17,7 +17,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
     {
         private readonly IRequestHandler _requestHandler;
 
-        private readonly IFolderRepository _folderRepository;
+        private readonly ICollectionsRepository _folderRepository;
 
         private readonly IAccountsRepository _accountsRepository;
 
@@ -34,7 +34,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         public FoldersController
         (
             IHubContext<StorageHub> storageHub, 
-            IFolderRepository folderRepository,
+            ICollectionsRepository folderRepository,
             IAccountsRepository accountsRepository,
             IFileService fileService,
             IFileRespository fileRespository,
@@ -68,7 +68,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             if (folder != null)
             {
                 var available = await _accessHandler.GetAccessStateAsync(folder, 
-                    Configuration.Abilities.Read, Request.Headers["Authorization"]);
+                    Configuration.EntityRoles.Reader, Request.Headers["Authorization"]);
 
                 if (available.IsFailure) 
                 {
@@ -105,7 +105,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                 var available = await _accessHandler.GetAccessStateAsync
                 (
                     folderModel, 
-                    Configuration.Abilities.Write, 
+                    Configuration.EntityRoles.Writer, 
                     Request.Headers["Authorization"]
                 );
 
@@ -150,7 +150,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                 var available = await _accessHandler.GetAccessStateAsync
                 (
                     folderModel,
-                    Configuration.Abilities.Write,
+                    Configuration.EntityRoles.Writer,
                     Request.Headers["Authorization"]
                 );
 
@@ -158,7 +158,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                     return BadRequest(available.Error);
             }
 
-            await _folderRepository.UpdateName(id, name);
+            await _folderRepository.UpdateNameAsync(id, name);
 
             await _storageHub.Clients.Group(folderId.ToString())
                 .SendAsync("RenameFolder", new object[] { id, name });
@@ -184,7 +184,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             var available = await _accessHandler.GetAccessStateAsync
             (
                 folderModel, 
-                Configuration.Abilities.Write, 
+                Configuration.EntityRoles.Writer, 
                 Request.Headers["Authorization"]
             );
 

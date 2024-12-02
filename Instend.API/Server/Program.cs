@@ -5,12 +5,10 @@ using Instend.Dependencies.Services;
 using Instend.Repositories.Account;
 using Instend.Repositories.Comments;
 using Instend.Repositories.Gallery;
-using Instend.Repositories.Links;
 using Instend.Repositories.Messenger;
 using Instend.Repositories.Repositories;
 using Instend.Repositories.Storage;
 using Instend.Services.External.FileService;
-using Instend.Services.Internal;
 using Instend.Services.Internal.Handlers;
 using Instend.Services.Middleware;
 using Instend_Version_2._0._0.Server.Hubs;
@@ -20,6 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 using Instend.Core.Dependencies.Services.Internal.Services;
 using Instend.Core.Dependencies.Services.Internal.Helpers;
 using Instend.Repositories.Contexts;
+using Instend.Services.Internal.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,20 +45,15 @@ builder.Services.AddDbContext<StorageContext>();
 builder.Services.AddScoped<IAccountsRepository, AccountsRepository>();
 builder.Services.AddScoped<ISessionsRepository, SessionsRepository>();
 builder.Services.AddScoped<IConfirmationsRepository, ConfirmationsRespository>();
-builder.Services.AddScoped<IFolderRepository, FolderRepository>();
-builder.Services.AddScoped<IFileRespository, FileRespository>();
-builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
+builder.Services.AddScoped<ICollectionsRepository, CollectionsRepository>();
+builder.Services.AddScoped<IFileRespository, FilesRespository>();
+builder.Services.AddScoped<IAlbumsRepository, AlbumsRepository>();
 builder.Services.AddScoped<IDirectRepository, DirectRepository>();
 builder.Services.AddScoped<IMessengerRepository, MessengerRepository>();
 builder.Services.AddScoped<IFriendsRepository, FriendsRepository>();
 builder.Services.AddScoped<IGroupsRepository, GroupsRepository>();
 builder.Services.AddScoped<IAccessHandler, AccessHandler>();
-builder.Services.AddScoped<IStorageAttachmentRepository, StorageAttachmentRepository>();
-builder.Services.AddScoped(typeof(IPublicationRepository<,>), typeof(PublicationRepository<,>));
-builder.Services.AddScoped(typeof(IPublicationBaseRepository<>), typeof(PublicationBaseRepository<>));
-builder.Services.AddScoped(typeof(IAccessRepository<,>), typeof(AccessRepository<,>));
-builder.Services.AddScoped(typeof(IFormatRepository<>), typeof(FormatRepository<>));
-builder.Services.AddScoped(typeof(ILinkBaseRepository<>), typeof(LinkBaseRepository<>));
+builder.Services.AddScoped<IPublicationsRepository, PublicationsRepository>();
 
 builder.Services.AddSingleton<IValidationService, ValidationService>();
 builder.Services.AddSingleton<IPreviewService, PreviewService>();
@@ -148,7 +142,6 @@ app.MapFallbackToFile("index.html");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapHub<MessageHub>("/global-hub-connection")
-    .RequireCors("CorsPolicy");
+app.MapHub<GlobalHub>("/global-hub").RequireCors("CorsPolicy");
 
 app.Run();

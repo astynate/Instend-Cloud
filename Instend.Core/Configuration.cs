@@ -9,8 +9,8 @@ namespace Instend.Core
     {
         static Configuration()
         {
-            DefaultAvatar = Convert.ToBase64String(File.ReadAllBytes(DefaultAvatarPath));
-            DefaultAlbumCover = Convert.ToBase64String(File.ReadAllBytes(DefaultAlbumCoverPath));
+            DefaultAvatar = Convert.ToBase64String(System.IO.File.ReadAllBytes(DefaultAvatarPath));
+            DefaultAlbumCover = Convert.ToBase64String(System.IO.File.ReadAllBytes(DefaultAlbumCoverPath));
         }
 
         public const string Issuer = "Instend NPO";
@@ -113,10 +113,11 @@ namespace Instend.Core
             Secret
         }
 
-        public enum Abilities
+        public enum EntityRoles
         {
-            Read,
-            Write
+            Reader,
+            Writer,
+            Owner
         }
 
         public enum AlbumTypes

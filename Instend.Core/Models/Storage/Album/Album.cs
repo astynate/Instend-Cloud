@@ -3,14 +3,13 @@ using Instend.Services.External.FileService;
 using Instend.Core.Models.Abstraction;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Instend.Core.Models.Storage.File;
 
 namespace Instend.Core.Models.Storage.Album
 {
     [Table("albums")]
     public class Album : AccessItemBase
     {
-        [Column("name")] public string Name { get; private set; } = "Not set";
+        [Column("name")] public string Name { get; private set; } = "Unknown";
         [Column("description")] public string? Description { get; private set; } = string.Empty;
         [Column("cover")] public string Cover { get; private set; } = Configuration.DefaultAlbumCoverPath;
         [Column("creation_time")] public DateTime CreationTime { get; private set; }
@@ -19,7 +18,8 @@ namespace Instend.Core.Models.Storage.Album
         [Column("views")] public long Views { get; private set; } = 0;
         [Column("reactions")] public long Reactions { get; private set; } = 0;
 
-        public File.File
+        public List<File.File> File { get; set; } = [];
+        public List<Account.Account> AccountsWithAccess { get; set; } = [];
 
         public Album() { }
 
@@ -42,14 +42,15 @@ namespace Instend.Core.Models.Storage.Album
             Configuration.AccessTypes access
         )
         {
-            Guid id = Guid.NewGuid();
+            var id = Guid.NewGuid();
+            var cover = Configuration.GetAvailableDrivePath() + id.ToString();
 
             return new Album()
             {
                 Id = id,
                 Name = name,
                 Description = description,
-                Cover = Configuration.GetAvailableDrivePath() + id.ToString(),
+                Cover = cover,
                 CreationTime = creationTime,
                 LastEditTime = lastEditTime,
                 AccountId = ownerId,

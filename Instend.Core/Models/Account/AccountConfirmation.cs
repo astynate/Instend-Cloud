@@ -29,7 +29,7 @@ namespace Instend.Core.Models.Email
             if (userId == Guid.Empty)
                 return Result.Failure<AccountConfirmation>("Invalid user id");
 
-            AccountConfirmation confirmationModel = new AccountConfirmation()
+            var confirmationModel = new AccountConfirmation()
             {
                 Email = email,
                 Code = code,

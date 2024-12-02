@@ -24,7 +24,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IFileRespository _fileRespository;
 
-        private readonly IFolderRepository _folderRepository;
+        private readonly ICollectionsRepository _folderRepository;
 
         private readonly IAccessHandler _accessHandler;
 
@@ -44,7 +44,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         (
             AccountsContext context,
             IFileRespository fileRespository,
-            IFolderRepository folderRepository,
+            ICollectionsRepository folderRepository,
             IHubContext<StorageHub> storageHub,
             IHubContext<GalleryHub> galleryHub,
             IAccessHandler accessHandler,
@@ -96,7 +96,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest("File not found");
 
             var available = await _accessHandler.GetAccessStateAsync(fileModel.Value,
-                Configuration.Abilities.Read, Request.Headers["Authorization"]);
+                Configuration.EntityRoles.Reader, Request.Headers["Authorization"]);
 
             if (available.IsFailure)
                 return BadRequest(available.Error);
@@ -127,15 +127,15 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                     return BadRequest("Folder not found");
 
                 var available = await _accessHandler.GetAccessStateAsync(folderModel, 
-                    Configuration.Abilities.Read, Request.Headers["Authorization"]);
+                    Configuration.EntityRoles.Reader, Request.Headers["Authorization"]);
 
                 if (available.IsFailure)
                     return BadRequest(available.Error);
             }
 
             var files = await _fileRespository.GetByFolderIdWithMetaData(userId, folderId);
-            var folders = await _folderRepository.GetFoldersByFolderId(userId, folderId);
-            var path = await _folderRepository.GetShortPath(folderId);
+            var folders = await _folderRepository.GetCollectionsByParentId(userId, folderId);
+            var path = await _folderRepository.GetShortPathAsync(folderId);
 
             return Ok(new object[] { folders, files, path });
         }
@@ -161,7 +161,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                 if (folderModel.FolderType != Configuration.CollectionTypes.System)
                 {
                     var available = await _accessHandler.GetAccessStateAsync(folderModel,
-                        Configuration.Abilities.Write, Request.Headers["Authorization"]);
+                        Configuration.EntityRoles.Writer, Request.Headers["Authorization"]);
 
                     if (available.IsFailure)
                         return BadRequest(available.Error);
@@ -261,7 +261,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest("Folder not found");
 
             var available = await _accessHandler.GetAccessStateAsync(folderModel,
-                Configuration.Abilities.Write, Request.Headers["Authorization"]);
+                Configuration.EntityRoles.Writer, Request.Headers["Authorization"]);
 
             if (available.IsFailure)
                 return BadRequest(available.Error);
@@ -288,7 +288,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest("File not found");
 
             var available = await _accessHandler.GetAccessStateAsync(fileModel.Value, 
-                Configuration.Abilities.Write, Request.Headers["Authorization"]);
+                Configuration.EntityRoles.Writer, Request.Headers["Authorization"]);
 
             if (available.IsFailure)
                 return BadRequest(available.Error);
@@ -314,7 +314,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest("File not found");
 
             var available = await _accessHandler.GetAccessStateAsync(fileModel.Value,
-                Configuration.Abilities.Write, Request.Headers["Authorization"]);
+                Configuration.EntityRoles.Writer, Request.Headers["Authorization"]);
 
             if (available.IsFailure)
                 return BadRequest(available.Error);

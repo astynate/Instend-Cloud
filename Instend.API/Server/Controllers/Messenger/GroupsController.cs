@@ -24,13 +24,13 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
 
         private readonly ISerializationHelper _serialyzer;
 
-        private readonly IHubContext<MessageHub> _messageHub;
+        private readonly IHubContext<GlobalHub> _messageHub;
 
         public GroupsController
         (
             IGroupsRepository groupsRepository,
             IRequestHandler requestHandler,
-            IHubContext<MessageHub> messageHub,
+            IHubContext<GlobalHub> messageHub,
             IImageService imageService,
             ISerializationHelper serialyzer
         )

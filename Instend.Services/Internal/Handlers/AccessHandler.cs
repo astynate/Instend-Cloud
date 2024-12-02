@@ -3,7 +3,6 @@ using Instend.Core.Dependencies.Repositories.Account;
 using Instend.Core.Models.Access;
 using Instend.Repositories.Storage;
 using CSharpFunctionalExtensions;
-using Instend.Core.Models.Storage.File;
 using Instend.Core.Models.Storage.Collection;
 
 namespace Instend.Services.Internal.Handlers
@@ -14,15 +13,15 @@ namespace Instend.Services.Internal.Handlers
 
         private readonly IAccountsRepository _accountsRepository;
 
-        private readonly IAccessRepository<FolderAccess, Collection> _folderAccessRepository;
+        private readonly IAccessRepository<CollectionAccount, Collection> _folderAccessRepository;
 
-        private readonly IAccessRepository<Core.Models.Access.FileAccess, Core.Models.Storage.File.File> _fileAccessRepository;
+        private readonly IAccessRepository<Core.Models.Access.FileAccount, Core.Models.Storage.File.File> _fileAccessRepository;
 
         public AccessHandler
         (
             IRequestHandler requestHandler,
-            IAccessRepository<FolderAccess, Collection> folderAccessRepository,
-            IAccessRepository<Core.Models.Access.FileAccess, Core.Models.Storage.File.File> fileAccessRepository,
+            IAccessRepository<CollectionAccount, Collection> folderAccessRepository,
+            IAccessRepository<Core.Models.Access.FileAccount, Core.Models.Storage.File.File> fileAccessRepository,
             IAccountsRepository accountRespotiroy
         )
         {
@@ -32,7 +31,7 @@ namespace Instend.Services.Internal.Handlers
             _accountsRepository = accountRespotiroy;
         }
 
-        public async Task<Result> GetAccessStateAsync(Core.Models.Storage.File.File file, Configuration.Abilities operation, string? bearer)
+        public async Task<Result> GetAccessStateAsync(Core.Models.Storage.File.File file, Configuration.EntityRoles operation, string? bearer)
         {
             var userId = _requestHandler.GetUserId(bearer);
 
@@ -66,17 +65,17 @@ namespace Instend.Services.Internal.Handlers
                 }
             }
 
-            if (operation != Configuration.Abilities.Read && file.Access == Configuration.AccessTypes.Public)
+            if (operation != Configuration.EntityRoles.Reader && file.Access == Configuration.AccessTypes.Public)
                 return Result.Failure("Files with public access available for rading only");
 
             return Result.Success();
         }
 
-        public async Task<Result> GetAccessStateAsync(Collection folder, Configuration.Abilities operation, string bearer)
+        public async Task<Result> GetAccessStateAsync(Collection folder, Configuration.EntityRoles operation, string bearer)
         {
             var userId = _requestHandler.GetUserId(bearer);
 
-            if (folder.FolderType == Configuration.CollectionTypes.System && operation != Configuration.Abilities.Read)
+            if (folder.FolderType == Configuration.CollectionTypes.System && operation != Configuration.EntityRoles.Reader)
                 return Result.Failure("You cannot perform this operation on the system folder.");
 
             if (userId.IsFailure)
@@ -91,7 +90,7 @@ namespace Instend.Services.Internal.Handlers
             if (folder.Access == Configuration.AccessTypes.Favorites && await _folderAccessRepository.GetUserAccess(Guid.Parse(userId.Value), folder.Id) == false)
                 return Result.Failure("You are not in the list of users who have access to this folder");
 
-            if (operation != Configuration.Abilities.Read && folder.Access == Configuration.AccessTypes.Public)
+            if (operation != Configuration.EntityRoles.Reader && folder.Access == Configuration.AccessTypes.Public)
                 return Result.Failure("Folders with public access available for rading only");
 
             return Result.Success();

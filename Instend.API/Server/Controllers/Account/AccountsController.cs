@@ -30,7 +30,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
         private readonly IEncryptionService _encryptionService;
 
-        private readonly IFolderRepository _folderRepository;
+        private readonly ICollectionsRepository _folderRepository;
 
         private readonly IFriendsRepository _friendsRepository;
 
@@ -41,7 +41,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             IConfirmationsRepository confirmationsRepository,
             IImageService imageService,
             IAccountsRepository accountsRepository,
-            IFolderRepository folderRepository,
+            ICollectionsRepository folderRepository,
             IEmailService emailService,
             IEncryptionService encryptionService,
             IFriendsRepository friendsRepository,

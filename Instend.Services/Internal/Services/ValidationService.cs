@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using Instend.Core.Dependencies.Services.Internal.Services;
 
-namespace Instend_Version_2._0._0.ServerApp.Services
+namespace Instend.Services.Internal.Services
 {
     public class ValidationService : IValidationService
     {
@@ -61,7 +61,7 @@ namespace Instend_Version_2._0._0.ServerApp.Services
         public bool ValidateVarchar(params string[] args)
         {
 
-            if (args.Length == 0) 
+            if (args.Length == 0)
                 return false;
 
             foreach (string? argument in args)

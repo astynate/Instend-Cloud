@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Instend.Repositories.Storage
 {
-    public class FolderRepository : IFolderRepository
+    public class CollectionsRepository : ICollectionsRepository
     {
         private readonly IPreviewService _previewService = null!;
 
@@ -21,19 +21,19 @@ namespace Instend.Repositories.Storage
 
         private readonly Func<Collection, string, bool> IsNameEquals = (folder, name) => folder.Name == name;
 
-        public FolderRepository(IPreviewService previewService, StorageContext storageContext)
+        public CollectionsRepository(IPreviewService previewService, StorageContext storageContext)
         {
             _previewService = previewService;
             _storageContext = storageContext;
         }
 
-        public async Task<Collection[]> GetFoldersByUserId(Guid userId)
+        public async Task<Collection[]> GetCollectionsByAccountId(Guid userId)
             => await _storageContext.Folders.AsNoTracking().Where(x => x.AccountId == userId).ToArrayAsync();
 
-        public async Task<Collection[]> GetSystemFolders(Guid userId)
+        public async Task<Collection[]> GetSystemCollections(Guid userId)
             => await _storageContext.Folders.AsNoTracking().Where(x => x.AccountId == userId && x.TypeId == Configuration.CollectionTypes.System.ToString()).ToArrayAsync();
 
-        public async Task<Collection?> GetSystemFolder(string name, Guid userId) 
+        public async Task<Collection?> GetSystemCollection(string name, Guid userId) 
             => await _storageContext.Folders.AsNoTracking().FirstOrDefaultAsync((folder) => IsNameEquals(folder, name) && IsSystemFolder(folder) && IsUserOwner(folder, userId));
 
         public async Task<Collection?> GetByIdAsync(Guid id, Guid userId) 
@@ -65,7 +65,7 @@ namespace Instend.Repositories.Storage
             return Result.Success(folderCreationResult.Value);
         }
 
-        public async Task<Collection[]> GetFoldersByFolderId(Guid userId, Guid folderId)
+        public async Task<Collection[]> GetCollectionsByParentId(Guid userId, Guid folderId)
         {
             var IsUserOwner = (Collection folder) => folder.FolderId == folderId;
             var IsFolderIdEquals = (Collection folder) => folder.FolderId == folderId;
@@ -79,7 +79,7 @@ namespace Instend.Repositories.Storage
             return folders;
         }
 
-        public async Task<Collection[]> GetShortPath(Guid folderId)
+        public async Task<Collection[]> GetShortPathAsync(Guid folderId)
         {
             var path = new List<Collection>();
             var current = folderId;
@@ -100,10 +100,10 @@ namespace Instend.Repositories.Storage
             return path.ToArray();
         }
 
-        public async Task Delete(Guid id) 
+        public async Task DeleteAsync(Guid id) 
             => await _storageContext.Folders.Where(x => x.Id == id).ExecuteDeleteAsync();
 
-        public async Task UpdateName(Guid id, string name) 
+        public async Task UpdateNameAsync(Guid id, string name) 
             => await _storageContext.Folders.Where(x => x.Id == id).ExecuteUpdateAsync(property => property.SetProperty(x => x.Name, name));
     }
 }

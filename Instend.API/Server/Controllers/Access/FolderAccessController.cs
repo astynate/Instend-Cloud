@@ -14,17 +14,17 @@ namespace Instend_Version_2._0._0.Server.Controllers.Access
     [Route("[controller]")]
     public class FolderAccessController : ControllerBase
     {
-        private readonly IFolderRepository _folderRepository;
+        private readonly ICollectionsRepository _folderRepository;
 
         private readonly IRequestHandler _requestHandler;
 
-        private readonly IAccessRepository<FolderAccess, Collection> _folderAccess;
+        private readonly IAccessRepository<CollectionAccount, Collection> _folderAccess;
 
         public FolderAccessController
         (
-            IFolderRepository folderRepository,
+            ICollectionsRepository folderRepository,
             IRequestHandler requestHandler,
-            IAccessRepository<FolderAccess, Collection> folderAccess
+            IAccessRepository<CollectionAccount, Collection> folderAccess
         )
         {
             _folderRepository = folderRepository;
@@ -74,7 +74,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Access
             if (executionResult.IsFailure)
                 return BadRequest(executionResult.Error);
 
-            await _folderAccess.CrearAccess(Guid.Parse(id));
+            await _folderAccess.CreateAccessModel(Guid.Parse(id));
 
             foreach (UserAccessModel user in users)
             {

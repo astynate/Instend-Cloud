@@ -7,18 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="External\EmailService\Emails\css\**" />
-    <EmbeddedResource Remove="External\EmailService\Emails\css\**" />
-    <None Remove="External\EmailService\Emails\css\**" />
+    <Compile Remove="External\Email\Emails\css\**" />
+    <EmbeddedResource Remove="External\Email\Emails\css\**" />
+    <None Remove="External\Email\Emails\css\**" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Instend.Core\Instend.Core.csproj" />
     <ProjectReference Include="..\Instend.Repositories\Instend.Repositories.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="External\EmailService\Emails\images\" />
   </ItemGroup>
 
   <ItemGroup>

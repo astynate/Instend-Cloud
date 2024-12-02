@@ -16,20 +16,20 @@ namespace Instend_Version_2._0._0.Server.Controllers.Access
     [Route("[controller]")]
     public class AlbumAccessController : ControllerBase
     {
-        private readonly IAlbumRepository _albumRepository;
+        private readonly IAlbumsRepository _albumRepository;
 
         private readonly IAccountsRepository _accountsRepository;
 
         private readonly IRequestHandler _requestHandler;
 
-        private readonly IAccessRepository<AlbumAccess, Album> _albumAccess;
+        private readonly IAccessRepository<AlbumsAccounts, Album> _albumAccess;
 
         public AlbumAccessController
         (
-            IAlbumRepository albumRepository,
+            IAlbumsRepository albumRepository,
             IRequestHandler requestHandler,
             IAccountsRepository accountsRepository,
-            IAccessRepository<AlbumAccess, Album> albumAccess
+            IAccessRepository<AlbumsAccounts, Album> albumAccess
         )
         {
             _albumRepository = albumRepository;
@@ -53,7 +53,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Access
             if (owner == null)
                 return Conflict("User not found");
 
-            var accessResult = AccessBase.Create<AlbumAccess>(album.Id, owner.Id, Configuration.Abilities.Write);
+            var accessResult = AccessBase.Create<AlbumsAccounts>(album.Id, owner.Id, Configuration.EntityRoles.Writer);
 
             if (accessResult.IsFailure)
                 return Conflict(accessResult.Error);
@@ -92,7 +92,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Access
             if (executionResult.IsFailure)
                 return BadRequest(executionResult.Error);
 
-            await _albumAccess.CrearAccess(Guid.Parse(id));
+            await _albumAccess.CreateAccessModel(Guid.Parse(id));
 
             foreach (UserAccessModel user in users)
             {

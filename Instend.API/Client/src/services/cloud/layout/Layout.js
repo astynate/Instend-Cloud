@@ -25,7 +25,6 @@ const Layout = observer(() => {
     const [isErrorExist, setErrorExistingState] = useState(false);
     const [errorTitle, setErrorTitle] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const navigate = useNavigate();
 
     globalWSContext.useSignalREffect("CreateFolder", WebsocketListener.CreateFolderListener);
     globalWSContext.useSignalREffect("RenameFolder", WebsocketListener.RenameFolderListener); 

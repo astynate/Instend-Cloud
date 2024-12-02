@@ -21,7 +21,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
 
         private readonly IRequestHandler _requestHandler;
 
-        private readonly IHubContext<MessageHub> _messageHub;
+        private readonly IHubContext<GlobalHub> _messageHub;
 
         private readonly IDirectRepository _directRepository;
 
@@ -37,7 +37,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
         (
             IMessengerRepository messengerReposiroty, 
             IRequestHandler requestHandler, 
-            IHubContext<MessageHub> messageHub,
+            IHubContext<GlobalHub> messageHub,
             IDirectRepository directRepository,
             IStorageAttachmentRepository storageAttachmentRepository,
             ISerializationHelper serializator,

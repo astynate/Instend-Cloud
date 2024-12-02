@@ -61,7 +61,7 @@ namespace Instend.Repositories.Messenger
         public async Task<List<GroupMember>> GetUserGroups(Guid userId, int count)
         {
             var groups = await _messagesContext.GroupMembers
-                .Where(x => x.LinkedItemId == userId)
+                .Where(x => x.AccountId == userId)
                 .Include(x => x.Group)
                 .Skip(count)
                 .Take(1)
@@ -70,45 +70,22 @@ namespace Instend.Repositories.Messenger
             return groups;
         }
 
-        public async Task<Message[]> GetLastMessages(Guid destination, Guid userId, int from, int count)
+        public async Task<Group?> GetGroup(Guid id, Guid userId, int from, int count)
         {
-            var messages = await _messagesContext.Groups.AsNoTracking()
-                .Where(group => group.Id == destination)
-                .Join(_messagesContext.GroupMessages,
-                    direct => direct.Id,
-                    link => link.ItemId,
-                    (direct, link) => new
-                    {
-                        direct,
-                        link
-                    })
-                .OrderByDescending(x => x.link.Date)
-                .Skip(from)
-                .Take(count)
-                .Join(_messagesContext.Messages,
-                    prev => prev.link.LinkedItemId,
-                    message => message.Id,
-                    (prev, message) => message)
-                .ToArrayAsync();
+            var members = await _messagesContext.GroupMembers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id && x.AccountId == userId);
 
-            return messages;
-        }
-
-        public async Task<Group?> GetGroup(Guid id, Guid userId)
-        {
-            var members = await _messagesContext.GroupMessages
-                .Where(x => x.ItemId == id)
-                .ToArrayAsync();
-
-            if (members.Select(x => x.LinkedItemId).Contains(userId) == false) 
+            if (members == null) 
                 return null;
 
             var result = await _messagesContext.Groups
                 .Where(x => x.Id == id)
                 .Include(x => x.Messages)
                     .ThenInclude(x => x.Sender)
+                .Skip(from)
+                .Take(count)
                 .OrderByDescending(x => x.Date)
-                .Take(1)
                 .Include(x => x.Members)
                 .FirstOrDefaultAsync();
 
@@ -118,33 +95,26 @@ namespace Instend.Repositories.Messenger
         public async Task<Result<(Guid[] membersToAdd, Guid[] membersToDelete)>> SetGroupMembers(Guid id, Guid[] users)
         {
             var members = await _messagesContext.GroupMembers
-                .Where(x => x.ItemId == id).ToArrayAsync();
+                .Where(x => x.GroupId == id).ToArrayAsync();
 
             if (members == null)
                 return Result.Failure<(Guid[] membersToAdd, Guid[] membersToDelete)>("Members not found");
 
             var membersToDelete = members
-                .Select(x => x.LinkedItemId)
+                .Select(x => x.AccountId)
                 .Except(users)
                 .ToArray();
 
             var membersToAdd = users
                 .Except(members
-                .Select(x => x.LinkedItemId))
+                .Select(x => x.AccountId))
                 .ToArray();
 
-            await _messagesContext.GroupMembers
-                .Where(x => membersToDelete.Contains(x.LinkedItemId))
-                .ExecuteDeleteAsync();
+            _messagesContext.GroupMembers.RemoveRange(members);
 
             foreach (var user in membersToAdd)
             {
-                var link = LinkBase.Create<GroupMember>(id, user);
-
-                if (link.IsFailure)
-                    return Result.Failure<(Guid[] membersToAdd, Guid[] membersToDelete)>(link.Error);
-
-                await _messagesContext.GroupMembers.AddAsync(link.Value);
+                await _messagesContext.GroupMembers.AddAsync(new GroupMember(id, user));
             }
 
             await _messagesContext.SaveChangesAsync(); 
@@ -154,7 +124,7 @@ namespace Instend.Repositories.Messenger
 
         public async Task<Result<object>> SendMessage(Guid userId, Guid groupId, string text)
         {
-            var group = await GetGroup(groupId, userId);
+            var group = await GetGroup(groupId, userId, 0, 1);
 
             if (group == null)
                 return Result.Failure<Group>("Group not found");

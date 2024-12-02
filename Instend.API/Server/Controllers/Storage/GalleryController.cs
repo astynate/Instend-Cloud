@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
-using Instend.Repositories.Links;
 using Instend.Repositories.Contexts;
 using Instend.Core.Models.Storage.Album;
 
@@ -21,21 +20,19 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
     {
         private readonly IFileRespository _fileRespository;
 
-        private readonly IFolderRepository _folderRespository;
+        private readonly ICollectionsRepository _folderRespository;
 
         private readonly IRequestHandler _requestHandler;
 
         private readonly IAccountsRepository _accountsRepository;
 
-        private readonly IAlbumRepository _albumRepository;
+        private readonly IAlbumsRepository _albumRepository;
 
         private readonly IAccessHandler _accessHandler;
 
         private readonly IImageService _imageService;
 
-        private readonly IHubContext<GalleryHub> _galleryHub;
-
-        private readonly IHubContext<StorageHub> _storageHub;
+        private readonly IHubContext<GlobalHub> _globalHub;
 
         private AccountsContext _context;
 
@@ -43,10 +40,9 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         (
             IFileRespository fileRespository, 
             IRequestHandler requestHandler, 
-            IAlbumRepository albumRepository,
-            IFolderRepository folderRepository,
-            IHubContext<GalleryHub> galleryHub,
-            IHubContext<StorageHub> storageHub,
+            IAlbumsRepository albumRepository,
+            ICollectionsRepository folderRepository,
+            IHubContext<GlobalHub> globalHub,
             IAccountsRepository accountsRepository,
             IAccessHandler accessHandler,
             IImageService imageService,
@@ -57,11 +53,10 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             _requestHandler = requestHandler;
             _albumRepository = albumRepository;
             _folderRespository = folderRepository;
-            _galleryHub = galleryHub;
+            _globalHub = globalHub;
             _context = context;
             _accountsRepository = accountsRepository;
             _accessHandler = accessHandler;
-            _storageHub = storageHub;
             _imageService = imageService;
         }
 
@@ -76,14 +71,12 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         [HttpGet]
         [Route("/api/albums")]
         [Authorize]
-        public async Task<ActionResult<Album[]>> GetAlbumsWithDefaultType() 
-            => await GetAlbums(Configuration.AlbumTypes.Album);
+        public async Task<ActionResult<Album[]>> GetAlbumsWithDefaultType() => await GetAlbums(Configuration.AlbumTypes.Album);
 
         [HttpGet]
         [Route("/api/playlists")]
         [Authorize]
-        public async Task<ActionResult<Album[]>> GetAlbumsWithPlaylistType() 
-            => await GetAlbums(Configuration.AlbumTypes.Playlist);
+        public async Task<ActionResult<Album[]>> GetAlbumsWithPlaylistType()  => await GetAlbums(Configuration.AlbumTypes.Playlist);
 
         [HttpGet]
         [Authorize]
@@ -99,13 +92,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             if (userId.IsFailure)
                 return BadRequest(userId.Error);
 
-            var result = await _fileRespository.GetLastItemsFromAlbum
-            (
-                Guid.Parse(userId.Value),
-                Guid.Parse(id),
-                from,
-                count
-            );
+            var result = await _fileRespository
+                .GetLastItemsFromAlbum(Guid.Parse(userId.Value), Guid.Parse(id), from, count);
 
             return Ok(result);
         }
@@ -143,7 +131,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         public async Task<IActionResult> UploadToGallery
         (
             IPreviewService previewService,
-            IHubContext<StorageHub> storageHub,
+            IHubContext<GlobalHub> globalHub,
             [FromForm] IFormFile file,
             [FromForm] string? albumId,
             [FromForm] int queueId
@@ -195,12 +183,12 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
                     if (string.IsNullOrEmpty(albumId) == false && string.IsNullOrWhiteSpace(albumId) == false)
                     {
-                        var result = await _albumRepository.(fileModel.Value, Guid.Parse(albumId));
+                        //var result = await _albumRepository.(fileModel.Value, Guid.Parse(albumId));
 
-                        if (result.IsFailure)
-                            return Conflict(result.Error);
+                        //if (result.IsFailure)
+                        //    return Conflict(result.Error);
 
-                        await _galleryHub.Clients.Group(albumId)
+                        await _globalHub.Clients.Group(albumId)
                             .SendAsync("Upload", new object[] { fileModel.Value, albumId, queueId });
                     }
 
@@ -210,10 +198,10 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                     if (space.IsFailure)
                         return Conflict(space.Error);
 
-                    await storageHub.Clients.Group(fileModel.Value.AccountId.ToString())
+                    await globalHub.Clients.Group(fileModel.Value.AccountId.ToString())
                         .SendAsync("UploadFile", new object[] { fileModel.Value, queueId });
 
-                    await _storageHub.Clients.Group(fileModel.Value.AccountId.ToString())
+                    await globalHub.Clients.Group(fileModel.Value.AccountId.ToString())
                         .SendAsync("UpdateOccupiedSpace", account.OccupiedSpace + file.Length);
 
                     transaction.Commit();
@@ -221,26 +209,6 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                     return Ok();
                 }
             });
-        }
-
-        [HttpPost]
-        [Authorize]
-        [Route("/api/albums")]
-        public async Task<IActionResult> AddToAlbum(string fileId, string albumId)
-        {
-            //if (string.IsNullOrEmpty(fileId) || string.IsNullOrWhiteSpace(fileId))
-            //    return BadRequest("Invalid file id");
-
-            //if (string.IsNullOrEmpty(albumId) || string.IsNullOrWhiteSpace(albumId))
-            //    return BadRequest("Invalid album id");
-
-            //if (result.IsFailure)
-            //    return Conflict(result.Error);
-
-            //await _galleryHub.Clients.Group(albumId)
-            //    .SendAsync("AddToAlbum", new object[] { result.Value, albumId });
-
-            return Ok();
         }
 
         private async Task<IActionResult> CreateAlbumWithType(CreateAlbumTransferObject createTO, Configuration.AlbumTypes type)
@@ -278,7 +246,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
             await result.Value.SetCover(_imageService);
 
-            await _galleryHub.Clients.Group(result.Value.AccountId.ToString())
+            await _globalHub.Clients.Group(result.Value.AccountId.ToString())
                 .SendAsync("Create", new object[] { result.Value, createTO.queueid });
 
             return Ok();
@@ -323,7 +291,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             if (result.IsFailure)
                 return Conflict(result.Error);
 
-            await _galleryHub.Clients.Group(id.ToString())
+            await _globalHub.Clients.Group(id.ToString())
                 .SendAsync("Update", new { id, coverAsBytes, name, description });
 
             return Ok();
@@ -347,7 +315,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             if (result.IsFailure)
                 return BadRequest(result.Error);
 
-            await _galleryHub.Clients
+            await _globalHub.Clients
                 .Group(userId.Value.ToString())
                 .SendAsync("DeleteAlbum", id);
 

@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Instend.Core.Dependencies.Services.Internal.Helpers;
 
-namespace Instend.Services.Internal
+namespace Instend.Services.Internal.Services
 {
     public class SerializationHelper : ISerializationHelper
     {

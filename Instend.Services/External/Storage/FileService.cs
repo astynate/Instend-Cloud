@@ -35,7 +35,7 @@ namespace Instend.Services.External.FileService
 
         private async Task DeleteFolderContent
         (
-            IFolderRepository folderRepository,
+            ICollectionsRepository folderRepository,
             IFileRespository fileRespository,
             Guid id
         )
@@ -47,13 +47,13 @@ namespace Instend.Services.External.FileService
                 await fileRespository.Delete(file.Id);
             }
 
-            await folderRepository.Delete(id);
+            await folderRepository.DeleteAsync(id);
         }
 
         public async Task DeleteFolderById
         (
             IFileRespository fileRespository,
-            IFolderRepository folderRepository,
+            ICollectionsRepository folderRepository,
             IPreviewService preview,
             Guid id
         )
@@ -61,7 +61,7 @@ namespace Instend.Services.External.FileService
             await DeleteFolderContent(folderRepository, fileRespository, id);
 
             var folders = await folderRepository
-                .GetFoldersByFolderId(Guid.Empty, id);
+                .GetCollectionsByParentId(Guid.Empty, id);
 
             foreach (var folder in folders)
             {

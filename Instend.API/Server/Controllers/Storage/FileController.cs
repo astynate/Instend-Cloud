@@ -27,7 +27,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             IFileService fileService,
             IFileRespository fileRespository,
             IAccessHandler accessHandler,
-            IRequestHandler requestHandler,
+            IRequestHandler requestHandler
         )
         {
             _fileService = fileService;
@@ -120,7 +120,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest("File not found");
 
             var available = await _accessHandler.GetAccessStateAsync(fileModel.Value,
-                Configuration.Abilities.Read, Request.Headers["Authorization"]);
+                Configuration.EntityRoles.Reader, Request.Headers["Authorization"]);
 
             if (available.IsFailure)
                 return BadRequest(available.Error);
