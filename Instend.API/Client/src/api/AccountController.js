@@ -1,5 +1,4 @@
 import { instance } from "../state/application/Interceptors";
-import UserState from "../state/entities/UserState";
 
 class AccountController {
     static GetAccountData = async (onSuccessCallback = () => {}, onErrorCallback = () => {}) => {
@@ -41,29 +40,29 @@ class AccountController {
     }
 
     static FollowUser = async (id) => {
-        if (id) {
-            await instance
-                .post(`/api/friends?id=${id}`)
-                .then(response => {
-                    if (response && response.data) {
-                        if (response.data.isRemove) {
-                            UserState.RemoveFriend(response.data.userId, response.data.ownerId);
-                        } else {
-                            UserState.AddFriend(response.data);
-                        }
-                    }
-                });
-        }
+        // if (id) {
+        //     await instance
+        //         .post(`/api/friends?id=${id}`)
+        //         .then(response => {
+        //             if (response && response.data) {
+        //                 if (response.data.isRemove) {
+        //                     AccountSt.RemoveFriend(response.data.userId, response.data.ownerId);
+        //                 } else {
+        //                     UserState.AddFriend(response.data);
+        //                 }
+        //             }
+        //         });
+        // }
     }
 
     static AcceptFriend = async (id) => {
-        await instance.put(`/api/friends?id=${id}`)
-            .then(response => {
-                if (response.data) {
-                    const {userId, id} = response.data;
-                    UserState.ChangeFriendState(userId, id);
-                }
-            });
+        // await instance.put(`/api/friends?id=${id}`)
+        //     .then(response => {
+        //         if (response.data) {
+        //             const {userId, id} = response.data;
+        //             UserState.ChangeFriendState(userId, id);
+        //         }
+        //     });
     }
 }
 

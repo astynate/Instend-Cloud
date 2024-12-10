@@ -10,10 +10,10 @@ import InputText from "../../shared/input/InputText";
 import InputPassword from "../../shared/password/InputPassword";
 import Line from '../../shared/line/Line';
 import Error from '../../shared/error/Error'
-import UserState from '../../../../state/entities/UserState';
+import AccountState from '../../../../state/entities/AccountState';
 import ValidationHandler from '../../../../utils/handlers/ValidationHandler';
-import './main.css';
 import AccountController from '../../../../api/AccountController';
+import './main.css';
 
 const ValidateLoginForm = (email, password) => {
     return ValidationHandler.ValidateVarchar(email, 45) &&
@@ -64,9 +64,9 @@ const Login = observer(() => {
                 localStorage.setItem('system_access_token', await response.text());
 
                 await AccountController.GetAccountData(
-                    UserState.GetUserOnSuccessCallback,
-                    UserState.GetUserOnFailureCallback,
-                    () => UserState.SetLoadingState(false)
+                    AccountState.GetUserOnSuccessCallback,
+                    AccountState.GetUserOnFailureCallback,
+                    () => AccountState.SetLoadingState(false)
                 );
 
                 navigate('/');

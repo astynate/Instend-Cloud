@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
 
-const Pagination = ({fetchRequest = () => {}, isHasMore = false, placeholder = <div></div>}) => {
+const ScrollElementWithDotsAndFetch = ({fetchRequest = () => {}, isHasMore = false, placeholder = <div></div>}) => {
     const paginationRef = useRef();
     const [isProcessing, setProcessingState] = useState(false);
 
@@ -44,4 +44,4 @@ const Pagination = ({fetchRequest = () => {}, isHasMore = false, placeholder = <
     );
 }
 
-export default Pagination;
+export default ScrollElementWithDotsAndFetch;

@@ -7,7 +7,7 @@ import { useNavigate, useLocation} from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import styles from './styles/main.module.css';
 import SettingType from '../../shared/setting-type/SettingType';
-import userState from '../../../../state/entities/UserState';
+import AccountState from '../../../../state/entities/AccountState';
 import Setting from '../../shared/setting/Setting';
 import upload from './images/upload.png';
 import trash from './images/trash.png';
@@ -23,14 +23,14 @@ const Profile = observer((props) => {
     const surname = useRef();
     const nickname = useRef();
 
-    const { user } = userState;
+    const { user } = AccountState;
     const { t } = useTranslation();
 
     const [uploadAvatar,  setUploadAvatar] = useState(false);
     const [uploadHeader,  setUploadHeader] = useState(false);
     const [avatar, setAvatar] = useState(`data:image/png;base64,${user.avatar || ""}`);
     const [header, setHeader] = useState(`data:image/png;base64,${user.header || ""}`);
-    const { UpdateUserData } = userState;
+    const { UpdateUserData } = AccountState;
 
     let navigate = useNavigate();
     let location = useLocation();

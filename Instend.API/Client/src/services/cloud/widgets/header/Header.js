@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import styles from './styles/main.module.css';
 import notifications from './images/notifications.png';
 import notificationsActive from './images/notifications-active.png';
-import userState from '../../../../state/entities/UserState';
+import AccountState from '../../../../state/entities/AccountState.js';
 import music from './images/music.png';
 import musicActive from './images/music-active.png';
 import HeaderMusicPlayer from '../../singletons/header-music-player/HeaderMusicPlayer';
@@ -13,7 +13,7 @@ import defaultAvatar from './images/default-avatar.png';
 
 const Header = observer((props) => {
     const [current, setCurrect] = useState(-1);
-    const { user } = userState;
+    const { account } = AccountState;
     const wrapper = useRef();
     const profileRef = useRef();
 
@@ -45,7 +45,7 @@ const Header = observer((props) => {
                     {current === 0 && <HeaderMusicPlayer />}
                 </div>
                 <div className={styles.button}>
-                    {userState.countNotifications > 0 && <div className={styles.hasNotifications}></div>}
+                    {AccountState.countNotifications > 0 && <div className={styles.hasNotifications}></div>}
                     <img 
                         src={current === 1 ? notificationsActive : notifications} 
                         className={styles.buttonImage} 
@@ -56,7 +56,7 @@ const Header = observer((props) => {
                 </div>
                 <div className={styles.button} onClick={() => setCurrect(2)}>
                     <img 
-                        src={`data:image/png;base64,${user.avatar ?? defaultAvatar}`} 
+                        src={`data:image/png;base64,${account.avatar ?? defaultAvatar}`} 
                         draggable='false' 
                         className={styles.avatar} 
                     />

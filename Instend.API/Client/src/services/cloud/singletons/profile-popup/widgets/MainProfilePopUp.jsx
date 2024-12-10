@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import UserState from '../../../../../state/entities/UserState';
+import AccountState from '../../../../../state/entities/AccountState';
 import styles from '../styles/main.module.css';
 import settings from '../images/settings.png';
 import moon from '../images/moon.png';
@@ -11,7 +11,7 @@ const MainProfilePopUp = ({setCurrentWindow = () => {}}) => {
         useNavigate('/main');
         localStorage.clear('system_access_token');
         document.cookie = "system_refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        UserState.Logout();
+        AccountState.Logout();
     }
 
     const SetCurrent = (event, value) => {
@@ -25,13 +25,13 @@ const MainProfilePopUp = ({setCurrentWindow = () => {}}) => {
         <div className={styles.miniProfile}>
             <div className={styles.header}>
                 <img
-                    src={`data:image/png;base64,${UserState.user.avatar}`} 
+                    src={`data:image/png;base64,${AccountState.account.avatar}`} 
                     className={styles.avatar}
                     draggable="false"
                 />
                 <div className={styles.information}>
-                    <span className={styles.nickname}>{UserState.user.nickname}</span>
-                    <span className={styles.name}>{UserState.user.name} {UserState.user.surname}</span>
+                    <span className={styles.nickname}>{AccountState.account.nickname}</span>
+                    <span className={styles.name}>{AccountState.account.name} {AccountState.account.surname}</span>
                     <Link to="/profile" className={styles.link}>Show profile</Link>
                 </div>
             </div>

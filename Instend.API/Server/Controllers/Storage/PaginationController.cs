@@ -19,8 +19,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         private readonly Dictionary<string, string[]> Types = new Dictionary<string, string[]>
         {
-            {"gallery", Configuration.imageTypes.Concat(Configuration.videoTypes).ToArray()},
-            {"music", Configuration.musicTypes}
+            { "gallery", Configuration.imageTypes.Concat(Configuration.videoTypes).ToArray() },
+            { "music", Configuration.musicTypes }
         };
 
         public PaginationController(IFileRespository fileRespository, IRequestHandler requestHandler)
@@ -37,14 +37,10 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
             if (userId.IsFailure)
-            {
                 return BadRequest(userId.Error);
-            }
 
             if (!Types.ContainsKey(type)) 
-            {
                 return BadRequest("Invalid type");
-            }
 
             return Ok(await _fileRespository.GetLastFilesWithType(Guid.Parse(userId.Value), from, count, Types[type]));
         }

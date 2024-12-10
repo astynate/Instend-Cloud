@@ -14,8 +14,8 @@
 }
 
 .wrapper img {
-    width: 65px;
-    margin-bottom: 5px;
+    width: 110px;
+    animation: logo 1.5s linear infinite;
 }
 
 .wrapper h1 {
@@ -31,7 +31,6 @@
 }
 
 .header {
-    margin-bottom: 125px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -42,4 +41,23 @@
     bottom: 100px;
     left: 50%;
     transform: translateX(-50%);
+}
+
+@keyframes logo {
+    0% {
+        transform: scale(100%);
+        filter: blur(0px);
+    }
+    33% {
+        transform: scale(110%);
+        /* filter: blur(10px);  */
+    }
+    66% {
+        transform: scale(90%);    
+        /* filter: blur(5px); */
+    }
+    100% {
+        transform: scale(100%); 
+        filter: blur(0px);
+    }
 }

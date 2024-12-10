@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Instend.Core.Models.Account
 {
+    [Table("accounts_sessions")]
     public class AccountSession
     {
         [Column("id")] public Guid Id { get; private set; } = Guid.NewGuid();
@@ -11,7 +12,7 @@ namespace Instend.Core.Models.Account
         [Column("creation_time")] public DateTime CreationTime { get; private set; }
         [Column("end_time")] public DateTime EndTime { get; private set; }
         [Column("token")] public string RefreshToken { get; private set; } = null!;
-        [Column("user_id")] public Guid UserId { get; private set; }
+        [Column("account_id")] public Guid AccountId { get; private set; }
 
         private AccountSession() { }
 
@@ -30,7 +31,7 @@ namespace Instend.Core.Models.Account
                 CreationTime = DateTime.Now,
                 EndTime = DateTime.Now.AddDays(Configuration.refreshTokenLifeTimeInDays),
                 RefreshToken = refreshToken,
-                UserId = userId
+                AccountId = userId
             };
 
             return Result.Success(sessionModel);

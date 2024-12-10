@@ -8,7 +8,6 @@ namespace Instend.Repositories.Contexts
     public class PublicationsContext : DatabaseContextBase
     {
         public DbSet<Publication> Publications { get; set; } = null!;
-        public DbSet<AccountPublication> UserPublications { get; set; } = null!;
         public DbSet<PublicationAttachment> PublicationAttachments { get; set; } = null!;
         public DbSet<PublicationReaction> PublicationReactions { get; set; } = null!;
 
@@ -18,9 +17,13 @@ namespace Instend.Repositories.Contexts
 
             modelBuilder
                 .Entity<Publication>()
-                .HasMany(p => p.Attechments)
-                .WithMany(a => a.Publications)
+                .HasMany(p => p.Attachments)
+                .WithMany()
                 .UsingEntity<PublicationAttachment>();
+
+            modelBuilder
+                .Entity<Core.Models.Account.Account>()
+                .HasMany(x => x.Publications);
         }
     }
 }

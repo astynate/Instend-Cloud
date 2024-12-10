@@ -1,19 +1,25 @@
+import { instance } from "../state/application/Interceptors";
+import NewsState from "../state/entities/NewsState";
+
 class NewsController {
-    static GetNews = async (lastPublicationDate) => {
-        let news = [];
-
-        await instance.get(`api/news?lastPublicationDate=${lastPublicationDate}`)
+    static SetNewsRequest = async (lastPublicationDate = '') => {
+        await instance
+            .get(`api/news?lastPublicationDate=${lastPublicationDate}`)
             .then((response) => {
-                const ids = this.news.map(element => element.id);
-                const newPosts = response.data.filter(post => !ids.includes(post.comment.id));
-
-                if (newPosts.length && newPosts.length > 0) {
-                    this.news = [...this.news, ...newPosts].sort(this.sortByDate);
+                if (!response) {
+                    return;
                 }
 
-                this.isHasMore = newPosts.length && newPosts.length >= 7;
-            });
+                if (response.data && response.data.length && response.data.length > 0) {
+                    NewsState.addNews(response.data);
+                }
 
-        return news;
+                NewsState.setHasMoreState(response.data.length && response.data.length >= 5);
+            })
+            .catch(e => {
+                console.error(e);
+            });
     }
 }
+
+export default NewsController;

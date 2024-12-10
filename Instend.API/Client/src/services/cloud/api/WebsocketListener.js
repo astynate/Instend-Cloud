@@ -3,7 +3,7 @@ import ChatsState from "../../../state/entities/ChatsState";
 import GalleryState from "../../../state/entities/GalleryState";
 import MusicState from "../../../state/entities/MusicState";
 import StorageState from "../../../state/entities/StorageState";
-import UserState from "../../../state/entities/UserState";
+import AccountState from "../../../state/entities/AccountState";
 // import { globalWSContext } from "../layout/Layout";
 
 class WebsocketListener {
@@ -15,7 +15,7 @@ class WebsocketListener {
     static UploadFileListener = async ([file, queueId, occupiedSpace, meta]) => {
         file.meta = meta;
         
-        UserState.ChangeOccupiedSpace(occupiedSpace);
+        AccountState.ChangeOccupiedSpace(occupiedSpace);
         StorageState.ReplaceLoadingFile(file, queueId);
 
         if (GlobalContext.supportedImageTypes.includes(file.type)) {
@@ -89,10 +89,10 @@ class WebsocketListener {
         ChatsState.DeleteChat(id, user);
     };
 
-    static DeleteDirectoryListner = (id) => ChatsState.DeleteChat(id, UserState.user.id);
+    static DeleteDirectoryListner = (id) => ChatsState.DeleteChat(id, AccountState.user.id);
     static ViewMessageListner = ({ id, chatId }) => ChatsState.ViewMessage(id, chatId);
     static NewConnectionListner = async (id) => {};
-    static UpdateOccupiedSpaceListner = (space) => UserState.ChangeOccupiedSpace(space);
+    static UpdateOccupiedSpaceListner = (space) => AccountState.ChangeOccupiedSpace(space);
     static DeleteCommentListner = (id) => GalleryState.DeleteCommentById(id);
     static AddToAlbumListner = ([file, albumId]) => GalleryState.AddToAlbum(file, albumId);
     static DeleteAlbumListner = (id) => GalleryState.DeleteAlbumById(id);

@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 
-class UserState {
+class AccountState {
     isAccessibleRoute = false;
     countNotifications = 0;
     friends = [];
@@ -8,7 +8,7 @@ class UserState {
     publications = [];
     isAuthorize = false;
     isLoading = true;
-    user = null;
+    account = null;
     publicationQueueId = 0;
 
     constructor() {
@@ -16,7 +16,7 @@ class UserState {
     }
 
     Logout = () => {
-        this.user = null;
+        this.account = null;
         this.friends = [];
         this.communities = [];
         this.publications = [];
@@ -29,7 +29,7 @@ class UserState {
         localStorage.setItem('system_refresh_token', undefined);
     }
 
-    SetUser = (user) => this.user = user;
+    SetUser = (user) => this.account = user;
     DeletePublication = (id) => this.publications = this.publications.filter(element => element.comment.id !== id);
     RemoveCommunity = (community) => this.communities = this.communities.filter(element => element.id !== community.id);
     FindFriendById = (fiendId) => this.friends.find((f) => f.userId === fiendId || f.ownerId === fiendId);
@@ -52,7 +52,7 @@ class UserState {
     }
 
     GetUserOnSuccessCallback = (data) => {
-        this.user = data[0];
+        this.account = data[0];
         this.friends = data[1];
         this.isAuthorize = true;
         this.isLoading = false;
@@ -64,10 +64,10 @@ class UserState {
     }
 
     ChangeOccupiedSpace(occupiedSpace) {
-        if (!this.user) 
+        if (!this.account) 
             return false;
         
-        this.user.occupiedSpace = occupiedSpace;
+        this.account.occupiedSpace = occupiedSpace;
     }
 
     IsUserInFriends = (userId) => {
@@ -113,7 +113,7 @@ class UserState {
             return false;
 
         friend.isSubmited = true;
-        this.user.friendCount++;
+        this.account.friendCount++;
     }
 
     AddCommunity = (community) => {
@@ -126,4 +126,4 @@ class UserState {
     }
 }
 
-export default new UserState();
+export default new AccountState();

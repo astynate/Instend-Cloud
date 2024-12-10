@@ -6,7 +6,7 @@ namespace Instend.Core.Models.Messenger.Message
     [Table("messages_reactions")]
     public class MessageReaction : DatabaseModel
     {
-        [Column("message_id")] 
+        [Column("message_id")]
         public Guid MessageId { get; private set; }
 
         [Column("reaction_id")] 

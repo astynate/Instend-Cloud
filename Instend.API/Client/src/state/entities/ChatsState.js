@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import userState from "./UserState";
+import AccountState from "./AccountState";
 import ChatHandler from "../../utils/handlers/ChatHandler";
 
 class ChatsState {
@@ -94,8 +94,8 @@ class ChatsState {
     }
 
     setDraft = (user) => {
-        if (user && userState.user && userState.user.id) {
-            if (this.chats.map(chat => chat.id).includes(user.id) || userState.user.id === user.id) {
+        if (user && AccountState.user && AccountState.user.id) {
+            if (this.chats.map(chat => chat.id).includes(user.id) || AccountState.user.id === user.id) {
                 return false;
             }
 
@@ -140,7 +140,7 @@ class ChatsState {
                 date: new Date(),
                 id: undefined,
                 text: message,
-                userId: userState.user.id,
+                userId: AccountState.user.id,
                 attachments: attachments,
                 queueId: queueId,
                 isViewed: false
@@ -172,7 +172,7 @@ class ChatsState {
             const chatValue = ChatHandler.GetChat(chat.directId ?? chat.id);
 
             if (chatValue) {
-                if (message.userId === userState.user.id) {
+                if (message.userId === AccountState.user.id) {
                     chatValue.messages = chatValue.messages.filter(e => e.queueId !== queueId);
                 }
 
@@ -233,7 +233,7 @@ class ChatsState {
     }
 
     DeleteChat = (id, user) => {
-        if (user === userState.user.id) {
+        if (user === AccountState.user.id) {
             this.chats = this.chats
                 .filter(element => element.directId !== id && element.id !== id);
         } else {

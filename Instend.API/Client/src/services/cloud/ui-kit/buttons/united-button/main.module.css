@@ -1,0 +1,35 @@
+.buttonWrapper {
+    color: var(--main-font-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    align-items: center;
+    transition: 0.25s ease;
+    overflow: hidden;
+    border-radius: 30px;
+    grid-gap: 0px;
+}
+
+.button {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    grid-gap: 4px;
+    padding: 8px 12px;
+}
+
+.button:hover {
+    background: var(--pop-up-accent-color);
+}
+
+.button img {
+    width: 20px;
+    filter: var(--main-filter);
+}
+
+.divider {
+    height: 22px;
+    width: 1px;
+    background: var(--main-border-color);
+}

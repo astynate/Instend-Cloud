@@ -22,11 +22,7 @@ namespace Instend.Server.Hubs
                 await _hub.Groups.AddToGroupAsync(connectionId, name);
             }
 
-            await _hub.Clients.Caller.SendAsync
-            (
-                targetHandler, 
-                _serializator.SerializeWithCamelCase(objects)
-            );
+            await _hub.Clients.Caller.SendAsync(targetHandler, _serializator.SerializeWithCamelCase(objects));
         }
     }
 }

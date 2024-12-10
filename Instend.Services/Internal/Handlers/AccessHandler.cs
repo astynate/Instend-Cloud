@@ -1,9 +1,10 @@
 ﻿using Instend.Core;
 using Instend.Core.Dependencies.Repositories.Account;
-using Instend.Core.Models.Access;
-using Instend.Repositories.Storage;
 using CSharpFunctionalExtensions;
 using Instend.Core.Models.Storage.Collection;
+using Instend.Core.Models.Account;
+using Instend.Core.Models.Abstraction;
+using Instend.Core.Models.Storage.Album;
 
 namespace Instend.Services.Internal.Handlers
 {
@@ -13,87 +14,50 @@ namespace Instend.Services.Internal.Handlers
 
         private readonly IAccountsRepository _accountsRepository;
 
-        private readonly IAccessRepository<CollectionAccount, Collection> _folderAccessRepository;
-
-        private readonly IAccessRepository<Core.Models.Access.FileAccount, Core.Models.Storage.File.File> _fileAccessRepository;
-
-        public AccessHandler
-        (
-            IRequestHandler requestHandler,
-            IAccessRepository<CollectionAccount, Collection> folderAccessRepository,
-            IAccessRepository<Core.Models.Access.FileAccount, Core.Models.Storage.File.File> fileAccessRepository,
-            IAccountsRepository accountRespotiroy
-        )
+        public AccessHandler(IRequestHandler requestHandler, IAccountsRepository accountRespotory)
         {
             _requestHandler = requestHandler;
-            _folderAccessRepository = folderAccessRepository;
-            _fileAccessRepository = fileAccessRepository;
-            _accountsRepository = accountRespotiroy;
+            _accountsRepository = accountRespotory;
         }
 
-        public async Task<Result> GetAccessStateAsync(Core.Models.Storage.File.File file, Configuration.EntityRoles operation, string? bearer)
+        private Result GetAccessRequestResult(Configuration.EntityRoles accountRole, Configuration.EntityRoles operationLevel)
         {
-            var userId = _requestHandler.GetUserId(bearer);
-
-            if (userId.IsFailure)
-                return Result.Failure("Invalid usser id");
-
-            if (file.AccountId == Guid.Parse(userId.Value))
-                return Result.Success();
-
-            if (file.Access == Configuration.AccessTypes.Private && Guid.Parse(userId.Value) != file.AccountId)
-            {
-                bool folderAccess = file.FolderId != Guid.Empty ? await _folderAccessRepository
-                    .GetUserAccess(Guid.Parse(userId.Value), file.FolderId) : false;
-
-                if (folderAccess == false)
-                {
-                    return Result.Failure("You do not have access to the file or the containing folder");
-                }
-            }
-
-            if (file.Access == Configuration.AccessTypes.Favorites)
-            {
-                bool fileAccess = await _fileAccessRepository.GetUserAccess(Guid.Parse(userId.Value), file.Id);
-
-                bool folderAccess = file.FolderId != Guid.Empty ? await _fileAccessRepository
-                    .GetUserAccess(Guid.Parse(userId.Value), file.FolderId) : false;
-
-                if (fileAccess == false && folderAccess == false)
-                {
-                    return Result.Failure("You do not have access to the file or the containing folder");
-                }
-            }
-
-            if (operation != Configuration.EntityRoles.Reader && file.Access == Configuration.AccessTypes.Public)
-                return Result.Failure("Files with public access available for rading only");
+            if (accountRole < operationLevel)
+                return Result.Failure("You don't have rights to perform this operation");
 
             return Result.Success();
         }
 
-        public async Task<Result> GetAccessStateAsync(Collection folder, Configuration.EntityRoles operation, string bearer)
+        private AccessBase? GetAccountAccessFromList(IEnumerable<AccessBase> accountsWithAccesss, Account account)
+            => accountsWithAccesss.FirstOrDefault(access => access.Account?.Id == account.Id);
+
+        private Result<AccessBase> GetAccountAccess(AccessItemBase accessItemBase, Account account, Configuration.EntityRoles operationLevel)
         {
-            var userId = _requestHandler.GetUserId(bearer);
+            var accountAccess = GetAccountAccessFromList(accessItemBase.AccountsWithAccess, account);
 
-            if (folder.FolderType == Configuration.CollectionTypes.System && operation != Configuration.EntityRoles.Reader)
-                return Result.Failure("You cannot perform this operation on the system folder.");
+            if (accountAccess == null)
+                return Result.Failure<AccessBase>("Account has no access to this item");
 
-            if (userId.IsFailure)
-                return Result.Failure("Invalid user id");
+            var result = GetAccessRequestResult(accountAccess.Role, operationLevel);
 
-            if (folder.AccountId == Guid.Parse(userId.Value))
-                return Result.Success();
+            if (result.IsFailure)
+                return Result.Failure<AccessBase>(result.Error);
 
-            if (folder.Access == Configuration.AccessTypes.Private && Guid.Parse(userId.Value) != folder.AccountId)
-                return Result.Failure("Only owner haves an access to private folder");
-
-            if (folder.Access == Configuration.AccessTypes.Favorites && await _folderAccessRepository.GetUserAccess(Guid.Parse(userId.Value), folder.Id) == false)
-                return Result.Failure("You are not in the list of users who have access to this folder");
-
-            if (operation != Configuration.EntityRoles.Reader && folder.Access == Configuration.AccessTypes.Public)
-                return Result.Failure("Folders with public access available for rading only");
-
-            return Result.Success();
+            return accountAccess;
         }
+
+        public Result GetCollectionAccessRequestResult(Collection collection, Account account, Configuration.EntityRoles operationLevel)
+        {
+            if (collection.Type == Configuration.CollectionTypes.System && operationLevel > Configuration.EntityRoles.Reader)
+                return Result.Failure("You can't perform this operation on system collection.");
+
+            return GetAccountAccess(collection, account, operationLevel);
+        }
+
+        public Result GetFileAccessRequestResult(Core.Models.Storage.File.File file, Account account, Configuration.EntityRoles operationLevel)
+            => GetAccountAccess(file, account, operationLevel);
+
+        public Result GetAlbumAccessRequestResult(Album album, Account account, Configuration.EntityRoles operationLevel)
+            => GetAccountAccess(album, account, operationLevel);
     }
 }

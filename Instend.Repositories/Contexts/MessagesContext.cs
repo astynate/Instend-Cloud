@@ -50,6 +50,12 @@ namespace Instend.Repositories.Contexts
                 .HasMany(m => m.Messages)
                 .WithMany()
                 .UsingEntity<GroupMessage>();
+
+            modelBuilder
+                .Entity<Group>()
+                .HasMany(m => m.Members)
+                .WithMany()
+                .UsingEntity<GroupMember>();
         }
     }
 }

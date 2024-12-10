@@ -1,12 +1,8 @@
-﻿using CSharpFunctionalExtensions;
-using Instend.Core.Models.Formats;
-using Instend.Repositories.Storage;
+﻿using Instend.Repositories.Storage;
 using Instend.Services.Internal.Handlers;
 using Instend_Version_2._0._0.Server.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.RegularExpressions;
-using Instend.Core.Models.Storage.File;
 
 namespace Instend_Version_2._0._0.Server.Controllers.Storage
 {
@@ -18,22 +14,13 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IRequestHandler _requestHandler;
 
-        private readonly IFormatRepository<SongFormat> _songFormat;
+        private readonly IHubContext<GlobalHub> _globalHub;
 
-        private readonly IHubContext<StorageHub> _storageHub;
-
-        public MusicController
-        (
-            IFileRespository fileRespository, 
-            IRequestHandler requestHandler,
-            IFormatRepository<SongFormat> songFormat,
-            IHubContext<StorageHub> storageHub
-        )
+        public MusicController(IFileRespository fileRespository, IRequestHandler requestHandler, IHubContext<GlobalHub> storageHub)
         {
             _fileRespository = fileRespository;
             _requestHandler = requestHandler;
-            _songFormat = songFormat;
-            _storageHub = storageHub;
+            _globalHub = storageHub;
         }
 
         [HttpPut]
@@ -48,43 +35,41 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             [FromForm] string? album
         )
         {
-            Result<(Instend.Core.Models.Storage.File.File?, SongFormat?)> result = await _songFormat.GetByIdWithMetaData(id);
+            //var result = await _songFormat.GetByIdWithMetaData(id);
 
-            if (result.IsFailure)
-            {
-                return Conflict("Not found");
-            }
+            //if (result.IsFailure)
+            //    return Conflict("Not found");
 
-            using (var memoryStream = new MemoryStream())
-            {
-                if (file != null && file.Length > 0)
-                {
-                    await file.CopyToAsync(memoryStream);
-                }
+            //using (var memoryStream = new MemoryStream())
+            //{
+            //    if (file != null && file.Length > 0)
+            //    {
+            //        await file.CopyToAsync(memoryStream);
+            //    }
                 
-                result.Value.Item2.UpdateData(memoryStream.ToArray(), title, artist, album, result.Value.Item1.Type, result.Value.Item1.Path);
+            //    result.Value.Item2.UpdateData(memoryStream.ToArray(), title, artist, album, result.Value.Item1.Type, result.Value.Item1.Path);
 
-                await _songFormat.SaveChanges(result.Value.Item2);
+            //    await _songFormat.SaveChanges(result.Value.Item2);
                 
-                await _storageHub.Clients.Group(result.Value.Item1.FolderId == Guid.Empty ? result.Value.Item1.AccountId.ToString() :
-                    result.Value.Item1.Id.ToString()).SendAsync("RenameFile", 
-                    new {
-                        Id = result.Value.Item1.Id,
-                        Name = result.Value.Item1.Name,
-                        LastEditTime = result.Value.Item1.LastEditTime,
-                        Access = result.Value.Item1.Access,
-                        Size = result.Value.Item1.Size,
-                        CoverAsBytes = result.Value.Item2.CoverAsBytes,
-                        FolderId = result.Value.Item1.FolderId,
-                        AccessId = result.Value.Item1.AccessId,
-                        Title = result.Value.Item2.Title,
-                        Artist = result.Value.Item2.Artist,
-                        Album = result.Value.Item2.Album,
-                        Plays = result.Value.Item2.Plays,
-                        RealeseDate = result.Value.Item2.RealeseDate,
-                        Genre = result.Value.Item2.Genre
-                    });
-            }
+            //    await _globalHub.Clients.Group(result.Value.Item1.FolderId == Guid.Empty ? result.Value.Item1.AccountId.ToString() :
+            //        result.Value.Item1.Id.ToString()).SendAsync("RenameFile", 
+            //        new {
+            //            Id = result.Value.Item1.Id,
+            //            Name = result.Value.Item1.Name,
+            //            LastEditTime = result.Value.Item1.LastEditTime,
+            //            Access = result.Value.Item1.Access,
+            //            Size = result.Value.Item1.Size,
+            //            CoverAsBytes = result.Value.Item2.CoverAsBytes,
+            //            FolderId = result.Value.Item1.FolderId,
+            //            AccessId = result.Value.Item1.AccessId,
+            //            Title = result.Value.Item2.Title,
+            //            Artist = result.Value.Item2.Artist,
+            //            Album = result.Value.Item2.Album,
+            //            Plays = result.Value.Item2.Plays,
+            //            RealeseDate = result.Value.Item2.RealeseDate,
+            //            Genre = result.Value.Item2.Genre
+            //        });
+            //}
 
             return Ok();
         }

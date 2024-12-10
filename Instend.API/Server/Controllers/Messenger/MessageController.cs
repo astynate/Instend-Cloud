@@ -3,7 +3,6 @@ using Instend.Core.TransferModels.Messenger;
 using Instend.Repositories.Messenger;
 using Instend.Services.Internal.Handlers;
 using Instend_Version_2._0._0.Server.Hubs;
-using Instend.Repositories.Storage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -29,8 +28,6 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
 
         private readonly IGroupsRepository _groupRepository;
 
-        private readonly IStorageAttachmentRepository _storageAttachmentRepository;
-
         private readonly IChatBase[] _chatFactory = [];
 
         public MessageController
@@ -39,7 +36,6 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
             IRequestHandler requestHandler, 
             IHubContext<GlobalHub> messageHub,
             IDirectRepository directRepository,
-            IStorageAttachmentRepository storageAttachmentRepository,
             ISerializationHelper serializator,
             IGroupsRepository group
         )
@@ -50,7 +46,6 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
             _directRepository = directRepository;
             _groupRepository = group;
             _chatFactory = [_directRepository, _groupRepository];
-            _storageAttachmentRepository = storageAttachmentRepository;
             _serializator = serializator;
         }
 
@@ -97,11 +92,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
         {
             if (direct.IsAccepted == false)
             {
-                await _messageHub.Clients.Group(direct.AccountModelId.ToString())
-                    .SendAsync("NewConnection", direct.Id);
-
-                await _messageHub.Clients.Group(direct.OwnerId.ToString())
-                    .SendAsync("NewConnection", direct.Id);
+                await _messageHub.Clients.Group(direct.AccountModelId.ToString()).SendAsync("NewDirectHandler", direct.Id);
+                await _messageHub.Clients.Group(direct.OwnerId.ToString()).SendAsync("NewDirectHandler", direct.Id);
 
                 return;
             }
@@ -109,11 +101,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
             await NotifyAboutMessage(direct, direct.Id.ToString());
         }
 
-        private async Task NotifyAboutMessage(object transferModel, string id)
-        {
-            await _messageHub.Clients.Group(id)
-                .SendAsync("ReceiveMessage", _serializator.SerializeWithCamelCase(transferModel));
-        }
+        private async Task NotifyAboutMessage(object transferModel, string id) 
+            => await _messageHub.Clients.Group(id).SendAsync("ReceiveMessage", _serializator.SerializeWithCamelCase(transferModel));
 
         [HttpPost]
         [Authorize]
@@ -128,7 +117,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
             var result = await _messengerReposiroty.ViewMessage(id, Guid.Parse(userId.Value));
 
             if (result == true)
-                await _messageHub.Clients.Group(chatId.ToString()).SendAsync("ViewMessage", new { id, chatId });
+                await _messageHub.Clients.Group(chatId.ToString()).SendAsync("ViewMessageHandler", new { id, chatId });
 
             return Ok();
         }

@@ -2,7 +2,8 @@
 
 namespace Instend.Core.TransferModels.Account
 {
-    public record UserTransferModel(
+    public record UserTransferModel
+    (
          [Required][MaxLength(45)] string name,
          [Required][MaxLength(45)] string surname,
          [Required][MaxLength(45)] string nickname,

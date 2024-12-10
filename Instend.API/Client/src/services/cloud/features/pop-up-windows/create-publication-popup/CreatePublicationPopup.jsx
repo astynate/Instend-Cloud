@@ -2,16 +2,17 @@ import { observer } from 'mobx-react-lite';
 import { useEffect, useRef, useState } from 'react';
 import PopUpWindow from '../../../shared/popup-windows/pop-up-window/PopUpWindow';
 import styles from './main.module.css';
-import UserState from '../../../../../state/entities/UserState';
+import AccountState from '../../../../../state/entities/AccountState';
 import Base64Handler from '../../../../../utils/handlers/Base64Handler';
 import image from './images/image.png';
-import smile from './images/smile.png';
 import Attachments from '../../../ui-kit/attachments/Attachments';
 import FilesInputWrapper from '../../wrappers/files-input-wrapper/FilesInputWrapper';
+import ButtonContent from '../../../elements/button-content/ButtonContent';
 
-const CreatePublicationPopup = observer(({isOpen = false, close = () => {}}) => {
+const CreatePublicationPopup = observer(({isOpen = false, close = () => {}, callback = () => {}}) => {
     const [text, setText] = useState('');
     const [attachments, setAttachments] = useState([]);
+    const [isLoading, setLoadingState] = useState();
     const textareaRef = useRef(null);
   
     useEffect(() => {
@@ -28,19 +29,24 @@ const CreatePublicationPopup = observer(({isOpen = false, close = () => {}}) => 
         setText(event.target.value);
     };
 
+    useEffect(() => {
+        if (isLoading === true)
+            close();
+    }, [isLoading]);
+
     return (
         <PopUpWindow open={isOpen} title={'New publication'} close={close}>
             <div className={styles.wrapper}>
                 <div className={styles.content}>
                     <div className={styles.header}>
                         <img 
-                            src={Base64Handler.Base64ToUrlFormatPng(UserState.user.avatar)} 
+                            src={Base64Handler.Base64ToUrlFormatPng(AccountState.account.avatar)} 
                             className={styles.avatar} 
                             draggable="false"
                         />
                         <div className={styles.information}>
-                            <span className={styles.nickname}>{UserState.user.nickname}</span>
-                            <span className={styles.name}>{UserState.user.name} {UserState.user.surname}</span>
+                            <span className={styles.nickname}>{AccountState.account.nickname}</span>
+                            <span className={styles.name}>{AccountState.account.name} {AccountState.account.surname}</span>
                         </div>
                     </div>
                     <textarea 
@@ -61,13 +67,14 @@ const CreatePublicationPopup = observer(({isOpen = false, close = () => {}}) => 
                             <FilesInputWrapper setFiles={setAttachments} maxLength={7}>
                                 <img src={image} draggable="false" />
                             </FilesInputWrapper>
-                            {/* <img 
-                                src={smile} 
-                                draggable="false" 
-                            /> */}
                         </div>
                     </div>
-                    <button>Post</button>
+                    <button onClick={() => callback(text, attachments, setLoadingState)}>
+                        <ButtonContent 
+                            label={'Post'} 
+                            state={isLoading ? 'loading' : null} 
+                        />
+                    </button>
                 </div>
             </div>
         </PopUpWindow>

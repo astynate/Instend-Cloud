@@ -5,7 +5,7 @@ import backButton from './images/back.png';
 
 const PopUpWindow = ({
         open, 
-        isHeaderPositionAbsulute, 
+        isHeaderPositionAbsolute, 
         isHeaderless, 
         back, 
         title, 
@@ -20,7 +20,7 @@ const PopUpWindow = ({
         <div className={styles.popUpWrapper}>
             <div className={styles.window}>
                 {!isHeaderless &&
-                    <div className={styles.header} id={isHeaderPositionAbsulute ? 'absulute' : null}>
+                    <div className={styles.header} id={isHeaderPositionAbsolute ? 'absolute' : null}>
                         {back ? 
                             <div className={styles.backButton}>
                                 <img src={backButton} 

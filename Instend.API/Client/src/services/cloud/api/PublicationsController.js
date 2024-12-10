@@ -1,40 +1,26 @@
 import { instance } from "../../../state/application/Interceptors";
 
 class PublicationsController {
-    static AddUploadingComment = async (route, text, attachments = [], user, itemId, comments, setComments, queueId, setQueueId) => {
-        const commentBody = {
-            text,
-            attachments: attachments
-        };
+    static AddPublication = async (text, attachments, setLoadingState) => {
+        let form = new FormData()
         
-        const comment = {
-            comment: commentBody,
-            user: user,
-            isUploading: true,
-            queueId: queueId
+        form.append('text', text);
+        
+        for (let i = 0; i < attachments.length; i++) {
+            form.append('files', attachments[i]);
         }
 
-        if (itemId && comments) {
-            setComments([comment, ...comments]);
-            let form = new FormData()
-            
-            form.append('text', text);
-            form.append('albumId', itemId);
-            form.append('queueId', comment.queueId);
-            
-            for(let i = 0; i < attachments.length; i++) {
-                form.append('files', attachments[i]);
-            }
-            
-            await instance
-                .post(route, form)
-                .catch(error => {
-                    console.error(error);
-                    DeleteCommentByQueueId(comment.queueId, itemId);
-                })
-        }
+        setLoadingState(true);
         
-        setQueueId(queueId++);
+        await instance
+            .post('api/publications', form)
+            .then(_ => {
+                setLoadingState(false);
+            })
+            .catch(e => {
+                console.error(e);
+                setLoadingState(false);
+            });
     }
 }
 

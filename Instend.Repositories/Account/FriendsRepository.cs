@@ -17,15 +17,15 @@ namespace Instend.Repositories.Account
 
         public async Task<AccountFollower[]> GetFriendsByUserId(Guid userId)
         {
-            return await _context.Friends.AsNoTracking()
-                .Where(x => x.AccountModelId == userId || x.OwnerId == userId)
+            return await _context.Followers.AsNoTracking()
+                .Where(x => x.AccountId == userId || x.FollowerId == userId)
                 .ToArrayAsync();
         }
 
         public async Task<Result<AccountFollower>> SendRequestAsync(Guid userId, Guid ownerId)
         {
-            int result = await _context.Friends
-                .Where(x => x.AccountModelId == userId && x.OwnerId == ownerId || x.OwnerId == userId && x.AccountModelId == ownerId)
+            int result = await _context.Followers
+                .Where(x => x.AccountId == userId && x.FollowerId == ownerId || x.FollowerId == userId && x.AccountId == ownerId)
                 .ExecuteDeleteAsync();
 
             if (result != 0)
@@ -52,8 +52,8 @@ namespace Instend.Repositories.Account
 
         public async Task<bool> SubmitRequestAsync(Guid userId, Guid friendId)
         {
-            int result = await _context.Friends
-                .Where(x => x.AccountModelId == userId && x.OwnerId == friendId)
+            int result = await _context.Followers
+                .Where(x => x.AccountId == userId && x.FollowerId == friendId)
                 .ExecuteUpdateAsync(x => x.SetProperty(p => p.IsSubmited, true));
 
             await _context.Accounts

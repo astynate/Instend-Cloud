@@ -2,13 +2,13 @@
     width: auto;
     display: flex;
     justify-content: space-between;
-    padding-top: 10px;
+    padding-top: 0px;
     padding-bottom: 10px;
     user-select: none;
     margin-left: var(--width-padding);
     margin-right: var(--width-padding);
+    /* border-top: 1px solid var(--main-border-color); */
 }
-
 
 .buttons {
     display: flex;
@@ -24,8 +24,8 @@
 }
 
 .button img {
-    height: 22px;
-    width: 22px;
+    height: 24px;
+    width: 24px;
     object-fit: contain;
     filter: var(--main-filter);
 }
@@ -41,10 +41,20 @@
 .statistics {
     display: flex;
     grid-gap: 20px;
+    font-size: 15px;
+    color: var(--main-font-color);
+}
+
+.statistics span {
+    font-weight: 500;
+    color: var(--main-paragraph-color);
+}
+
+.statistics b {
+    font-weight: 600;
     color: var(--main-font-color);
 }
 
 .statistics span:hover {
     cursor: pointer;
-    text-decoration: underline;
 }

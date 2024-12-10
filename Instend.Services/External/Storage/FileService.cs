@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Instend.Core;
 using Instend.Repositories.Storage;
+using Microsoft.AspNetCore.Http;
 using System.IO.Compression;
 
 namespace Instend.Services.External.FileService
@@ -40,7 +41,7 @@ namespace Instend.Services.External.FileService
             Guid id
         )
         {
-            var files = await fileRespository.GetByFolderId(Guid.Empty, id);
+            var files = await fileRespository.GetByParentCollectionId(Guid.Empty, id);
 
             foreach (var file in files)
             {
@@ -93,25 +94,33 @@ namespace Instend.Services.External.FileService
 
         public void DeleteFile(string path)
         {
-            if (System.IO.File.Exists(path))
+            if (File.Exists(path))
             {
-                System.IO.File.Delete(path);
+                File.Delete(path);
             }
         }
 
-        public void SaveIFormFile()
+        public async Task SaveIFormFile(IFormFile file, string path)
         {
+            using (var stream = new MemoryStream())
+            {
+                file.CopyTo(stream);
 
+                await File.WriteAllBytesAsync(path, stream.ToArray());
+            }
         }
 
-        public string ConvertSystemTypeToContentType(string systemType)
+        public string ConvertSystemTypeToContentType(string? systemType)
         {
+            if (string.IsNullOrEmpty(systemType) || string.IsNullOrWhiteSpace(systemType))
+                return "";
+
             if (Configuration.imageTypes.Contains(systemType.ToLower()))
                 return "image/" + systemType;
 
             return "application/" + systemType;
         }
 
-        public async Task WriteFileAsync(string path, byte[] file) => await System.IO.File.WriteAllBytesAsync(path, file);
+        public async Task WriteFileAsync(string path, byte[] file) => await File.WriteAllBytesAsync(path, file);
     }
 }

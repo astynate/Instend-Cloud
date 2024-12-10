@@ -43,7 +43,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
         }
 
         [HttpPost]
-        [Microsoft.AspNetCore.Authorization.Authorize]
+        [Authorize]
         public async Task<ActionResult<Group>> CreateGroup([FromForm] string name, [FromForm] IFormFile avatar, [FromForm] string connectionId)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);

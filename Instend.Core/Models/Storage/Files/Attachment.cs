@@ -10,16 +10,13 @@ namespace Instend.Core.Models.Storage.File
     public class Attachment : IDatabaseStorageRelation
     {
         [Column("id")][Key] public Guid Id { get; private set; } = Guid.NewGuid();
-        [Column("account_id")] public Guid AccountModelId { get; private set; }
+        [Column("account_id")] public Guid AccountId { get; private set; }
         [Column("name")] public string Name { get; private set; } = string.Empty;
         [Column("path")] public string Path { get; private set; } = string.Empty;
         [Column("type")] public string? Type { get; private set; } = string.Empty;
         [Column("size")] public long Size { get; private set; } = 0;
 
-        public List<Public.Publication> Publications { get; init; } = [];
-
         [NotMapped] public byte[] Preview { get; set; } = [];
-        public string? FilePath { get; private set; }
 
         private Attachment() { }
 
@@ -44,7 +41,7 @@ namespace Instend.Core.Models.Storage.File
                 Path = path,
                 Type = type,
                 Size = size,
-                AccountModelId = userId
+                AccountId = userId
             };
         }
 

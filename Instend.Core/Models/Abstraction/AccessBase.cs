@@ -5,21 +5,24 @@ namespace Instend.Core.Models.Abstraction
 {
     public abstract class AccessBase : DatabaseModel
     {
-        [Column("account_id")] public Guid AccountId { get; protected set; }
-        [Column("role")] public string AbilityId { get; protected set; } = Configuration.EntityRoles.Reader.ToString();
+        [Column("role")] 
+        public string RoleId { get; protected set; } = Configuration.EntityRoles.Reader.ToString();
+
+        public Account.Account Account { get; init; } = null!;
 
         [NotMapped]
         [EnumDataType(typeof(Configuration.EntityRoles))]
-        public Configuration.EntityRoles Ability
+        public Configuration.EntityRoles Role
         {
-            get => Enum.Parse<Configuration.EntityRoles>(AbilityId);
-            set => AbilityId = value.ToString();
+            get => Enum.Parse<Configuration.EntityRoles>(RoleId);
+            set => RoleId = value.ToString();
         }
 
-        public AccessBase(Guid accountId, Configuration.EntityRoles role) 
+        protected AccessBase() { }
+
+        public AccessBase(Configuration.EntityRoles role) 
         {
-            AccountId = accountId;
-            Ability = role;
+            Role = role;
         }
     }
 }

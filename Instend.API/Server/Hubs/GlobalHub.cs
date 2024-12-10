@@ -1,7 +1,5 @@
-﻿using Instend.Core.Dependencies.Repositories.Messenger;
-using Instend.Core.Dependencies.Services.Internal.Helpers;
-using Instend.Core.Models.Messenger.Direct;
-using Instend.Core.Models.Messenger.Group;
+﻿using Instend.Core.Dependencies.Services.Internal.Helpers;
+using Instend.Core.Models.Abstraction;
 using Instend.Core.Models.Storage.Collection;
 using Instend.Repositories.Gallery;
 using Instend.Repositories.Messenger;
@@ -27,30 +25,27 @@ namespace Instend_Version_2._0._0.Server.Hubs
 
         private readonly ISerializationHelper _serializator;
 
-        private readonly IFileService _fileService;
-
         private readonly JoinHubHelper _joinHubHelper;
+
+        private delegate Task<List<T>> GetEntitiesDelegate<T>(Guid id) where T : DatabaseModel;
 
         public GlobalHub
         (
             IRequestHandler requestHandler, 
-            IFileService fileService, 
             IDirectRepository directRepository,
             ICollectionsRepository collectionsRepository,
             IGroupsRepository groupsRepository,
             ISerializationHelper serializator,
-            IAlbumsRepository albumsRepository,
-            JoinHubHelper joinHubHelper
+            IAlbumsRepository albumsRepository
         )
         {
             _requestHandler = requestHandler;
-            _fileService = fileService;
             _directRepository = directRepository;
             _collectionsRepository = collectionsRepository;
             _groupsRepository = groupsRepository;
             _serializator = serializator;
             _albumsRepository = albumsRepository;
-            _joinHubHelper = joinHubHelper;
+            _joinHubHelper = new JoinHubHelper(this, _serializator);
         }
 
         private bool IsValidUserData(string authorization, out Guid userId)
@@ -65,31 +60,30 @@ namespace Instend_Version_2._0._0.Server.Hubs
             return Guid.TryParse(userIdResult.Value, out userId);
         }
 
-        public async Task JoinToAccountDirects(string authorization, int skip, int take)
+        private async Task JoinToEntity<T>(GetEntitiesDelegate<T> callback, string handler, string authorization) where T : DatabaseModel
         {
             var userId = Guid.Empty;
 
             if (IsValidUserData(authorization, out userId) == false)
                 return;
 
-            IEnumerable<Direct> directs = await _directRepository.GetAccountDirectsAsync(userId, 0, 1);
-            IEnumerable<string> groupNames = [..directs.Select(x => x.Id.ToString()), Context.ConnectionId];
+            IEnumerable<DatabaseModel> entities = await callback(userId);
+            IEnumerable<string> groups = [..entities.Select(x => x.Id.ToString()), Context.ConnectionId];
 
-            await _joinHubHelper.Join("JoinDirectsHandler", Context.ConnectionId, groupNames, directs);
+            await _joinHubHelper.Join(handler, Context.ConnectionId, groups, entities);
         }
 
-        public async Task JoinToAccountGroups(string authorization, int skip, int take)
-        {
-            var userId = Guid.Empty;
+        public async Task JoinToDirects(string authorization)
+            => await JoinToEntity(_directRepository.GetAccountDirectsAsync, "JoinToDirectsHandler", authorization);
 
-            if (IsValidUserData(authorization, out userId) == false)
-                return;
+        public async Task JoinToGroups(string authorization)
+            => await JoinToEntity(_groupsRepository.GetAccountGroups, "JoinToGroupsHandler", authorization);
 
-            IEnumerable<Group> groups = await _groupsRepository.GetAccountGroups(userId);
-            IEnumerable<string> groupNames = [.. groups.Select(x => x.Id.ToString()), Context.ConnectionId];
+        public async Task JoinToAlbums(string authorization)
+            => await JoinToEntity(_albumsRepository.GetAllAccountAlbums, "JoinToAlbumsHandler", authorization);
 
-            await _joinHubHelper.Join("JoinGroupsHandler", Context.ConnectionId, groupNames, groups);
-        }
+        public async Task JoinToCollections(string authorization)
+            => await JoinToEntity<Collection>(_collectionsRepository.GetCollectionsByAccountId, "JoinToCollectionsHandler", authorization);
 
         public async Task ConnectToDirect(Guid id, string authorization)
         {
@@ -122,37 +116,6 @@ namespace Instend_Version_2._0._0.Server.Hubs
 
             await Groups.AddToGroupAsync(Context.ConnectionId, group.Id.ToString());
             await Clients.Caller.SendAsync("ReceiveMessage", _serializator.SerializeWithCamelCase(group));
-        }
-
-        public async Task JoinToAccountAlbums(string authorization)
-        {
-            var userId = _requestHandler.GetUserId(authorization);
-
-            if (userId.IsFailure)
-                return;
-
-            var albums = await _albumsRepository.GetAllAccountAlbums(Guid.Parse(userId.Value));
-
-            Array.ForEach(albums, async x => await Groups
-                .AddToGroupAsync(Context.ConnectionId, x.Id.ToString()));
-
-            await Groups.AddToGroupAsync(Context.ConnectionId, userId.Value);
-        }
-
-        public async Task JoinToAccountCollections(string authorization)
-        {
-            var userId = _requestHandler.GetUserId(authorization);
-
-            if (userId.IsFailure)
-                return;
-
-            var collections = await _collectionsRepository
-                .GetCollectionsByAccountId(Guid.Parse(userId.Value));
-
-            Array.ForEach(collections, async x => await Groups
-                .AddToGroupAsync(Context.ConnectionId, x.Id.ToString()));
-
-            await Groups.AddToGroupAsync(Context.ConnectionId, userId.Value);
         }
 
         public async Task CreateFolder(Collection folder)

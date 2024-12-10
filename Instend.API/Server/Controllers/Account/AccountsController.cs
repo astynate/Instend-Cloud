@@ -1,6 +1,5 @@
 ﻿using Instend.Core;
 using Instend.Core.Dependencies.Repositories.Account;
-using Instend.Core.Models.Account;
 using Instend.Core.TransferModels.Account;
 using Instend.Repositories.Storage;
 using Instend.Services.External.FileService;
@@ -191,7 +190,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
         [HttpPut]
         [Authorize]
-        public async Task<IActionResult> Update([FromForm] UpdateUserDTO userDTO, IRequestHandler requestHandler)
+        public async Task<IActionResult> Update([FromForm] UpdateAccountTranferModel userDTO, IRequestHandler requestHandler)
         {
             //if (userDTO is null)
             //    return BadRequest("Invalid user data");

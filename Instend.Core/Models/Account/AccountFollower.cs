@@ -4,24 +4,24 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Instend.Core.Models.Account
 {
-    [Table("friends")]
+    [Table("accounts_followers")]
     public class AccountFollower : DatabaseModel
     {
-        [Column("user_id")] public Guid AccountModelId { get; private set; }
-        [Column("owner_id")] public Guid OwnerId { get; private set; }
+        [Column("account_id")] public Guid AccountId { get; private set; }
+        [Column("follower_id")] public Guid FollowerId { get; private set; }
         [Column("is_submited")] public bool IsSubmited { get; private set; } = false;
 
         private AccountFollower() { }
 
-        public static Result<AccountFollower> Create(Guid userId, Guid ownerId)
+        public static Result<AccountFollower> Create(Guid accountId, Guid followerId)
         {
-            if (userId == Guid.Empty || ownerId == Guid.Empty)
+            if (accountId == Guid.Empty || followerId == Guid.Empty)
                 return Result.Failure<AccountFollower>("User not found");
 
             return new AccountFollower()
             {
-                AccountModelId = userId,
-                OwnerId = ownerId
+                AccountId = accountId,
+                FollowerId = followerId
             };
         }
     }

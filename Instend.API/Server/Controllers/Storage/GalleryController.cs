@@ -26,7 +26,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IAccountsRepository _accountsRepository;
 
-        private readonly IAlbumsRepository _albumRepository;
+        private readonly IAlbumsRepository _albumsRepository;
 
         private readonly IAccessHandler _accessHandler;
 
@@ -51,7 +51,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         {
             _fileRespository = fileRespository;
             _requestHandler = requestHandler;
-            _albumRepository = albumRepository;
+            _albumsRepository = albumRepository;
             _folderRespository = folderRepository;
             _globalHub = globalHub;
             _context = context;
@@ -71,12 +71,14 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         [HttpGet]
         [Route("/api/albums")]
         [Authorize]
-        public async Task<ActionResult<Album[]>> GetAlbumsWithDefaultType() => await GetAlbums(Configuration.AlbumTypes.Album);
+        public async Task<ActionResult<Album[]>> GetAlbums(int skip, int take) 
+            => await GetAlbums(Configuration.AlbumTypes.Album, skip, take);
 
         [HttpGet]
         [Route("/api/playlists")]
         [Authorize]
-        public async Task<ActionResult<Album[]>> GetAlbumsWithPlaylistType()  => await GetAlbums(Configuration.AlbumTypes.Playlist);
+        public async Task<ActionResult<Album[]>> GetPlaylists(int skip, int take) 
+            => await GetAlbums(Configuration.AlbumTypes.Playlist, skip, take);
 
         [HttpGet]
         [Authorize]
@@ -92,8 +94,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             if (userId.IsFailure)
                 return BadRequest(userId.Error);
 
-            var result = await _fileRespository
-                .GetLastItemsFromAlbum(Guid.Parse(userId.Value), Guid.Parse(id), from, count);
+            var result = await _albumsRepository
+                .GetByIdAsync(Guid.Parse(id), from, count);
 
             return Ok(result);
         }
@@ -110,19 +112,17 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         public async Task<IActionResult> CreateAlbumWithPlaylistType([FromForm] CreateAlbumTransferObject createTO)
             => await CreateAlbumWithType(createTO, Configuration.AlbumTypes.Playlist);
 
-        private async Task<ActionResult<Album[]>> GetAlbums(Configuration.AlbumTypes type)
+        private async Task<ActionResult<Album[]>> GetAlbums(Configuration.AlbumTypes type, int skip, int take)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
             if (userId.IsFailure)
                 return BadRequest(userId.Error);
 
-            var result = await _albumRepository.GetAlbums(_imageService, Guid.Parse(userId.Value), type);
+            var result = await _albumsRepository
+                .GetAlbums(Guid.Parse(userId.Value), type, skip, take);
 
-            if (result.IsFailure)
-                BadRequest(result.Error);
-
-            return Ok(result.Value);
+            return Ok(result);
         }
 
         [HttpPost]
@@ -137,117 +137,121 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             [FromForm] int queueId
         )
         {
-            var accountId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+            throw new NotImplementedException();
 
-            if (accountId.IsFailure)
-                return Unauthorized(accountId.Error);
+            //var accountId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
-            var account = await _accountsRepository
-                .GetByIdAsync(Guid.Parse(accountId.Value));
+            //if (accountId.IsFailure)
+            //    return Unauthorized(accountId.Error);
 
-            if (account == null)
-                return BadRequest("User not found");
+            //var account = await _accountsRepository
+            //    .GetByIdAsync(Guid.Parse(accountId.Value));
 
-            var splitedName = file.FileName.Split(".");
+            //if (account == null)
+            //    return BadRequest("User not found");
+
+            //var splitedName = file.FileName.Split(".");
             
-            var fileName = splitedName[0] ?? "Not set";
-            var fileType = splitedName.Length >= 2 ? splitedName[splitedName.Length - 1] : null;
+            //var fileName = splitedName[0] ?? "Not set";
+            //var fileType = splitedName.Length >= 2 ? splitedName[splitedName.Length - 1] : null;
 
-            if (fileType == null || Configuration.imageTypes.Contains(fileType.ToLower()) == false)
-                return BadRequest("Invalid fileType");
+            //if (fileType == null || Configuration.imageTypes.Contains(fileType.ToLower()) == false)
+            //    return BadRequest("Invalid fileType");
 
-            return await _context.Database.CreateExecutionStrategy().ExecuteAsync<IActionResult>(async () =>
-            {
-                using (var transaction = _context.Database.BeginTransaction())
-                {
-                    var fileModel = await _fileRespository.AddPhotoAsync
-                    (
-                        fileName, 
-                        fileType, 
-                        file.Length, 
-                        Guid.Parse(accountId.Value)
-                    );
+            //return await _context.Database.CreateExecutionStrategy().ExecuteAsync<IActionResult>(async () =>
+            //{
+            //    using (var transaction = _context.Database.BeginTransaction())
+            //    {
+            //        var fileModel = await _fileRespository.AddPhotoAsync
+            //        (
+            //            fileName, 
+            //            fileType, 
+            //            file.Length, 
+            //            Guid.Parse(accountId.Value)
+            //        );
 
-                    if (fileModel.IsFailure)
-                        return Conflict(fileModel.Error);
+            //        if (fileModel.IsFailure)
+            //            return Conflict(fileModel.Error);
 
-                    if (file.Length > 0 && fileModel.IsFailure == false)
-                    {
-                        using (var fileStream = new FileStream(fileModel.Value.Path, FileMode.Create))
-                        {
-                            await file.CopyToAsync(fileStream);
-                        }
+            //        if (file.Length > 0 && fileModel.IsFailure == false)
+            //        {
+            //            using (var fileStream = new FileStream(fileModel.Value.Path, FileMode.Create))
+            //            {
+            //                await file.CopyToAsync(fileStream);
+            //            }
 
-                        await fileModel.Value.SetPreview(previewService);
-                    }
+            //            await fileModel.Value.SetPreview(previewService);
+            //        }
 
-                    if (string.IsNullOrEmpty(albumId) == false && string.IsNullOrWhiteSpace(albumId) == false)
-                    {
-                        //var result = await _albumRepository.(fileModel.Value, Guid.Parse(albumId));
+            //        if (string.IsNullOrEmpty(albumId) == false && string.IsNullOrWhiteSpace(albumId) == false)
+            //        {
+            //            //var result = await _albumRepository.(fileModel.Value, Guid.Parse(albumId));
 
-                        //if (result.IsFailure)
-                        //    return Conflict(result.Error);
+            //            //if (result.IsFailure)
+            //            //    return Conflict(result.Error);
 
-                        await _globalHub.Clients.Group(albumId)
-                            .SendAsync("Upload", new object[] { fileModel.Value, albumId, queueId });
-                    }
+            //            await _globalHub.Clients.Group(albumId)
+            //                .SendAsync("Upload", new object[] { fileModel.Value, albumId, queueId });
+            //        }
 
-                    var space = await _accountsRepository
-                        .ChangeOccupiedSpaceValue(Guid.Parse(accountId.Value), file.Length);
+            //        var space = await _accountsRepository
+            //            .ChangeOccupiedSpaceValue(Guid.Parse(accountId.Value), file.Length);
 
-                    if (space.IsFailure)
-                        return Conflict(space.Error);
+            //        if (space.IsFailure)
+            //            return Conflict(space.Error);
 
-                    await globalHub.Clients.Group(fileModel.Value.AccountId.ToString())
-                        .SendAsync("UploadFile", new object[] { fileModel.Value, queueId });
+            //        await globalHub.Clients.Group(fileModel.Value.AccountId.ToString())
+            //            .SendAsync("UploadFile", new object[] { fileModel.Value, queueId });
 
-                    await globalHub.Clients.Group(fileModel.Value.AccountId.ToString())
-                        .SendAsync("UpdateOccupiedSpace", account.OccupiedSpace + file.Length);
+            //        await globalHub.Clients.Group(fileModel.Value.AccountId.ToString())
+            //            .SendAsync("UpdateOccupiedSpace", account.OccupiedSpace + file.Length);
 
-                    transaction.Commit();
+            //        transaction.Commit();
                     
-                    return Ok();
-                }
-            });
+            //        return Ok();
+            //    }
+            //});
         }
 
         private async Task<IActionResult> CreateAlbumWithType(CreateAlbumTransferObject createTO, Configuration.AlbumTypes type)
         {
-            var accountId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+            throw new NotImplementedException();
 
-            if (accountId.IsFailure)
-                return BadRequest(accountId.Error);
+            //var accountId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
-            if (string.IsNullOrEmpty(createTO.name) || string.IsNullOrWhiteSpace(createTO.name))
-                return BadRequest("Name is required.");
+            //if (accountId.IsFailure)
+            //    return BadRequest(accountId.Error);
 
-            var coverAsBytes = new byte[0];
+            //if (string.IsNullOrEmpty(createTO.name) || string.IsNullOrWhiteSpace(createTO.name))
+            //    return BadRequest("Name is required.");
 
-            using (var coverStream = new MemoryStream())
-            {
-                if (createTO.cover != null && createTO.cover.Length > 0)
-                {
-                    await createTO.cover.CopyToAsync(coverStream);
-                    coverAsBytes = coverStream.ToArray();
-                }
-            }
+            //var coverAsBytes = new byte[0];
 
-            var result = await _albumRepository.AddAsync
-            (
-                Guid.Parse(accountId.Value), 
-                coverAsBytes,
-                createTO.name,
-                createTO.description, 
-                type
-            );
+            //using (var coverStream = new MemoryStream())
+            //{
+            //    if (createTO.cover != null && createTO.cover.Length > 0)
+            //    {
+            //        await createTO.cover.CopyToAsync(coverStream);
+            //        coverAsBytes = coverStream.ToArray();
+            //    }
+            //}
 
-            if (result.IsFailure)
-                return BadRequest(result.Error);
+            //var result = await _albumsRepository.AddAsync
+            //(
+            //    Guid.Parse(accountId.Value), 
+            //    coverAsBytes,
+            //    createTO.name,
+            //    createTO.description, 
+            //    type
+            //);
 
-            await result.Value.SetCover(_imageService);
+            //if (result.IsFailure)
+            //    return BadRequest(result.Error);
 
-            await _globalHub.Clients.Group(result.Value.AccountId.ToString())
-                .SendAsync("Create", new object[] { result.Value, createTO.queueid });
+            //await result.Value.SetCover(_imageService);
+
+            //await _globalHub.Clients.Group(result.Value.AccountId.ToString())
+            //    .SendAsync("Create", new object[] { result.Value, createTO.queueid });
 
             return Ok();
         }
@@ -263,6 +267,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             [FromForm] string? id
         )
         {
+            throw new NotImplementedException();
+
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
             if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
@@ -285,7 +291,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                 }
             }
 
-            var result = await _albumRepository
+            var result = await _albumsRepository
                 .UpdateAlbum(Guid.Parse(id), coverAsBytes, name, description);
 
             if (result.IsFailure)
@@ -310,7 +316,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
                 return BadRequest("Invalid id");
 
-            var result = await _albumRepository.DeleteAlbumAsync(Guid.Parse(id), Guid.Parse(userId.Value));
+            var result = await _albumsRepository.DeleteAlbumAsync(Guid.Parse(id), Guid.Parse(userId.Value));
 
             if (result.IsFailure)
                 return BadRequest(result.Error);

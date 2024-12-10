@@ -1,14 +1,12 @@
 ﻿using CSharpFunctionalExtensions;
-using Instend.Core.Models.Account;
-using Instend.Core.Models.Messenger.Message;
+using Instend.Core.Models.Abstraction;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Instend.Core.Models.Messenger.Group
 {
     [Table("groups")]
-    public class Group
+    public class Group : DatabaseModel
     {
-        [Column("id")] public Guid Id { get; private set; }
         [Column("name")] public string Name { get; private set; } = string.Empty;
         [Column("avatar_path")] public string AvatarPath { get; private set; } = string.Empty;
         [Column("date")] public DateTime Date { get; private set; } = DateTime.Now;

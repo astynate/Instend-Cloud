@@ -6,8 +6,10 @@ namespace Instend.Core.Models.Abstraction
 {
     public class AccessItemBase : DatabaseModel
     {
-        [Column("account_id")] public Guid AccountId { get; protected set; }
-        [Column("access")] public string AccessId { get; protected set; } = Configuration.AccessTypes.Private.ToString();
+        [Column("access")] 
+        public string AccessId { get; protected set; } = Configuration.AccessTypes.Private.ToString();
+        
+        public IEnumerable<AccessBase> AccountsWithAccess { get; init; } = [];
 
         public AccessItemBase() { }
 

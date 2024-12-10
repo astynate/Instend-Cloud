@@ -43,6 +43,10 @@
     --search-font-color: #bebebe;
 
     --not-transparent-border-color: rgba(255, 255, 255, 0.2);
+
+    --publication-background-color: #0f0f0f;
+    --item-accent-color: #f3f3f3;
+    --item-accent-hover-color: #f3f3f3;
 }
 
 .dark-mode {
@@ -89,7 +93,11 @@
     --search-border-color: rgba(255, 255, 255, 0.3);
     --search-font-color: #777777;
 
-    --not-transparent-border-color: rgb(64, 68, 72);
+    --not-transparent-border-color: rgb(48, 48, 48);
+
+    --item-background-color: #0f0f0f;
+    --item-accent-color: #272727;
+    --item-accent-hover-color: #5d5d5d;
 }
 
 .cloud-wrapper {

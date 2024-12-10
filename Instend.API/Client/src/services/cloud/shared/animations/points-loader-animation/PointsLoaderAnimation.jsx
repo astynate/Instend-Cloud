@@ -1,6 +1,6 @@
 import styles from './main.module.css';
 
-const PointsLoaderAnimation = ({ color = 'var(--main-font-color)', size = '9px', gap = '15px' }) => {
+const PointsLoaderAnimation = ({ color = 'var(--main-font-color)', size = '6px', gap = '12px' }) => {
     const wrapperStyles = {
         gridGap: gap 
     };

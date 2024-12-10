@@ -7,44 +7,42 @@ import Attachments from '../../ui-kit/attachments/Attachments';
 import PublicationControlPanel from '../../elements/publication-elements/publication-control-panel/PublicationControlPanel';
 
 const Publication = observer(({
-        user, 
-        comment, 
-        isLoading, 
-        isUploading, 
-        deleteCallback, 
-        type = 0, 
-        setLike = () => {},
+        account,
+        publication, 
         isControlHidden = false,
         isHasPaddings = false,
         isAttachmentsHidden = false
     }) => {
 
     return (
-        <div className={styles.comment} paddingstate={isHasPaddings ? 'visible': 'hidden'}>
+        <div className={styles.publication} paddingstate={isHasPaddings ? 'visible': 'hidden'}>
             <div className={styles.header}>
                 <div className={styles.left}>
                     <UserAvatar size={42} />
                     <div className={styles.information}>
-                        <span className={styles.nickname}>{user ? user.nickaname : "Unknown"}</span>
-                        <span className={styles.time}>{comment ? comment.date : "Friday 13, 1666"}</span>
+                        <span className={styles.nickname}>{account ? account.nickaname : "Unknown"}</span>
+                        <span className={styles.time}>{publication ? publication.date : "Friday 13, 1666"}</span>
                     </div>
                 </div>
                 <div className={styles.right}>
+                    {/* <CircleButtonWrapper heightPaddings={0} widthPaddings={4}> */}
                     <BurgerMenu 
                         items={[
 
                         ]}
                     />
+                    {/* </CircleButtonWrapper> */}
                 </div>
             </div>
             <div className={styles.postContent}>
-                <span className={styles.text}>Some text</span>
+                <span className={styles.text}>{publication ? publication.text : ""}</span>
                 {isAttachmentsHidden === false && 
                     <div className={styles.attachments}>
                         <Attachments />
                     </div>}
             </div>
-            {isControlHidden === false && <PublicationControlPanel />}
+            {isControlHidden === false && 
+                <PublicationControlPanel />}
         </div>
     );
 });

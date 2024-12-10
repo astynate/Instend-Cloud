@@ -18,11 +18,12 @@ namespace Instend.Core.Models.Public
 
         [NotMapped] public bool IsLiked { get; set; } = false;
 
-        public List<Attachment> Attechments { get; set; } = [];
+        public Account.Account Account { get; set; } = null!;
+        public List<Attachment> Attachments { get; set; } = [];
 
         private Publication() { }
 
-        public static Result<Publication> Create(string text, Guid ownerId)
+        public static Result<Publication> Create(string? text, Guid ownerId)
         {
             if (string.IsNullOrEmpty(text) || string.IsNullOrWhiteSpace(text))
                 return Result.Failure<Publication>("Invalid text");
@@ -37,7 +38,7 @@ namespace Instend.Core.Models.Public
             };
         }
 
-        public void SetAttachment(List<Attachment> attachment) => Attechments = attachment;
+        public void SetAttachment(List<Attachment> attachment) => Attachments = attachment;
         public void IncrementLikes() => NumberOfReactions++;
         public void DecrementLikes() => NumberOfReactions--;
     }

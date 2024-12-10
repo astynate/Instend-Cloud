@@ -1,6 +1,5 @@
 .wrapper {
-    width: 500px;
-    padding-left: 17px;
+    width: 530px;
     padding-bottom: 17px;
     grid-gap: 10px;
     display: flex;
@@ -21,6 +20,9 @@
     padding-top: 12px;
     padding-bottom: 12px;
     border-radius: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     transition: 0.15s ease;
 }
 
@@ -64,6 +66,9 @@
     padding-right: 15px;
     overflow-y: scroll;
     overflow-x: hidden;
+    padding-left: 17px;
+    padding-bottom: 17px;
+    border-bottom: 1px solid var(--main-border-color);
 }
 
 .textarea {
@@ -82,11 +87,11 @@
 .controlAttachments {
     display: flex;
     grid-gap: 5px;
-    padding: 10px 12px;
+    padding: 5px 5px;
     border-radius: 10px;
     color: var(--main-paragraph-color);
     justify-content: space-between;
-    border: 1px solid var(--main-border-color);
+    /* border: 1px solid var(--main-border-color); */
 }
 
 .controlAttachments img {
@@ -108,6 +113,7 @@
     flex-direction: column;
     grid-gap: 10px;
     padding-right: 17px;
+    padding-left: 17px;
 }
 
 .attachments {

@@ -2,9 +2,11 @@
 using Instend.Services.External.FileService;
 using Instend.Core.Models.Abstraction;
 using System.ComponentModel.DataAnnotations.Schema;
+using Instend.Core.Models.Access;
 
 namespace Instend.Core.Models.Storage.File
 {
+    [Table("files")]
     public class File : AccessItemBase, IDatabaseStorageRelation
     {
         [Column("name")] public string Name { get; private set; } = string.Empty;
@@ -35,7 +37,6 @@ namespace Instend.Core.Models.Storage.File
             {
                 Id = id,
                 Name = name,
-                AccountId = ownerId,
                 CreationTime = DateTime.Now,
                 LastEditTime = DateTime.Now,
                 Size = size,

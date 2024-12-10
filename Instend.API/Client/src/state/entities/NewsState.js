@@ -24,15 +24,15 @@ class NewsState {
         }
     }
 
-    // setNews = (news) => {
-    //     if (this.isHasMore === true) {
-    //         let lastPublicationDate = '';
+    setHasMoreState = (state) => this.isHasMore = state;
+    setNews = (newsToSet) => this.news = newsToSet.sort(this.sortByDate);;
     
-    //         if (this.news.length > 0) {
-    //             lastPublicationDate = this.news[this.news.length - 1].comment.date;
-    //         }
-    //     }
-    // }
+    addNews = (newsToAdd) => { 
+        const ids = NewsState.news.map(element => element.id);
+        const newPosts = newsToAdd.filter(post => !ids.includes(post.comment.id));
+
+        this.news = [...this.news, newPosts].sort(this.sortByDate)
+    };
 }
 
 export default new NewsState();

@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toJS } from 'mobx';
 import { autorun } from 'mobx';
 import StorageState, { AdaptId } from '../../../../../state/entities/StorageState';
-import userState from '../../../../../state/entities/UserState';
+import AccountState from '../../../../../state/entities/AccountState';
 import styles from './main.module.css';
 import File from '../../../components/file/File';
 import Folder from '../../../components/folder/Folder';
@@ -51,7 +51,7 @@ const Cloud = observer((props) => {
   const [isLoading, setLoadingState] = useState(false);
   const [sortingType, setSortingType] = useState(0);
 
-  const { user } = userState;
+  const { user } = AccountState;
   const { files, folders } = StorageState;
 
   const [items, setItems] = useState([
@@ -242,17 +242,17 @@ const Cloud = observer((props) => {
             </>
           : 
             <div className={styles.placeholder}>
-              <Placeholder title="No collections uploaded." />
+              {/* <Placeholder title="No collections uploaded." /> */}
             </div>
         }
       </div>
-      {isFolderProperties === true &&
+      {/* {isFolderProperties === true &&
         <PropertiesWindow 
           file={selectedItems[0]}
           close={() => setFolderProperties(false)} 
           items={[]}
-        />}
-      <SelectBox
+        />} */}
+      {/* <SelectBox
         selectPlace={[selectPlaceWrapper, selectPlace]}
         selectedItems={[selectedItems, setSelectedItems]}
         activeItems={[activeItems, setActiveItems]}
@@ -260,8 +260,8 @@ const Cloud = observer((props) => {
         items={items}
         single={single}
         multiple={multiple}
-      />
-      {isRenameOpen === true &&
+      /> */}
+      {/* {isRenameOpen === true &&
         <PopUpField
           title={'Rename'}
           text={'This field is require'}
@@ -270,7 +270,7 @@ const Cloud = observer((props) => {
           close={() => setRenameState(false)}
           callback={async () => {await RenameFolder(fileName, activeItems[0])}}
         />}
-      <AddInFolder />
+      <AddInFolder /> */}
     </div>
   )
 });

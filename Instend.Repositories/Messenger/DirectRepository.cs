@@ -66,8 +66,8 @@ namespace Instend.Repositories.Messenger
             return result;
         }
 
-        public async Task<List<Direct>> GetAccountDirectsAsync(Guid userId, int numberOfSkipedMessages, int countMessages)
-            => await GetAsync((d) => IsUserInvitor(d, userId) || IsUserInvited(d, userId), numberOfSkipedMessages, countMessages);
+        public async Task<List<Direct>> GetAccountDirectsAsync(Guid userId)
+            => await GetAsync((d) => IsUserInvitor(d, userId) || IsUserInvited(d, userId), 0, 1);
 
         public async Task<Direct?> GetAsync(Guid id, Guid userId, int numberOfSkipedMessages, int countMessages)
         {

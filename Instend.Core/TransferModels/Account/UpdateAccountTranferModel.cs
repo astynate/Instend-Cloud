@@ -1,6 +1,6 @@
 ﻿namespace Instend_Version_2._0._0.Server.TransferModels.Account
 {
-    public record UpdateUserDTO 
+    public record UpdateAccountTranferModel 
     (
         string? name,
         string? surname,

@@ -12,7 +12,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class FileController : ControllerBase
+    public class FilesController : ControllerBase
     {
         private readonly IFileService _fileService;
 
@@ -22,7 +22,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IRequestHandler _requestHandler;
 
-        public FileController
+        public FilesController
         (
             IFileService fileService,
             IFileRespository fileRespository,
@@ -108,7 +108,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         [HttpGet]
         [Authorize]
-        [Route("/api/Files/full")]
+        [Route("/api/file/full")]
         public async Task<IActionResult> GetFullFileFromStorage(string? id)
         {
             if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
@@ -119,11 +119,11 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             if (fileModel.IsFailure)
                 return BadRequest("File not found");
 
-            var available = await _accessHandler.GetAccessStateAsync(fileModel.Value,
-                Configuration.EntityRoles.Reader, Request.Headers["Authorization"]);
+            //var available = await _accessHandler.GetAccessStateAsync(fileModel.Value,
+            //    Configuration.EntityRoles.Reader, Request.Headers["Authorization"]);
 
-            if (available.IsFailure)
-                return BadRequest(available.Error);
+            //if (available.IsFailure)
+            //    return BadRequest(available.Error);
 
             return await GetFile(fileModel.Value.Path);
         }
@@ -142,7 +142,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         }
 
         [HttpGet]
-        [Route("/api/Files/stream")]
+        [Route("/api/File/stream")]
         public async Task<IActionResult> GetFilePartFromStorage(string id, string token)
         {
             var userId = _requestHandler.GetUserId("Bearer " + token);

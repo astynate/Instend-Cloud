@@ -8,10 +8,10 @@ namespace Instend.Repositories.Gallery
     public interface IAlbumsRepository
     {
         Task<Result<Album>> AddAsync(Guid ownerId, byte[] cover, string name, string? description, Configuration.AlbumTypes type);
-        Task<Album?> GetByIdAsync(Guid id);
         Task<Result<Album>> DeleteAlbumAsync(Guid id, Guid userId);
-        Task<Result<Album[]>> GetAlbums(IImageService imageService, Guid userId, Configuration.AlbumTypes type);
+        Task<Album[]> GetAlbums(Guid userId, Configuration.AlbumTypes type, int skip, int take);
+        Task<List<Album>> GetAllAccountAlbums(Guid accountId);
+        Task<Album?> GetByIdAsync(Guid id, int skip, int take);
         Task<Result> UpdateAlbum(Guid id, byte[] cover, string? name, string? description);
-        Task<Album[]> GetAllAccountAlbums(Guid userId);
     }
 }

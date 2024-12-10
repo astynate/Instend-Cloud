@@ -1,35 +1,26 @@
 import { observer } from 'mobx-react-lite';
 import PublicationList from '../../../../features/lists/publication-list/PublicationList';
 import MainContentWrapper from '../../../../features/wrappers/main-content-wrapper/MainContentWrapper';
-import styles from './main.module.css';
-import UserState from '../../../../../../state/entities/UserState';
+import NewsController from '../../../../../../api/NewsController';
+import NewsState from '../../../../../../state/entities/NewsState';
 
 const News = observer(() => {
+    const getLastNewsDate = () => {
+        if (NewsState.news.length === 0) {
+            return new Date().toISOString().slice(0, 19).replace('T', ' ');
+        }
+    
+        const lastIndex = NewsState.news.length - 1;
+        return NewsState.news[lastIndex];
+    }
+
     return (
         <MainContentWrapper>
-            <PublicationList
-                setLike={() => {}}
-                isPublications={true}
-                isPublicationAvailable={false}
-                fetch_callback={() => {}}
-                comments={() => {}}
-                id={UserState.user.id}
-                setUploadingComment={() => {}}
-                deleteCallback={() => {}}
+            <PublicationList 
+                publcations={NewsState.news} 
+                fetchRequest={() => NewsController.SetNewsRequest(getLastNewsDate())} 
+                isHasMore={NewsState.isHasMore}
             />
-            {/* <Pagination 
-                fetchRequest={newsState.setNews} 
-                isHasMore={newsState.isHasMore}
-                placeholder={
-                    <div className={styles.placeholder}>
-                        <div className={styles.imageWrapper}>
-                            <img src={checkMark} className={styles.image} draggable="false" />
-                        </div>
-                        <h1 className={styles.title}>You watched all posts</h1>
-                        <span className={styles.information}>This news includes communities you follow.</span>
-                    </div>
-                }
-            /> */}
         </MainContentWrapper>
     );
 });

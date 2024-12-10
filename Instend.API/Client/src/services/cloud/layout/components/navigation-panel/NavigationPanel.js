@@ -19,7 +19,6 @@ import messages_passive from './images/buttons/messages_passive.svg';
 import messages_active from './images/buttons/messages_active.svg';
 import profile_passive from './images/buttons/profile_passive.svg';
 import profile_active from './images/buttons/profile_active.svg';
-import UserState from '../../../../../state/entities/UserState';
 import MusicState from '../../../../../state/entities/MusicState';
 import StorageState from '../../../../../state/entities/StorageState';
 import createImage from './images/buttons/create.png';
@@ -28,6 +27,8 @@ import './css/main.css';
 import './css/progress-bar.css';
 import './css/media-queries.css';
 import CreatePublicationPopup from '../../../features/pop-up-windows/create-publication-popup/CreatePublicationPopup';
+import AccountState from '../../../../../state/entities/AccountState';
+import PublicationsController from '../../../api/PublicationsController';
 
 export const useIsActiveButton = (name) => 
     useIsCurrentRoute(name) ? 'active' : 'passive'
@@ -61,15 +62,15 @@ const NavigationPanel = observer((props) => {
     const [isOpened, setOpenedState] = useState(false);
     const [occupiedSpace, setOccupiedSpace] = useState();
     const [isCreatePostWindowOpen, setCreatePostWindowState] = useState(false);
-
-    const { user } = UserState;
+    
+    const { account } = AccountState;
     const { t } = useTranslation();
 
     const createButtonRef = useRef();
 
     const occupiedPercentage = () => {
-        if (user && user.occupiedSpace && user.storageSpace)
-            return Math.floor((user.occupiedSpace / user.storageSpace) * 100);
+        if (account && account.occupiedSpace && account.storageSpace)
+            return Math.floor((account.occupiedSpace / account.storageSpace) * 100);
         
         return 0;
     }
@@ -88,16 +89,17 @@ const NavigationPanel = observer((props) => {
     }, []);
 
     useEffect(() => {
-        if (!!user === true) {
+        if (!!account === true) {
             setOccupiedSpace(occupiedPercentage());
         }
-    }, [user]);
+    }, [account]);
 
     return (
         <div className="left-panel" id={props.isPanelRolledUp ? 'rolled-up' : null}>
             <CreatePublicationPopup 
                 isOpen={isCreatePostWindowOpen}
                 close={() => setCreatePostWindowState(false)}
+                callback={PublicationsController.AddPublication}
             />
             <div className="left-panel-logo">
                 <img src={logo} alt="logo" draggable="false" />
@@ -152,8 +154,8 @@ const NavigationPanel = observer((props) => {
                     <div className='line' style={{'--space-occupied': `${occupiedSpace}%`}}></div>
                 </div>
                 <div className='occupied-space'>
-                    <span>{ConvertBytesToMb(user.occupiedSpace)} MB</span>
-                    <span>{ConvertBytesToMb(user.storageSpace)} MB</span>
+                    <span>{ConvertBytesToMb(account.occupiedSpace)} MB</span>
+                    <span>{ConvertBytesToMb(account.storageSpace)} MB</span>
                 </div>
             </div>
         </div>

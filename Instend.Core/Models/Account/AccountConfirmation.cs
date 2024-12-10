@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Instend.Core.Models.Email
 {
-    [Table("confirmations")]
+    [Table("accounts_confirmations")]
     public class AccountConfirmation
     {
         [Column("link")][Key] public Guid Link { get; private set; }

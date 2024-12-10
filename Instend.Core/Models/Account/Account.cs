@@ -1,7 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Instend.Core.Dependencies.Services.Internal.Services;
-using Instend.Core.Models.Storage.Album;
-using Instend.Core.Models.Storage.Collection;
+using Instend.Core.Models.Access;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
@@ -26,9 +25,12 @@ namespace Instend.Core.Models.Account
         [Column("creation_datetime")] public DateTime RegistrationDate { get; private set; } = DateTime.Now;
         [Column("friend_count")] public uint FriendCount { get; private set; } = 0;
 
-        public List<Account> Friends { get; set; } = [];
-        public List<Collection> Collections { get; set; } = [];
-        public List<Album> Albums { get; set; } = [];
+        public IEnumerable<Account> Followers { get; set; } = [];
+        public IEnumerable<Account> Following { get; set; } = [];
+        public IEnumerable<CollectionAccount> Collections { get; set; } = [];
+        public IEnumerable<FileAccount> Files { get; set; } = [];
+        public IEnumerable<AlbumAccount> Albums { get; set; } = [];
+        public IEnumerable<Public.Publication> Publications { get; set; } = [];
 
         private Account() { }
 
@@ -52,7 +54,7 @@ namespace Instend.Core.Models.Account
             if (ValidateVarchar(password) == false || password.Length < 8)
                 return Result.Failure<Account>("Invalid nickname");
 
-            Account user = new Account()
+            var user = new Account()
             {
                 Name = name,
                 Surname = surname,

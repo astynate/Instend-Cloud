@@ -13,17 +13,17 @@ namespace Instend.Repositories.Repositories
             _context = context;
         }
 
-        public async Task<List<AccountSession>> GetSessionsByUserId(Guid userId)
+        public async Task<List<AccountSession>> GetSessionsByUserId(Guid accountId)
         {
             return await _context.Sessions
-                .Where(x => x.UserId == userId)
+                .Where(x => x.AccountId == accountId)
                 .ToListAsync();
         }
 
         public async Task<AccountSession?> GetSessionByTokenAndUserId(Guid userId, string token)
         {
             return await _context.Sessions.AsNoTracking()
-                .FirstOrDefaultAsync(x => x.UserId == userId && x.RefreshToken == token);
+                .FirstOrDefaultAsync(x => x.AccountId == userId && x.RefreshToken == token);
         }
 
         public async Task AddSessionAsync(AccountSession session)
@@ -34,10 +34,11 @@ namespace Instend.Repositories.Repositories
                 {
                     if (session == null)
                     {
-                        transaction.Rollback(); return;
+                        transaction.Rollback(); 
+                        return;
                     }
 
-                    List<AccountSession> userSessions = await GetSessionsByUserId(session.UserId);
+                    var userSessions = await GetSessionsByUserId(session.AccountId);
 
                     if (userSessions != null && userSessions.Count >= 5)
                     {

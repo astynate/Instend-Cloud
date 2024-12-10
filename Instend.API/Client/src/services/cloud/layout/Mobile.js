@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { observer } from 'mobx-react-lite';
 import { NavLink, Route, Routes } from 'react-router-dom';
 import MobileNavigation from './components/navigation-panel/MobileNavigation';
-import UserState from '../../../state/entities/UserState';
+import AccountState from '../../../state/entities/AccountState';
 import ApplicationState from '../../../state/application/ApplicationState';
 import PrivateRoutes from '../../../routes/PrivateRoutes';
 import logo from './components/navigation-panel/images/logo/main-logo-black.svg';
@@ -10,7 +10,7 @@ import styles from './css/mobile.module.css';
 import './css/main.css';
 
 const Mobile = observer(() => {
-    const { user } = UserState;
+    const { account } = AccountState;
     
     useEffect(() => {
         ApplicationState.setIsMobile(true);
@@ -25,7 +25,7 @@ const Mobile = observer(() => {
                     <h2 className={styles.service}>Cloud</h2>
                 </div>
                 <NavLink to='/profile' className={styles.profileLink}>
-                    <img src={`data:image/png;base64,${user.avatar || ""}`} className={styles.avatar} />
+                    <img src={`data:image/png;base64,${account.avatar || ""}`} className={styles.avatar} />
                 </NavLink>
             </div>
             <div className='cloud-content-wrapper'>

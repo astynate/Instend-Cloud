@@ -62,10 +62,10 @@
 .header {
     display: flex;
     align-items: center;
-    height: 60px;
+    height: 58px;
 }
 
-.header[id="absulute"] {
+.header[id="absolute"] {
     top: 0;
     right: 0;
     position: absolute;

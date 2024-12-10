@@ -1,11 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from "../../processes/Registration";
+import { useTranslation } from "react-i18next";
 import InputPassword from "../../shared/password/InputPassword";
 import Button from "../../shared/button/Button";
 import Error from "../../shared/error/Error";
 import ValidationHandler from "../../../../utils/handlers/ValidationHandler";
-import { useTranslation } from "react-i18next";
 
 const ValidateUserData = (user, password, confirm) => {
     if (ValidationHandler.ValidateEmail(user.email) === false) {

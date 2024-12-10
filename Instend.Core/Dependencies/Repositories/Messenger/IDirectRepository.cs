@@ -8,7 +8,7 @@ namespace Instend.Repositories.Messenger
     {
         Task<Result<Direct>> CreateNewDirect(Guid userId, Guid ownerId);
         Task<Result<Guid>> DeleteDirect(Guid id, Guid userId);
-        Task<List<Direct>> GetAccountDirectsAsync(Guid userId, int numberOfSkipedMessages, int countMessages);
+        Task<List<Direct>> GetAccountDirectsAsync(Guid userId);
         Task<Direct?> GetAsync(Guid id, Guid userId, int numberOfSkipedMessages, int countMessages);
         Task<Direct?> GetByAccountIdsAsync(Guid userId, Guid ownerId, int numberOfSkipedMessages, int countMessages);
     }

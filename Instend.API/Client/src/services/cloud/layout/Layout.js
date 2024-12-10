@@ -6,17 +6,17 @@ import { useNavigate } from 'react-router-dom';
 import Desktop from './Desktop';
 import Mobile from './Mobile';
 import ApplicationState from '../../../state/application/ApplicationState';
-import UserState from '../../../state/entities/UserState';
+import AccountState from '../../../state/entities/AccountState';
 import WebsocketListener from '../api/WebsocketListener';
 import InformationPopUp from '../features/pop-up-windows/information-pop-up/InformationPopUp';
 import MusicPlayer from '../singletons/music-player/MusicPlayer';
 import ConnectedState from '../singletons/connected-state/ConnectedState';
 import AccountController from '../../../api/AccountController';
+import ApplicationLoaderAnimation from '../shared/animations/application-loader-animation/ApplicationLoaderAnimation';
 import './css/fonts.css';
 import './css/colors.css';
 import './css/main.css';
 import './css/animations.css';
-import ApplicationLoaderAnimation from '../shared/application-loader-animation/ApplicationLoaderAnimation';
 
 export const globalWSContext = createSignalRContext();
 
@@ -52,20 +52,20 @@ const Layout = observer(() => {
     globalWSContext.useSignalREffect("LeaveGroup", WebsocketListener.LeaveGroupListner);
 
     useEffect(() => {
-        if (UserState.user === null || UserState.user === undefined) {
-            UserState.SetLoadingState(true);
+        if (AccountState.user === null || AccountState.user === undefined) {
+            AccountState.SetLoadingState(true);
 
             AccountController.GetAccountData(
-                UserState.GetUserOnSuccessCallback,
-                UserState.GetUserOnFailureCallback,
+                AccountState.GetUserOnSuccessCallback,
+                AccountState.GetUserOnFailureCallback,
             );
         }
-    }, [UserState.user]);
+    }, [AccountState.user]);
 
     useLayoutEffect(() => {
-        if (UserState.isAuthorize === false && UserState.isLoading === false)
+        if (AccountState.isAuthorize === false && AccountState.isLoading === false)
             useNavigate('/main');
-    }, [UserState.isAuthorize]);
+    }, [AccountState.isAuthorize]);
     
     useEffect(() => {
         const isErrorNotExist = isErrorExist === false;
@@ -92,8 +92,8 @@ const Layout = observer(() => {
     }, []);
 
     return (
-        <globalWSContext.Provider url={process.env.REACT_APP_SERVER_URL + '/global-hub-connection'}>
-            {UserState.isAuthorize === false ?
+        <globalWSContext.Provider url={process.env.REACT_APP_SERVER_URL + '/global-hub'}>
+            {AccountState.isAuthorize === false ?
                 <ApplicationLoaderAnimation />
             :
                 <div className='cloud-wrapper' style={{'--disconnected-height': ApplicationState.connectionState === 0 ? '0px' : '15px'}}>

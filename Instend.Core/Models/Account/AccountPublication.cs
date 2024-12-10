@@ -3,7 +3,7 @@ using Instend.Core.Models.Abstraction;
 
 namespace Instend.Core.Models.Account
 {
-    [Table("accounts_publications")] 
+    [Table("accounts_publications")]
     public class AccountPublication : DatabaseModel 
     {
         [Column("account_id")] public Guid AccountId { get; init; }

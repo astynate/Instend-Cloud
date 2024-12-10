@@ -3,15 +3,11 @@
     height: fit-content;
     overflow: hidden;
     border-bottom: none;
-    /* background: var(--main-accent-color); */
-    /* border: 1px solid var(--not-transparent-border-color); */
+    flex-direction: column;
+    border: 1px solid var(--not-transparent-border-color);
     border-top: 0;
     margin-bottom: 50px;
-    border-bottom-right-radius: 30px;
-    border-bottom-left-radius: 30px;
     position: relative;
-}
-
-.wrapper::-webkit-scrollbar {
-    display: none;
+    border-radius: 25px;
+    background: var(--item-background-color);
 }

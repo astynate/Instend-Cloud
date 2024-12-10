@@ -4,7 +4,7 @@ import styles from './main.module.css';
 import background from './images/background.png';
 import Header from "../../accounts/widgets/header/Header";
 import logo from './images/logo.png';
-import UserState from "../../../state/entities/UserState";
+import AccountState from "../../../state/entities/AccountState";
 
 const Layout = () => {
     useLayoutEffect(() => {
@@ -22,7 +22,7 @@ const Layout = () => {
                 <h1 className={styles.title}>Welcome to Instend</h1>
                 <p className={styles.information}>Access your data from anywhere in the world. Chat with friends and find like-minded people in communities.</p>
                 <div className={styles.buttons}>
-                    <Link to={UserState.isAuthorize ? '/' : '/account/login'} className={styles.button}>Log in</Link>
+                    <Link to={AccountState.isAuthorize ? '/' : '/account/login'} className={styles.button}>Log in</Link>
                     <Link to='/support' className={styles.button} id="sub">Support</Link>
                 </div>
             </div>

@@ -25,13 +25,13 @@
     display: flex;
     justify-content: space-between;
     position: relative;
-    /* border-bottom: 1px solid var(--not-transparent-border-color); */
+    border-bottom: 1px solid var(--not-transparent-border-color);
 }
 
 .overlay {
     height: 50px;
     width: 50px;
-    top: 27px;
+    top: 26px;
     left: -14px;
     position: absolute;
     border-top-left-radius: 40px;
@@ -42,17 +42,17 @@
 .circle {
     height: 100%;
     width: 100%;
-    top: -5px;
+    top: 0px;
     position: absolute;
     border-top-left-radius: 27px;
-    border-top: 1px solid var(--main-background-color);
-    border-left: 1px solid var(--main-background-color);
+    border-top: 1px solid var(--not-transparent-border-color);
+    border-left: 1px solid var(--not-transparent-border-color);
     z-index: 2;
 }
 
 .overlay:last-child {
     left: auto;
-    right: -14px;
+    right: -15px;
     border-top-left-radius: 0px;
     border-top-right-radius: 40px;
     border-left: 1px solid transparent;
@@ -63,11 +63,11 @@
 .overlay:last-child .circle {
     border-top-left-radius: 0px;
     border-top-right-radius: 27px;
-    top: -15px;
-    right: -10px;
+    top: 0px;
+    right: 0px;
     border-left: 0;
-    border-top: 1px solid var(--main-background-color);
-    border-right: 1px solid var(--main-background-color);
+    border-top: 1px solid var(--not-transparent-border-color);
+    border-right: 1px solid var(--not-transparent-border-color);
 }
 
 @media (max-width: 700px) {

@@ -19,6 +19,7 @@ using Instend.Core.Dependencies.Services.Internal.Services;
 using Instend.Core.Dependencies.Services.Internal.Helpers;
 using Instend.Repositories.Contexts;
 using Instend.Services.Internal.Services;
+using Instend.Server.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +38,6 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<AccountsContext>();
-builder.Services.AddDbContext<AccessContext>();
 builder.Services.AddDbContext<MessagesContext>();
 builder.Services.AddDbContext<PublicationsContext>();
 builder.Services.AddDbContext<StorageContext>();
