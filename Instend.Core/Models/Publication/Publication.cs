@@ -19,7 +19,7 @@ namespace Instend.Core.Models.Public
         [NotMapped] public bool IsLiked { get; set; } = false;
 
         public Account.Account Account { get; set; } = null!;
-        public List<Attachment> Attachments { get; set; } = [];
+        public List<Attachment> Attachments { get; set; } = new List<Attachment>();
 
         private Publication() { }
 

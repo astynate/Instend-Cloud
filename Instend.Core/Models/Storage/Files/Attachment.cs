@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Instend.Core.Models.Abstraction;
 using Instend.Services.External.FileService;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -45,14 +46,43 @@ namespace Instend.Core.Models.Storage.File
             };
         }
 
-        public async Task<Result> SetFile(IPreviewService previewService)
+        public static Result<Attachment> Create(IFormFile file, Guid accountId)
+        {
+            if (string.IsNullOrWhiteSpace(file.FileName) || string.IsNullOrWhiteSpace(file.FileName))
+                return Result.Failure<Attachment>("Invalid name");
+
+            if (file.Length < 0)
+                return Result.Failure<Attachment>("Invalid size");
+
+            if (accountId == Guid.Empty)
+                return Result.Failure<Attachment>("User not found");
+
+            var id = Guid.NewGuid();
+            var path = Configuration.GetAvailableDrivePath() + id;
+
+            var splitedType = file.ContentType.Split('/');
+            var type = splitedType.Length > 2 ? splitedType[splitedType.Length - 1] : "";
+
+            return new Attachment()
+            {
+                Id = id,
+                Name = file.FileName,
+                Path = path,
+                Type = type,
+                Size = file.Length,
+                AccountId = accountId
+            };
+        }
+
+        public async Task<Result> SetPreview(IPreviewService previewService)
         {
             var result = await previewService.GetPreview(Type, Path);
 
             if (result.IsFailure)
                 return result;
 
-            Preview = result.Value; return Result.Success();
+            Preview = result.Value;
+            return Result.Success();
         }
 
         public void OnDelete(IFileService fileService) => fileService.DeleteFile(Path);

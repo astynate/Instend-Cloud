@@ -7,7 +7,6 @@ using Instend.Core.Dependencies.Repositories.Account;
 using Instend.Repositories.Publications;
 using Instend.Core.Models.Storage.File;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 
 namespace Instend.Repositories.Comments
 {
@@ -17,34 +16,24 @@ namespace Instend.Repositories.Comments
 
         private readonly IFileService _fileService;
 
-        private readonly IPreviewService _previewService;
-
-        private readonly ILogger<PublicationsRepository> _logger;
-
         public PublicationsRepository
         (
             PublicationsContext publicationsContext,
-            IFileService fileService,
-            IPreviewService previewService,
-            ILogger<PublicationsRepository> logger
+            IFileService fileService
         )
         {
             _publicationsContext = publicationsContext;
             _fileService = fileService;
-            _previewService = previewService;
-            _logger = logger;
         }
 
         private async Task AddAttachment(IFormFile file, Publication publication, Core.Models.Account.Account account)
         {
-            var attachment = Attachment
-                .Create(file.Name, file.ContentType, file.Length, account.Id);
+            var attachment = Attachment.Create(file, account.Id);
 
             if (attachment.IsFailure)
                 return;
 
-            publication.Attachments
-                .Add(attachment.Value);
+            publication.Attachments.Add(attachment.Value);
 
             await _fileService
                 .SaveIFormFile(file, attachment.Value.Path);
@@ -110,14 +99,16 @@ namespace Instend.Repositories.Comments
         {
             var targetAccounts = account.Following
                 .Concat([account])
-                .Select(x => x.Id);
+                .Select(x => x.Id)
+                .ToArray();
 
             var result = await _publicationsContext.Publications
                 .OrderBy(x => x.Date)
-                .Where(x => targetAccounts.Contains(x.AccountId) && x.Date < date)
-                .Take(5)
+                .Where(x => targetAccounts.Contains(x.AccountId) )
                 .Include(x => x.Account)
+                    .ThenInclude(x => x.Publications)
                 .Include(x => x.Attachments)
+                .Take(5)
                 .ToListAsync();
 
             return result;

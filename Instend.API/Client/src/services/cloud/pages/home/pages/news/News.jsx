@@ -11,13 +11,13 @@ const News = observer(() => {
         }
     
         const lastIndex = NewsState.news.length - 1;
-        return NewsState.news[lastIndex];
+        return NewsState.news[lastIndex].date;
     }
 
     return (
         <MainContentWrapper>
             <PublicationList 
-                publcations={NewsState.news} 
+                publications={NewsState.news} 
                 fetchRequest={() => NewsController.SetNewsRequest(getLastNewsDate())} 
                 isHasMore={NewsState.isHasMore}
             />

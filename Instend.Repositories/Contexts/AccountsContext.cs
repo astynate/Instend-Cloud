@@ -15,33 +15,33 @@ namespace Instend.Repositories.Contexts
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder
-                .Entity<Core.Models.Account.Account>()
-                .HasMany(x => x.Followers)
-                .WithMany()
-                .UsingEntity<AccountFollower>(
-                    j => j
-                        .HasOne<Core.Models.Account.Account>()
-                        .WithMany()
-                        .HasForeignKey(x => x.AccountId),
-                    j => j
-                        .HasOne<Core.Models.Account.Account>()
-                        .WithMany()
-                        .HasForeignKey(x => x.FollowerId));
+            //modelBuilder
+            //    .Entity<Core.Models.Account.Account>()
+            //    .HasMany(x => x.Followers)
+            //    .WithMany()
+            //    .UsingEntity<AccountFollower>(
+            //        j => j
+            //            .HasOne<Core.Models.Account.Account>()
+            //            .WithMany()
+            //            .HasForeignKey(x => x.AccountId),
+            //        j => j
+            //            .HasOne<Core.Models.Account.Account>()
+            //            .WithMany()
+            //            .HasForeignKey(x => x.FollowerId));
 
-            modelBuilder
-                .Entity<Core.Models.Account.Account>()
-                .HasMany(x => x.Following)
-                .WithMany()
-                .UsingEntity<AccountFollower>(
-                    j => j
-                        .HasOne<Core.Models.Account.Account>()
-                        .WithMany()
-                        .HasForeignKey(x => x.FollowerId),
-                    j => j
-                        .HasOne<Core.Models.Account.Account>()
-                        .WithMany()
-                        .HasForeignKey(x => x.AccountId));
+            //modelBuilder
+            //    .Entity<Core.Models.Account.Account>()
+            //    .HasMany(x => x.Following)
+            //    .WithMany()
+            //    .UsingEntity<AccountFollower>(
+            //        j => j
+            //            .HasOne<Core.Models.Account.Account>()
+            //            .WithMany()
+            //            .HasForeignKey(x => x.FollowerId),
+            //        j => j
+            //            .HasOne<Core.Models.Account.Account>()
+            //            .WithMany()
+            //            .HasForeignKey(x => x.AccountId));
         }
     }
 }

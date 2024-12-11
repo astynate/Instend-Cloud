@@ -12,8 +12,15 @@ import ButtonContent from '../../../elements/button-content/ButtonContent';
 const CreatePublicationPopup = observer(({isOpen = false, close = () => {}, callback = () => {}}) => {
     const [text, setText] = useState('');
     const [attachments, setAttachments] = useState([]);
+    const [attachmentsAsBase64, setAttachmentsAsBase64] = useState([]);
     const [isLoading, setLoadingState] = useState();
     const textareaRef = useRef(null);
+
+    const setAsDefault = () => {
+        setAttachments([]);
+        setAttachmentsAsBase64([]);
+        setText('');
+    }
   
     useEffect(() => {
         if (textareaRef.current) {
@@ -28,10 +35,15 @@ const CreatePublicationPopup = observer(({isOpen = false, close = () => {}, call
     const textareaChangeHandler = (event) => {
         setText(event.target.value);
     };
+    
+    useEffect(() => {
+        setAsDefault();
+    }, [isOpen]);
 
     useEffect(() => {
-        if (isLoading === true)
+        if (isLoading === true) {
             close();
+        }
     }, [isLoading]);
 
     return (
@@ -57,19 +69,23 @@ const CreatePublicationPopup = observer(({isOpen = false, close = () => {}, call
                         onChange={textareaChangeHandler}
                     ></textarea>
                     <div className={styles.attachments}>
-                        <Attachments attachments={attachments} />
+                        <Attachments attachments={attachmentsAsBase64} />
                     </div>
                 </div>
                 <div className={styles.bottom}>
                     <div className={styles.controlAttachments}>
                         <span>Attach something to your post</span>
                         <div className={styles.control}>
-                            <FilesInputWrapper setFiles={setAttachments} maxLength={7}>
+                            <FilesInputWrapper 
+                                setFilesAsBase64={setAttachmentsAsBase64} 
+                                setFiles={setAttachments} 
+                                maxLength={7}
+                            >
                                 <img src={image} draggable="false" />
                             </FilesInputWrapper>
                         </div>
                     </div>
-                    <button onClick={() => callback(text, attachments, setLoadingState)}>
+                    <button onClick={async () => callback(text, attachments, setLoadingState)}>
                         <ButtonContent 
                             label={'Post'} 
                             state={isLoading ? 'loading' : null} 

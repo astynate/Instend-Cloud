@@ -1,4 +1,5 @@
 ﻿using Instend.Core.Dependencies.Repositories.Account;
+using Instend.Core.Dependencies.Services.Internal.Helpers;
 using Instend.Repositories.Publications;
 using Instend.Services.Internal.Handlers;
 using Microsoft.AspNetCore.Authorization;
@@ -16,19 +17,28 @@ namespace Instend_Version_2._0._0.Server.Controllers.Comments
 
         private readonly IRequestHandler _requestHandler;
 
-        public PublicationsController(IPublicationsRepository publicationsRepository, IRequestHandler requestHandler, IAccountsRepository accountsRepository)
+        private readonly ISerializationHelper _serializaionHelper;
+
+        public PublicationsController
+        (
+            IPublicationsRepository publicationsRepository, 
+            IRequestHandler requestHandler,
+            IAccountsRepository accountsRepository,
+            ISerializationHelper serializaionHelper
+        )
         {
             _publicationsRepository = publicationsRepository;
             _requestHandler = requestHandler;
             _accountsRepository = accountsRepository;
+            _serializaionHelper = serializaionHelper;
         }
 
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Create([FromForm] PublicationTransferModel transferModel)
         {
-            if (string.IsNullOrEmpty(transferModel.text) || transferModel.text.Length > 500)
-                return BadRequest("Text of your publcation must not be empthy and contains up to 500 symbols.");
+            if (string.IsNullOrEmpty(transferModel.text) || transferModel.text.Length > 1024)
+                return BadRequest("Text of your publcation must not be empthy and contains up to 1024 symbols.");
 
             var accountId = _requestHandler
                 .GetUserId(Request.Headers["Authorization"]);

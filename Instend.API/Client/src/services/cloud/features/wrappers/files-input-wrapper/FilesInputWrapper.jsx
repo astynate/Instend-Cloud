@@ -1,6 +1,6 @@
 import styles from './main.module.css';
 
-const FilesInputWrapper = ({ children, setFiles = () => {}, maxLength = 1 }) => {
+const FilesInputWrapper = ({children, setFiles = () => {}, setFilesAsBase64 = () => {}, maxLength = 1}) => {
     const handleClick = () => {
         document.getElementById('fileInput').click();
     };
@@ -12,7 +12,8 @@ const FilesInputWrapper = ({ children, setFiles = () => {}, maxLength = 1 }) => 
         const base64Promises = result.map(file => convertToBase64(file));
         
         Promise.all(base64Promises).then(base64Strings => {
-            setFiles(base64Strings);
+            setFiles(files);
+            setFilesAsBase64(base64Strings);
         });
     };
 

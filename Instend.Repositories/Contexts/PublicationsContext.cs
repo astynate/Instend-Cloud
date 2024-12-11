@@ -1,5 +1,4 @@
-﻿using Instend.Core.Models.Account;
-using Instend.Core.Models.Public;
+﻿using Instend.Core.Models.Public;
 using Instend.Core.Models.Publication;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,7 +22,8 @@ namespace Instend.Repositories.Contexts
 
             modelBuilder
                 .Entity<Core.Models.Account.Account>()
-                .HasMany(x => x.Publications);
+                .HasMany(x => x.Publications)
+                .WithOne(x => x.Account);
         }
     }
 }

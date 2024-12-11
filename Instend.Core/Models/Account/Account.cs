@@ -25,12 +25,12 @@ namespace Instend.Core.Models.Account
         [Column("creation_datetime")] public DateTime RegistrationDate { get; private set; } = DateTime.Now;
         [Column("friend_count")] public uint FriendCount { get; private set; } = 0;
 
-        public IEnumerable<Account> Followers { get; set; } = [];
-        public IEnumerable<Account> Following { get; set; } = [];
-        public IEnumerable<CollectionAccount> Collections { get; set; } = [];
-        public IEnumerable<FileAccount> Files { get; set; } = [];
-        public IEnumerable<AlbumAccount> Albums { get; set; } = [];
-        public IEnumerable<Public.Publication> Publications { get; set; } = [];
+        [NotMapped] public List<Account> Followers { get; set; } = new List<Account>();
+        [NotMapped] public List<Account> Following { get; set; } = new List<Account>();
+        public List<CollectionAccount> Collections { get; set; } = new List<CollectionAccount>();
+        public List<FileAccount> Files { get; set; } = new List<FileAccount>();
+        public List<AlbumAccount> Albums { get; set; } = new List<AlbumAccount>();
+        public List<Public.Publication> Publications { get; set; } = new List<Public.Publication>();
 
         private Account() { }
 

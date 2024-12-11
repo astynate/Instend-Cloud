@@ -9,8 +9,8 @@ class NewsState {
     }
 
     sortByDate = (a, b) => {
-        const dateA = new Date(a.comment.date);
-        const dateB = new Date(b.comment.date);
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
     
         return dateB - dateA;
     }
@@ -19,8 +19,8 @@ class NewsState {
         let post = this.news.find(p => p.comment.id === id);
 
         if (post) {
-            post.comment.isLiked = state;
-            post.comment.likes += state ? 1 : -1;
+            post.isLiked = state;
+            post.numberOfLikes += state ? 1 : -1;
         }
     }
 
@@ -28,10 +28,10 @@ class NewsState {
     setNews = (newsToSet) => this.news = newsToSet.sort(this.sortByDate);;
     
     addNews = (newsToAdd) => { 
-        const ids = NewsState.news.map(element => element.id);
-        const newPosts = newsToAdd.filter(post => !ids.includes(post.comment.id));
+        const ids = this.news.map(element => element.id);
+        const newPosts = newsToAdd.filter(post => !ids.includes(post.id));
 
-        this.news = [...this.news, newPosts].sort(this.sortByDate)
+        this.news = [...this.news, ...newPosts].sort(this.sortByDate);
     };
 }
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
+import { ConvertDate } from '../../../../utils/handlers/DateHandler';
 import styles from './main.module.css';
 import UserAvatar from '../../shared/avatars/user-avatar/UserAvatar';
 import BurgerMenu from '../../shared/context-menus/burger-menu/BurgerMenu';
@@ -7,12 +8,15 @@ import Attachments from '../../ui-kit/attachments/Attachments';
 import PublicationControlPanel from '../../elements/publication-elements/publication-control-panel/PublicationControlPanel';
 
 const Publication = observer(({
-        account,
         publication, 
         isControlHidden = false,
         isHasPaddings = false,
         isAttachmentsHidden = false
     }) => {
+
+    if (!!publication === false || !!publication.account === false) {
+        return null;
+    }
 
     return (
         <div className={styles.publication} paddingstate={isHasPaddings ? 'visible': 'hidden'}>
@@ -20,29 +24,34 @@ const Publication = observer(({
                 <div className={styles.left}>
                     <UserAvatar size={42} />
                     <div className={styles.information}>
-                        <span className={styles.nickname}>{account ? account.nickaname : "Unknown"}</span>
-                        <span className={styles.time}>{publication ? publication.date : "Friday 13, 1666"}</span>
+                        <span className={styles.nickname}>{publication.account ? publication.account.nickname : "Unknown"}</span>
+                        <span className={styles.time}>{publication ? ConvertDate(publication.date) : "Friday 13, 1666"}</span>
                     </div>
                 </div>
                 <div className={styles.right}>
-                    {/* <CircleButtonWrapper heightPaddings={0} widthPaddings={4}> */}
                     <BurgerMenu 
                         items={[
 
                         ]}
                     />
-                    {/* </CircleButtonWrapper> */}
                 </div>
             </div>
             <div className={styles.postContent}>
                 <span className={styles.text}>{publication ? publication.text : ""}</span>
                 {isAttachmentsHidden === false && 
                     <div className={styles.attachments}>
-                        <Attachments />
+                        <Attachments 
+                            attachments={publication.attachments} 
+                        />
                     </div>}
             </div>
             {isControlHidden === false && 
-                <PublicationControlPanel />}
+                <PublicationControlPanel 
+                    numberOfReactions={publication.numberOfReactions}
+                    numberOfComments={publication.numberOfComments}
+                    numberOfViews={publication.numberOfViews}
+                />
+            }
         </div>
     );
 });

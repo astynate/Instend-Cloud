@@ -1,8 +1,13 @@
+import GlobalContext from "../../../../../global/GlobalContext";
 import ImageHelper from "./ImageHelper";
 
 class TypeHelper {
     static CompareCountWithDimention = async (attachments, minAspectRatio, maxAspectRatio, callback = () => {}) => {
-        const dimentions = await ImageHelper.GetImageDimentions(attachments);
+        const images = attachments
+            .filter(x => GlobalContext.supportedImageTypes.includes(x.type))
+            .map(x => x.preview);
+        
+        const dimentions = await ImageHelper.GetImageDimentions(images);
         
         const itemsWithSpecificDimention = dimentions
             .filter(d => ImageHelper.GetAspectRatio(d) < maxAspectRatio &&

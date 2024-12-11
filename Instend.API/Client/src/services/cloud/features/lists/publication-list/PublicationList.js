@@ -3,16 +3,17 @@ import styles from './main.module.css';
 import PublicationsWrapper from '../../wrappers/publications-wrapper/PublicationsWrapper';
 import Publication from '../../../components/publication/Publication';
 import ScrollElementWithDotsAndFetch from '../../../elements/scroll/scroll-element-with-dots-and-fetch/ScrollElementWithDotsAndFetch';
+import { observer } from 'mobx-react-lite';
 
-const PublicationList = ({publications = [], fetchRequest, isHasMore}) => {
+const PublicationList = observer(({publications = [], fetchRequest, isHasMore}) => {
     return (
         <PublicationsWrapper>
             <div className={styles.publications}>
-                {publications.map((publication, index) => {
+                {publications.map((publication) => {
                     return (
                         <Publication
+                            key={publication.id}
                             publication={publication}
-                            key={index}
                         />
                     );
                 })}
@@ -23,6 +24,6 @@ const PublicationList = ({publications = [], fetchRequest, isHasMore}) => {
             />
         </PublicationsWrapper>
     );
-};
+});
 
 export default PublicationList;

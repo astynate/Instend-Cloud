@@ -20,12 +20,13 @@ namespace Instend.Services.External.FileService
 
         public async Task<Result<byte[]>> GetPreview(string? type, string path)
         {
-            if (string.IsNullOrEmpty(type) || string.IsNullOrWhiteSpace(type))
-            {
+            if (File.Exists(path) == false)
                 return Result.Success(new byte[0]);
-            }
 
-            Dictionary<string[], Configuration.HandleFileCover> actions = new Dictionary<string[], Configuration.HandleFileCover>
+            if (string.IsNullOrEmpty(type) || string.IsNullOrWhiteSpace(type))
+                return Result.Success(new byte[0]);
+
+            var actions = new Dictionary<string[], Configuration.HandleFileCover>
             {
                 { Configuration.imageTypes, GetImagePereview },
                 { Configuration.documentTypes, GetDocumentPreview },

@@ -9,7 +9,9 @@ namespace Instend.Services.Internal.Services
         public string SerializeWithCamelCase(object obj)
         {
             var serializerSettings = new JsonSerializerSettings();
+           
             serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            serializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 
             return JsonConvert.SerializeObject(obj, serializerSettings);
         }
