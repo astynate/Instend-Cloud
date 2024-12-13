@@ -35,9 +35,9 @@ namespace Instend_Version_2._0._0.Server.Controllers.Comments
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Create([FromForm] PublicationTransferModel transferModel)
+        public async Task<IActionResult> Create([FromForm] PublicationTransferModel publication)
         {
-            if (string.IsNullOrEmpty(transferModel.text) || transferModel.text.Length > 1024)
+            if (string.IsNullOrEmpty(publication.text) || publication.text.Length > 1024)
                 return BadRequest("Text of your publcation must not be empthy and contains up to 1024 symbols.");
 
             var accountId = _requestHandler
@@ -52,13 +52,13 @@ namespace Instend_Version_2._0._0.Server.Controllers.Comments
             if (account == null)
                 return Conflict("Account not found");
 
-            var publication = await _publicationsRepository
-                .AddAsync(transferModel, account);
+            var publicationResult = await _publicationsRepository
+                .AddAsync(publication, account);
 
-            if (publication.IsFailure)
-                return Conflict(publication.Error);
+            if (publicationResult.IsFailure)
+                return Conflict(publicationResult.Error);
 
-            return Ok(publication.Value);
+            return Ok(publicationResult.Value);
         }
     }
 }

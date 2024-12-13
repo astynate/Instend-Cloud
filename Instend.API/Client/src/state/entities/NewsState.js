@@ -25,13 +25,13 @@ class NewsState {
     }
 
     setHasMoreState = (state) => this.isHasMore = state;
-    setNews = (newsToSet) => this.news = newsToSet.sort(this.sortByDate);;
+    setNews = (newsToSet) => this.news = newsToSet;
     
     addNews = (newsToAdd) => { 
         const ids = this.news.map(element => element.id);
         const newPosts = newsToAdd.filter(post => !ids.includes(post.id));
 
-        this.news = [...this.news, ...newPosts].sort(this.sortByDate);
+        this.news = [...this.news, ...newPosts];
     };
 }
 

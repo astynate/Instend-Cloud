@@ -5,6 +5,6 @@ namespace Instend.Repositories.Publications
     public record PublicationTransferModel
     (
         string? text,
-        IFormFile[]? files
+        IFormFile[]? attachments
     );
 }

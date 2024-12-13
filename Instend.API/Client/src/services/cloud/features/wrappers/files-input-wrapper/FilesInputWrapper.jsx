@@ -33,6 +33,7 @@ const FilesInputWrapper = ({children, files = [], setFiles = () => {}, maxLength
             name: nameParts[0],
             type: type,
             size: file.size,
+            file: file,
             preview: await convertToBase64(file)
         };
 

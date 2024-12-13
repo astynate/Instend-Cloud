@@ -23,24 +23,23 @@ const ScrollElementWithDotsAndFetch = ({fetchRequest = () => {}, isHasMore = fal
             }
         );
 
-        if (paginationRef.current)
+        if (paginationRef.current && isHasMore === true) {
             observer.observe(paginationRef.current);
+        }
 
         return () => {
-            if (paginationRef.current)
+            if (paginationRef.current) {
                 observer.unobserve(paginationRef.current);
+            }
         };
-    }, []);
+    }, [isHasMore]);
 
     return (
-        isHasMore ?
-            <div ref={paginationRef} className={styles.pagination}>
-                <div className={styles.dot}></div>
-                <div className={styles.dot}></div>
-                <div className={styles.dot}></div>
-            </div>
-        :
-            placeholder
+        <div ref={paginationRef} className={styles.pagination}>
+            <div className={styles.dot}></div>
+            <div className={styles.dot}></div>
+            <div className={styles.dot}></div>
+        </div>
     );
 }
 

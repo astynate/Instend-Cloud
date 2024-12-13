@@ -37,8 +37,16 @@ namespace Instend_Version_2._0._0.Server.Controllers.Comments
         [Route("/api/news")]
         public async Task<IActionResult> GetPublictions(string? lastPublicationDate)
         {
-            if (!DateTime.TryParse(lastPublicationDate, out DateTime date))
+            DateTime date;
+
+            if (lastPublicationDate == null)
+            {
+                date = DateTime.Now;
+            }
+            else if (!DateTime.TryParse(lastPublicationDate, out date))
+            {
                 return BadRequest("Invalid date format");
+            }
 
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 

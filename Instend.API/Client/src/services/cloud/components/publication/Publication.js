@@ -9,7 +9,7 @@ import PublicationControlPanel from '../../elements/publication-elements/publica
 import Base64Handler from '../../../../utils/handlers/Base64Handler';
 import GlobalContext from '../../../../global/GlobalContext';
 
-const Publication = observer(({
+const Publication = ({
         publication, 
         isControlHidden = false,
         isHasPaddings = false,
@@ -53,7 +53,7 @@ const Publication = observer(({
                 <div className={styles.right}>
                     <BurgerMenu 
                         buttons={[
-                            {title: "Report"},
+                            // {title: "Report"},
                             {title: "Edit"},
                             {title: "Delete", isDangerousOperation: true}
                         ]}
@@ -78,6 +78,6 @@ const Publication = observer(({
             }
         </div>
     );
-});
+};
 
 export default Publication;

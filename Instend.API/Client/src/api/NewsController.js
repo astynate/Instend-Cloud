@@ -6,7 +6,8 @@ class NewsController {
         await instance
             .get(`api/news?lastPublicationDate=${lastPublicationDate}`)
             .then((response) => {
-                if (!response) {
+                if (!response || !response.data || !response.data.length) {
+                    NewsState.setHasMoreState(false);
                     return;
                 }
 
@@ -14,7 +15,7 @@ class NewsController {
                     NewsState.addNews(response.data);
                 }
 
-                NewsState.setHasMoreState(response.data.length && response.data.length >= 5);
+                NewsState.setHasMoreState(response.data.length >= 5);
             })
             .catch(e => {
                 console.error(e);

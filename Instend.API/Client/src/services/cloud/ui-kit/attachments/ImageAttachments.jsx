@@ -27,11 +27,17 @@ const ImageAttachments = ({attachments = [], isEditable = false, setAttachments 
     useEffect(() => {
         const DetermineHandler = async () => {
             for (const handler of handlers) {
-                const result = await handler.condition();
+                try {
+                    const result = await handler.condition();
                 
-                if (result) {
-                    setCurrentHandler(() => handler.handler);
-                    break;
+                    if (result) {
+                        setCurrentHandler(() => handler.handler);
+                        break;
+                    }
+                }
+                catch (exception) {
+                    console.error('Error while trying to detemine the image template.');
+                    console.error(exception);
                 }
             }
         };

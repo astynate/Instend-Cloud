@@ -122,5 +122,6 @@ namespace Instend.Services.External.FileService
         }
 
         public async Task WriteFileAsync(string path, byte[] file) => await File.WriteAllBytesAsync(path, file);
+        public async Task WriteFileAsync(string path, string? file) => await File.WriteAllTextAsync(path, file);
     }
 }

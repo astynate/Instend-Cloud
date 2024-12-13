@@ -7,6 +7,8 @@ using Instend.Core.Dependencies.Repositories.Account;
 using Instend.Repositories.Publications;
 using Instend.Core.Models.Storage.File;
 using Microsoft.AspNetCore.Http;
+using Instend.Core;
+using System.Linq;
 
 namespace Instend.Repositories.Comments
 {
@@ -32,7 +34,12 @@ namespace Instend.Repositories.Comments
 
         private async Task AddAttachment(IFormFile file, Publication publication, Core.Models.Account.Account account)
         {
+            List<string> availableTypes = [..Configuration.imageTypes, ..Configuration.videoTypes, ..Configuration.videoTypes];
+
             var attachment = Attachment.Create(file, account.Id);
+
+            if (availableTypes.Contains(attachment.Value.Type ?? "") == false)
+                return;
 
             if (attachment.IsFailure)
                 return;
@@ -50,7 +57,7 @@ namespace Instend.Repositories.Comments
             if (publication.IsFailure)
                 return publication;
 
-            foreach (var file in publicationTransferModel.files ?? []) 
+            foreach (var file in publicationTransferModel.attachments ?? []) 
             {
                 await AddAttachment(file, publication.Value, account);
             }
@@ -107,8 +114,8 @@ namespace Instend.Repositories.Comments
                 .ToArray();
 
             var result = await _publicationsContext.Publications
-                .OrderBy(x => x.Date)
-                .Where(x => targetAccounts.Contains(x.AccountId) )
+                .OrderByDescending(x => x.Date)
+                .Where(x => targetAccounts.Contains(x.AccountId) && x.Date < date)
                 .Include(x => x.Account)
                     .ThenInclude(x => x.Publications)
                 .Include(x => x.Attachments)

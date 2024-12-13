@@ -13,5 +13,6 @@ namespace Instend.Services.External.FileService
         Task WriteFileAsync(string path, byte[] file);
         void DeleteFile(string path);
         Task SaveIFormFile(IFormFile file, string path);
+        Task WriteFileAsync(string path, string? file);
     }
 }

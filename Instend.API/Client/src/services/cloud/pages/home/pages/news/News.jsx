@@ -7,7 +7,7 @@ import NewsState from '../../../../../../state/entities/NewsState';
 const News = observer(() => {
     const getLastNewsDate = () => {
         if (NewsState.news.length === 0) {
-            return new Date().toISOString().slice(0, 19).replace('T', ' ');
+            return "";
         }
     
         const lastIndex = NewsState.news.length - 1;
