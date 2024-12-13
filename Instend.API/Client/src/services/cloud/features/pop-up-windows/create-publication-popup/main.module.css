@@ -7,7 +7,7 @@
     border-top: 1px solid var(--main-border-color);
 }
 
-.wrapper button {
+.postButton {
     width: 100%;
     cursor: pointer;
     background: var(--main-font-color);
@@ -26,11 +26,11 @@
     transition: 0.15s ease;
 }
 
-.wrapper button:hover {
+.postButton:hover {
     opacity: 0.8;
 }
 
-.wrapper button:active {
+.postButton:active {
     opacity: 0.6;
 }
 
@@ -119,4 +119,5 @@
 .attachments {
     margin-top: 10px;
     border-radius: 5px;
+    overflow: hidden;
 }

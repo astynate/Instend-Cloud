@@ -18,8 +18,8 @@
 }
 
 .checkMark {
-    height: 28px;
-    width: 28px;
+    height: 30px;
+    width: 30px;
     background: white;
     border-radius: 100%;
     display: flex;
@@ -28,7 +28,7 @@
 }
 
 .checkMark img {
-    height: 15px;
-    width: 15px;
-    /* filter: invert(100%); */
+    height: 18px !important;
+    width: 18px !important;
+    object-fit: contain !important;
 }

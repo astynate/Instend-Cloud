@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using Spire.Doc.Documents;
 using NReco.VideoConverter;
 using Document = Spire.Doc.Document;
+using Instend.Core.Models.Abstraction;
 
 namespace Instend.Services.External.FileService
 {
@@ -54,14 +55,20 @@ namespace Instend.Services.External.FileService
             return Result.Success(new byte[0]);
         }
 
+        public async Task SetPreviewToIDatabaseCollection(IEnumerable<IDatabaseStorageRelation> relations)
+        {
+            foreach(var relation in relations)
+            {
+                await relation.SetPreview(this);
+            }
+        }
+
         private async Task<byte[]> GetSongPreview((string type, string path) parameters)
         {
             string? mimeType;
 
             if (!SongFormat.mimeTypes.ContainsKey(parameters.type.ToLower()))
-            {
-                return new byte[0];
-            }
+                return Array.Empty<byte>();
 
             mimeType = SongFormat.mimeTypes[parameters.type.ToLower()];
 
@@ -76,7 +83,7 @@ namespace Instend.Services.External.FileService
                 return pictureData;
             }
 
-            return new byte[0];
+            return Array.Empty<byte>();
         }
 
         private async Task<byte[]> GetPdfPreview((string type, string path) parameters)

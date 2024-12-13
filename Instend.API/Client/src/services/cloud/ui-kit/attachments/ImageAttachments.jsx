@@ -1,0 +1,59 @@
+import { useState, useEffect } from 'react';
+import styles from './main.module.css';
+import TypeHelper from './helpers/TypeHelper';
+import ColumnsTemplate from './components/ColumnsTemplate/ColumnsTemplate';
+import HorizontalGridTemplate from './components/HorizontalGridTemplate/HorizontalGridTemplate';
+import VerticalGridTemplate from './components/VerticalGridTemplate/VerticalGridTemplate';
+import GlobalContext from '../../../../global/GlobalContext';
+
+const ImageAttachments = ({attachments = [], isEditable = false, setAttachments = () => {}}) => {
+    const [imageAttachments, setImageAttachments] = useState([]);
+
+    useEffect(() => {
+        const filteredAttachments = attachments
+            .filter(e => GlobalContext.supportedImageTypes.includes(e.type));
+
+        setImageAttachments(filteredAttachments);
+    }, [attachments]);
+
+    const handlers = [
+        { condition: async () => await TypeHelper.IsColumnTemplate(imageAttachments), handler: ColumnsTemplate },
+        { condition: async () => await TypeHelper.IsHorizontalGridTemplate(imageAttachments), handler: HorizontalGridTemplate },
+        { condition: async () => await TypeHelper.IsVerticalGridTemplate(imageAttachments), handler: VerticalGridTemplate }
+    ];
+
+    const [CurrentHandler, setCurrentHandler] = useState(() => handlers[0].handler);
+
+    useEffect(() => {
+        const DetermineHandler = async () => {
+            for (const handler of handlers) {
+                const result = await handler.condition();
+                
+                if (result) {
+                    setCurrentHandler(() => handler.handler);
+                    break;
+                }
+            }
+        };
+
+        if (imageAttachments.length > 0) {
+            DetermineHandler();
+        }
+    }, [imageAttachments]);
+
+    if (imageAttachments.length === 0) {
+        return null;
+    }
+
+    return (
+        <div className={styles.attachments}>
+            <CurrentHandler 
+                attachments={attachments} 
+                isEditable={isEditable}
+                setAttachments={setAttachments}
+            />
+        </div>
+    );
+};
+
+export default ImageAttachments;

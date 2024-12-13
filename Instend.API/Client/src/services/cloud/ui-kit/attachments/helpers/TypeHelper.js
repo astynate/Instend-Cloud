@@ -1,11 +1,12 @@
 import GlobalContext from "../../../../../global/GlobalContext";
+import Base64Handler from "../../../../../utils/handlers/Base64Handler";
 import ImageHelper from "./ImageHelper";
 
 class TypeHelper {
     static CompareCountWithDimention = async (attachments, minAspectRatio, maxAspectRatio, callback = () => {}) => {
         const images = attachments
             .filter(x => GlobalContext.supportedImageTypes.includes(x.type))
-            .map(x => x.preview);
+            .map(x => Base64Handler.Base64ToUrlFormatPng(x.preview));
         
         const dimentions = await ImageHelper.GetImageDimentions(images);
         

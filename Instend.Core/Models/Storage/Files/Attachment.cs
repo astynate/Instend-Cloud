@@ -19,7 +19,7 @@ namespace Instend.Core.Models.Storage.File
 
         [NotMapped] public byte[] Preview { get; set; } = [];
 
-        private Attachment() { }
+        private Attachment() {}
 
         public static Result<Attachment> Create(string name, string? type, long size, Guid userId)
         {
@@ -60,13 +60,13 @@ namespace Instend.Core.Models.Storage.File
             var id = Guid.NewGuid();
             var path = Configuration.GetAvailableDrivePath() + id;
 
-            var splitedType = file.ContentType.Split('/');
-            var type = splitedType.Length > 2 ? splitedType[splitedType.Length - 1] : "";
+            var name = file.FileName.Split('.');
+            var type = name.Length >= 2 ? name[name.Length - 1] : "";
 
             return new Attachment()
             {
                 Id = id,
-                Name = file.FileName,
+                Name = name[0],
                 Path = path,
                 Type = type,
                 Size = file.Length,
@@ -74,15 +74,14 @@ namespace Instend.Core.Models.Storage.File
             };
         }
 
-        public async Task<Result> SetPreview(IPreviewService previewService)
+        public async Task SetPreview(IPreviewService previewService)
         {
             var result = await previewService.GetPreview(Type, Path);
 
             if (result.IsFailure)
-                return result;
+                return;
 
             Preview = result.Value;
-            return Result.Success();
         }
 
         public void OnDelete(IFileService fileService) => fileService.DeleteFile(Path);

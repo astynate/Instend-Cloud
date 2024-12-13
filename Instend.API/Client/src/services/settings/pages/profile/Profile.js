@@ -23,22 +23,22 @@ const Profile = observer((props) => {
     const surname = useRef();
     const nickname = useRef();
 
-    const { user } = AccountState;
+    const { account } = AccountState;
     const { t } = useTranslation();
 
     const [uploadAvatar,  setUploadAvatar] = useState(false);
     const [uploadHeader,  setUploadHeader] = useState(false);
-    const [avatar, setAvatar] = useState(`data:image/png;base64,${user.avatar || ""}`);
-    const [header, setHeader] = useState(`data:image/png;base64,${user.header || ""}`);
+    const [avatar, setAvatar] = useState(`data:image/png;base64,${account.avatar || ""}`);
+    const [header, setHeader] = useState(`data:image/png;base64,${account.header || ""}`);
     const { UpdateUserData } = AccountState;
 
     let navigate = useNavigate();
     let location = useLocation();
 
     const defaultProfileSettings = {
-        name: user.name,
-        surname: user.surname,
-        nickname: user.nickname,
+        name: account.name,
+        surname: account.surname,
+        nickname: account.nickname,
         avatar: "",
         header: "",
     };
@@ -46,34 +46,25 @@ const Profile = observer((props) => {
     const [profileSettings, setProfileSettings] = useState(defaultProfileSettings);
 
     useEffect(() => {
-        if (user.avatar != null) {
-            setAvatar(`data:image/png;base64,${user.avatar || ""}`);
+        if (account.avatar != null) {
+            setAvatar(`data:image/png;base64,${account.avatar || ""}`);
         }
-    }, [user.avatar]);
+    }, [account.avatar]);
 
     useEffect(() => {
-        const Save = async () => {
-            const source = CancelToken.source();
-            
-            const timeoutId = setTimeout(() => {
-                source.cancel("Request timeout");
-            }, 20000);
-    
-            const response = await instance({
+        const Save = async () => {    
+            await instance({
                 method: 'put',
                 url: '/accounts',
                 data: profileSettings,
-                headers: { 'Content-Type': 'multipart/form-data' },
-                cancelToken: source.token
+                headers: { 'Content-Type': 'multipart/form-data' }
+            }).then(response => {
+                if (response.status === 200) {
+                    UpdateUserData(location, navigate);
+                } else {
+                    UpdateUserData(location, navigate);
+                }
             });
-
-            clearTimeout(timeoutId);
-
-            if (response.status === 200) {
-                UpdateUserData(location, navigate);
-            } else {
-                UpdateUserData(location, navigate);
-            }
         };
 
         if (props.isSaving) {
@@ -84,15 +75,15 @@ const Profile = observer((props) => {
 
     useEffect(() => {
         const SetDefault = async () => {
-            setAvatar(`data:image/png;base64,${user.avatar || ""}`);
-            setHeader(`data:image/png;base64,${user.header || ""}`);
+            setAvatar(`data:image/png;base64,${account.avatar || ""}`);
+            setHeader(`data:image/png;base64,${account.header || ""}`);
             setProfileSettings(defaultProfileSettings);
-            setName(user.name, setProfileSettings);
-            setSurname(user.surname, setProfileSettings);
-            setNickname(user.nickname, setProfileSettings);
-            name.current.value = user.name;
-            surname.current.value = user.surname;
-            nickname.current.value = user.nickname;
+            setName(account.name, setProfileSettings);
+            setSurname(account.surname, setProfileSettings);
+            setNickname(account.nickname, setProfileSettings);
+            name.current.value = account.name;
+            surname.current.value = account.surname;
+            nickname.current.value = account.nickname;
 
             props.setCancelState(false);
         }
@@ -205,7 +196,7 @@ const Profile = observer((props) => {
             <div className={styles.settingBar}>
                 <Input 
                     title={t('cloud.settings.profile.personal_data.name')}
-                    defaultValue={user.name} 
+                    defaultValue={account.name} 
                     setValue={setName} 
                     type="first"
                     forwardRef={name}
@@ -213,14 +204,14 @@ const Profile = observer((props) => {
                 />
                 <Input 
                     title={t('cloud.settings.profile.personal_data.surname')} 
-                    defaultValue={user.surname} 
+                    defaultValue={account.surname} 
                     setValue={setSurname}
                     forwardRef={surname}
                     maxLength={20}
                 />
                 <Input 
                     title={t('cloud.settings.profile.personal_data.nickname')}
-                    defaultValue={user.nickname} 
+                    defaultValue={account.nickname} 
                     setValue={setNickname}
                     type="last"
                     forwardRef={nickname}

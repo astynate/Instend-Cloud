@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import styles from './main.module.css';
 import ImageHelper from '../../helpers/ImageHelper';
 import TypeHelper from '../../helpers/TypeHelper';
+import AttachmentImage from '../../items/image/AttachmentImage';
 
-const VerticalGridTemplate = ({attachments = []}) => {
-    const [sortedAttachments, setSortedAttachments] = useState([]);
+const VerticalGridTemplate = ({attachments = [], isEditable = false, setAttachments = () => {}}) => {
+    const [sortedAttachments, setSortedAttachments] = useState([...attachments]);
     const [endIndex, setEndIndex] = useState(1);
 
     const GetEndIndex = async () => {{
@@ -23,10 +24,10 @@ const VerticalGridTemplate = ({attachments = []}) => {
 
     useEffect(() => { 
         const UpdateAttachments = async () => {
-            setSortedAttachments(await ImageHelper.SortAttachments(
-                attachments, 
-                (a, b) => a.aspectRatio - b.aspectRatio)
-            );
+            // setSortedAttachments(await ImageHelper.SortAttachments(
+            //     attachments, 
+            //     (a, b) => a.aspectRatio - b.aspectRatio)
+            // );
 
             setEndIndex(await GetEndIndex());
         }; 
@@ -37,22 +38,24 @@ const VerticalGridTemplate = ({attachments = []}) => {
     return (
         <div className={styles.wrapper} state={endIndex === 1 ? "one" : ""}>
             <div className={styles.left}>
-                {sortedAttachments.slice(0, endIndex).map((image, index) => (
-                    <img 
-                        key={index} 
-                        src={image} 
-                        draggable={false}
-                        alt={`Attachment ${index}`} 
+                {attachments.slice(0, endIndex).map((image, index) => (
+                    <AttachmentImage
+                        key={index}
+                        image={image}
+                        isEditable={isEditable}
+                        attachments={attachments}
+                        setAttachments={setAttachments}
                     />
                 ))}
             </div>
             <div className={styles.right}>
-                {sortedAttachments.slice(endIndex, Math.min(sortedAttachments.length, 5)).map((image, index) => (
-                    <img 
-                        key={index} 
-                        src={image} 
-                        draggable={false}
-                        alt={`Attachment ${index}`} 
+                {attachments.slice(endIndex, Math.min(sortedAttachments.length, 5)).map((image, index) => (
+                    <AttachmentImage
+                        key={index}
+                        image={image}
+                        isEditable={isEditable}
+                        attachments={attachments}
+                        setAttachments={setAttachments}
                     />
                 ))}
             </div>

@@ -16,6 +16,15 @@ class GlobalContext {
         { key: 'by-K', label: 'Беларускi' },
         { key: 'by-L', label: 'Biełaruski' }
     ];
+
+    static NewGuid() {
+        return 'xxxxxxxx-xxxx-xxxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            const r = Math.random() * 16 | 0;
+            const v = c === 'x' ? r : (r & 0x3 | 0x8);
+            
+            return v.toString(16);
+        });
+    }
 }
 
 export default GlobalContext;

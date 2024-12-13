@@ -5,20 +5,19 @@ import styles from './main.module.css';
 import AccountState from '../../../../../state/entities/AccountState';
 import Base64Handler from '../../../../../utils/handlers/Base64Handler';
 import image from './images/image.png';
-import Attachments from '../../../ui-kit/attachments/Attachments';
+import ImageAttachments from '../../../ui-kit/attachments/ImageAttachments';
 import FilesInputWrapper from '../../wrappers/files-input-wrapper/FilesInputWrapper';
 import ButtonContent from '../../../elements/button-content/ButtonContent';
+import GlobalContext from '../../../../../global/GlobalContext';
 
-const CreatePublicationPopup = observer(({isOpen = false, close = () => {}, callback = () => {}}) => {
+const CreatePublicationPopup = observer((props) => {
     const [text, setText] = useState('');
     const [attachments, setAttachments] = useState([]);
-    const [attachmentsAsBase64, setAttachmentsAsBase64] = useState([]);
     const [isLoading, setLoadingState] = useState();
     const textareaRef = useRef(null);
 
     const setAsDefault = () => {
         setAttachments([]);
-        setAttachmentsAsBase64([]);
         setText('');
     }
   
@@ -38,16 +37,16 @@ const CreatePublicationPopup = observer(({isOpen = false, close = () => {}, call
     
     useEffect(() => {
         setAsDefault();
-    }, [isOpen]);
+    }, [props.isOpen]);
 
     useEffect(() => {
         if (isLoading === true) {
-            close();
+            props.close();
         }
     }, [isLoading]);
 
     return (
-        <PopUpWindow open={isOpen} title={'New publication'} close={close}>
+        <PopUpWindow open={props.isOpen} title={'New publication'} close={props.close}>
             <div className={styles.wrapper}>
                 <div className={styles.content}>
                     <div className={styles.header}>
@@ -69,23 +68,35 @@ const CreatePublicationPopup = observer(({isOpen = false, close = () => {}, call
                         onChange={textareaChangeHandler}
                     ></textarea>
                     <div className={styles.attachments}>
-                        <Attachments attachments={attachmentsAsBase64} />
+                        <ImageAttachments
+                            isEditable={true}
+                            attachments={attachments}
+                            setAttachments={setAttachments}
+                        />
                     </div>
                 </div>
                 <div className={styles.bottom}>
                     <div className={styles.controlAttachments}>
                         <span>Attach something to your post</span>
                         <div className={styles.control}>
-                            <FilesInputWrapper 
-                                setFilesAsBase64={setAttachmentsAsBase64} 
+                            <FilesInputWrapper
+                                files={attachments}
                                 setFiles={setAttachments} 
                                 maxLength={7}
+                                supportedTypes={[
+                                    ...GlobalContext.supportedImageTypes,
+                                    ...GlobalContext.supportedVideoTypes,
+                                    ...GlobalContext.supportedMusicTypes
+                                ]}
                             >
                                 <img src={image} draggable="false" />
                             </FilesInputWrapper>
                         </div>
                     </div>
-                    <button onClick={async () => callback(text, attachments, setLoadingState)}>
+                    <button 
+                        className={styles.postButton} 
+                        onClick={async () => props.callback(text, attachments, setLoadingState)}
+                    >
                         <ButtonContent 
                             label={'Post'} 
                             state={isLoading ? 'loading' : null} 

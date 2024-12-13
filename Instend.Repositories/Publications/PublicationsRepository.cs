@@ -16,14 +16,18 @@ namespace Instend.Repositories.Comments
 
         private readonly IFileService _fileService;
 
+        private readonly IPreviewService _previewService;
+
         public PublicationsRepository
         (
             PublicationsContext publicationsContext,
-            IFileService fileService
+            IFileService fileService,
+            IPreviewService previewService
         )
         {
             _publicationsContext = publicationsContext;
             _fileService = fileService;
+            _previewService = previewService;
         }
 
         private async Task AddAttachment(IFormFile file, Publication publication, Core.Models.Account.Account account)
@@ -35,8 +39,8 @@ namespace Instend.Repositories.Comments
 
             publication.Attachments.Add(attachment.Value);
 
-            await _fileService
-                .SaveIFormFile(file, attachment.Value.Path);
+            await _fileService.SaveIFormFile(file, attachment.Value.Path);
+            await publication.Attachments.Last().SetPreview(_previewService);
         }
 
         public async Task<Result<Publication>> AddAsync(PublicationTransferModel publicationTransferModel, Core.Models.Account.Account account)
@@ -84,10 +88,10 @@ namespace Instend.Repositories.Comments
             return publication;
         }
 
-        public async Task<bool> DeleteAsync(Guid id, Guid ownerId)
+        public async Task<bool> DeleteAsync(Guid id, Guid accountId)
         {
             var result = await _publicationsContext.Publications
-                .Where(p => p.Id == id && p.AccountId == ownerId)
+                .Where(p => p.Id == id && p.AccountId == accountId)
                 .ExecuteDeleteAsync();
 
             await _publicationsContext.SaveChangesAsync();
@@ -110,6 +114,14 @@ namespace Instend.Repositories.Comments
                 .Include(x => x.Attachments)
                 .Take(5)
                 .ToListAsync();
+
+            foreach (var publication in result)
+            {
+                foreach (var attachment in publication.Attachments)
+                {
+                    await attachment.SetPreview(_previewService);
+                }
+            }
 
             return result;
         }

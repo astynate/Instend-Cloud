@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { ConvertDate } from '../../../../utils/handlers/DateHandler';
 import styles from './main.module.css';
 import UserAvatar from '../../shared/avatars/user-avatar/UserAvatar';
 import BurgerMenu from '../../shared/context-menus/burger-menu/BurgerMenu';
-import Attachments from '../../ui-kit/attachments/Attachments';
+import ImageAttachments from '../../ui-kit/attachments/ImageAttachments';
 import PublicationControlPanel from '../../elements/publication-elements/publication-control-panel/PublicationControlPanel';
+import Base64Handler from '../../../../utils/handlers/Base64Handler';
+import GlobalContext from '../../../../global/GlobalContext';
 
 const Publication = observer(({
         publication, 
@@ -14,7 +16,27 @@ const Publication = observer(({
         isAttachmentsHidden = false
     }) => {
 
-    if (!!publication === false || !!publication.account === false) {
+    const [images, setImages] = useState([]);
+
+    const isPublicationValid = () => {
+        if (!!publication === false || !!publication.account === false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    useEffect(() => {
+        if (isPublicationValid() === false) 
+            return;
+
+        const attachedImages = publication.attachments
+            .filter(x => GlobalContext.supportedImageTypes.includes(x.type.toLowerCase()));
+
+        setImages(attachedImages);
+    }, []);
+
+    if (isPublicationValid() === false) {
         return null;
     }
 
@@ -30,18 +52,20 @@ const Publication = observer(({
                 </div>
                 <div className={styles.right}>
                     <BurgerMenu 
-                        items={[
-
+                        buttons={[
+                            {title: "Report"},
+                            {title: "Edit"},
+                            {title: "Delete", isDangerousOperation: true}
                         ]}
                     />
                 </div>
             </div>
             <div className={styles.postContent}>
                 <span className={styles.text}>{publication ? publication.text : ""}</span>
-                {isAttachmentsHidden === false && 
+                {isAttachmentsHidden === false && images.length > 0 &&
                     <div className={styles.attachments}>
-                        <Attachments 
-                            attachments={publication.attachments} 
+                        <ImageAttachments 
+                            attachments={images} 
                         />
                     </div>}
             </div>

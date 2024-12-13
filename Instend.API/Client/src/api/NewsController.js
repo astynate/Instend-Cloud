@@ -10,8 +10,6 @@ class NewsController {
                     return;
                 }
 
-                console.log(response.data)
-
                 if (response.data && response.data.length && response.data.length > 0) {
                     NewsState.addNews(response.data);
                 }

@@ -1,0 +1,31 @@
+.button {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 400px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--main-font-color);
+    border-bottom: 1px solid var(--main-border-color);
+}
+
+button[id="dangerous"] {
+    color: var(--main-red-color);
+    font-weight: 600;
+}
+
+.button:hover {
+    background: var(--pop-up-accent-color);
+}
+
+.button:last-child {
+    border: none;
+    color: var(--main-blue-color);
+    font-weight: 600;
+}

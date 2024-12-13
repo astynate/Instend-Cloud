@@ -1,3 +1,5 @@
+import Base64Handler from "../../../../../utils/handlers/Base64Handler";
+
 class ImageHelper {
     static GetImageDimentions = async (images) => {
         const dimentions = images.map(image => {
@@ -17,13 +19,16 @@ class ImageHelper {
     };
 
     static GetAspectRatio = (dimention) => {
+        if (dimention.width === 0 || dimention.height === 0)
+            return 1;
+
         return dimention.width / dimention.height;
     };
 
     static SortAttachments = async (attachments, callback = () => {}) => { 
         const attachmentsWithAspectRatios = await Promise.all(attachments.map(async image => { 
-            const dimentions = await ImageHelper.GetImageDimentions([image]);
-            const aspectRatio = ImageHelper.GetAspectRatio(dimentions[0]); 
+            const dimentions = await ImageHelper.GetImageDimentions([Base64Handler.Base64ToUrlFormatPng(image.preview)]);
+            const aspectRatio = ImageHelper.GetAspectRatio(dimentions[0]);
             
             return {
                 image, 
