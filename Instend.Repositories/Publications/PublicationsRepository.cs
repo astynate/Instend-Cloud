@@ -8,13 +8,14 @@ using Instend.Repositories.Publications;
 using Instend.Core.Models.Storage.File;
 using Microsoft.AspNetCore.Http;
 using Instend.Core;
-using System.Linq;
+using Instend.Core.Models.Abstraction;
+using System.ComponentModel.DataAnnotations;
 
 namespace Instend.Repositories.Comments
 {
     public class PublicationsRepository : IPublicationsRepository
     {
-        private readonly PublicationsContext _publicationsContext;
+        private readonly GlobalContext _context;
 
         private readonly IFileService _fileService;
 
@@ -22,12 +23,12 @@ namespace Instend.Repositories.Comments
 
         public PublicationsRepository
         (
-            PublicationsContext publicationsContext,
+            GlobalContext context,
             IFileService fileService,
             IPreviewService previewService
         )
         {
-            _publicationsContext = publicationsContext;
+            _context = context;
             _fileService = fileService;
             _previewService = previewService;
         }
@@ -64,8 +65,8 @@ namespace Instend.Repositories.Comments
 
             try
             {
-                await _publicationsContext.AddAsync(publication.Value);
-                await _publicationsContext.SaveChangesAsync();
+                await _context.AddAsync(publication.Value);
+                await _context.SaveChangesAsync();
             }
             catch (Exception exception)
             {
@@ -85,8 +86,7 @@ namespace Instend.Repositories.Comments
 
         public async Task<Publication?> GetByIdAsync(Guid id)
         {
-            var publication = await _publicationsContext.Publications
-                .AsNoTracking()
+            var publication = await _context.Publications
                 .Where(c => c.Id == id)
                 .Include(x => x.Attachments)
                 .Include(x => x.Account)
@@ -97,11 +97,11 @@ namespace Instend.Repositories.Comments
 
         public async Task<bool> DeleteAsync(Guid id, Guid accountId)
         {
-            var result = await _publicationsContext.Publications
+            var result = await _context.Publications
                 .Where(p => p.Id == id && p.AccountId == accountId)
                 .ExecuteDeleteAsync();
 
-            await _publicationsContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return result > 0;
         }
@@ -113,7 +113,7 @@ namespace Instend.Repositories.Comments
                 .Select(x => x.Id)
                 .ToArray();
 
-            var result = await _publicationsContext.Publications
+            var result = await _context.Publications
                 .OrderByDescending(x => x.Date)
                 .Where(x => targetAccounts.Contains(x.AccountId) && x.Date < date)
                 .Include(x => x.Account)
@@ -131,6 +131,56 @@ namespace Instend.Repositories.Comments
             }
 
             return result;
+        }
+
+        public (List<Attachment> add, List<Attachment> remove) GetAttachementAsync(Publication publication, UpdatePublicationTransferModel publicationTransferModel)
+        {
+            if (publicationTransferModel.attachments == null)
+                return (new List<Attachment>(), publication.Attachments);
+
+            if (publicationTransferModel.attachments.Length == 0)
+                return (new List<Attachment>(), publication.Attachments);
+
+            var attachmentsToAdd = publicationTransferModel.attachments
+                .Where(x => !publication.Attachments.Any(a => a.Id == x.id) && x.attachment != null)
+                .Select(a => Attachment.Create(a.attachment, publication.AccountId))
+                .Where(a => a.IsSuccess)
+                .Select(a => a.Value)
+                .ToList();
+
+            var attachmentsToDelete = publication.Attachments
+                .Where(x => !publicationTransferModel.attachments.Any(a => a.id == x.Id))
+                .ToList();
+
+            return (attachmentsToAdd, attachmentsToDelete);
+        }
+
+        public async Task<Result<Publication>> UpdateAsync(UpdatePublicationTransferModel publicationTransferModel, Core.Models.Account.Account account)
+        {
+            var publication = await _context.Publications
+                .Where(c => c.Id == publicationTransferModel.id)
+                .Include(x => x.Attachments)
+                .Include(x => x.Account)
+                .FirstOrDefaultAsync();
+
+            if (publication == null) 
+                return Result.Failure<Publication>("Publication was not found.");
+
+            var attachments = GetAttachementAsync(publication, publicationTransferModel);
+
+            if (attachments.add.Any())
+            {
+                _context.Attachments.AddRange(attachments.add);
+                await _context.SaveChangesAsync();
+            }
+
+            publication.Attachments.AddRange(attachments.add);
+
+            _context.RemoveRange(attachments.remove);
+
+            await _context.SaveChangesAsync();
+
+            return publication;
         }
     }
 }

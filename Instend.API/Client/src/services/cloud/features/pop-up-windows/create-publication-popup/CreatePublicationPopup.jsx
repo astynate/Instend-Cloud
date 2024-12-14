@@ -9,6 +9,7 @@ import ImageAttachments from '../../../ui-kit/attachments/ImageAttachments';
 import FilesInputWrapper from '../../wrappers/files-input-wrapper/FilesInputWrapper';
 import ButtonContent from '../../../elements/button-content/ButtonContent';
 import GlobalContext from '../../../../../global/GlobalContext';
+import { toJS } from 'mobx';
 
 const CreatePublicationPopup = observer((props) => {
     const [text, setText] = useState('');
@@ -36,7 +37,12 @@ const CreatePublicationPopup = observer((props) => {
     };
     
     useEffect(() => {
-        setAsDefault();
+        if (!!props.publication === false) {
+            setAsDefault();
+        } else {
+            setAttachments(toJS(props.publication.attachments));
+            setText(props.publication.text);
+        }
     }, [props.isOpen]);
 
     useEffect(() => {
@@ -63,6 +69,7 @@ const CreatePublicationPopup = observer((props) => {
                     <textarea 
                         ref={textareaRef}
                         placeholder='Write a publication'
+                        value={text}
                         className={styles.textarea}
                         autoFocus
                         onChange={textareaChangeHandler}

@@ -2,15 +2,13 @@
 using Instend.Core.Models.Abstraction;
 using Instend.Services.External.FileService;
 using Microsoft.AspNetCore.Http;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Instend.Core.Models.Storage.File
 {
     [Table("attachments")]
-    public class Attachment : IDatabaseStorageRelation
+    public class Attachment : DatabaseModel, IDatabaseStorageRelation
     {
-        [Column("id")][Key] public Guid Id { get; private set; } = Guid.NewGuid();
         [Column("account_id")] public Guid AccountId { get; private set; }
         [Column("name")] public string Name { get; private set; } = string.Empty;
         [Column("path")] public string Path { get; private set; } = string.Empty;

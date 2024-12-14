@@ -21,6 +21,8 @@ namespace Instend.Core.Models.Public
         public Account.Account Account { get; set; } = null!;
         public List<Attachment> Attachments { get; set; } = new List<Attachment>();
 
+        public static readonly int MaxLength = 1024;
+
         private Publication() { }
 
         public static Result<Publication> Create(string? text, Guid ownerId)
@@ -36,6 +38,17 @@ namespace Instend.Core.Models.Public
                 Text = text,
                 AccountId = ownerId
             };
+        }
+
+        public void SetText(string? text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return;
+
+            if (text.Length > MaxLength)
+                return;
+
+            Text = text;
         }
 
         public void SetAttachment(List<Attachment> attachment) => Attachments = attachment;

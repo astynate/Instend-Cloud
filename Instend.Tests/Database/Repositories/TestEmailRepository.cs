@@ -10,12 +10,6 @@ namespace Instend.Tests.Database.Repositories
     [TestClass]
     public class TestEmailRepository
     {
-
-        private readonly static AccountsContext _context = new AccountsContext();
-
-        private readonly static IConfirmationsRepository _emailRepository = 
-            new ConfirmationsRepository(_context, new ValidationService());
-
         [TestMethod]
         public void EmailCreationWithCorrectConditions()
         {

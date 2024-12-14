@@ -6,9 +6,9 @@ namespace Instend.Repositories.Repositories
 {
     public class SessionsRepository : ISessionsRepository
     {
-        private readonly AccountsContext _context = null!;
+        private readonly GlobalContext _context = null!;
 
-        public SessionsRepository(AccountsContext context)
+        public SessionsRepository(GlobalContext context)
         {
             _context = context;
         }

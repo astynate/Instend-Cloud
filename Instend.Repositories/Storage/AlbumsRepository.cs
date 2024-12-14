@@ -10,9 +10,9 @@ namespace Instend.Repositories.Storage
 {
     public class AlbumsRepository : IAlbumsRepository
     {
-        private readonly StorageContext _storageContext = null!;
+        private readonly GlobalContext _storageContext = null!;
 
-        public AlbumsRepository(StorageContext storageContext)
+        public AlbumsRepository(GlobalContext storageContext)
         {
             _storageContext = storageContext;
         }

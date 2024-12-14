@@ -89,10 +89,10 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         private async Task<Result<Attachment>> GetAttachment(string? publictionId, string? id, int type)
         {
             if (string.IsNullOrEmpty(publictionId) || string.IsNullOrWhiteSpace(publictionId))
-                return Result.Failure<Attachment>("Attachment not found");
+                return Result.Failure<Attachment>("attachment not found");
 
             if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
-                return Result.Failure<Attachment>("Attachment not found");
+                return Result.Failure<Attachment>("attachment not found");
 
             var handlers = new Dictionary<int, Configuration.GetAttachmentDelegate>
             {
@@ -136,7 +136,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             var result = await GetAttachment(publictionId, id, type);
 
             if (result.IsFailure)
-                return Conflict("Attachment not found");
+                return Conflict("attachment not found");
 
             return await GetFile(result.Value.Path);
         }
@@ -168,7 +168,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             var result = await GetAttachment(publictionId, id, type);
 
             if (result.IsFailure)
-                return Conflict("Attachment not found");
+                return Conflict("attachment not found");
 
             return await ReturnFilePart(result.Value.Path);
         }

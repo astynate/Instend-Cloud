@@ -53,7 +53,8 @@ const ImageAttachments = ({attachments = [], isEditable = false, setAttachments 
 
     return (
         <div className={styles.attachments}>
-            <CurrentHandler 
+            <CurrentHandler
+                key={attachments.length} 
                 attachments={attachments} 
                 isEditable={isEditable}
                 setAttachments={setAttachments}

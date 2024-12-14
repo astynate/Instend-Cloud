@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Instend.Repositories.Contexts
 {
-    public class StorageContext : DatabaseContextBase
+    public class GlobalContext : PublicationsContext
     {
         private readonly IFileService _fileService;
 
-        public StorageContext(IFileService fileService) : base()
+        public GlobalContext(IFileService fileService) : base()
         {
             _fileService = fileService;
         }

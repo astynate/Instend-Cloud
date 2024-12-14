@@ -5,20 +5,17 @@ import './main.css';
 let inputRefs;
 
 const Code = (props) => {
-
-    inputRefs = useRef(Array(6).fill(0)
-        .map(() => React.createRef()));
+    inputRefs = useRef(Array(6).fill(0).map(() => React.createRef()));
 
     useEffect(() => {
-
         document.addEventListener('paste', handlePaste);
 
-        return () => { document.removeEventListener('paste', handlePaste); };
-
+        return () => { 
+            document.removeEventListener('paste', handlePaste); 
+        };
     }, []);
 
     return (
-
         <div className='confirmation-code'>
             {Array(6)
                 .fill(0)
@@ -34,9 +31,7 @@ const Code = (props) => {
                 )
             }
         </div>
-    
     );
-
 }
 
 export default Code;

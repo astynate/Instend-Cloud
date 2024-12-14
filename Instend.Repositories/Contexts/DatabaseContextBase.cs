@@ -2,7 +2,7 @@
 
 namespace Instend.Repositories.Contexts
 {
-    public class DatabaseContextBase : DbContext
+    public abstract class DatabaseContextBase : DbContext
     {
         public DatabaseContextBase() => Database.EnsureCreated();
 

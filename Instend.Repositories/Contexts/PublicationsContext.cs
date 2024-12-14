@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Instend.Repositories.Contexts
 {
-    public class PublicationsContext : DatabaseContextBase
+    public abstract class PublicationsContext : MessagesContext
     {
         public DbSet<Publication> Publications { get; set; } = null!;
         public DbSet<PublicationAttachment> PublicationAttachments { get; set; } = null!;

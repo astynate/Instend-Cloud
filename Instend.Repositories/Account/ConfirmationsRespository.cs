@@ -9,7 +9,7 @@ namespace Instend.Repositories.Account
 {
     public class ConfirmationsRespository : IConfirmationsRepository
     {
-        private readonly AccountsContext _context = null!;
+        private readonly GlobalContext _context = null!;
 
         private readonly IValidationService _validationService;
 
@@ -17,7 +17,7 @@ namespace Instend.Repositories.Account
 
         public ConfirmationsRespository
         (
-            AccountsContext context, 
+            GlobalContext context, 
             IValidationService validationService, 
             IEncryptionService encryptionService
         )

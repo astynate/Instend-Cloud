@@ -3,7 +3,6 @@ using CSharpFunctionalExtensions.ValueTasks;
 using Instend.Core;
 using Instend.Core.Dependencies.Repositories.Account;
 using Instend.Core.Dependencies.Services.Internal.Services;
-using Instend.Core.Models.Account;
 using Instend.Repositories.Contexts;
 using Instend.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +11,7 @@ namespace Instend.Repositories.Repositories
 {
     public class AccountsRepository : IAccountsRepository
     {
-        private readonly AccountsContext _context = null!;
+        private readonly GlobalContext _context = null!;
 
         private readonly IEncryptionService _encryptionService;
 
@@ -20,7 +19,7 @@ namespace Instend.Repositories.Repositories
 
         public AccountsRepository
         (
-            AccountsContext context, 
+            GlobalContext context, 
             IEncryptionService encryptionService, 
             IImageService imageService
         )

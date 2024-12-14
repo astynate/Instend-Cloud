@@ -33,7 +33,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
         private readonly IFriendsRepository _friendsRepository;
 
-        private readonly AccountsContext _context;
+        private readonly GlobalContext _context;
 
         public AccountsController
         (
@@ -44,7 +44,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             IEmailService emailService,
             IEncryptionService encryptionService,
             IFriendsRepository friendsRepository,
-            AccountsContext context
+            GlobalContext context
         )
         {
             _confirmationRepository = confirmationsRepository;

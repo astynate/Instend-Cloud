@@ -12,7 +12,7 @@ namespace Instend.Repositories.Storage
     {
         private readonly IPreviewService _previewService = null!;
 
-        private readonly StorageContext _storageContext = null!;
+        private readonly GlobalContext _context = null!;
        
         private readonly Func<CollectionAccount, bool> IsSystemCollection = (CollectionAccount c) => c.Collection != null && c.Collection.Type == Configuration.CollectionTypes.System;
         
@@ -22,15 +22,15 @@ namespace Instend.Repositories.Storage
 
         private readonly Func<CollectionAccount, string, bool> IsNameEquals = (c, name) => c.Collection != null && c.Collection.Name == name;
 
-        public CollectionsRepository(IPreviewService previewService, StorageContext storageContext)
+        public CollectionsRepository(IPreviewService previewService, GlobalContext storageContext)
         {
             _previewService = previewService;
-            _storageContext = storageContext;
+            _context = storageContext;
         }
 
         public async Task<Collection?> GetByIdAsync(Guid id)
         {
-            var collection = await _storageContext.Collections
+            var collection = await _context.Collections
                 .AsNoTracking()
                 .FirstOrDefaultAsync(collection => collection.Id == id);
 
@@ -39,7 +39,7 @@ namespace Instend.Repositories.Storage
 
         public async Task<List<Collection>> GetCollectionsByAccountId(Guid userId)
         {
-            var collections = await _storageContext.CollectionsAccounts
+            var collections = await _context.CollectionsAccounts
                 .AsNoTracking()
                 .Include(x => x.Account)
                 .Where(x => x.Account.Id == userId)
@@ -53,7 +53,7 @@ namespace Instend.Repositories.Storage
 
         public async Task<IEnumerable<Collection>> GetSystemCollections(Guid userId)
         {
-            var systemCollections = await _storageContext.CollectionsAccounts
+            var systemCollections = await _context.CollectionsAccounts
                 .AsNoTracking()
                 .Include(x => x.Collection)
                 .Where(x => IsUserOwner(x, userId) && IsSystemCollection(x))
@@ -65,7 +65,7 @@ namespace Instend.Repositories.Storage
 
         public async Task<Collection?> GetSystemCollection(string name, Guid userId)
         {
-            var systemCollections = await _storageContext.CollectionsAccounts
+            var systemCollections = await _context.CollectionsAccounts
                 .AsNoTracking()
                 .Include(x => x.Collection)
                 .Where(x => IsUserOwner(x, userId) && IsSystemCollection(x) && IsNameEquals(x, name))
@@ -81,7 +81,7 @@ namespace Instend.Repositories.Storage
             var IsCollectionsIdEquals = (Collection collection) => collection.FolderId == folderId;
             var IsTargetCollection = (Collection collection) => IsCollectionsIdEquals(collection) && (userId == Guid.Empty ? IsUserOwner(collection) : true);
 
-            var collections = await _storageContext.Collections
+            var collections = await _context.Collections
                 .AsNoTracking()
                 .Where(folder => IsTargetCollection(folder))
                 .ToArrayAsync();
@@ -96,7 +96,7 @@ namespace Instend.Repositories.Storage
 
             for (int i = 0; i < 5; i++)
             {
-                var folder = await _storageContext.Collections
+                var folder = await _context.Collections
                     .AsNoTracking()
                     .FirstOrDefaultAsync(x => x.Id == current);
 
@@ -125,8 +125,8 @@ namespace Instend.Repositories.Storage
                 .ToList()
                 .Add(owner);
 
-            await _storageContext.Collections.AddAsync(collection.Value);
-            await _storageContext.SaveChangesAsync();
+            await _context.Collections.AddAsync(collection.Value);
+            await _context.SaveChangesAsync();
 
             return Result.Success(collection.Value);
         }
@@ -138,16 +138,16 @@ namespace Instend.Repositories.Storage
             if (folderCreationResult.IsFailure)
                 return Result.Failure<Collection>(folderCreationResult.Error);
 
-            await _storageContext.Collections.AddAsync(folderCreationResult.Value);
-            await _storageContext.SaveChangesAsync();
+            await _context.Collections.AddAsync(folderCreationResult.Value);
+            await _context.SaveChangesAsync();
 
             return Result.Success(folderCreationResult.Value);
         }
 
         public async Task UpdateNameAsync(Guid id, string name)
-            => await _storageContext.Collections.Where(x => x.Id == id).ExecuteUpdateAsync(property => property.SetProperty(x => x.Name, name));
+            => await _context.Collections.Where(x => x.Id == id).ExecuteUpdateAsync(property => property.SetProperty(x => x.Name, name));
 
         public async Task DeleteAsync(Guid id) 
-            => await _storageContext.Collections.Where(x => x.Id == id).ExecuteDeleteAsync();
+            => await _context.Collections.Where(x => x.Id == id).ExecuteDeleteAsync();
     }
 }

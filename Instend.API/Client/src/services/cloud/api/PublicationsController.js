@@ -27,6 +27,32 @@ class PublicationsController {
                 setLoadingState(false);
             });
     }
+    
+    static UpdatePublication = async (id, text, attachments, setLoadingState) => {
+        let form = new FormData();
+        
+        form.append('id', id);
+        form.append('text', text);
+
+        console.log(attachments);
+
+        for (let i = 0; i < attachments.length; i++) {
+            form.append(`attachments[${i}].Id`, attachments[i].id);
+            form.append(`attachments[${i}].Attachment`, attachments[i].file ?? null);
+        }
+
+        setLoadingState(true);
+        
+        await instance
+            .put('api/publications', form)
+            .then(_ => {
+                setLoadingState(false);
+            })
+            .catch(e => {
+                console.error(e);
+                setLoadingState(false);
+            });
+    }
 }
 
 export default PublicationsController;

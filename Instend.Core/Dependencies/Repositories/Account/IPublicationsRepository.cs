@@ -8,6 +8,7 @@ namespace Instend.Core.Dependencies.Repositories.Account
     {
         Task<List<Publication>> GetNewsByAccount(DateTime date, Models.Account.Account account, int count);
         Task<Result<Publication>> AddAsync(PublicationTransferModel publicationTransferModel, Models.Account.Account account);
+        Task<Result<Publication>> UpdateAsync(UpdatePublicationTransferModel publicationTransferModel, Models.Account.Account account);
         Task<bool> DeleteAsync(Guid id, Guid ownerId);
         Task<Publication?> GetByIdAsync(Guid id);
     }

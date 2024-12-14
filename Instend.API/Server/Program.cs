@@ -37,10 +37,7 @@ builder.Services.AddTransient<LoggingMiddleware>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 
-builder.Services.AddDbContext<AccountsContext>();
-builder.Services.AddDbContext<MessagesContext>();
-builder.Services.AddDbContext<PublicationsContext>();
-builder.Services.AddDbContext<StorageContext>();
+builder.Services.AddDbContext<GlobalContext>();
 
 builder.Services.AddScoped<IAccountsRepository, AccountsRepository>();
 builder.Services.AddScoped<ISessionsRepository, SessionsRepository>();

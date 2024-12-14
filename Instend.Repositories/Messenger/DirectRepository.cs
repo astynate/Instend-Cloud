@@ -11,7 +11,7 @@ namespace Instend.Repositories.Messenger
 {
     public class DirectRepository : IDirectRepository
     {
-        private readonly MessagesContext _messagesContext = null!;
+        private readonly GlobalContext _context = null!;
 
         private readonly IMessengerRepository _messengerRepository;
 
@@ -25,13 +25,13 @@ namespace Instend.Repositories.Messenger
 
         public DirectRepository
         (
-            MessagesContext messagesContext,
+            GlobalContext context,
             IAccountsRepository accountsRepository,
             IMessengerRepository messengerRepository
 
         )
         {
-            _messagesContext = messagesContext;
+            _context = context;
             _accountsRepository = accountsRepository;
             _messengerRepository = messengerRepository;
         }
@@ -45,15 +45,15 @@ namespace Instend.Repositories.Messenger
 
             var account = await _accountsRepository.GetByIdAsync(ownerId);
 
-            await _messagesContext.Directs.AddAsync(direct.Value);
-            await _messagesContext.SaveChangesAsync();
+            await _context.Directs.AddAsync(direct.Value);
+            await _context.SaveChangesAsync();
 
             return direct;
         }
 
         private async Task<List<Direct>> GetAsync(Expression<Func<Direct, bool>> function, int numberOfSkipedMessages, int countMessages)
         {
-            var result = await _messagesContext.Directs
+            var result = await _context.Directs
                 .Where(function)
                 .Include(x => x.Messages)
                     .ThenInclude(x => x.Sender)
@@ -115,9 +115,9 @@ namespace Instend.Repositories.Messenger
                 direct = directCreationResult.Value;
             }
 
-            return await _messagesContext.Database.CreateExecutionStrategy().ExecuteAsync(async Task<Result<Direct>> () =>
+            return await _context.Database.CreateExecutionStrategy().ExecuteAsync(async Task<Result<Direct>> () =>
             {
-                using (var transaction = _messagesContext.Database.BeginTransaction())
+                using (var transaction = _context.Database.BeginTransaction())
                 {
                     var message = Message.Create(text, ownerId);
 
@@ -125,7 +125,7 @@ namespace Instend.Repositories.Messenger
                         return Result.Failure<Direct>(message.Error);
 
                     direct.Messages.Append(message.Value);
-                    await _messagesContext.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
                     transaction.Commit();
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Instend.Core.Models.Abstraction;
+using Microsoft.AspNetCore.Http;
 
 namespace Instend.Repositories.Publications
 {
@@ -6,5 +7,18 @@ namespace Instend.Repositories.Publications
     (
         string? text,
         IFormFile[]? attachments
+    );
+
+    public record UpdatePublicationTransferModel
+    (
+        Guid id,
+        string? text,
+        AttachmentTransferModel[]? attachments
+    );
+
+    public record AttachmentTransferModel
+    (
+        Guid id,
+        IFormFile? attachment
     );
 }

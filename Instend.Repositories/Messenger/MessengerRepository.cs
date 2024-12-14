@@ -6,18 +6,16 @@ namespace Instend.Repositories.Messenger
 {
     public class MessengerRepository : IMessengerRepository
     {
-        private readonly MessagesContext _messageContext = null!;
+        private readonly GlobalContext _context = null!;
 
-        private readonly AccountsContext _context = null!;
-
-        public MessengerRepository(AccountsContext context)
+        public MessengerRepository(GlobalContext context)
         {
             _context = context;
         }
 
         public async Task<bool> DeleteMessage(Guid id, Guid accountId)
         {
-            return await _messageContext.Messages
+            return await _context.Messages
                 .AsNoTracking()
                 .Where(x => x.Id == id && x.AccountId == accountId)
                 .ExecuteDeleteAsync() > 0;
@@ -25,7 +23,7 @@ namespace Instend.Repositories.Messenger
 
         public async Task<bool> ViewMessage(Guid messageId, Guid userId)
         {
-            var result = await _messageContext.Messages
+            var result = await _context.Messages
                 .Where(x => x.Id == messageId && x.AccountId != userId)
                 .ExecuteUpdateAsync(x => x.SetProperty(x => x.IsViewed, true));
 

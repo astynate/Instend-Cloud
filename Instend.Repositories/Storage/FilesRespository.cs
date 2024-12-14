@@ -8,7 +8,7 @@ namespace Instend.Repositories.Storage
 {
     public class FilesRespository : IFileRespository
     {
-        private readonly StorageContext _storageContext = null!;
+        private readonly GlobalContext _storageContext = null!;
 
         private readonly IPreviewService _previewService;
 
@@ -16,7 +16,7 @@ namespace Instend.Repositories.Storage
 
         public FilesRespository
         (
-            StorageContext storageContext,
+            GlobalContext storageContext,
             IAccountsRepository accountsRepository, 
             IPreviewService previewService
         )

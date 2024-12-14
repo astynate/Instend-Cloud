@@ -8,9 +8,9 @@ namespace Instend.Repositories.Account
 {
     public class FriendsRepository : IFriendsRepository
     {
-        private readonly AccountsContext _context = null!;
+        private readonly GlobalContext _context = null!;
 
-        public FriendsRepository(AccountsContext context)
+        public FriendsRepository(GlobalContext context)
         {
             _context = context;
         }

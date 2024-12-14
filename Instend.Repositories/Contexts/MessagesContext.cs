@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Instend.Repositories.Contexts
 {
-    public class MessagesContext : DatabaseContextBase
+    public abstract class MessagesContext : AccountsContext
     {
         public DbSet<Direct> Directs { get; set; } = null!;
         public DbSet<Group> Groups { get; set; } = null!;
