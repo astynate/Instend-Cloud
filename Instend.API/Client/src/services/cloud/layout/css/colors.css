@@ -59,7 +59,7 @@
     --main-blue-color: #388eff;
     --main-red-color: rgb(255, 44, 44);
     --main-accent-font-color: white;
-    --main-paragraph-color: #a9a9a9;
+    --main-paragraph-color: #cdcdcd;
     --main-button-background-color: rgb(255, 255, 255);
     --main-filter: invert(100%);
     --main-button-font-color: rgb(0, 0, 0);
@@ -95,9 +95,9 @@
 
     --not-transparent-border-color: rgb(48, 48, 48);
 
-    --item-background-color: #0f0f0f;
-    --item-accent-color: #272727;
-    --item-accent-hover-color: #5d5d5d;
+    --item-background-color: #121314;
+    --item-accent-color: #232627;
+    --item-accent-hover-color: #343537;
 }
 
 .cloud-wrapper {

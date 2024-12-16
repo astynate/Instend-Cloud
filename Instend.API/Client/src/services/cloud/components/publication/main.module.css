@@ -144,6 +144,15 @@
     color: var(--main-font-color);
 }
 
+.reactions {
+    display: flex;
+    flex-wrap: wrap;
+    grid-gap: 5px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--main-border-color);
+}
+
 /* ============================================== */
 
 .image {

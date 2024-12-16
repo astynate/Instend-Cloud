@@ -1,0 +1,34 @@
+.reaction {
+    width: fit-content;
+    border-radius: 30px;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    grid-gap: 5px;
+    user-select: none;
+    cursor: pointer;
+    color: var(--main-font-color);
+    font-size: 16px;
+    font-weight: 600;
+    border: 1px solid var(--main-border-color);
+    transition: 0.15s ease;
+}
+
+.reaction:hover {
+    background: var(--item-accent-color);
+}
+
+.reaction:hover .reactionImage {
+    transform: scale(150%);
+}
+
+.reaction:active .reactionImage {
+    transform: scale(100%);
+}
+
+.reactionImage {
+    height: 22px;
+    width: 22px;
+    object-fit: contain;
+    transition: 0.15s ease;
+}

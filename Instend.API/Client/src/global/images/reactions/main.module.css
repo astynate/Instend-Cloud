@@ -1,0 +1,38 @@
+.reactions {
+    height: 0px;
+    width: auto;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    left: 0;
+    bottom: 42px;
+    background: var(--main-accent-color);
+    border-radius: 30px;
+    position: absolute;
+    opacity: 0;
+    display: flex;
+    /* transform: scale(0%) translateX(-100%); */
+    transition: 0.2s ease;
+}
+
+.reactions[state="open"] {
+    height: 50px;
+    opacity: 1;
+    /* transform: scale(100%) translateX(0); */
+}
+
+.reaction img {
+    height: 40px;
+    width: 40px;
+    padding: 7px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.reaction img:hover {
+    transform: scale(150%);
+}
+
+.reaction img:active {
+    transform: scale(80%);
+}

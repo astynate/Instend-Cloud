@@ -8,8 +8,6 @@ using Instend.Repositories.Publications;
 using Instend.Core.Models.Storage.File;
 using Microsoft.AspNetCore.Http;
 using Instend.Core;
-using Instend.Core.Models.Abstraction;
-using System.ComponentModel.DataAnnotations;
 
 namespace Instend.Repositories.Comments
 {
@@ -81,6 +79,8 @@ namespace Instend.Repositories.Comments
                 throw new Exception("An error occurred while adding the publication.", exception);
             }
 
+            publication.Value.Account = account;
+
             return publication;
         }
 
@@ -90,23 +90,16 @@ namespace Instend.Repositories.Comments
                 .Where(c => c.Id == id)
                 .Include(x => x.Attachments)
                 .Include(x => x.Account)
+                .Include(x => x.Reactions)
+                    .ThenInclude(x => x.Account)
+                .Include(x => x.Reactions)
+                    .ThenInclude(x => x.Reaction)
                 .FirstOrDefaultAsync();
 
             return publication;
         }
 
-        public async Task<bool> DeleteAsync(Guid id, Guid accountId)
-        {
-            var result = await _context.Publications
-                .Where(p => p.Id == id && p.AccountId == accountId)
-                .ExecuteDeleteAsync();
-
-            await _context.SaveChangesAsync();
-
-            return result > 0;
-        }
-
-        public async Task<List<Publication>> GetNewsByAccount(DateTime date, Core.Models.Account.Account account, int count)
+        public async Task<object> GetNewsByAccount(DateTime date, Core.Models.Account.Account account, int count)
         {
             var targetAccounts = account.Following
                 .Concat([account])
@@ -119,12 +112,25 @@ namespace Instend.Repositories.Comments
                 .Include(x => x.Account)
                     .ThenInclude(x => x.Publications)
                 .Include(x => x.Attachments)
+                .Select(p => new
+                {
+                    Publication = p,
+                    GroupedReactions = p.Reactions
+                        .GroupBy(r => r.ReactionId)
+                        .Select(g => new
+                        {
+                            ReactionId = g.Key,
+                            Count = g.Count(),
+                            Reaction = g.FirstOrDefault()
+                        })
+                        .ToList()
+                })
                 .Take(5)
                 .ToListAsync();
 
             foreach (var publication in result)
             {
-                foreach (var attachment in publication.Attachments)
+                foreach (var attachment in publication.Publication.Attachments)
                 {
                     await attachment.SetPreview(_previewService);
                 }
@@ -133,19 +139,19 @@ namespace Instend.Repositories.Comments
             return result;
         }
 
-        public (List<Attachment> add, List<Attachment> remove) GetAttachementAsync(Publication publication, UpdatePublicationTransferModel publicationTransferModel)
+        public (List<(Attachment, IFormFile)> add, List<Attachment> remove) GetAttachementAsync(Publication publication, UpdatePublicationTransferModel publicationTransferModel)
         {
             if (publicationTransferModel.attachments == null)
-                return (new List<Attachment>(), publication.Attachments);
+                return (new List<(Attachment, IFormFile)>(), publication.Attachments);
 
             if (publicationTransferModel.attachments.Length == 0)
-                return (new List<Attachment>(), publication.Attachments);
+                return (new List<(Attachment, IFormFile)>(), publication.Attachments);
 
             var attachmentsToAdd = publicationTransferModel.attachments
                 .Where(x => !publication.Attachments.Any(a => a.Id == x.id) && x.attachment != null)
-                .Select(a => Attachment.Create(a.attachment, publication.AccountId))
-                .Where(a => a.IsSuccess)
-                .Select(a => a.Value)
+                .Select(a => (Attachment.Create(a.attachment, publication.AccountId), a.attachment))
+                .Where(a => a.Item1.IsSuccess)
+                .Select(a => (a.Item1.Value, a.Item2))
                 .ToList();
 
             var attachmentsToDelete = publication.Attachments
@@ -158,7 +164,7 @@ namespace Instend.Repositories.Comments
         public async Task<Result<Publication>> UpdateAsync(UpdatePublicationTransferModel publicationTransferModel, Core.Models.Account.Account account)
         {
             var publication = await _context.Publications
-                .Where(c => c.Id == publicationTransferModel.id)
+                .Where(c => c.Id == publicationTransferModel.id && c.AccountId == account.Id)
                 .Include(x => x.Attachments)
                 .Include(x => x.Account)
                 .FirstOrDefaultAsync();
@@ -170,17 +176,99 @@ namespace Instend.Repositories.Comments
 
             if (attachments.add.Any())
             {
-                _context.Attachments.AddRange(attachments.add);
+                foreach (var attachment in attachments.add)
+                {
+                    _context.Attachments.Add(attachment.Item1);
+                    await _fileService.SaveIFormFile(attachment.Item2, attachment.Item1.Path);
+                }
+
                 await _context.SaveChangesAsync();
             }
 
-            publication.Attachments.AddRange(attachments.add);
+            publication.SetText(publicationTransferModel.text);
+            publication.Attachments.AddRange(attachments.add.Select(x => x.Item1));
 
             _context.RemoveRange(attachments.remove);
 
             await _context.SaveChangesAsync();
 
             return publication;
+        }
+
+        private async Task<PublicationReaction?> HandlerReactionExist(Publication publication, PublicationReaction reaction, Guid reactionId)
+        {
+            if (reaction.Reaction.Id == reactionId)
+            {
+                publication
+                    .DecrementNumberOfReactions();
+
+                _context.PublicationReactions
+                    .Remove(reaction);
+
+                await _context
+                    .SaveChangesAsync();
+
+                return null;
+            }
+
+            reaction.ReactionId = reactionId;
+            await _context.SaveChangesAsync();
+
+            return reaction;
+        }
+
+        public async Task<Result<PublicationReaction?>> ReactAsync(Guid publicationId, Guid accountId, Guid reactionId)
+        {
+            var publication = await GetByIdAsync(publicationId);
+
+            if (publication == null)
+                return Result.Failure<PublicationReaction?>("Publication not found");
+
+            var exsitingReaction = await _context.PublicationReactions
+                .FirstOrDefaultAsync(x => x.PublicationId == publicationId && x.AccountId == accountId);
+
+            if (exsitingReaction != null)
+                return await HandlerReactionExist(publication, exsitingReaction, reactionId);
+
+            var reaction = await _context.Reactions
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == reactionId);
+
+            if (reaction == null)
+                return Result.Failure<PublicationReaction?>("This type of reaction was not found");
+
+            var publicationReaction = new PublicationReaction();
+
+            publicationReaction.Reaction = reaction;
+            publicationReaction.Account = publication.Account;
+
+            _context.Attach(publicationReaction);
+
+            publication.Reactions.Add(publicationReaction);
+            publication.IncrementNumberOfReactions();
+
+            await _context.AddAsync(publicationReaction);
+            await _context.SaveChangesAsync();
+
+            return publicationReaction;
+        }
+
+        public async Task<bool> DeleteAsync(Guid id, Guid accountId)
+        {
+            var result = await _context.Publications
+                .Where(x => x.Id == id && x.AccountId == accountId)
+                .Include(x => x.Attachments)
+                .FirstOrDefaultAsync();
+
+            if (result == null)
+                return false;
+
+            _context.RemoveRange(result.Attachments);
+            _context.Remove(result);
+
+            await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }

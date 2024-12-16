@@ -7,7 +7,6 @@
     user-select: none;
     margin-left: var(--width-padding);
     margin-right: var(--width-padding);
-    /* border-top: 1px solid var(--main-border-color); */
 }
 
 .buttons {
@@ -48,7 +47,7 @@
 }
 
 .statistics span {
-    font-weight: 500;
+    font-weight: 400;
     color: var(--main-paragraph-color);
 }
 
@@ -59,4 +58,8 @@
 
 .statistics span:hover {
     cursor: pointer;
+}
+
+.reactionsWrapper {
+    position: relative;
 }

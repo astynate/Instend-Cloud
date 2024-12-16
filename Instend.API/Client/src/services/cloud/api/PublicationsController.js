@@ -2,7 +2,7 @@ import { instance } from "../../../state/application/Interceptors";
 import NewsState from "../../../state/entities/NewsState";
 
 class PublicationsController {
-    static AddPublication = async (text, attachments, setLoadingState) => {
+    static AddPublication = async (text, attachments, onStart = () => {}, onSuccess = () => {}, onError = () => {}) => {
         let form = new FormData();
         
         form.append('text', text);
@@ -11,20 +11,21 @@ class PublicationsController {
             form.append('attachments', attachment.file);
         }
 
-        setLoadingState(true);
+        onStart();
         
         await instance
             .post('api/publications', form)
             .then(response => {
                 if (response && response.data) {
+                    console.log(response.data);
                     NewsState.addNews([response.data]);
                 }
 
-                setLoadingState(false);
+                onSuccess();
             })
             .catch(e => {
                 console.error(e);
-                setLoadingState(false);
+                onError();
             });
     }
     
@@ -33,8 +34,6 @@ class PublicationsController {
         
         form.append('id', id);
         form.append('text', text);
-
-        console.log(attachments);
 
         for (let i = 0; i < attachments.length; i++) {
             form.append(`attachments[${i}].Id`, attachments[i].id);
@@ -52,6 +51,19 @@ class PublicationsController {
                 console.error(e);
                 setLoadingState(false);
             });
+    }
+
+    static Delete = async (id) => {
+        await instance
+            .delete(`api/publications?id=${id}`)
+            .then(_ => {
+                NewsState.deletePublication(id);
+            });
+    }
+
+    static React = async (publicationId, reactionId) => {
+        await instance
+            .post(`api/publications-activity?publicationId=${publicationId}&reactionId=${reactionId}`);
     }
 }
 

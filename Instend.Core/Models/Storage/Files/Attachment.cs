@@ -11,7 +11,7 @@ namespace Instend.Core.Models.Storage.File
     {
         [Column("account_id")] public Guid AccountId { get; private set; }
         [Column("name")] public string Name { get; private set; } = string.Empty;
-        [Column("path")] public string Path { get; private set; } = string.Empty;
+        [Column("Path")] public string Path { get; private set; } = string.Empty;
         [Column("type")] public string? Type { get; private set; } = string.Empty;
         [Column("size")] public long Size { get; private set; } = 0;
 

@@ -12,7 +12,7 @@ namespace Instend.Core.Models.Storage.File
         [Column("name")] public string Name { get; private set; } = string.Empty;
         [Column("creation_time")] public DateTime CreationTime { get; private set; }
         [Column("last_edit_time")] public DateTime LastEditTime { get; private set; }
-        [Column("path")] public string Path { get; private set; } = string.Empty;
+        [Column("Path")] public string Path { get; private set; } = string.Empty;
         [Column("type")] public string? Type { get; private set; } = null;
         [Column("folder_id")] public Guid FolderId { get; private set; }
         [Column("size")] public double Size { get; private set; } = 0;

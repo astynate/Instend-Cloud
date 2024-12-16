@@ -1,5 +1,6 @@
 ﻿using Instend.Core.Models.Account;
 using Instend.Core.Models.Email;
+using Instend.Core.Models.Public;
 using Microsoft.EntityFrameworkCore;
 
 namespace Instend.Repositories.Contexts
@@ -10,6 +11,7 @@ namespace Instend.Repositories.Contexts
         public DbSet<AccountConfirmation> Confirmations { get; set; } = null!;
         public DbSet<AccountSession> Sessions { get; set; } = null!;
         public DbSet<AccountFollower> Followers { get; set; } = null!;
+        public DbSet<Reaction> Reactions { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

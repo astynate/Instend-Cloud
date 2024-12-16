@@ -20,6 +20,7 @@ namespace Instend.Core.Models.Public
 
         public Account.Account Account { get; set; } = null!;
         public List<Attachment> Attachments { get; set; } = new List<Attachment>();
+        public List<PublicationReaction> Reactions { get; set; } = new List<PublicationReaction>();
 
         public static readonly int MaxLength = 1024;
 
@@ -52,7 +53,7 @@ namespace Instend.Core.Models.Public
         }
 
         public void SetAttachment(List<Attachment> attachment) => Attachments = attachment;
-        public void IncrementLikes() => NumberOfReactions++;
-        public void DecrementLikes() => NumberOfReactions--;
+        public void IncrementNumberOfReactions() => NumberOfReactions++;
+        public void DecrementNumberOfReactions() => NumberOfReactions--;
     }
 }

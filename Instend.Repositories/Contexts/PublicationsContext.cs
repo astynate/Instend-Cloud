@@ -21,9 +21,31 @@ namespace Instend.Repositories.Contexts
                 .UsingEntity<PublicationAttachment>();
 
             modelBuilder
+                .Entity<PublicationReaction>()
+                .HasOne(pr => pr.Reaction)
+                .WithMany();
+
+            modelBuilder
+                .Entity<PublicationReaction>()
+                .HasOne(pr => pr.Publication)
+                .WithMany(p => p.Reactions);
+
+            modelBuilder
+                .Entity<PublicationReaction>()
+                .HasOne(pr => pr.Account)
+                .WithMany();
+
+            modelBuilder
+                .Entity<PublicationReaction>()
+                .HasOne(pr => pr.Reaction)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder
                 .Entity<Core.Models.Account.Account>()
                 .HasMany(x => x.Publications)
-                .WithOne(x => x.Account);
+                .WithOne(x => x.Account)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

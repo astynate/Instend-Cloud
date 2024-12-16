@@ -55,14 +55,6 @@ namespace Instend.Services.External.FileService
             return Result.Success(new byte[0]);
         }
 
-        public async Task SetPreviewToIDatabaseCollection(IEnumerable<IDatabaseStorageRelation> relations)
-        {
-            foreach(var relation in relations)
-            {
-                await relation.SetPreview(this);
-            }
-        }
-
         private async Task<byte[]> GetSongPreview((string type, string path) parameters)
         {
             string? mimeType;

@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef, useState } from 'react';
+import { toJS } from 'mobx';
 import PopUpWindow from '../../../shared/popup-windows/pop-up-window/PopUpWindow';
 import styles from './main.module.css';
 import AccountState from '../../../../../state/entities/AccountState';
@@ -9,7 +10,6 @@ import ImageAttachments from '../../../ui-kit/attachments/ImageAttachments';
 import FilesInputWrapper from '../../wrappers/files-input-wrapper/FilesInputWrapper';
 import ButtonContent from '../../../elements/button-content/ButtonContent';
 import GlobalContext from '../../../../../global/GlobalContext';
-import { toJS } from 'mobx';
 
 const CreatePublicationPopup = observer((props) => {
     const [text, setText] = useState('');
@@ -43,13 +43,9 @@ const CreatePublicationPopup = observer((props) => {
             setAttachments(toJS(props.publication.attachments));
             setText(props.publication.text);
         }
-    }, [props.isOpen]);
 
-    useEffect(() => {
-        if (isLoading === true) {
-            props.close();
-        }
-    }, [isLoading]);
+        setLoadingState(false);
+    }, [props.isOpen]);
 
     return (
         <PopUpWindow open={props.isOpen} title={'New publication'} close={props.close}>
@@ -102,7 +98,17 @@ const CreatePublicationPopup = observer((props) => {
                     </div>
                     <button 
                         className={styles.postButton} 
-                        onClick={async () => props.callback(text, attachments, setLoadingState)}
+                        onClick={async () => {
+                            if (isLoading === false) {
+                                props.callback(
+                                    text, 
+                                    attachments, 
+                                    () => setLoadingState(true),
+                                    () => {setLoadingState(true); props.close()},
+                                    () => setLoadingState(true)
+                                )
+                            }
+                        }}
                     >
                         <ButtonContent 
                             label={'Post'} 

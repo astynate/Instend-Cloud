@@ -26,6 +26,7 @@ class NewsState {
 
     setHasMoreState = (state) => this.isHasMore = state;
     setNews = (newsToSet) => this.news = newsToSet;
+    popPublication = (publication) => this.news = [publication, ...this.news];
     
     addNews = (newsToAdd) => { 
         const ids = this.news.map(element => element.id);
@@ -33,6 +34,11 @@ class NewsState {
 
         this.news = [...this.news, ...newPosts];
     };
+
+    deletePublication = (id) => {
+        this.news = this.news
+            .filter(p => p.publication.id !== id);
+    }
 }
 
 export default new NewsState();

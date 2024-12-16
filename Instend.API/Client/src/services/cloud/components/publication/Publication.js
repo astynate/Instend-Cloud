@@ -9,20 +9,28 @@ import GlobalContext from '../../../../global/GlobalContext';
 import CreatePublicationPopup from '../../features/pop-up-windows/create-publication-popup/CreatePublicationPopup';
 import AccountState from '../../../../state/entities/AccountState';
 import PublicationsController from '../../api/PublicationsController';
+import Reaction from '../../ui-kit/reactions/reaction/Reaction';
 
 const Publication = ({
-        publication, 
+        publicationObject, 
         isControlHidden = false,
         isHasPaddings = false,
         isAttachmentsHidden = false
     }) => {
 
     const [images, setImages] = useState([]);
+    const [reaction, setReaction] = useState();
     const [isEditingWindowOpen, setEditingWindowState] = useState(false);
+
+    const {publication, groupedReactions} = publicationObject;
 
     const UserOwnerControl = [
         {title: "Edit", callback: () => setEditingWindowState(true)},
-        {title: "Delete", isDangerousOperation: true}
+        {title: "Delete", isDangerousOperation: true, callback: async () => {
+            if (publication && publication.id) {
+                await PublicationsController.Delete(publication.id);
+            }
+        }}
     ];
 
     const UserViewerControl = [
@@ -44,8 +52,21 @@ const Publication = ({
         const attachedImages = publication.attachments
             .filter(x => GlobalContext.supportedImageTypes.includes(x.type.toLowerCase()));
 
-        setImages(attachedImages);
+        if (attachedImages && attachedImages.length && attachedImages.length > 0) {
+            setImages(attachedImages);
+        }
     }, []);
+
+    useEffect(() => {
+        if (isPublicationValid() === false) 
+            return;
+
+        if (!!reaction === false) 
+            return;
+
+        PublicationsController.React(publication.id, reaction);
+        setReaction(null);
+    }, [reaction]);
 
     if (isPublicationValid() === false) {
         return null;
@@ -85,11 +106,23 @@ const Publication = ({
                             />
                         </div>}
                 </div>
+                {groupedReactions.length > 0 && <div className={styles.reactions}>
+                    {groupedReactions.map(r => {
+                        return (
+                            <Reaction 
+                                key={r.reactionId}
+                                reactionId={r.reactionId}
+                                numberOf={r.count} 
+                            />     
+                        )
+                    })}
+                </div>}
                 {isControlHidden === false && 
                     <PublicationControlPanel 
                         numberOfReactions={publication.numberOfReactions}
                         numberOfComments={publication.numberOfComments}
                         numberOfViews={publication.numberOfViews}
+                        setReaction={setReaction}
                     />
                 }
             </div>

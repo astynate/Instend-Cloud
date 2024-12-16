@@ -3,13 +3,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Instend.Core.Models.Public
 {
-    [Table("publictions_reactions")] 
-    public class PublicationReaction : DatabaseModel 
+    [Table("publications_reactions")]
+    public class PublicationReaction : DatabaseModel
     {
-        [Column("group_id")]
+        [Column("publication_id")]
         public Guid PublicationId { get; private set; }
 
         [Column("reaction_id")]
-        public Guid ReactionId { get; private set; }
+        public Guid ReactionId { get; set; }
+
+        [Column("account_id")]
+        public Guid AccountId { get; private set; }
+
+        public Reaction Reaction { get; set; } = null!;
+        public Publication Publication { get; set; } = null!;
+        public Account.Account Account { get; set; } = null!;
     }
 }

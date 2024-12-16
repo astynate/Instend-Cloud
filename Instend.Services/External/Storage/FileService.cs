@@ -17,7 +17,7 @@ namespace Instend.Services.External.FileService
             try
             {
                 if (string.IsNullOrEmpty(path) || string.IsNullOrWhiteSpace(path))
-                    return Result.Failure<byte[]>("Invalid path");
+                    return Result.Failure<byte[]>("Invalid Path");
 
                 if (System.IO.File.Exists(path) == false)
                     return Result.Failure<byte[]>("File not found");

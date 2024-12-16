@@ -5,6 +5,5 @@ namespace Instend.Core.Models.Abstraction
     public interface IDatabaseStorageRelation
     {
         public void OnDelete(IFileService fileService);
-        public Task SetPreview(IPreviewService previewService);
     }
 }

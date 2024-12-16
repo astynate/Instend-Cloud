@@ -7,7 +7,7 @@ import NewsState from '../../../../../state/entities/NewsState';
 
 const PublicationList = ({publications = [], fetchRequest, isHasMore}) => {
     return (
-        <PublicationsWrapper>
+        <PublicationsWrapper key={publications.length}>
             <div className={styles.publications}>
                 {publications
                     .sort((a, b) => NewsState.sortByDate(a, b))
@@ -15,15 +15,16 @@ const PublicationList = ({publications = [], fetchRequest, isHasMore}) => {
                         return (
                             <Publication
                                 key={index}
-                                publication={publication}
+                                publicationObject={publication}
                             />
                         );
                     })}
             </div>
-            <ScrollElementWithDotsAndFetch 
-                fetchRequest={fetchRequest}
-                isHasMore={isHasMore}
-            />
+            {isHasMore &&
+                <ScrollElementWithDotsAndFetch 
+                    fetchRequest={fetchRequest}
+                    isHasMore={isHasMore}
+                />}
         </PublicationsWrapper>
     );
 };

@@ -58,7 +58,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Comments
             if (publicationResult.IsFailure)
                 return Conflict(publicationResult.Error);
 
-            return Ok(publicationResult.Value);
+            return Ok(new {publication = publicationResult.Value});
         }
 
         [HttpPut]
@@ -87,6 +87,31 @@ namespace Instend_Version_2._0._0.Server.Controllers.Comments
                 return Conflict(publicationResult.Error);
 
             return Ok(_serializaionHelper.SerializeWithCamelCase(publicationResult.Value));
+        }
+
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var accountId = _requestHandler
+                .GetUserId(Request.Headers["Authorization"]);
+
+            if (accountId.IsFailure)
+                return BadRequest(accountId.Error);
+
+            var account = await _accountsRepository
+                .GetByIdAsync(Guid.Parse(accountId.Value));
+
+            if (account == null)
+                return Conflict("Account not found");
+
+            var publicationResult = await _publicationsRepository
+                .DeleteAsync(id, account.Id);
+
+            if (publicationResult == false)
+                return Conflict("Publication not found.");
+
+            return Ok();
         }
     }
 }
