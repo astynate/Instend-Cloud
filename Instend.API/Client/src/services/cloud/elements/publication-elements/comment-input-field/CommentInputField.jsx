@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import styles from './main.module.css';
 import MultipleInput from '../../../ui-kit/fields/multiple-input/MultipleInput';
 import PublicationControlPanel from '../publication-control-panel/PublicationControlPanel';
+import PublicationsController from '../../../api/PublicationsController';
 
-const CommentInputField = ({}) => {
+const CommentInputField = ({publication = {}}) => {
     const [text, setText] = useState('');
 
     return (
         <div className={styles.inputWrapper}>
-            {/* <hr /> */}
             <PublicationControlPanel />
             <hr />
             <div className={styles.block}>
@@ -17,7 +17,13 @@ const CommentInputField = ({}) => {
                     setValue={setText}
                     placeholder="Input you comment text"
                 />
-                <button className={styles.send}>Send</button>
+                <button 
+                    className={styles.send}
+                    onClick={async () => {
+                        await PublicationsController.Comment(publication.id, text);
+                        setText('');
+                    }}
+                >Send</button>
             </div>
         </div>
     );

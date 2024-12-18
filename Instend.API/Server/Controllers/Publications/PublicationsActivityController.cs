@@ -53,5 +53,34 @@ namespace Instend_Version_2._0._0.Server.Controllers.Comments
 
             return Ok(_serializaionHelper.SerializeWithCamelCase(reaction.Value));
         }
+
+        [HttpPost]
+        [Route("/api/publications-activity/comments")]
+        [Authorize]
+        public async Task<IActionResult> Comment([FromForm] string text, [FromForm] Guid publicationId)
+        {
+            if (string.IsNullOrEmpty(text) || text.Length > 1024)
+                return BadRequest("Text of your publcation must not be empthy and contains up to 1024 symbols.");
+
+            var accountId = _requestHandler
+                .GetUserId(Request.Headers["Authorization"]);
+
+            if (accountId.IsFailure)
+                return BadRequest(accountId.Error);
+
+            var account = await _accountsRepository
+                .GetByIdAsync(Guid.Parse(accountId.Value));
+
+            if (account == null)
+                return Conflict("Account not found");
+
+            var publicationResult = await _publicationsRepository
+                .CommentAsync(text, publicationId, account);
+
+            if (publicationResult.IsFailure)
+                return Conflict(publicationResult.Error);
+
+            return Ok(publicationResult.Value);
+        }
     }
 }

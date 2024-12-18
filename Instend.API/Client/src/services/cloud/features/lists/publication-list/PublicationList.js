@@ -15,7 +15,7 @@ const PublicationList = ({publications = [], fetchRequest, isHasMore}) => {
                         return (
                             <Publication
                                 key={index}
-                                publicationObject={publication}
+                                publication={publication}
                             />
                         );
                     })}

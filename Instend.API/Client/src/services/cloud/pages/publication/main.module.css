@@ -6,7 +6,7 @@
     align-items: center;
     transform: translateX(-50%);
     width: var(--main-content-width);
-    border-bottom: 1px solid var(--main-border-color);
+    border-bottom: 1px solid var(--not-transparent-border-color);
     position: fixed;
     margin-left: auto;
 }
@@ -20,6 +20,9 @@
 
 .wrapper {
     overflow: hidden;
+    margin-top: 20px;
+    border-top: 1px solid var(--not-transparent-border-color);
+    border-radius: 26px;
 }
 
 .inputWrapper {
@@ -38,11 +41,30 @@
     padding: 10px;
     padding-left: 15px;
     padding-right: 15px;
-    border: 1px solid var(--main-border-color);
-    background: var(--main-accent-color);
+    border: 1px solid var(--not-transparent-border-color);
+    background: var(--item-background-color);
 }
 
 .content {
     overflow-y: scroll;
     overflow-x: hidden;
+}
+
+.commentsHeader {
+    padding: 12px 15px;
+    display: flex;
+    user-select: none;
+    justify-content: space-between;
+}
+
+.title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--main-font-color);
+}
+
+.button {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--main-blue-color);
 }

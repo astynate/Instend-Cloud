@@ -33,6 +33,18 @@ namespace Instend_Version_2._0._0.Server.Controllers.Comments
             _serializaionHelper = serializaionHelper;
         }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Get(Guid id)
+        {
+            var result = await _publicationsRepository.GetByIdAsync(id);
+
+            if (result != null)
+                return Ok(_serializaionHelper.SerializeWithCamelCase(result));
+
+            return Conflict("Publication not found");
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Create([FromForm] PublicationTransferModel publication)
@@ -58,7 +70,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Comments
             if (publicationResult.IsFailure)
                 return Conflict(publicationResult.Error);
 
-            return Ok(new {publication = publicationResult.Value});
+            return Ok(publicationResult.Value);
         }
 
         [HttpPut]

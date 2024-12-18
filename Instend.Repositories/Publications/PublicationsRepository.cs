@@ -8,6 +8,7 @@ using Instend.Repositories.Publications;
 using Instend.Core.Models.Storage.File;
 using Microsoft.AspNetCore.Http;
 using Instend.Core;
+using Instend.Core.TransferModels.Publication;
 
 namespace Instend.Repositories.Comments
 {
@@ -84,57 +85,56 @@ namespace Instend.Repositories.Comments
             return publication;
         }
 
-        public async Task<Publication?> GetByIdAsync(Guid id)
+        private async Task<List<Publication>> GetNewsByExpressionAsync(System.Linq.Expressions.Expression<Func<Publication, bool>> expression, Guid accountId, int take)
         {
-            var publication = await _context.Publications
-                .Where(c => c.Id == id)
-                .Include(x => x.Attachments)
+            var result = await _context.Publications
+                .OrderByDescending(x => x.Date)
+                .Where(expression)
                 .Include(x => x.Account)
-                .Include(x => x.Reactions)
-                    .ThenInclude(x => x.Account)
-                .Include(x => x.Reactions)
-                    .ThenInclude(x => x.Reaction)
-                .FirstOrDefaultAsync();
+                    .ThenInclude(x => x.Publications)
+                .Include(x => x.Attachments)
+                .Select(p => Publication.ExtendPublication(p, p.Reactions
+                    .GroupBy(r => r.ReactionId)
+                    .Select(g => new GroupedReactions(g.Key, g.Count(), g.FirstOrDefault(), g.FirstOrDefault(r => r.AccountId == accountId)))
+                    .ToList(),
+                    p.Comments.Count()))
+                .Take(take)
+                .ToListAsync();
 
-            return publication;
+            foreach (var publication in result)
+            {
+                foreach (var attachment in publication.Attachments)
+                {
+                    await attachment.SetPreview(_previewService);
+                }
+            }
+
+            return result;
         }
 
-        public async Task<object> GetNewsByAccount(DateTime date, Core.Models.Account.Account account, int count)
+        public async Task<Publication?> GetByIdAsync(Guid id)
+        {
+            var result = await GetNewsByExpressionAsync((p) => p.Id == id, id, 1);
+
+            if (result.Count == 1)
+                return result[0];
+
+            return null;
+        }
+
+        public async Task<List<Publication>> GetNewsByAccount(DateTime date, Core.Models.Account.Account account, int count)
         {
             var targetAccounts = account.Following
                 .Concat([account])
                 .Select(x => x.Id)
                 .ToArray();
 
-            var result = await _context.Publications
-                .OrderByDescending(x => x.Date)
-                .Where(x => targetAccounts.Contains(x.AccountId) && x.Date < date)
-                .Include(x => x.Account)
-                    .ThenInclude(x => x.Publications)
-                .Include(x => x.Attachments)
-                .Select(p => new
-                {
-                    Publication = p,
-                    GroupedReactions = p.Reactions
-                        .GroupBy(r => r.ReactionId)
-                        .Select(g => new
-                        {
-                            ReactionId = g.Key,
-                            Count = g.Count(),
-                            Reaction = g.FirstOrDefault()
-                        })
-                        .ToList()
-                })
-                .Take(5)
-                .ToListAsync();
-
-            foreach (var publication in result)
-            {
-                foreach (var attachment in publication.Publication.Attachments)
-                {
-                    await attachment.SetPreview(_previewService);
-                }
-            }
+            var result = await GetNewsByExpressionAsync
+            (
+                x => targetAccounts.Contains(x.AccountId) && x.Date < date, 
+                account.Id, 
+                5
+            );
 
             return result;
         }
@@ -172,23 +172,27 @@ namespace Instend.Repositories.Comments
             if (publication == null) 
                 return Result.Failure<Publication>("Publication was not found.");
 
-            var attachments = GetAttachementAsync(publication, publicationTransferModel);
+            publication.SetText(publicationTransferModel.text);
 
-            if (attachments.add.Any())
+            if (publication.PublicationId == null)
             {
-                foreach (var attachment in attachments.add)
+                var attachments = GetAttachementAsync(publication, publicationTransferModel);
+
+                if (attachments.add.Any())
                 {
-                    _context.Attachments.Add(attachment.Item1);
-                    await _fileService.SaveIFormFile(attachment.Item2, attachment.Item1.Path);
+                    foreach (var attachment in attachments.add)
+                    {
+                        _context.Attachments.Add(attachment.Item1);
+                        await _fileService.SaveIFormFile(attachment.Item2, attachment.Item1.Path);
+                    }
+
+                    await _context.SaveChangesAsync();
                 }
 
-                await _context.SaveChangesAsync();
+                publication.Attachments.AddRange(attachments.add.Select(x => x.Item1));
+
+                _context.RemoveRange(attachments.remove);
             }
-
-            publication.SetText(publicationTransferModel.text);
-            publication.Attachments.AddRange(attachments.add.Select(x => x.Item1));
-
-            _context.RemoveRange(attachments.remove);
 
             await _context.SaveChangesAsync();
 
@@ -197,7 +201,7 @@ namespace Instend.Repositories.Comments
 
         private async Task<PublicationReaction?> HandlerReactionExist(Publication publication, PublicationReaction reaction, Guid reactionId)
         {
-            if (reaction.Reaction.Id == reactionId)
+            if (reaction.ReactionId == reactionId)
             {
                 publication
                     .DecrementNumberOfReactions();
@@ -269,6 +273,21 @@ namespace Instend.Repositories.Comments
             await _context.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<Result<Publication>> CommentAsync(string text, Guid publicationId, Core.Models.Account.Account account)
+        {
+            var comment = Publication.Create(text, account.Id, publicationId);
+
+            if (comment.IsFailure)
+                return comment;
+
+            await _context.AddAsync(comment.Value);
+            await _context.SaveChangesAsync();
+
+            comment.Value.Account = account;
+
+            return comment;
         }
     }
 }

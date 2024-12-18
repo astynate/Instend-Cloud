@@ -9,7 +9,12 @@ const UnitedButton = ({buttons}) => {
           {buttons.map((button, index) => {
             return (
               <React.Fragment key={index}>             
-                <div className={styles.button}>
+                <div 
+                  className={styles.button}
+                  onMouseOver={button.onMouseOver ? button.onMouseOver : () => {}}
+                  onMouseLeave={button.onMouseLeave ? button.onMouseLeave : () => {}}
+                  onClick={button.callback ? button.callback : () => {}}
+                >
                   {button.image && button.image}
                   {button.label && button.label}
                 </div>

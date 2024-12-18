@@ -10,9 +10,10 @@ import CreatePublicationPopup from '../../features/pop-up-windows/create-publica
 import AccountState from '../../../../state/entities/AccountState';
 import PublicationsController from '../../api/PublicationsController';
 import Reaction from '../../ui-kit/reactions/reaction/Reaction';
+import { observer } from 'mobx-react-lite';
 
-const Publication = ({
-        publicationObject, 
+const Publication = observer(({
+        publication, 
         isControlHidden = false,
         isHasPaddings = false,
         isAttachmentsHidden = false
@@ -21,8 +22,6 @@ const Publication = ({
     const [images, setImages] = useState([]);
     const [reaction, setReaction] = useState();
     const [isEditingWindowOpen, setEditingWindowState] = useState(false);
-
-    const {publication, groupedReactions} = publicationObject;
 
     const UserOwnerControl = [
         {title: "Edit", callback: () => setEditingWindowState(true)},
@@ -52,10 +51,11 @@ const Publication = ({
         const attachedImages = publication.attachments
             .filter(x => GlobalContext.supportedImageTypes.includes(x.type.toLowerCase()));
 
-        if (attachedImages && attachedImages.length && attachedImages.length > 0) {
-            setImages(attachedImages);
-        }
-    }, []);
+        const isHasImages = attachedImages && attachedImages.length;
+        const IsImagesCountZero = attachedImages.length === 0;
+
+        setImages(isHasImages && !IsImagesCountZero ? attachedImages : []);
+    }, [publication.attachments]);
 
     useEffect(() => {
         if (isPublicationValid() === false) 
@@ -78,8 +78,8 @@ const Publication = ({
                 isOpen={isEditingWindowOpen}
                 close={() => setEditingWindowState(false)}
                 publication={publication}
-                callback={async (text, attachments, setLoadingState) => 
-                    PublicationsController.UpdatePublication(publication.id, text, attachments, setLoadingState)}
+                callback={async (text, attachments, onStart, onSuccess, onError) => 
+                    PublicationsController.UpdatePublication(publication.id, text, attachments, onStart, onSuccess, onError)}
             />
             <div className={styles.publication} paddingstate={isHasPaddings ? 'visible': 'hidden'}>
                 <div className={styles.header}>
@@ -106,19 +106,22 @@ const Publication = ({
                             />
                         </div>}
                 </div>
-                {groupedReactions.length > 0 && <div className={styles.reactions}>
-                    {groupedReactions.map(r => {
+                {publication.groupedReactions.length > 0 && <div className={styles.reactions}>
+                    {publication.groupedReactions.map(r => {
                         return (
                             <Reaction 
                                 key={r.reactionId}
                                 reactionId={r.reactionId}
                                 numberOf={r.count} 
-                            />     
+                                callback={() => PublicationsController.React(publication.id, r.reactionId)}
+                            />
                         )
                     })}
                 </div>}
                 {isControlHidden === false && 
                     <PublicationControlPanel 
+                        publicationId={publication.id}
+                        reaction={publication.groupedReactions.find(x => x.targetAccountReaction)}
                         numberOfReactions={publication.numberOfReactions}
                         numberOfComments={publication.numberOfComments}
                         numberOfViews={publication.numberOfViews}
@@ -128,6 +131,6 @@ const Publication = ({
             </div>
         </>
     );
-};
+});
 
 export default Publication;

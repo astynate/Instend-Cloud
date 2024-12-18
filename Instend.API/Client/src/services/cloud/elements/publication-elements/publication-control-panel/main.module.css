@@ -60,6 +60,8 @@
     cursor: pointer;
 }
 
-.reactionsWrapper {
+.reactionsControlWrapper {
+    width: fit-content;
     position: relative;
+    display: flex;
 }

@@ -2,6 +2,18 @@ import { instance } from "../../../state/application/Interceptors";
 import NewsState from "../../../state/entities/NewsState";
 
 class PublicationsController {
+    static Get = async (id) => {
+        NewsState.setPublication(undefined);
+
+        await instance
+            .get(`api/publications?id=${id}`)
+            .then(response => {
+                if (response && response.data) {
+                    NewsState.setPublication(response.data);
+                }
+            });
+    }
+
     static AddPublication = async (text, attachments, onStart = () => {}, onSuccess = () => {}, onError = () => {}) => {
         let form = new FormData();
         
@@ -29,7 +41,7 @@ class PublicationsController {
             });
     }
     
-    static UpdatePublication = async (id, text, attachments, setLoadingState) => {
+    static UpdatePublication = async (id, text, attachments, onStart, onSuccess, onError) => {
         let form = new FormData();
         
         form.append('id', id);
@@ -40,16 +52,16 @@ class PublicationsController {
             form.append(`attachments[${i}].Attachment`, attachments[i].file ?? null);
         }
 
-        setLoadingState(true);
+        onStart();
         
         await instance
             .put('api/publications', form)
             .then(_ => {
-                setLoadingState(false);
+                onSuccess();
             })
             .catch(e => {
                 console.error(e);
-                setLoadingState(false);
+                onError();
             });
     }
 
@@ -63,7 +75,32 @@ class PublicationsController {
 
     static React = async (publicationId, reactionId) => {
         await instance
-            .post(`api/publications-activity?publicationId=${publicationId}&reactionId=${reactionId}`);
+            .post(`api/publications-activity?publicationId=${publicationId}&reactionId=${reactionId}`)
+            .then(_ => {
+                NewsState.setTargetAccountReaction(publicationId, reactionId);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
+    static Comment = async (publicationId, text) => {
+        if (!!text === false) {
+            return;
+        }
+
+        const form = new FormData();
+
+        form.append('publicationId', publicationId);
+        form.append('text', text);
+
+        await instance
+            .post('api/publications-activity/comments', form)
+            .then(response => {
+                if (response && response.data) {
+                    NewsState.addPublicationComment(response.data);
+                }
+            });
     }
 }
 

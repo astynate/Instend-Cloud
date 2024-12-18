@@ -16,7 +16,7 @@ const PrivateRoutes = [
     },
     {
         index: true,
-        path: '/publication',
+        path: '/publication/:id?',
         element: <PublicationPage />
     },
     {

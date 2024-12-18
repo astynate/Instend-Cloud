@@ -6,7 +6,6 @@
     flex-direction: column;
     border: 1px solid var(--not-transparent-border-color);
     border-top: 0;
-    margin-bottom: 50px;
     position: relative;
     border-radius: 25px;
     background: var(--item-background-color);

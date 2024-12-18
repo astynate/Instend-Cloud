@@ -26,6 +26,11 @@ namespace Instend.Repositories.Contexts
                 .WithMany();
 
             modelBuilder
+                .Entity<Publication>()
+                .HasMany(pr => pr.Comments)
+                .WithOne();
+
+            modelBuilder
                 .Entity<PublicationReaction>()
                 .HasOne(pr => pr.Publication)
                 .WithMany(p => p.Reactions);

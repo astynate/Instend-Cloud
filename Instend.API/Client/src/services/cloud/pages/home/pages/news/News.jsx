@@ -21,6 +21,11 @@ const News = observer(() => {
                 fetchRequest={() => NewsController.SetNewsRequest(getLastNewsDate())} 
                 isHasMore={NewsState.isHasMore}
             />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
         </MainContentWrapper>
     );
 });

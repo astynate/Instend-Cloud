@@ -6,8 +6,9 @@ namespace Instend.Core.Dependencies.Repositories.Account
 {
     public interface IPublicationsRepository
     {
-        Task<object> GetNewsByAccount(DateTime date, Models.Account.Account account, int count);
+        Task<List<Publication>> GetNewsByAccount(DateTime date, Models.Account.Account account, int count);
         Task<Result<Publication>> AddAsync(PublicationTransferModel publicationTransferModel, Models.Account.Account account);
+        Task<Result<Publication>> CommentAsync(string text, Guid publicationId, Models.Account.Account account);
         Task<Result<Publication>> UpdateAsync(UpdatePublicationTransferModel publicationTransferModel, Models.Account.Account account);
         Task<bool> DeleteAsync(Guid id, Guid ownerId);
         Task<Publication?> GetByIdAsync(Guid id);
