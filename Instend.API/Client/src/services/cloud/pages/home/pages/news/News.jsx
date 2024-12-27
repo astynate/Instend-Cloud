@@ -5,20 +5,11 @@ import NewsController from '../../../../../../api/NewsController';
 import NewsState from '../../../../../../state/entities/NewsState';
 
 const News = observer(() => {
-    const getLastNewsDate = () => {
-        if (NewsState.news.length === 0) {
-            return "";
-        }
-    
-        const lastIndex = NewsState.news.length - 1;
-        return NewsState.news[lastIndex].date;
-    }
-
     return (
         <MainContentWrapper>
             <PublicationList 
                 publications={NewsState.news} 
-                fetchRequest={() => NewsController.SetNewsRequest(getLastNewsDate())} 
+                fetchRequest={NewsController.SetNewsRequest} 
                 isHasMore={NewsState.isHasMore}
             />
             <br />

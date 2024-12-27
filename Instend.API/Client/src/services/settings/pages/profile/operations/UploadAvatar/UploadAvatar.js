@@ -1,16 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import styles from './styles/main.module.css';
 import PopUpWindow from '../../../../shared/pop-up-window/PopUpWindow';
-import { ProfileSettingsContext } from '../../Profile';
 import { useTranslation } from "react-i18next";
 
-const UploadAvatar = (props) => {
-    const [context, setContext] = useContext(ProfileSettingsContext);
+const UploadAvatar = ({Update, setNextOperation, isOpen}) => {
     const [isFileEnter, setFileEnterState] = useState(false);
     const { t } = useTranslation();
 
     useEffect(() => {
-        props.Update(null, setContext);
+        Update(null);
     }, []);
 
     const onDragOver = (event) => {
@@ -22,20 +20,23 @@ const UploadAvatar = (props) => {
         event.preventDefault();
         setFileEnterState(false);
     }
+    
     const onDrag = (event) => {
         event.preventDefault();
-        props.Update([...event.dataTransfer.files][0], setContext);
-        props.setNextOperation(true)
+        
+        Update([...event.dataTransfer.files][0]);
+        setNextOperation(true)
     };
 
     const setFile = (event) => {
         event.preventDefault();
+       
         props.Update(event.target.files[0], setContext);
-        props.setNextOperation(true)
+        props.setNextOperation(true);
     };
 
     return (
-        <PopUpWindow isOpen={props.isOpen} setOpenState={props.setOpenState}>
+        <PopUpWindow isOpen={isOpen} setOpenState={props.setOpenState}>
             <div 
                 className={styles.wrapper} 
                 id={isFileEnter === true ? 'file' : ''} 

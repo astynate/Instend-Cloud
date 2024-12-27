@@ -8,101 +8,64 @@ import Profile from '../pages/profile/Profile';
 import Interface from '../pages/interface/Interface';
 import Language from '../pages/language/Language';
 import Security from '../pages/security/Security';
-import MiniProfile from '../widgets/mini-profile/MiniProfile';
 import Button from '../shared/button/Button';
 import Header from '../widgets/header/Header';
+import account from './images/account.png';
+import language from './images/language.png';
+import theme from './images/theme.png';
 
 const Settings = observer((props) => {
-
     let location = useLocation();
-
     const [currentSetting, setCurrentSetting] = useState('Settings');
-    const [currentRoute, setCurrentRoute] = useState('/');
     const [cancel, setCancelState] = useState(false);
     const [isSaving, setSavingState] = useState(false);
     const [isOpen, setOpenState] = useState(location.pathname != '/settings');
     const { t } = useTranslation();
     
     useEffect(() => {
-
         setOpenState(location.pathname != '/settings');
-
     }, [location]);
 
     useEffect(() => {
-
         if (props.setPanelState) {
             props.setPanelState(true);
         }
-
     }, [props.setPanelState]);
 
     return (
         <div className={styles.wrapper}>
-
-            {isOpen === false || props.isMobile === false ? 
-
-            <div className={styles.settings} id={props.isMobile ? "mobile" : "desktop"}>
-                <MiniProfile />
-                <div className={styles.line}></div>
-                <div className={styles.buttons}>
-                    <Button 
-                        title={t('cloud.settings.profile.title')}
-                        name={t('cloud.settings.profile.name')}
-                        path='/settings/profile' 
-                        setCurrentSetting={setCurrentSetting} 
-                        setCurrentRoute={setCurrentRoute} 
-                    />
-                    <Button 
-                        title={t('cloud.settings.interface.title')}
-                        name={t('cloud.settings.interface.name')}
-                        path='/settings/interface' 
-                        setCurrentSetting={setCurrentSetting} 
-                        setCurrentRoute={setCurrentRoute} 
-                    />
-                    <Button 
-                        title={t('cloud.settings.language.title')}
-                        name={t('cloud.settings.language.name')}
-                        path='/settings/language' 
-                        setCurrentSetting={setCurrentSetting}  
-                        setCurrentRoute={setCurrentRoute} 
-                    />
-                    {/* <Button 
-                        title={t('cloud.settings.notifications.title')}
-                        name={t('cloud.settings.notifications.name')}
-                        path='/settings/notifications' 
-                        setCurrentSetting={setCurrentSetting}
-                        setCurrentRoute={setCurrentRoute}
-                    /> */}
-                </div>
-                <div className={styles.line}></div>
-                {/* <div className={styles.line}></div>
-                <div className={styles.buttons}>
-                    <Button 
-                        title={t('cloud.settings.password_recovery.title')}
-                        name={t('cloud.settings.password_recovery.name')}
-                        path='/settings/password-recovery' 
-                        setCurrentSetting={setCurrentSetting}
-                        setCurrentRoute={setCurrentRoute}
-                    />
-                    <Button 
-                        title={t('cloud.settings.blocked_users.title')}
-                        name={t('cloud.settings.blocked_users.name')}
-                        path='/settings/blocked-users' 
-                        setCurrentSetting={setCurrentSetting}
-                        setCurrentRoute={setCurrentRoute}
-                    />
-                    <Button 
-                        title={t('cloud.settings.account_privacy.title')}
-                        name={t('cloud.settings.account_privacy.name')}
-                        path='/settings/account-privacy' 
-                        setCurrentSetting={setCurrentSetting} 
-                        setCurrentRoute={setCurrentRoute}
-                    />
-                </div>*/}
-            </div> : null} 
-
-            {isOpen || props.isMobile === false ?
+            {isOpen === false || props.isMobile === false &&
+                <div className={styles.settings} id={props.isMobile ? "mobile" : "desktop"}>
+                    <h1>Settings</h1>
+                    <h4>Account & Privacy</h4>
+                    <div className={styles.buttons}>
+                        <Button 
+                            title={t('cloud.settings.profile.title')}
+                            name={t('cloud.settings.profile.name')}
+                            path='/settings/profile' 
+                            image={account}
+                            setCurrentSetting={setCurrentSetting} 
+                        />
+                    </div>
+                    <h4>Application</h4>
+                    <div className={styles.buttons}>
+                        <Button 
+                            title={t('cloud.settings.interface.title')}
+                            name={t('cloud.settings.interface.name')}
+                            path='/settings/interface' 
+                            image={theme}
+                            setCurrentSetting={setCurrentSetting}
+                        />
+                        <Button 
+                            title={t('cloud.settings.language.title')}
+                            name={t('cloud.settings.language.name')}
+                            path='/settings/language' 
+                            image={language}
+                            setCurrentSetting={setCurrentSetting}
+                        />
+                    </div>
+                </div>} 
+            {(isOpen || props.isMobile === false) &&
                 <div className={styles.content} id={props.isMobile ? "mobile" : "desktop"}>
                 <Header 
                     title={currentSetting} 
@@ -115,54 +78,46 @@ const Settings = observer((props) => {
                     <Routes>
                         <Route
                             path='profile' 
-                            element=
-                            {
+                            element={
                                 <Profile 
                                     cancel={cancel}
                                     setCancelState={setCancelState} 
                                     isSaving={isSaving}
                                     setSavingState={setSavingState}
-                                />
-                            } 
+                                />} 
                         />
                         <Route 
                             path='interface' 
-                            element=
-                            {
+                            element={
                                 <Interface 
                                     cancel={cancel} 
                                     setCancelState={setCancelState}
                                     isSaving={isSaving}
                                     setSavingState={setSavingState}
-                                />
-                            } 
+                                />} 
                         />
                         <Route 
                             path='language' 
-                            element=
-                            {
+                            element={
                                 <Language 
                                     cancel={cancel} 
                                     setCancelState={setCancelState}
                                     isSaving={isSaving}
                                     setSavingState={setSavingState}
-                                />
-                            } 
+                                />} 
                         />
                         <Route 
                             path='security' 
-                            element=
-                            {
+                            element={
                                 <Security 
                                     cancel={cancel} 
                                     setCancelState={setCancelState}
                                     isSaving={isSaving}
-                                />
-                            } 
+                                />} 
                         />
                     </Routes>
                 </div>
-            </div> : null}
+            </div>}
         </div>
     );
 });

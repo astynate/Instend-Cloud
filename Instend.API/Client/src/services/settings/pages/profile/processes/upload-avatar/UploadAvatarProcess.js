@@ -1,54 +1,39 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import Crop from "../../operations/Crop/Crop";
 import UploadAvatar from "../../operations/UploadAvatar/UploadAvatar";
-import { ProfileSettingsContext } from '../../Profile';
-
-export const types = ['image/png', 'image/jpg', 'image/jpeg'];
-
-const ValidateImage = (image) => {
-
-    try {
-        return image !== null && types.includes(image.type) && image.size > 0;
-    } catch {
-        return false;
-    }
-
-};
 
 const UploadAvatarProcess = (props) => {
-
     const [isUpload, setUploadState] = useState(false);
     const [isCropOperation, setCropOperation] = useState(false);
-    const [context, setContext] = useContext(ProfileSettingsContext);
 
     useEffect(() => {
+        const ValidateImage = (image) => {
+            const types = ['image/png', 'image/jpg', 'image/jpeg'];
+            const isImageHasType = image && image.type;
+            const isImageTypeCorrect = isImageHasType && types.includes(image.type);
+            const isImageHasValidSize = isImageTypeCorrect && image.size > 0;
+
+            return isImageHasValidSize;
+        };
 
         setUploadState(ValidateImage(props.image));
-
-    }, [context]);
+    }, []);
 
     if (isUpload === true && isCropOperation === true) {
-
         return (
-
-            <>
-                <Crop
-                    isOpen={isCropOperation}
-                    setOpenState={props.setOpenState}
-                    setAvatar={props.setAvatar}
-                    setPrevOperation={setCropOperation}
-                    aspectRatio={props.aspectRatio}
-                    Update={props.Update}
-                    image={props.image}
-                />
-            </>
-    
+            <Crop
+                isOpen={isCropOperation}
+                setOpenState={props.setOpenState}
+                setAvatar={props.setAvatar}
+                setPrevOperation={setCropOperation}
+                aspectRatio={props.aspectRatio}
+                Update={props.Update}
+                image={props.image}
+            />
         );
+    };
 
-    } else {
-    
-        return (
-
+    return (
             <UploadAvatar 
                 isOpen={props.isOpen} 
                 setOpenState={props.setOpenState} 
@@ -57,11 +42,8 @@ const UploadAvatarProcess = (props) => {
                 Update={props.Update}
                 img={props.img}
             />
-    
         );
-
     }
-
 };
 
 export default UploadAvatarProcess;

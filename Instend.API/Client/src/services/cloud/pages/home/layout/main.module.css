@@ -25,7 +25,7 @@
     display: flex;
     justify-content: space-between;
     position: relative;
-    border-bottom: 1px solid var(--not-transparent-border-color);
+    /* border-bottom: 1px solid var(--not-transparent-border-color); */
 }
 
 .overlay {
@@ -45,8 +45,6 @@
     top: 0px;
     position: absolute;
     border-top-left-radius: 27px;
-    border-top: 1px solid var(--not-transparent-border-color);
-    border-left: 1px solid var(--not-transparent-border-color);
     z-index: 2;
 }
 
@@ -66,8 +64,6 @@
     top: 0px;
     right: 0px;
     border-left: 0;
-    border-top: 1px solid var(--not-transparent-border-color);
-    border-right: 1px solid var(--not-transparent-border-color);
 }
 
 @media (max-width: 700px) {

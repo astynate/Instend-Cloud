@@ -1,5 +1,5 @@
 import styles from './main.module.css';
-import logo from './images/instend-logo.png';
+import logo from './images/instend-logo-white.png';
 import PointsLoaderAnimation from '../points-loader-animation/PointsLoaderAnimation';
 
 const ApplicationLoaderAnimation = () => {
@@ -11,7 +11,7 @@ const ApplicationLoaderAnimation = () => {
                 <span>The best place for your memories.</span> */}
             </div>
             {/* <div className={styles.footer}>
-                <PointsLoaderAnimation color='#3190FF' size={10} />
+                <PointsLoaderAnimation />
             </div> */}
         </div>
     );

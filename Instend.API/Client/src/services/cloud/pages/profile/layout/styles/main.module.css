@@ -3,19 +3,8 @@
     width: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
+    position: relative;
 }
-
-/* .content::-webkit-scrollbar {
-    width: 12px;
-}
-
-.content::-webkit-scrollbar-track {
-    background: var(--main-background-color);
-}
-
-::-webkit-scrollbar-thumb {
-    background: grey;
-} */
 
 .contentWrapper {
     padding-top: 15px;
@@ -37,6 +26,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-top: 50px;
 }
 
 .communities {

@@ -1,0 +1,22 @@
+.wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    grid-gap: 25px;
+    overflow: visible;
+}
+
+.blocksWrapper {
+
+}
+
+.blocks {
+    top: 90px;
+    position: sticky;
+    display: flex;
+    flex-direction: column;
+    grid-gap: 25px;
+}
+
+.publicatios {
+    margin-bottom: 30px;
+}

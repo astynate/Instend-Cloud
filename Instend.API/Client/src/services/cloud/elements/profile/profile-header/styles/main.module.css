@@ -1,15 +1,11 @@
 .header {
-    height: 200px;
-    border-radius: 30px;
+    height: 180px;
+    border-radius: 20px;
     overflow: hidden;
     width: 100%;
     display: flex;
     justify-content: center;
-    border: 1px solid var(--main-border-color);
-}
-
-.header[id="loading"] {
-    animation: var(--loading-animation);
+    background: var(--main-accent-color);
 }
 
 .header img {

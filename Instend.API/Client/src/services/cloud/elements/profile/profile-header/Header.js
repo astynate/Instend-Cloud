@@ -1,25 +1,16 @@
 import React from 'react';
 import styles from './styles/main.module.css';
-import SubContentWrapper from '../../sub-content-wrapper/SubContentWrapper';
+import Base64Handler from '../../../../../utils/handlers/Base64Handler';
 
-const Header = ({src, isLoading = false}) => {
-  if (src && isLoading === false) {
+const Header = ({src}) => {
     return (
-      <SubContentWrapper>
         <div className={styles.header}>
-          <img src={`data:image/png;base64,${src}`}  draggable={false} /> 
+            {!!src === true && <img 
+              src={Base64Handler.Base64ToUrlFormatPng(src)} 
+              draggable={false}
+            />}
         </div>
-      </SubContentWrapper>
     );
-  }
-   
-  return (
-    <SubContentWrapper>
-      <div className={styles.header} id="loading">
-
-      </div>
-    </SubContentWrapper>
-  );
 };
 
 export default Header;

@@ -26,6 +26,8 @@ const Layout = observer(() => {
     const [errorTitle, setErrorTitle] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
+    let navigate = useNavigate();
+
     globalWSContext.useSignalREffect("CreateFolder", WebsocketListener.CreateFolderListener);
     globalWSContext.useSignalREffect("RenameFolder", WebsocketListener.RenameFolderListener); 
     globalWSContext.useSignalREffect("DeleteFolder", WebsocketListener.DeleteFolderListener);
@@ -52,20 +54,25 @@ const Layout = observer(() => {
     globalWSContext.useSignalREffect("LeaveGroup", WebsocketListener.LeaveGroupListner);
 
     useEffect(() => {
-        if (AccountState.user === null || AccountState.user === undefined) {
+        const fetchAccount = async () => {
             AccountState.SetLoadingState(true);
 
-            AccountController.GetAccountData(
+            await AccountController.GetAccountData(
                 AccountState.GetUserOnSuccessCallback,
                 AccountState.GetUserOnFailureCallback,
             );
         }
+
+        if (AccountState.user === null || AccountState.user === undefined) {
+            fetchAccount();
+        }
     }, [AccountState.user]);
 
     useLayoutEffect(() => {
-        if (AccountState.isAuthorize === false && AccountState.isLoading === false)
-            useNavigate('/main');
-    }, [AccountState.isAuthorize]);
+        if (AccountState.isAuthorize === false && AccountState.isLoading === false) {
+            navigate('/main');
+        }
+    }, [AccountState.isAuthorize, AccountState.isLoading]);
     
     useEffect(() => {
         const isErrorNotExist = isErrorExist === false;

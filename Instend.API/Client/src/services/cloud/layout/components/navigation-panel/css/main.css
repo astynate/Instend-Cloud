@@ -27,7 +27,7 @@
     height: 100%;
 }
 
-.left-panel[id="rolled-up"]  .progress-bar {
+.left-panel[id="rolled-up"] .progress-bar {
     height: 70%;
     width: 4px;
 }
@@ -43,8 +43,8 @@
 }
 
 .left-panel-logo img {
-    height: 70px;
-    width: 70px;
+    height: 75px;
+    width: 75px;
     object-fit: contain;
     filter: var(--main-filter);
 }

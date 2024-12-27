@@ -9,6 +9,6 @@ const MainContentWrapper = ({children}) => {
             </div>
         </div>
     );
- };
+};
 
 export default MainContentWrapper;

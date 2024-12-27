@@ -4,8 +4,8 @@
     display: flex;
     justify-content: end;
     flex-direction: column;
-    padding-left: 17px;
-    padding-right: 17px;
+    padding-left: 12px;
+    padding-right: 12px;
     align-items: center;
     padding-bottom: 12%;
 }
@@ -35,4 +35,11 @@
     width: var(--space-occupied);
     background: var(--sub-accent-color);
     border-radius: 2px;
+}
+
+.progress-bar-wrapper[isrolledup="rolled-up"] {
+    padding-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    grid-gap: 7px;
 }

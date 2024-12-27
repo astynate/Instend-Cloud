@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
-import { Link, useLocation  } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
 import { ConvertBytesToMb } from '../../../../../utils/handlers/StorageSpaceHandler';
@@ -19,54 +19,26 @@ import messages_passive from './images/buttons/messages_passive.svg';
 import messages_active from './images/buttons/messages_active.svg';
 import profile_passive from './images/buttons/profile_passive.svg';
 import profile_active from './images/buttons/profile_active.svg';
-import MusicState from '../../../../../state/entities/MusicState';
-import StorageState from '../../../../../state/entities/StorageState';
+import more from './images/additional/more.png';
 import createImage from './images/buttons/create.png';
+import CreatePublicationPopup from '../../../features/pop-up-windows/create-publication-popup/CreatePublicationPopup';
+import AccountState from '../../../../../state/entities/AccountState';
+import PublicationsController from '../../../api/PublicationsController';
 import './css/navigation.buttons.css';
 import './css/main.css';
 import './css/progress-bar.css';
 import './css/media-queries.css';
-import CreatePublicationPopup from '../../../features/pop-up-windows/create-publication-popup/CreatePublicationPopup';
-import AccountState from '../../../../../state/entities/AccountState';
-import PublicationsController from '../../../api/PublicationsController';
+import { useIsActiveButton, useIsCurrentRoute } from './helpers/NavigationPanelLocationHelper';
+import ProfilePopUp from '../../../singletons/profile-popup/ProfilePopUp';
 
-export const useIsActiveButton = (name) => 
-    useIsCurrentRoute(name) ? 'active' : 'passive'
-
-export const useIsCurrentRoute = (name) => 
-    useLocation()['pathname'] === '/' + name;
-
-export const GetCurrentSong = () => {
-    if (MusicState.songQueue && MusicState.songQueue.length > 0 && MusicState.songQueue[MusicState.currentSongIndex]) {
-        return StorageState.FindFileById(MusicState.songQueue[MusicState.currentSongIndex].id);
-    }
-
-    return null;
-}
-
-export const GetSongName = (song) => {
-    if (!!song === false)
-        return 'Не исполняется';
-
-    return song.title ? song.title : song.name;
-}
-
-export const GetSongData = (song) => {
-    if (!!song === false)
-        return 'Артист — Альбом';
-
-    return song.artist ? song.artist : 'Артист — Альбом';
-}
-
-const NavigationPanel = observer((props) => {
+const NavigationPanel = observer(({isPanelRolledUp}) => {
     const [isOpened, setOpenedState] = useState(false);
+    const [isMiniProfileOpen, setMiniProfileState] = useState(false);
     const [occupiedSpace, setOccupiedSpace] = useState();
     const [isCreatePostWindowOpen, setCreatePostWindowState] = useState(false);
-    
+    const createButtonRef = useRef();
     const { account } = AccountState;
     const { t } = useTranslation();
-
-    const createButtonRef = useRef();
 
     const occupiedPercentage = () => {
         if (account && account.occupiedSpace && account.storageSpace)
@@ -77,8 +49,9 @@ const NavigationPanel = observer((props) => {
 
     useEffect(() => {
         const clickHandler = (event) => {
-            if (createButtonRef.current && !createButtonRef.current.contains(event.target))
+            if (createButtonRef.current && !createButtonRef.current.contains(event.target)) {
                 setOpenedState(false);
+            }
         }
 
         document.addEventListener('click', clickHandler);
@@ -95,7 +68,7 @@ const NavigationPanel = observer((props) => {
     }, [account]);
 
     return (
-        <div className="left-panel" id={props.isPanelRolledUp ? 'rolled-up' : null}>
+        <div className="left-panel" id={isPanelRolledUp ? 'rolled-up' : null}>
             <CreatePublicationPopup 
                 isOpen={isCreatePostWindowOpen}
                 close={() => setCreatePostWindowState(false)}
@@ -134,13 +107,14 @@ const NavigationPanel = observer((props) => {
                     <nav>{t('cloud.navigation.profile')}</nav>
                 </Link>
             </div>
-            <div className="progress-bar-wrapper">
+            <div className="progress-bar-wrapper" isrolledup={isPanelRolledUp ? 'rolled-up' : null}>
                 <div className={styles.createWrapper}>
                     <button 
                         state={isOpened ? 'opened' : null}
                         className={styles.create} 
                         onClick={() => setOpenedState(prev => !prev)}
                         ref={createButtonRef}
+                        isrolledup={isPanelRolledUp ? 'rolled-up' : null}
                     >
                         <img src={createImage} />
                         <span>Create</span>
@@ -150,13 +124,24 @@ const NavigationPanel = observer((props) => {
                         <button>Transaction</button>
                     </div>
                 </div>
-                <div className='progress-bar'>
-                    <div className='line' style={{'--space-occupied': `${occupiedSpace}%`}}></div>
-                </div>
-                <div className='occupied-space'>
-                    <span>{ConvertBytesToMb(account.occupiedSpace)} MB</span>
-                    <span>{ConvertBytesToMb(account.storageSpace)} MB</span>
-                </div>
+                {isPanelRolledUp === false && <>
+                    <div className='progress-bar'>
+                        <div className='line' style={{'--space-occupied': `${occupiedSpace}%`}}></div>
+                    </div>
+                    <div className='occupied-space'>
+                        <span>{ConvertBytesToMb(account.occupiedSpace)} MB</span>
+                        <span>{ConvertBytesToMb(account.storageSpace)} MB</span>
+                    </div>
+                </>}
+                {isPanelRolledUp === true && 
+                    <div className={styles.moreButtonWrapper}>
+                        <div className="navigation-button" onClick={() => setMiniProfileState(p => !p)}>
+                            <img src={more} draggable="false" />
+                        </div>
+                        {isMiniProfileOpen && <div className={styles.miniProfile}>
+                            <ProfilePopUp />
+                        </div>}
+                    </div>}
             </div>
         </div>
     )

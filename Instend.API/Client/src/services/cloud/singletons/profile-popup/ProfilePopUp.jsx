@@ -3,7 +3,7 @@ import LanguagesPopUp from "./widgets/LanguagesPopUp";
 import MainProfilePopUp from "./widgets/MainProfilePopUp";
 import ThemePopUp from "./widgets/ThemePopUp";
 
-const ProfilePopUp = ({}) => {
+const ProfilePopUp = () => {
     const [currentWindow, setCurrentWindow] = useState(0);
 
     const windows = [

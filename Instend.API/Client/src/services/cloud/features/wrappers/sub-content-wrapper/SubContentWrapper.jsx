@@ -9,6 +9,6 @@ const SubContentWrapper = ({children}) => {
             </div>
         </div>
     );
-}
+};
 
 export default SubContentWrapper;

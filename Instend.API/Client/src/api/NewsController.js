@@ -21,6 +21,26 @@ class NewsController {
                 console.error(e);
             });
     }
+
+    static GetAccountPublications = async (accountId, lastPublicationDate = '', setPublications, setHasMoreState) => {
+        await instance
+            .get(`api/news?lastPublicationDate=${lastPublicationDate}`)
+            .then((response) => {
+                if (!response || !response.data || !response.data.length) {
+                    setHasMoreState(false);
+                    return;
+                }
+
+                if (response.data && response.data.length && response.data.length > 0) {
+                    setPublications(prev => [...prev, ...response.data]);
+                }
+
+                setHasMoreState(response.data.length >= 5);
+            })
+            .catch(e => {
+                console.error(e);
+            });
+    }
 }
 
 export default NewsController;

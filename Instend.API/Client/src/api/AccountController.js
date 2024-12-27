@@ -2,13 +2,18 @@ import { instance } from "../state/application/Interceptors";
 
 class AccountController {
     static GetAccountData = async (onSuccessCallback = () => {}, onErrorCallback = () => {}) => {
-        await instance.get('/accounts')
+        await instance
+            .get('/accounts')
             .then((response) => {
                 if (response && response.data && response.data.length > 1) {
                     onSuccessCallback(response.data);
                 } else {
                     onErrorCallback();
                 }
+            })
+            .catch(error => {
+                console.error(error);
+                onErrorCallback();
             });
     }
 
@@ -39,30 +44,25 @@ class AccountController {
         return friend;
     }
 
-    static FollowUser = async (id) => {
-        // if (id) {
-        //     await instance
-        //         .post(`/api/friends?id=${id}`)
-        //         .then(response => {
-        //             if (response && response.data) {
-        //                 if (response.data.isRemove) {
-        //                     AccountSt.RemoveFriend(response.data.userId, response.data.ownerId);
-        //                 } else {
-        //                     UserState.AddFriend(response.data);
-        //                 }
-        //             }
-        //         });
-        // }
-    }
+    static ChangeAccountData = async (name, surname, description, avatar, onSuccess, onError) => {
+        let form = new FormData();
 
-    static AcceptFriend = async (id) => {
-        // await instance.put(`/api/friends?id=${id}`)
-        //     .then(response => {
-        //         if (response.data) {
-        //             const {userId, id} = response.data;
-        //             UserState.ChangeFriendState(userId, id);
-        //         }
-        //     });
+        form.append('name', name);
+        form.append('surname', surname);
+        form.append('description', description);
+
+        if (!!avatar === true) {
+            form.append('avatar', avatar);
+        }
+
+        await instance.put('/accounts', form)
+            .then(response => {
+                if (response.status === 200) {
+                    onSuccess();
+                } else {
+                    onError();
+                }
+            });
     }
 }
 

@@ -76,54 +76,6 @@ class AccountState {
 
         return user != null;
     }
-
-    AddFriend = (targetFriend) => {
-        const friend = this.FindFriendById(targetFriend.userId);
-
-        if (friend)
-            return false;
-
-        this.friends = [targetFriend, ...this.friends];
-    }
-
-    RemoveFriend = (userId, ownerId) => {
-        const IsCurrentFriendNotTarget = (friend) => {
-            const isUserOwner = friend.userId === userId && friend.ownerId == ownerId;
-            const isFriendOwner = friend.ownerId === userId && friend.userId === ownerId;
-
-            return !(isUserOwner || isFriendOwner);
-        }
-
-        this.friends = this.friends.filter(IsCurrentFriendNotTarget);
-    }
-
-    SetFriend = (friend) => {
-        const targetFriend = this.FindFriendById(friend.id)
-
-        if (!targetFriend)
-            return false;
-
-        targetFriend = {...targetFriend, ...friend};
-    }
-
-    ChangeFriendState = (id) => {
-        const friend = this.FindFriendById(id);
-
-        if (!friend) 
-            return false;
-
-        friend.isSubmited = true;
-        this.account.friendCount++;
-    }
-
-    AddCommunity = (community) => {
-        const targetCommunity = this.FindCommunityById(community.id);
-
-        if (!targetCommunity)
-            return false;
-
-        this.communities = [community, ...this.communities];
-    }
 }
 
 export default new AccountState();

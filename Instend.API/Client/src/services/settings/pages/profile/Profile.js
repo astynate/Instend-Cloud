@@ -1,214 +1,79 @@
-import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import React, { createContext, useEffect, useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { setName, setSurname, setNickname } from './operations/Set/SetTextFields';
-import { UpdateAvatar, UpdateHeader } from './operations/Set/SetImages';
-import { instance } from '../../../../state/application/Interceptors';
-import { useNavigate, useLocation} from 'react-router-dom';
+import { UpdateAvatar } from './operations/Set/SetImages';
 import { useTranslation } from 'react-i18next';
 import styles from './styles/main.module.css';
 import SettingType from '../../shared/setting-type/SettingType';
 import AccountState from '../../../../state/entities/AccountState';
-import Setting from '../../shared/setting/Setting';
-import upload from './images/upload.png';
-import trash from './images/trash.png';
-import profile from './images/avatar.png';
 import UploadAvatarProcess from './processes/upload-avatar/UploadAvatarProcess';
 import Input from '../../shared/input/Input';
 import avatarImage from './images/avatar.png';
 
-const ProfileSettingsContext = createContext();
-
-const Profile = observer((props) => {
-    const name = useRef();
-    const surname = useRef();
-    const nickname = useRef();
-
-    const { account } = AccountState;
+const Profile = observer(({isSaving, cancel, setCancelState}) => {
+    const [name, setName] = useState(AccountState.account.name);
+    const [surname, setSurname] = useState(AccountState.account.surname);
+    const [nickname] = useState(AccountState.account.nickname);
+    const [avatar, setAvatar] = useState(account.avatar);
     const { t } = useTranslation();
 
-    const [uploadAvatar,  setUploadAvatar] = useState(false);
-    const [uploadHeader,  setUploadHeader] = useState(false);
-    const [avatar, setAvatar] = useState(`data:image/png;base64,${account.avatar || ""}`);
-    const [header, setHeader] = useState(`data:image/png;base64,${account.header || ""}`);
-    const { UpdateUserData } = AccountState;
+    const setAvatarFromAccount = () => {
+        if (account.avatar != null) {
+            setAvatar(account.avatar);
+        }
+    }
 
-    let navigate = useNavigate();
-    let location = useLocation();
+    const saveChanges = () => {
+        if (isSaving) {
 
-    const defaultProfileSettings = {
-        name: account.name,
-        surname: account.surname,
-        nickname: account.nickname,
-        avatar: "",
-        header: "",
-    };
-
-    const [profileSettings, setProfileSettings] = useState(defaultProfileSettings);
+        }
+    }
 
     useEffect(() => {
-        if (account.avatar != null) {
-            setAvatar(`data:image/png;base64,${account.avatar || ""}`);
-        }
+        setAvatarFromAccount();
     }, [account.avatar]);
 
     useEffect(() => {
-        const Save = async () => {    
-            await instance({
-                method: 'put',
-                url: '/accounts',
-                data: profileSettings,
-                headers: { 'Content-Type': 'multipart/form-data' }
-            }).then(response => {
-                if (response.status === 200) {
-                    UpdateUserData(location, navigate);
-                } else {
-                    UpdateUserData(location, navigate);
-                }
-            });
-        };
-
-        if (props.isSaving) {
-            Save();
-            props.setSavingState(false);
-        }
-    }, [props.isSaving]);
+        saveChanges();
+    }, [isSaving]);
 
     useEffect(() => {
-        const SetDefault = async () => {
-            setAvatar(`data:image/png;base64,${account.avatar || ""}`);
-            setHeader(`data:image/png;base64,${account.header || ""}`);
-            setProfileSettings(defaultProfileSettings);
-            setName(account.name, setProfileSettings);
-            setSurname(account.surname, setProfileSettings);
-            setNickname(account.nickname, setProfileSettings);
-            name.current.value = account.name;
-            surname.current.value = account.surname;
-            nickname.current.value = account.nickname;
-
-            props.setCancelState(false);
+        if (cancel) {
+            setAvatar(account.avatar);
+            setName(account.name);
+            setSurname(account.surname);
+            setNickname(account.nickname);
+            setCancelState(false);
         }
-
-        if (props.cancel) {
-            SetDefault();
-        }
-    }, [props.cancel]);
-
-    const DeleteAvatar = async () => {
-        await UpdateAvatar("delete", setProfileSettings);
-        setAvatar("");
-    };
-
-    const DeleteHeader = async () => {
-        await UpdateHeader("delete", setProfileSettings);
-        setHeader("");
-    };
+    }, [cancel]);
 
     return (
-
         <ProfileSettingsContext.Provider value={[profileSettings, setProfileSettings]}>
-            {uploadAvatar ? 
-                <UploadAvatarProcess 
-                    isOpen={uploadAvatar} 
-                    setOpenState={setUploadAvatar}
-                    setAvatar={setAvatar}
-                    aspectRatio={1}
-                    Update={UpdateAvatar}
-                    image={profileSettings.avatar}
-                    img={avatarImage}
-                /> 
-            : 
-            uploadHeader ?
-                    <UploadAvatarProcess 
-                        isOpen={uploadHeader} 
-                        setOpenState={setUploadHeader}
-                        setAvatar={setHeader}
-                        aspectRatio={1.7}
-                        Update={UpdateHeader}
-                        image={profileSettings.header}
-                        img={avatarImage}
-                    /> 
-                :
-                    null
-            }
+            {uploadAvatar && <UploadAvatarProcess 
+                isOpen={uploadAvatar} 
+                setOpenState={setUploadAvatar}
+                setAvatar={setAvatar}
+                aspectRatio={1}
+                Update={UpdateAvatar}
+                image={profileSettings.avatar}
+                img={avatarImage}
+            />}
             <SettingType 
-                image={
-                    <div className={styles.avatarWrapper}>
-                        {avatar.replace('data:image/png;base64,', '') ? 
-                            <img 
-                                src={avatar} 
-                                className={styles.avatar} 
-                            /> 
-                        : null}
-                    </div>} 
+                image={<div className={styles.avatarWrapper}>
+                    {avatar &&
+                        <img 
+                            src={avatar} 
+                            className={styles.avatar} 
+                            draggable="false"
+                        />}
+                </div>} 
                 title={t('cloud.settings.profile.avatar')}
                 description={t('cloud.settings.profile.avatar.desc')}
             />
             <div className={styles.settingBar}>
-                <Setting  
-                    image={upload}
-                    title={t('cloud.settings.profile.upload_from_device')}
-                    type="first"
-                    description={t('cloud.settings.profile.upload_from_device.desc')}
-                    onClick={() => setUploadAvatar(true)}
-                />
-                <Setting  
-                    image={trash}
-                    type="last"
-                    title={t('cloud.settings.profile.delete_avatar')}
-                    description={t('cloud.settings.profile.delete_avatar.desc')}
-                    onClick={() => DeleteAvatar()}
-                />
-            </div>
-            <SettingType 
-                image={
-                    <div className={styles.headerWrapper}>
-                        {header.replace('data:image/png;base64,', '') ? 
-                            <img 
-                                src={header} 
-                                className={styles.header} 
-                            /> 
-                        : null}
-                    </div>} 
-                title={t('cloud.settings.profile.header')}
-                description={t('cloud.settings.profile.header.desc')}
-            />
-            <div className={styles.settingBar}>
-                <Setting  
-                    image={upload}
-                    title={t('cloud.settings.profile.upload_from_device')}
-                    type="first"
-                    description={t('cloud.settings.profile.upload_from_device.desc')}
-                    onClick={() => setUploadHeader(true)}
-                />
-                <Setting  
-                    image={trash}
-                    type="last"
-                    title={t('cloud.settings.profile.delete_header')}
-                    description={t('cloud.settings.profile.delete_header.desc')}
-                    onClick={() => DeleteHeader()}
-                />
-            </div>
-            <SettingType 
-                image={<img src={profile} className={styles.avatar} draggable="false" />} 
-                title={t('cloud.settings.profile.personal_data')}
-                description={t('cloud.settings.profile.personal_data.desc')}
-            />
-            <div className={styles.settingBar}>
-                <Input 
-                    title={t('cloud.settings.profile.personal_data.name')}
-                    defaultValue={account.name} 
-                    setValue={setName} 
-                    type="first"
-                    forwardRef={name}
-                    maxLength={20}
-                />
-                <Input 
-                    title={t('cloud.settings.profile.personal_data.surname')} 
-                    defaultValue={account.surname} 
-                    setValue={setSurname}
-                    forwardRef={surname}
-                    maxLength={20}
-                />
+                <div className={styles.settingDescriptionWrapper}>
+                    <h1 className={styles.settingTitle}>Username</h1>
+                </div>
                 <Input 
                     title={t('cloud.settings.profile.personal_data.nickname')}
                     defaultValue={account.nickname} 
@@ -217,10 +82,38 @@ const Profile = observer((props) => {
                     forwardRef={nickname}
                     maxLength={20}
                 />
+                <div className={styles.settingDescriptionWrapper}>
+                    <h1 className={styles.settingTitle}>Fullname</h1>
+                </div>
+                <div style={{display: 'flex', gridGap: '20px'}}>
+                    <Input 
+                        title={t('cloud.settings.profile.personal_data.name')}
+                        defaultValue={account.name} 
+                        setValue={setName} 
+                        type="first"
+                        maxLength={20}
+                    />
+                    <Input 
+                        title={t('cloud.settings.profile.personal_data.surname')} 
+                        defaultValue={account.surname} 
+                        setValue={setSurname}
+                        maxLength={20}
+                    />
+                </div>
+                <div className={styles.settingDescriptionWrapper}>
+                    <h1 className={styles.settingTitle}>Description</h1>
+                </div>
+                <Input 
+                    title={`Hi! I'm artist and engineer :)`} 
+                    defaultValue={account.description} 
+                    setValue={setSurname}
+                    forwardRef={surname}
+                    maxLength={20}
+                    isMultiline={true}
+                />
             </div>
         </ProfileSettingsContext.Provider>
     );
 });
 
 export default Profile;
-export { ProfileSettingsContext };

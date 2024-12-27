@@ -7,6 +7,24 @@
     user-select: none;
 }
 
+.settingDescriptionWrapper {
+    display: flex;
+    flex-direction: column;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    padding-left: 15px;
+}
+
+.settingTitle {
+    font-size: 16px;
+}
+
+.settingDescription {
+    color: var(--main-paragraph-color);
+    font-weight: 400;
+    font-size: 13px;
+}
+
 .avatarWrapper {
     height: 65px;
     width: 65px;

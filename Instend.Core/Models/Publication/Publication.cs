@@ -74,6 +74,7 @@ namespace Instend.Core.Models.Public
         }
 
         public void SetAttachment(List<Attachment> attachment) => Attachments = attachment;
+        public void IncrementNumberOfViews() => NumberOfViews++;
         public void IncrementNumberOfReactions() => NumberOfReactions++;
         public void DecrementNumberOfReactions() => NumberOfReactions--;
     }

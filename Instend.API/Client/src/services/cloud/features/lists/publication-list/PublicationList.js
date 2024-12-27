@@ -5,24 +5,35 @@ import Publication from '../../../components/publication/Publication';
 import ScrollElementWithDotsAndFetch from '../../../elements/scroll/scroll-element-with-dots-and-fetch/ScrollElementWithDotsAndFetch';
 import NewsState from '../../../../../state/entities/NewsState';
 
-const PublicationList = ({publications = [], fetchRequest, isHasMore}) => {
+const PublicationList = ({publications = [], fetchRequest, isHasMore, isHasBorder = false, borderRadius = 25, isDivided = false}) => {
+    const getLastNewsDate = () => {
+        if (publications.length === 0) {
+            return "";
+        }
+    
+        const lastIndex = publications.length - 1;
+        return publications[lastIndex].date;
+    }
+    
     return (
-        <PublicationsWrapper key={publications.length}>
-            <div className={styles.publications}>
+        <PublicationsWrapper key={publications.length} isHasBorder={isHasBorder} borderRadius={borderRadius}>
+            <div className={styles.publications} id={isDivided ? 'divided' : null}>
                 {publications
                     .sort((a, b) => NewsState.sortByDate(a, b))
                     .map((publication, index) => {
                         return (
-                            <Publication
-                                key={index}
-                                publication={publication}
-                            />
+                            <div className={styles.publication} id={isDivided ? 'separated' : null}>
+                                <Publication
+                                    key={index}
+                                    publication={publication}
+                                />
+                            </div>
                         );
                     })}
             </div>
             {isHasMore &&
                 <ScrollElementWithDotsAndFetch 
-                    fetchRequest={fetchRequest}
+                    fetchRequest={() => fetchRequest(getLastNewsDate())}
                     isHasMore={isHasMore}
                 />}
         </PublicationsWrapper>

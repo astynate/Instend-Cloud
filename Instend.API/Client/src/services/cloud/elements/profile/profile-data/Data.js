@@ -7,17 +7,18 @@ const Data = ({isLoading, stats}) => {
         {stats && stats.map((element, index) => {
           if (isLoading) {
             return (<div key={index} className={styles.placeholder}></div>)
-          } else {
-            return (
+          }
+            
+          return (
               <div className={styles.counter} key={index}>
                 <h2>{element.amount}</h2>
                 <span>{element.title}</span>
               </div>
             )
           }
-        })}
+        )}
     </div>
-  )
-}
+  );
+};
 
 export default Data;

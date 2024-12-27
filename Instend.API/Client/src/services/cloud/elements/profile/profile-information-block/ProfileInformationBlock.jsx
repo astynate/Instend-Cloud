@@ -1,14 +1,11 @@
 import { useRef, useState } from 'react';
-import PublicationsWrapper from '../../../../features/publications-wrapper/PublicationsWrapper';
 import styles from './main.module.css';
-import smileFace from './images/smile-face.png';
-import image from './images/image.png';
-import MarkdownInput from '../../../../shared/ui-kit/markdown-input/MarkdownInput';
-import Attachments from '../../../../elements/attachments/Attachments';
+import PublicationsWrapper from '../../../features/wrappers/publications-wrapper/PublicationsWrapper';
+import MarkdownInput from '../../../ui-kit/fields/markdown-input/MarkdownInput';
 
 const ProfileInformationBlock = ({
-        isEditable, 
-        setEditableState
+        isEditable = false, 
+        setEditableState = () => {}
     }) => {
         
     const [title, setTitle] = useState('Title');
@@ -27,7 +24,7 @@ const ProfileInformationBlock = ({
     }
 
     return (
-        <PublicationsWrapper>
+        <PublicationsWrapper isHasBorder={true} borderRadius={30}>
             <div className={styles.textBlock} onClick={() => setEditableState(true)}>
                 <div className={styles.block}>
                     <input 
@@ -36,23 +33,24 @@ const ProfileInformationBlock = ({
                         onChange={(e) => setTitle(e.target.value)}
                         className={styles.title}
                     />
-                    <Attachments 
+                    {/* <Attachments 
                         attachments={attachments} 
-                    />
-                    <input 
+                    /> */}
+                    {/* <input 
                         type="file" 
                         ref={fileInputRef} 
                         multiple
                         onChange={handleFileChange} 
                         style={{ display: 'none' }}
-                    />
-                    <MarkdownInput 
+                    /> */}
+                    <MarkdownInput
+                        isEditable={false}
                         text={content}
                         setText={setContent}
-                        rightButtons={[
-                            { image: smileFace, callback: () => {} },
-                            { image: image, callback: handleButtonClick },
-                        ]}
+                        // rightButtons={[
+                        //     { image: smileFace, callback: () => {} },
+                        //     { image: image, callback: handleButtonClick },
+                        // ]}
                     />
                 </div>
             </div>

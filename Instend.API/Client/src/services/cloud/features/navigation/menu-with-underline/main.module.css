@@ -1,47 +1,54 @@
 .localMenuWrapper {
     width: 100%;
     position: sticky;
-    top: 59px;
+    top: 0px;
     left: 0;
+    margin-bottom: 25px;
     background: var(--main-background-color);
-    border-bottom: 1px solid var(--main-border-color);
+    z-index: 1;
 }
 
 .localMenu {
+    width: 100%;
     display: flex;
+    padding-top: 20px;
     user-select: none;
-    width: fit-content;
-    position: relative;
+    justify-content: center;
+    border-bottom: 1px solid var(--not-transparent-border-color);
 }
 
 .menuItems {
     display: flex;
-    grid-gap: 25px;
+    grid-gap: 15px;
     width: fit-content;
 }
 
 .item {
     width: fit-content;
     font-size: 16px;
-    font-weight: 700;
+    width: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
     color: var(--main-paragraph-color);
     cursor: pointer;
     transition: 0.25s ease;
-    padding-bottom: 15px;
-    border-bottom: 3px solid transparent;
+    padding-bottom: 20px;
+    border-bottom: 2px solid transparent;
 }
 
 .item:hover {
-    border-bottom: 3px solid var(--main-paragraph-color);
+    /* border-bottom: 2px solid var(--main-paragraph-color); */
 }
 
 .item[id="active"] {
     color: var(--main-font-color);
-    border-bottom: 3px solid var(--main-font-color);
+    border-bottom: 2px solid var(--main-font-color);
 }
 
 .item[id="active"]:hover {
-    border-bottom: 3px solid var(--main-font-color);
+    border-bottom: 2px solid var(--main-font-color);
 }
 
 .wrapper {

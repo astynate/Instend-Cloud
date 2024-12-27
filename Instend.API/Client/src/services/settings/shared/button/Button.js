@@ -2,31 +2,23 @@ import React, { useEffect } from "react";
 import styles from './styles/main.module.css';
 import { NavLink, useLocation } from "react-router-dom";
 
-const Button = (props) => {
-
+const Button = ({image, path, name, title, setCurrentSetting}) => {
     const location = useLocation();
 
     useEffect(() => {
-
-        if (location.pathname === props.path) {
-
-            props.setCurrentSetting(props.name);
-            props.setCurrentRoute(props.path);
-
+        if (location.pathname === path) {
+            setCurrentSetting(name);
         }
-
-    }, [props.name, props.title, location]);
+    }, [name, location]);
 
     return (
-
-        <div className={styles.button} id={location.pathname === props.path ? 'active' : null}>
-            <NavLink to={props.path}>
-                {props.title}
+        <div className={styles.button} id={location.pathname === path ? 'active' : null}>
+            <NavLink to={path}>
+                <img src={image} draggable="false" />
+                {title}
             </NavLink>
         </div>
-
     );
-
 };
 
 export default Button;

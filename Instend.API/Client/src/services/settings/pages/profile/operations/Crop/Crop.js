@@ -1,15 +1,11 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { Back, Next } from "../../../../shared/navigate/Navigate";
 import styles from './styles/main.module.css';
 import PopUpWindow from "../../../../shared/pop-up-window/PopUpWindow";
-import { ProfileSettingsContext } from "../../Profile";
-import { Back, Next } from "../../../../shared/navigate/Navigate";
 import CropImage from './Operations';
 
 const Crop = (props) => {
-
-    const wrapperRef = useRef();
     const [isMouseDown, setMouseDown] = useState(false);
-    const [context, setContext] = useContext(ProfileSettingsContext);
     const [image, setImage] = useState();
     const [offsetTop, setOffsetTop] = useState(0);
     const [offsetLeft, setOffsetLeft] = useState(0);
@@ -23,11 +19,13 @@ const Crop = (props) => {
     const [currentOffestY, setCurrentOffsetY] = useState(0);
     const [croppedAvatar, setCroppedAvatar] = useState(image);
     const [cropState, setCropState] = useState(false);
+
+    const wrapperRef = useRef();
+    
     const HEIGHT_ALIGNMENT = 450;
     const WIDTH_ALIGNMENT = 500;
 
     useEffect(() => {
-
         setOffsetTop(getComputedStyle(wrapperRef.current)
             .getPropertyValue('--top').replace('px', ''));
 
@@ -36,83 +34,71 @@ const Crop = (props) => {
 
     }, [offsetTop, offsetLeft]);
 
-    useEffect(() => {
+    const onloadImage = () => {
+        const height = image.naturalHeight;
+        const width = image.naturalWidth;
 
+        setImageSize([height, width]);
+
+        if ((width / height) <= props.aspectRatio) {
+            const aspectRatio = HEIGHT_ALIGNMENT / height;
+
+            setAreaHeight(width * aspectRatio / props.aspectRatio);
+            setAreaWidth(width * aspectRatio);
+            setObjectFit('height');
+        } else {
+            const aspectRatio = WIDTH_ALIGNMENT / width;
+
+            setAreaHeight(height * aspectRatio);
+            setAreaWidth(height * aspectRatio * props.aspectRatio);
+            setObjectFit('width');
+        }
+    };
+
+    const readerOnloadEvent = (event) => {
+        const image = new Image();
+
+        image.src = event.target.result;
+        image.onload = onloadImage;
+
+        if (event.target.result) {
+            setImage(event.target.result);
+        }
+    }
+
+    useEffect(() => {
         const file = props.image;
         const reader = new FileReader();
     
-        reader.onload = (event) => {
-
-            const image = new Image();
-            image.src = event.target.result;
-
-            image.onload = () => {
-
-                const height = image.naturalHeight;
-                const width = image.naturalWidth;
-
-                setImageSize([height, width]);
-
-                if ((width / height) <= props.aspectRatio) {
-
-                    const aspectRatio = HEIGHT_ALIGNMENT / height;
-
-                    setAreaHeight(width * aspectRatio / props.aspectRatio);
-                    setAreaWidth(width * aspectRatio);
-                    setObjectFit('height');
-
-                } else {
-
-                    const aspectRatio = WIDTH_ALIGNMENT / width;
-
-                    setAreaHeight(height * aspectRatio);
-                    setAreaWidth(height * aspectRatio * props.aspectRatio);
-                    setObjectFit('width');
-
-                }
-
-            };
-
-            if (event.target.result) {
-                setImage(event.target.result);
-            }
-
-        };
+        reader.onload = readerOnloadEvent;
     
         if (file) {
             reader.readAsDataURL(file);
         }
-    
     }, [props.image]);
     
 
     const setClientOffset = (x, y) => {
-
         setClientX(x);
         setClientY(y);
-        setMouseDown(true);
 
+        setMouseDown(true);
     };
 
     const clientOffsetRecovery = () => {
-
         setMouseDown(false);
         setCurrentOffsetX(offsetLeft);
         setCurrentOffsetY(offsetTop);
         setClientX(0);
         setClientY(0);
-
     };
 
     const MoveArea = (x, y) => {
-
         if (isMouseDown) {
-
             const offsetY = y - clientY + parseInt(currentOffestY);
             const offsetX = x - clientX + parseInt(currentOffestX);
 
             if (objectFit === 'height') {
-
                 if (offsetY + areaHeight < HEIGHT_ALIGNMENT) {
                     setOffsetTop(parseInt(offsetY <= 0 ? 1 : offsetY));
                 }
@@ -120,9 +106,8 @@ const Crop = (props) => {
                 if (offsetX + areaWidth < HEIGHT_ALIGNMENT / imageSize[0] * imageSize[1]) {
                     setOffsetLeft(parseInt(offsetX <= 0 ? 1 : offsetX));
                 }
-
-            } else {
-              
+            } 
+            else {  
                 if (offsetY + areaHeight < WIDTH_ALIGNMENT / imageSize[1] * imageSize[0]) {
                     setOffsetTop(parseInt(offsetY <= 0 ? 1 : offsetY));
                 }
@@ -130,80 +115,52 @@ const Crop = (props) => {
                 if (offsetX + areaWidth < WIDTH_ALIGNMENT) {
                     setOffsetLeft(parseInt(offsetX <= 0 ? 1 : offsetX));
                 }
-
             }
-
         }
-
     };
 
     const TransformScale = (x, type) => {
-
         if (isMouseDown) {
-
             const offset = x - clientX;
 
             if (type === 0) {
-
                 if (offset > 0) {
-
                     Decrease(Math.abs(offset));
-        
                 } else {
-        
                     Icrease(Math.abs(offset));
-        
                 }
-
             } else {
-
                 if (offset < 0) {
-
                     Decrease(Math.abs(offset));
-        
                 } else {
-        
                     Icrease(Math.abs(offset));
-        
                 }
-
             }
-
         }
-
     };
 
     const Decrease = (size) => {
-
         if (areaHeight - size > 70 && areaWidth - size > 70) {
-
             setAreaHeight(areaHeight - size);
             setAreaWidth(areaWidth - size * props.aspectRatio);
             setOffsetTop(prev => parseInt(prev) + size / 2);
             setOffsetLeft(prev => parseInt(prev) + size / 2);
-
         }
-
     };
 
     const Icrease = (size) => {
-
         let MAX_HEIGHT = objectFit === 'height' ? HEIGHT_ALIGNMENT : WIDTH_ALIGNMENT / imageSize[1] * imageSize[0];
         let MAX_WIDTH = objectFit === 'width' ? WIDTH_ALIGNMENT : 450 / imageSize[0] * imageSize[1];
 
         if (areaHeight + size < MAX_HEIGHT && areaWidth + size < MAX_WIDTH) {
-
             setAreaHeight(areaHeight + size);
             setAreaWidth(areaWidth + size * props.aspectRatio);
             setOffsetTop(prev => parseInt(prev) - size / 2);
             setOffsetLeft(prev => parseInt(prev) - size / 2);
-
         }
-
     };
 
     return (
-
         <PopUpWindow isOpen={props.isOpen} setOpenState={props.setOpenState}>
             <CropImage 
                 image={image} 
@@ -289,9 +246,7 @@ const Crop = (props) => {
                 </div>
             </div>
         </PopUpWindow>
-
     );
-
 };
 
 export default Crop;

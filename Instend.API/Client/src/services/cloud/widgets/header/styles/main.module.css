@@ -83,6 +83,12 @@
     position: absolute;
 }
 
+.miniProfile {
+    top: 45px;
+    right: -5px;
+    position: absolute;
+}
+
 @media (max-width: 700px) {
     .header {
         display: none;

@@ -9,15 +9,15 @@
 .username {
     margin: 0;
     padding: 0;
-    font-size: 34px;
+    font-size: 24px;
     font-weight: 700;
 }
-
+/* 
 .wrapper {
     width: 100%;
     display: flex;
     align-items: center;
-}
+} */
 
 @media (max-width: 600px) {
     .username {

@@ -107,7 +107,11 @@ namespace Instend.Repositories.Comments
                 {
                     await attachment.SetPreview(_previewService);
                 }
+
+                publication.IncrementNumberOfViews();
             }
+
+            await _context.SaveChangesAsync();
 
             return result;
         }
@@ -133,6 +137,17 @@ namespace Instend.Repositories.Comments
             (
                 x => targetAccounts.Contains(x.AccountId) && x.Date < date, 
                 account.Id, 
+                5
+            );
+
+            return result;
+        }
+
+        public async Task<List<Publication>> GetAccountPublications(Guid accountId, DateTime date, int count)
+        {
+            var result = await GetNewsByExpressionAsync(
+                x => x.AccountId == accountId && x.Date < date, 
+                accountId,
                 5
             );
 

@@ -8,9 +8,10 @@
 
 .data {
     display: flex;
-    grid-gap: 35px;
+    grid-gap: 45px;
     margin-top: 10px;
     margin-bottom: 10px;
+    text-transform: lowercase;
 }
 
 .counter {
@@ -19,14 +20,14 @@
 }
 
 .counter h2 {
-    font-size: 15px;
+    font-size: 16px;
     color: var(--main-font-color);
 }
 
 .counter span {
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--main-paragraph-color);
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--main-font-color);
 }
 
 @media (max-width: 500px) {

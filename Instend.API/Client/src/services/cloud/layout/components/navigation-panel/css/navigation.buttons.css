@@ -17,7 +17,7 @@
 }
 
 .navigation-button nav { 
-    font-size: 15px;
+    font-size: 16px;
     text-decoration: none;
     color: var(--main-font-color);
 }
@@ -46,8 +46,8 @@
 }
 
 .navigation-button img {
-    height: 21px;
-    width: 21px;
+    height: 23px;
+    width: 23px;
     object-fit: contain;
     filter: var(--main-filter);
 }

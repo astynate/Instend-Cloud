@@ -60,7 +60,10 @@ const Header = observer((props) => {
                         draggable='false' 
                         className={styles.avatar} 
                     />
-                    {current === 2 && <ProfilePopUp forwardRef={profileRef} />}
+                    {current === 2 && 
+                        <div className={styles.miniProfile}>
+                            <ProfilePopUp forwardRef={profileRef} />
+                        </div>}
                 </div>
             </div>
         </div>

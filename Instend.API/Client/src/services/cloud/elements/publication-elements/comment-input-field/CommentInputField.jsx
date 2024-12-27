@@ -3,13 +3,23 @@ import styles from './main.module.css';
 import MultipleInput from '../../../ui-kit/fields/multiple-input/MultipleInput';
 import PublicationControlPanel from '../publication-control-panel/PublicationControlPanel';
 import PublicationsController from '../../../api/PublicationsController';
+import { observer } from 'mobx-react-lite';
 
-const CommentInputField = ({publication = {}}) => {
+const CommentInputField = observer(({publication = {}}) => {
     const [text, setText] = useState('');
+
+    if (!!publication === false) {
+        return null;
+    }
 
     return (
         <div className={styles.inputWrapper}>
-            <PublicationControlPanel />
+            <PublicationControlPanel 
+                publicationId={publication.id}
+                numberOfReactions={publication.numberOfReactions}
+                numberOfComments={publication.numberOfComments}
+                numberOfViews={publication.numberOfViews}
+            />
             <hr />
             <div className={styles.block}>
                 <MultipleInput 
@@ -27,6 +37,6 @@ const CommentInputField = ({publication = {}}) => {
             </div>
         </div>
     );
-}
+});
 
 export default CommentInputField;

@@ -7,17 +7,15 @@ import ValidationHandler from "../../../../utils/handlers/ValidationHandler";
 import { useTranslation } from "react-i18next";
 
 const Nickname = () => {
-
     const { t } = useTranslation();
     const user = useContext(UserContext);
+    
     const [nickname, setNickname] = useState(user.nickname);
     const [isValidNickname, setNicknameState] = useState(ValidationHandler
         .ValidateVarchar(nickname, 30));
 
     useEffect(() => {
-
         user.nickname = nickname;
-
     }, [user, nickname]);
 
     return (
@@ -42,9 +40,7 @@ const Nickname = () => {
                 />
             </Link>
         </>
-
     );
-
 }
 
 export default Nickname;

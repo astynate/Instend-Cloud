@@ -121,7 +121,8 @@ const Cloud = observer((props) => {
   }, [params.id]);
 
   useEffect(() => {
-    if (props.setPanelState) { props.setPanelState(false); }
+    if (props.setPanelState)
+      props.setPanelState(false); 
   }, [props.setPanelState]);
 
   useEffect(() => {

@@ -5,3 +5,13 @@
     padding-top: 5px;
     grid-gap: 7px;
 }
+
+.publications[id="divided"] {
+    padding-top: 0px;
+    grid-gap: 10px;
+}
+
+.publication[id="separated"] {
+    border: 1px solid var(--not-transparent-border-color);
+    border-radius: 30px;
+}

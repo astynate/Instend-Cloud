@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styles from './main.module.css';
-import SubContentWrapper from '../../../features/sub-content-wrapper/SubContentWrapper';
+import SubContentWrapper from '../../wrappers/sub-content-wrapper/SubContentWrapper';
 
-const MenuWithUnderline = ({items, defaultValue, rightItems}) => {
+const MenuWithUnderline = ({items, defaultValue, rightItems, margin = 10}) => {
     const [current, setCurrent] = useState(defaultValue ? defaultValue : 0);
 
     return (
@@ -36,9 +36,7 @@ const MenuWithUnderline = ({items, defaultValue, rightItems}) => {
                 {items && items.map && items.map((element, index) => {
                     if (element.component && index === current) {
                         return (
-                            <div className={styles.wrapper} key={index}>
-                                {(element.component)}
-                            </div>
+                            React.cloneElement(element.component, { key: index, style: {marginTop: margin} })
                         );
                     }
 

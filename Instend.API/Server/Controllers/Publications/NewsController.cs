@@ -64,5 +64,27 @@ namespace Instend_Version_2._0._0.Server.Controllers.Comments
 
             return Ok(_serializationHelper.SerializeWithCamelCase(publications));
         }
+
+        [HttpGet]
+        [Authorize]
+        [Route("/api/account/publications")]
+        public async Task<IActionResult> GetPublictions(string? lastPublicationDate, Guid publicationId)
+        {
+            DateTime date;
+
+            if (lastPublicationDate == null)
+            {
+                date = DateTime.Now;
+            }
+            else if (!DateTime.TryParse(lastPublicationDate, out date))
+            {
+                return BadRequest("Invalid date format");
+            }
+
+            var publications = await _publicationsRepository
+                .GetAccountPublications(publicationId, date, 5);
+
+            return Ok(_serializationHelper.SerializeWithCamelCase(publications));
+        }
     }
 }

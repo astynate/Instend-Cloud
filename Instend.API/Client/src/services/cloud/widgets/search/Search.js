@@ -7,6 +7,7 @@ import search from './images/search.png';
 const Search = () => {
     const [isAvailable, setAvailable] = useState(true);
     const { t } = useTranslation();
+    
     let timerId = null;
 
     const GetData = async (prefix) => {

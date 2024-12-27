@@ -1,34 +1,39 @@
 .button {
     width: auto;
-    border-radius: 7px;
+    border-radius: 10px;
+    font-size: 16px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    font-size: 14px;
 }
 
 .button a {
     height: 100%;
     width: 100%;
-    padding: 12px 15px;
-    color: var(--main-paragraph-color);
+    padding: 14px 17px;
+    display: flex;
+    align-items: center;
+    grid-gap: 12px;
+    color: var(--main-font-color);
 }
 
-@media(hover: hover) {
-    .button:hover {
-        background: var(--main-accent-color);
-    }
+.button[id="active"] {
+    background: var(--main-accent-color);
 }
 
-@media(hover: none) {
-    .button[id="active"] {
-        background: var(--main-accent-color);
-    }
-    
-    .button[id="active"] a {
-        color: var(--main-font-color);
-        font-weight: 700;
-    }
+.button[id="active"] a {
+    color: var(--main-font-color);
+}
+
+.button:hover {
+    background: var(--main-accent-color);
+}
+
+.button img {
+    height: 24px;
+    width: 24px;
+    filter: var(--main-filter);
+    object-fit: contain;
 }
 
 @media (max-width: 700px) {

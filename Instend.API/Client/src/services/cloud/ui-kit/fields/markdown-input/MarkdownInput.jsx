@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import styles from './main.module.css';
 import list from './images/list.png';
 
-const MarkdownInput = ({text, setText, rightButtons = []}) => {
+const MarkdownInput = ({text, setText, rightButtons = [], isEditable = true}) => {
     const [formattedText, setFormattedText] = useState(text);
     const [isBold, setBoldState] = useState(false);
     const [isItalic, setItalicState] = useState(false);
@@ -118,7 +118,7 @@ const MarkdownInput = ({text, setText, rightButtons = []}) => {
                 id='input'
                 ref={ref}
                 className={styles.input}
-                contentEditable
+                contentEditable={isEditable}
                 dangerouslySetInnerHTML={{ __html: formattedText }}
                 onSelect={handleSelection}
                 onBlur={() => {
@@ -130,7 +130,7 @@ const MarkdownInput = ({text, setText, rightButtons = []}) => {
                 onDragOver={(event) => event.preventDefault()}
                 onDrop={(event) => event.preventDefault()}
             ></div>
-            <div className={styles.control}>
+            {isEditable && <div className={styles.control}>
                 <div className={styles.buttons}>
                     <button onClick={() => addMarkdown('B')} state={isBold ? 'active' : null}>B</button>
                     <button onClick={() => addMarkdown('I')} state={isItalic ? 'active' : null}>I</button>
@@ -146,7 +146,7 @@ const MarkdownInput = ({text, setText, rightButtons = []}) => {
                         );
                     })}
                 </div>
-            </div>
+            </div>}
         </div>
     );
 }
