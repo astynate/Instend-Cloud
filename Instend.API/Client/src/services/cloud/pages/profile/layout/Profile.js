@@ -5,6 +5,7 @@ import styles from './styles/main.module.css';
 import HeaderSearch from '../../../templates/album-view-template/compontens/header-search/HeaderSearch';
 import MenuWithUnderline from '../../../features/navigation/menu-with-underline/MenuWithUnderline';
 import MainProfilePage from '../pages/main/MainProfilePage';
+import AccountState from '../../../../../state/entities/AccountState';
 
 const Profile = observer((props) => {
   const [publications, setPublications] = useState([]);
@@ -19,17 +20,17 @@ const Profile = observer((props) => {
   return (
     <div className={styles.content}>
       <div className={styles.wrapper}>
-        <ProfileDescription 
-          isMobile={props.isMobile} 
+        <ProfileDescription
+          isMobile={props.isMobile}
         />
         <MenuWithUnderline 
           margin={20}
           items={[
             {
               title: "Main", 
-              component: <MainProfilePage 
-                isHasMore={isHasMore} 
-                publications={publications} 
+              component: <MainProfilePage
+                isHasMore={isHasMore}
+                publications={publications}
                 setHasMoreState={setHasMoreState}
                 setPublications={setPublications}
               />

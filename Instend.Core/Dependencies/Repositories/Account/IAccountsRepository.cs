@@ -13,7 +13,7 @@ namespace Instend.Core.Dependencies.Repositories.Account
         Task<Models.Account.Account[]> GetPopuplarPeopleAsync(int from, int count);
         Task Confirm(string email);
         Task AddAsync(Models.Account.Account user);
-        Task Update(Guid userId, string name, string surname, string nickname);
+        Task Update(Guid userId, string? name, string? surname, string? nickname, string? description);
         Task<Result> RecoverPassword(Guid user, string password);
         Task<Result<double>> ChangeOccupiedSpaceValue(Guid userId, double value);
     }

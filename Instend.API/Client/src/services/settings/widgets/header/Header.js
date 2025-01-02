@@ -18,16 +18,18 @@ const Header = (props) => {
                     <h1>{props.isMobile ? t('cloud.settings.profile.back') : props.title}</h1>
                 </div>
                 <div className={styles.rightButtons}>
+                    <LoaderButton 
+                        title={t('global.save')}
+                        state={props.state}
+                        onClick={() => props.onClick()} 
+                    />
                     <span 
                         style={{userSelect: "none"}}
+                        className={styles.secondButton}
                         onClick={() => props.setCancelState(true)}
                     >
                         {t('global.cancel')}
                     </span>
-                    <LoaderButton 
-                        title={t('global.save')}
-                        state={props.state}
-                        onClick={() => props.onClick()} />
                 </div>
             </div>
         </div>

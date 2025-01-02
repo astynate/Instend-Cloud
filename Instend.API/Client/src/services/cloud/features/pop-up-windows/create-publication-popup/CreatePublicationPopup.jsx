@@ -10,6 +10,7 @@ import ImageAttachments from '../../../ui-kit/attachments/ImageAttachments';
 import FilesInputWrapper from '../../wrappers/files-input-wrapper/FilesInputWrapper';
 import ButtonContent from '../../../elements/button-content/ButtonContent';
 import GlobalContext from '../../../../../global/GlobalContext';
+import StorageController from '../../../../../api/StorageController';
 
 const CreatePublicationPopup = observer((props) => {
     const [text, setText] = useState('');
@@ -53,7 +54,7 @@ const CreatePublicationPopup = observer((props) => {
                 <div className={styles.content}>
                     <div className={styles.header}>
                         <img 
-                            src={Base64Handler.Base64ToUrlFormatPng(AccountState.account.avatar)} 
+                            src={StorageController.getFullFileURL(AccountState.account.avatar)} 
                             className={styles.avatar} 
                             draggable="false"
                         />

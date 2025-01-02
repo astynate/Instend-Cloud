@@ -17,7 +17,13 @@ const MainProfilePage = ({
         <div className={styles.wrapper}>
             <div className={styles.blocksWrapper}>
                 <div className={styles.blocks}>
-                    <ProfileInformationBlock />
+                    <ProfileInformationBlock 
+                        title={'Information'}
+                        text={account.description ? account.description : 'This user has not updated profile description yet.'}
+                    />
+                    <ProfileInformationBlock 
+                        title={'Photos'}
+                    />
                 </div>
             </div>
             <div className={styles.publicatios}>

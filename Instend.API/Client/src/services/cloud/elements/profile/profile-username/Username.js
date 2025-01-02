@@ -8,14 +8,14 @@ const Username = ({isLoading, username, children}) => {
         <div className={styles.placeholder}></div>
       </div>
     )
-  } else {
-    return (
-      <div className={styles.wrapper}>
-        <h1 className={styles.username}>{username}</h1>
-        {children}
-      </div>
-    )
-  }
+  };
+    
+  return (
+    <div className={styles.wrapper}>
+      <h1 className={styles.username}>{username}</h1>
+      {children}
+    </div>
+  );
 }
 
 export default Username;

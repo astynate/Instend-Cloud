@@ -15,8 +15,6 @@ namespace Instend.Core.Models.Storage.File
         [Column("type")] public string? Type { get; private set; } = string.Empty;
         [Column("size")] public long Size { get; private set; } = 0;
 
-        [NotMapped] public byte[] Preview { get; set; } = [];
-
         private Attachment() {}
 
         public static Result<Attachment> Create(string name, string? type, long size, Guid userId)
@@ -56,10 +54,9 @@ namespace Instend.Core.Models.Storage.File
                 return Result.Failure<Attachment>("User not found");
 
             var id = Guid.NewGuid();
-            var path = Configuration.GetAvailableDrivePath() + id;
-
             var name = file.FileName.Split('.');
             var type = name.Length >= 2 ? name[name.Length - 1] : "";
+            var path = Configuration.GetAvailableDrivePath() + id + $".{type}";
 
             return new Attachment()
             {
@@ -70,16 +67,6 @@ namespace Instend.Core.Models.Storage.File
                 Size = file.Length,
                 AccountId = accountId
             };
-        }
-
-        public async Task SetPreview(IPreviewService previewService)
-        {
-            var result = await previewService.GetPreview(Type, Path);
-
-            if (result.IsFailure)
-                return;
-
-            Preview = result.Value;
         }
 
         public void OnDelete(IFileService fileService) => fileService.DeleteFile(Path);

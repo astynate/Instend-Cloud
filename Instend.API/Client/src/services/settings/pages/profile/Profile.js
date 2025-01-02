@@ -1,37 +1,80 @@
-import React, { createContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { setName, setSurname, setNickname } from './operations/Set/SetTextFields';
-import { UpdateAvatar } from './operations/Set/SetImages';
 import { useTranslation } from 'react-i18next';
+import { ValidateProfileData } from './helpers/ValidateProfileData';
 import styles from './styles/main.module.css';
 import SettingType from '../../shared/setting-type/SettingType';
 import AccountState from '../../../../state/entities/AccountState';
 import UploadAvatarProcess from './processes/upload-avatar/UploadAvatarProcess';
 import Input from '../../shared/input/Input';
-import avatarImage from './images/avatar.png';
+import Base64Handler from '../../../../utils/handlers/Base64Handler';
+import GlobalContext from '../../../../global/GlobalContext';
+import InputLink from '../../shared/input/components/link/InputLink';
+import AccountController from '../../../../api/AccountController';
+import ApplicationState from '../../../../state/application/ApplicationState';
+import StorageController from '../../../../api/StorageController';
 
-const Profile = observer(({isSaving, cancel, setCancelState}) => {
-    const [name, setName] = useState(AccountState.account.name);
-    const [surname, setSurname] = useState(AccountState.account.surname);
-    const [nickname] = useState(AccountState.account.nickname);
-    const [avatar, setAvatar] = useState(account.avatar);
+const Profile = observer(({isSaving, cancel, setCancelState, setSavingState = () => {}}) => {
     const { t } = useTranslation();
+    const { account } = AccountState;
 
-    const setAvatarFromAccount = () => {
-        if (account.avatar != null) {
-            setAvatar(account.avatar);
-        }
-    }
+    const [isAvatarProcessOpen, setAvatarProcessOpenState] = useState(false);
+    const [isAvatarSubmitted, setAvatarSubmittedState] = useState(false);
+    const [name, setName] = useState(account.name);
+    const [surname, setSurname] = useState(account.surname);
+    const [nickname, setNickname] = useState(account.nickname);
+    const [avatar, setAvatar] = useState(undefined);
+    const [description, setDescription] = useState(account.description);
+    const [dateOfBirth, setDateOfBirth] = useState(account.dateOfBirth);
+    const [links, setLinks] = useState([]);
+
+    const onSuccess = () => {
+        setSavingState(false);
+    };
+
+    const onError = () => {
+        setSavingState(false);
+    };
 
     const saveChanges = () => {
-        if (isSaving) {
-
+        if (isSaving === false) {
+            return;
         }
+
+        const validationResult = ValidateProfileData(
+            name, 
+            surname, 
+            nickname, 
+            dateOfBirth
+        );
+
+        if (validationResult[0] === false) {
+            ApplicationState.AddErrorInQueue('Incorrect data', validationResult[1]);
+            return;
+        }
+
+        AccountController.ChangeAccountData(
+            name,
+            surname,
+            nickname,
+            description,
+            isAvatarSubmitted ? avatar : '',
+            dateOfBirth,
+            onSuccess,
+            onError
+        );
     }
 
-    useEffect(() => {
-        setAvatarFromAccount();
-    }, [account.avatar]);
+    const addNewLink = () => {
+        const defaultLink = {
+            id: GlobalContext.NewGuid(),
+            icon: '00000000-0000-0000-0000-000000000001',
+            name: "",
+            url: ""
+        };
+
+        setLinks(prev => [...prev, defaultLink]);
+    }
 
     useEffect(() => {
         saveChanges();
@@ -39,7 +82,7 @@ const Profile = observer(({isSaving, cancel, setCancelState}) => {
 
     useEffect(() => {
         if (cancel) {
-            setAvatar(account.avatar);
+            setAvatar(undefined);
             setName(account.name);
             setSurname(account.surname);
             setNickname(account.nickname);
@@ -48,71 +91,108 @@ const Profile = observer(({isSaving, cancel, setCancelState}) => {
     }, [cancel]);
 
     return (
-        <ProfileSettingsContext.Provider value={[profileSettings, setProfileSettings]}>
-            {uploadAvatar && <UploadAvatarProcess 
-                isOpen={uploadAvatar} 
-                setOpenState={setUploadAvatar}
+        <div key={cancel}>
+            <UploadAvatarProcess 
+                isOpen={isAvatarProcessOpen} 
+                setOpenState={setAvatarProcessOpenState}
+                avatar={avatar}
+                setAvatarSubmittedState={setAvatarSubmittedState}
                 setAvatar={setAvatar}
                 aspectRatio={1}
-                Update={UpdateAvatar}
-                image={profileSettings.avatar}
-                img={avatarImage}
-            />}
+                Update={() => {}}
+            />
             <SettingType 
                 image={<div className={styles.avatarWrapper}>
-                    {avatar &&
-                        <img 
-                            src={avatar} 
-                            className={styles.avatar} 
-                            draggable="false"
-                        />}
+                    {(avatar || account.avatar) && <img 
+                        src={avatar && isAvatarSubmitted ? Base64Handler.Base64ToUrlFormatPng(avatar) : StorageController.getFullFileURL(account.avatar)} 
+                        className={styles.avatar} 
+                        draggable="false"
+                    />}
                 </div>} 
                 title={t('cloud.settings.profile.avatar')}
                 description={t('cloud.settings.profile.avatar.desc')}
+                buttons={[
+                    {title: 'Upload avatar', callback: () => setAvatarProcessOpenState(true)}
+                ]}
             />
             <div className={styles.settingBar}>
                 <div className={styles.settingDescriptionWrapper}>
                     <h1 className={styles.settingTitle}>Username</h1>
+                    <span className={styles.settingDescription}>This is your unique identification in Instend. Should contains at list 1 symbol. </span>
                 </div>
                 <Input 
                     title={t('cloud.settings.profile.personal_data.nickname')}
-                    defaultValue={account.nickname} 
+                    defaultValue={nickname} 
                     setValue={setNickname}
                     type="last"
-                    forwardRef={nickname}
                     maxLength={20}
                 />
                 <div className={styles.settingDescriptionWrapper}>
                     <h1 className={styles.settingTitle}>Fullname</h1>
+                    <span className={styles.settingDescription}>This is your unique identification in Instend. Should contains at list 1 symbol. </span>
                 </div>
-                <div style={{display: 'flex', gridGap: '20px'}}>
+                <div style={{display: 'flex', gridGap: '10px'}}>
                     <Input 
                         title={t('cloud.settings.profile.personal_data.name')}
-                        defaultValue={account.name} 
+                        defaultValue={name} 
                         setValue={setName} 
                         type="first"
                         maxLength={20}
                     />
                     <Input 
                         title={t('cloud.settings.profile.personal_data.surname')} 
-                        defaultValue={account.surname} 
+                        defaultValue={surname} 
                         setValue={setSurname}
                         maxLength={20}
                     />
                 </div>
                 <div className={styles.settingDescriptionWrapper}>
                     <h1 className={styles.settingTitle}>Description</h1>
+                    <span className={styles.settingDescription}>This is your unique identification in Instend. Should contains at list 1 symbol. </span>
                 </div>
-                <Input 
-                    title={`Hi! I'm artist and engineer :)`} 
-                    defaultValue={account.description} 
-                    setValue={setSurname}
-                    forwardRef={surname}
+                <Input
+                    title={`Hi! I'm an Artist and Software Engineer :)`} 
+                    defaultValue={description} 
+                    setValue={setDescription}
                     maxLength={20}
                     isMultiline={true}
                 />
+                <div className={styles.settingDescriptionWrapper}>
+                    <h1 className={styles.settingTitle}>Date of birth</h1>
+                    <span className={styles.settingDescription}>This is your unique identification in Instend. Should contains at list 1 symbol. </span>
+                </div>
+                <Input
+                    type="date"
+                    defaultValue={dateOfBirth}
+                    title={`Date of birth`} 
+                    setValue={setDateOfBirth}
+                />
+                <div className={styles.settingDescriptionWrapper}>
+                    <h1 className={styles.settingTitle}>Links</h1>
+                    <span className={styles.settingDescription}>This is your unique identification in Instend. Should contains at list 1 symbol. </span>
+                </div>
+                <div className={styles.links}>
+                    {links.map(link => {
+                        return (
+                            <InputLink
+                                key={link.id}
+                                id={link.id}
+                                type="link"
+                                value={link}
+                                setValue={setLinks}
+                            />
+                        )
+                    })}
+                    {links.length < 5 && <div className={styles.newLinkWrapper} onClick={addNewLink}>
+                        <InputLink
+                            type="link"
+                            isEditable={false}
+                            setValue={() => {}}
+                        />
+                    </div>}
+                </div>
             </div>
-        </ProfileSettingsContext.Provider>
+        </div>
     );
 });
 

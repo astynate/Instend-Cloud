@@ -6,12 +6,12 @@
 }
 
 .textBlock h1 {
-    font-size: 17px;
+    font-size: 20px;
     font-weight: 700;
 }
 
 .textBlock span {
-    font-size: 15px;
+    font-size: 14px;
     color: var(--main-paragraph-color);
 }
 

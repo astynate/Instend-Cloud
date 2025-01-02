@@ -15,14 +15,15 @@ namespace Instend.Core.Models.Account
         [Column("surname")] public string Surname { get; private set; } = null!;
         [Column("nickname")] public string Nickname { get; private set; } = null!;
         [Column("email")] public string Email { get; private set; } = null!;
-        [Column("avatar")] public string? Avatar { get; set; } = string.Empty;
-        [Column("header")] public string Header { get; set; } = string.Empty;
+        [Column("avatar")] public string Avatar { get; set; } = string.Empty;
+        [Column("description")] public string? Description { get; set; } = string.Empty;
         [Column("balance")] public decimal Balance { get; private set; } = 0;
         [Column("password")] public string Password { get; private set; } = null!;
         [Column("storage_space")] public double StorageSpace { get; private set; } = 1073741824;
         [Column("occupied_space")] public double OccupiedSpace { get; private set; } = 0;
         [Column("is_confirmed")] public bool IsConfirmed { get; private set; } = false;
         [Column("creation_datetime")] public DateTime RegistrationDate { get; private set; } = DateTime.Now;
+        [Column("date_of_birth")] public DateOnly DateOfBirth { get; private set; }
         [Column("friend_count")] public uint FriendCount { get; private set; } = 0;
 
         [NotMapped] public List<Account> Followers { get; set; } = new List<Account>();
@@ -34,7 +35,7 @@ namespace Instend.Core.Models.Account
 
         private Account() { }
 
-        public static Result<Account> Create (string name, string surname, string nickname, string email, string password)
+        public static Result<Account> Create (string name, string surname, string nickname, string email, string password, DateOnly dateOfBirth)
         {
             Func<string, bool> ValidateVarchar = (x)
                 => !(string.IsNullOrEmpty(x) || x.Length > 45 || string.IsNullOrWhiteSpace(x));
@@ -54,16 +55,20 @@ namespace Instend.Core.Models.Account
             if (ValidateVarchar(password) == false || password.Length < 8)
                 return Result.Failure<Account>("Invalid nickname");
 
-            var user = new Account()
-            {
-                Name = name,
-                Surname = surname,
-                Nickname = nickname,
-                Email = email,
-                Password = password,
-            };
+            if (DateTime.Now.Year - dateOfBirth.Year < 5)
+                return Result.Failure<Account>("To register an account in Instend you should be more than 5 years old.");
 
-            return Result.Success(user);
+            var account = new Account();
+
+            account.Name = name;
+            account.Surname = surname;
+            account.Nickname = nickname;
+            account.Email = email;
+            account.DateOfBirth = dateOfBirth;
+            account.Password = password;
+            account.Avatar = Configuration.GetAvailableDrivePath() + account.Id + "-avatar";
+
+            return Result.Success(account);
         }
 
         public void HashPassword(IEncryptionService encryptionService) 

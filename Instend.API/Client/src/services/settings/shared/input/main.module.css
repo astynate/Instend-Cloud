@@ -3,11 +3,10 @@
     font-size: 16px;
     outline: none;
     border: none;
-    border-radius: 0;
     padding: 14px 16px;
     width: 100%;
     border: 1px solid var(--not-transparent-border-color);
-    background: transparent;
+    background: var(--main-accent-color);
     border-radius: 10px;
     font-family: 'Open Sans', sans-serif;
     resize: none;
@@ -18,7 +17,67 @@
     outline: 3px solid var(--main-blue-color);
 }
 
+.input[id="disabled"] {
+    cursor: pointer;
+    outline: none;
+}
+
 .placeholder {
     color: var(--main-paragraph-color);
     font-size: 16px;
+}
+
+.link {
+    display: flex;
+    grid-gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon {
+    height: 50px;
+    width: 50px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    border: 1px solid var(--not-transparent-border-color);
+    background: var(--main-accent-color);
+}
+
+.icon img {
+    height: 26px;
+    width: 26px;
+    object-fit: contain;
+}
+
+.icons {
+    top: 58px;
+    left: 0;
+    height: auto;
+    width: fit-content;
+    max-width: 400px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    flex-wrap: wrap;
+    position: absolute;
+    z-index: 1;
+    border-radius: 10px;
+    border: 1px solid var(--not-transparent-border-color);
+    background: var(--main-accent-color);
+}
+
+.iconButton {
+    height: 50px;
+    width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.iconButton[state="inverted"] img {
+    filter: var(--main-filter);
 }

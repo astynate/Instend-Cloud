@@ -5,6 +5,7 @@ import settings from '../images/settings.png';
 import moon from '../images/moon.png';
 import language from '../images/language.png';
 import logout from '../images/logout.png';
+import StorageController from '../../../../../api/StorageController';
 
 const MainProfilePopUp = ({setCurrentWindow = () => {}}) => {
     const Logout = () => {
@@ -25,7 +26,7 @@ const MainProfilePopUp = ({setCurrentWindow = () => {}}) => {
         <div className={styles.miniProfile}>
             <div className={styles.header}>
                 <img
-                    src={`data:image/png;base64,${AccountState.account.avatar}`} 
+                    src={StorageController.getFullFileURL(AccountState.account.avatar)} 
                     className={styles.avatar}
                     draggable="false"
                 />

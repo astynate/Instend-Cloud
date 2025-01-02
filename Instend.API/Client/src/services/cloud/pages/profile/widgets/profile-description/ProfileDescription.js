@@ -1,14 +1,15 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { CalculateAge, ConvertYearMonthOnly } from '../../../../../../utils/handlers/DateHandler';
 import AccountState from '../../../../../../state/entities/AccountState';
 import SubContentWrapper from '../../../../features/wrappers/sub-content-wrapper/SubContentWrapper';
 import Data from '../../../../elements/profile/profile-data/Data';
 import styles from './main.module.css';
-import Avatar from '../../../../elements/profile/profile-avatar/Avatar';
 import Username from '../../../../elements/profile/profile-username/Username';
 import CircleButtonWrapper from '../../../../features/wrappers/circle-button-wrapper/CircleButtonWrapper';
-import { Link } from 'react-router-dom';
+import UserAvatar from '../../../../shared/avatars/user-avatar/UserAvatar';
 
 const ProfileDescription = observer(({isMobile}) => {
     const { t } = useTranslation();
@@ -22,7 +23,8 @@ const ProfileDescription = observer(({isMobile}) => {
         <div className={styles.content}>
             <SubContentWrapper>
                 <div className={styles.information}>
-                    <Avatar 
+                    <UserAvatar
+                        size={150}
                         avatar={account.avatar}
                     />
                     <div className={styles.data}>
@@ -45,7 +47,13 @@ const ProfileDescription = observer(({isMobile}) => {
                                 {title: 'MB', amount: (account.storageSpace / (1024 * 1024)).toFixed(0)}
                             ]}
                         />
-                        <h5>{account.name} {account.surname}</h5>
+                        <div style={{display: 'flex', gridGap: '5px', flexDirection: 'column'}}>
+                            <div style={{display: 'flex', gridGap: '10px'}}>
+                                <h5>{account.name} {account.surname}</h5>
+                                <span className={styles.paragraph}>{CalculateAge(account.dateOfBirth)} y.o.</span>
+                            </div>
+                            <span className={styles.paragraph}>Joined {ConvertYearMonthOnly(account.registrationDate)}</span>
+                        </div>
                     </div>
                 </div>
             </SubContentWrapper>

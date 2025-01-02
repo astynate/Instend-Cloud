@@ -2,7 +2,6 @@
 using Instend.Services.External.FileService;
 using Instend.Core.Models.Abstraction;
 using System.ComponentModel.DataAnnotations.Schema;
-using Instend.Core.Models.Access;
 
 namespace Instend.Core.Models.Storage.File
 {

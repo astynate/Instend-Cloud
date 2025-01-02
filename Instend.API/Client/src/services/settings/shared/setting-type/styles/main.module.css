@@ -6,8 +6,9 @@
     grid-gap: 15px;
     padding: 15px;
     border-radius: 20px;
-    background: var(--main-background-color);
-    background: var(--sub-accent-background);
+    background: var(--main-accent-color);
+    border: 1px solid var(--not-transparent-border-color);
+    user-select: none;
 }
 
 .description {
@@ -24,4 +25,27 @@
 .settingType p {
     font-size: 12px;
     color: var(--main-paragraph-color)
+}
+
+.buttons {
+    margin-left: auto;
+}
+
+.button {
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: var(--main-blue-color);
+    font-family: 'Open Sans', sans-serif;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.button:hover {
+    opacity: 0.9;
+}
+
+.button:active {
+    opacity: 0.7;
 }

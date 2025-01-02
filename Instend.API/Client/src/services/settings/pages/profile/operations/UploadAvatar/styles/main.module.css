@@ -1,9 +1,9 @@
 .wrapper {
     height: 100%;
     width: 700px;
-    border: 7px solid var(--main-accent-color);
-    outline: 2px dashed var(--main-blue-color);
-    outline-offset: -7px;
+    border: 15px solid var(--main-accent-color);
+    outline: 4px dashed var(--main-blue-color);
+    outline-offset: -15px;
     border-radius: 20px;
     display: grid;
     grid-template-rows: 0.8fr 0.2fr;
@@ -29,15 +29,15 @@
     outline: none;
     background: var(--main-blue-color);
     color: var(--main-accent-font-color);
-    padding: 10px 25px;
-    border-radius: 10px;
-    font-size: 14px;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
     cursor: pointer;
     position: relative;
 }
 
 .button input[type="file"] {
-
     top: 0;
     left: 0;
     height: 100%;
@@ -45,7 +45,6 @@
     position: absolute;
     cursor: pointer;
     opacity: 0;
-
 }
 
 .content {
@@ -57,14 +56,16 @@
 }
 
 .content h1 {
-    font-size: 21px;
+    font-size: 22px;
     font-weight: 700;
+    font-family: 'Open Sans', sans-serif;
     color: var(--sub-font-color);
     filter: invert(100%);
 }
 
 .content p {
-    font-size: 12px;
+    font-size: 13px;
+    max-width: 400px;
     color: var(--main-paragraph-color);
 }
 
@@ -88,7 +89,6 @@
 
 @media (max-width: 700px) {
     .wrapper {
-        /* height: 100vh; */
         width: auto;
         border-radius: 0px;
         background: none;
@@ -98,6 +98,5 @@
 
     .wrapper[id="file"] {
         outline: 0px solid var(--main-blue-color);
-    }
-    
+    } 
 }

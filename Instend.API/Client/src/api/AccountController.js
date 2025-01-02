@@ -44,24 +44,31 @@ class AccountController {
         return friend;
     }
 
-    static ChangeAccountData = async (name, surname, description, avatar, onSuccess, onError) => {
+    static ChangeAccountData = async (name, surname, nickname, description, avatar, dateOfBirth, onSuccess, onError) => {
         let form = new FormData();
 
         form.append('name', name);
         form.append('surname', surname);
+        form.append('nickname', nickname);
         form.append('description', description);
+        form.append('dateOfBirth', dateOfBirth);
 
         if (!!avatar === true) {
             form.append('avatar', avatar);
         }
 
-        await instance.put('/accounts', form)
+        await instance
+            .put('/accounts', form)
             .then(response => {
-                if (response.status === 200) {
+                if (response && response.status === 200) {
                     onSuccess();
                 } else {
                     onError();
                 }
+            })
+            .catch(error => {
+                console.error(error);
+                onError();
             });
     }
 }

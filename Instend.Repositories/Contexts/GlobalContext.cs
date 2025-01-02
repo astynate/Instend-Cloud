@@ -1,7 +1,6 @@
 ﻿using Instend.Core.Models.Abstraction;
 using Instend.Core.Models.Access;
 using Instend.Core.Models.Formats;
-using Instend.Core.Models.Public;
 using Instend.Core.Models.Storage.Album;
 using Instend.Core.Models.Storage.Collection;
 using Instend.Core.Models.Storage.File;

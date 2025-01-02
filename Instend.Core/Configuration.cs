@@ -35,7 +35,7 @@ namespace Instend.Core
 
         public static readonly int accessTokenLifeTimeInMinutes = 30;
 
-        public static readonly string? DefaultAvatar;
+        public static readonly string DefaultAvatar = "";
 
         public static readonly string DefaultAlbumCover;
 
@@ -44,6 +44,8 @@ namespace Instend.Core
         public static readonly string[] musicTypes = {"mp3", "m4a", "wav"};
 
         public static readonly string[] videoTypes = {"mp4", "mov", "mpeg-4"};
+
+        public static readonly string[] textTypes = {"text", "csv"};
 
         public static readonly string[] documentTypes = {"doc", "docx"};
 
@@ -58,6 +60,25 @@ namespace Instend.Core
         public delegate Task<Result<Attachment>> GetAttachmentDelegate(Guid itemId, Guid attachmentId);
 
         public static readonly string[] _drivePaths = { "D:/Instend LLC/System/" };
+
+        public static string ConvertTypeToContentType(string type)
+        {
+            var contentType = "application/octet-stream";
+
+            if (imageTypes.Contains(type))
+                return $"image/{type}";
+
+            if (musicTypes.Contains(type))
+                return $"audio/{type}";
+
+            if (videoTypes.Contains(type))
+                return $"video/{type}";
+
+            if (textTypes.Contains(type))
+                return $"text/{type}";
+
+            return contentType;
+        }
 
         public static string GetAvailableDrivePath()
         {

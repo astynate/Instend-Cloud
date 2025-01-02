@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Crop from "../../operations/Crop/Crop";
 import UploadAvatar from "../../operations/UploadAvatar/UploadAvatar";
 
-const UploadAvatarProcess = (props) => {
+const UploadAvatarProcess = ({avatar, isOpen, setOpenState, setAvatarSubmittedState, setAvatar, aspectRatio}) => {
     const [isUpload, setUploadState] = useState(false);
     const [isCropOperation, setCropOperation] = useState(false);
 
@@ -16,34 +16,35 @@ const UploadAvatarProcess = (props) => {
             return isImageHasValidSize;
         };
 
-        setUploadState(ValidateImage(props.image));
-    }, []);
+        const isValidImage = ValidateImage(avatar);
+
+        setUploadState(isValidImage);
+        setCropOperation(isValidImage);
+    }, [avatar]);
 
     if (isUpload === true && isCropOperation === true) {
         return (
             <Crop
-                isOpen={isCropOperation}
-                setOpenState={props.setOpenState}
-                setAvatar={props.setAvatar}
+                isOpen={true}
+                setOpenState={setOpenState}
+                setAvatar={setAvatar}
                 setPrevOperation={setCropOperation}
-                aspectRatio={props.aspectRatio}
-                Update={props.Update}
-                image={props.image}
+                aspectRatio={aspectRatio}
+                image={avatar}
+                setAvatarSubmittedState={setAvatarSubmittedState}
             />
         );
     };
 
     return (
-            <UploadAvatar 
-                isOpen={props.isOpen} 
-                setOpenState={props.setOpenState} 
-                isUpload={isUpload}
-                setNextOperation={setCropOperation}
-                Update={props.Update}
-                img={props.img}
-            />
-        );
-    }
+        <UploadAvatar 
+            isOpen={isOpen} 
+            setOpenState={setOpenState} 
+            isUpload={isUpload}
+            setNextOperation={setCropOperation}
+            setAvatar={setAvatar}
+        />
+    );
 };
 
 export default UploadAvatarProcess;

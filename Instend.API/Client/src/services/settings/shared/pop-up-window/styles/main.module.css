@@ -18,24 +18,20 @@
     height: auto;
     width: auto;
     border-radius: 20px;
-    background: var(--main-background-color);
+    background: var(--main-accent-color);
     overflow: hidden;
 }
 
 @media (max-width: 700px) {
-
     .wrapper {
         height: 100dvh;
         width: 100dvw;
         z-index: 999999999999999999;
         backdrop-filter: blur(10px);
         background: rgba(0, 0, 0, 0.8);
-        /* background: var(--main); */
     }
 
     .window {
         background: none;
-        /* backdrop-filter: blur(10px); */
     }
-
 }

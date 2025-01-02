@@ -72,30 +72,43 @@ namespace Instend.Repositories.Repositories
             if (userId == Guid.Empty || string.IsNullOrEmpty(password))
                 return Result.Failure("Invalid data");
 
-            Core.Models.Account.Account? account = await GetByIdAsync(userId);
+            var account = await GetByIdAsync(userId);
 
             if (account == null)
                 return Result.Failure("User not found");
 
-            var userRecoverPasswordResult = account.RecoverPassword(_encryptionService, password);
+            var userRecoverPasswordResult = account
+                .RecoverPassword(_encryptionService, password);
 
             if (userRecoverPasswordResult.IsFailure)
                 return Result.Failure(userRecoverPasswordResult.Error);
 
-            await _context.Accounts.Where(u => u.Id == userId).ExecuteUpdateAsync(u => u
-                .SetProperty(property => property.Password, account.Password));
+            await _context.Accounts
+                .Where(u => u.Id == userId)
+                .ExecuteUpdateAsync(u => u
+                    .SetProperty(property => property.Password, account.Password));
 
             await _context.SaveChangesAsync();
             return Result.Success();
         }
 
-        public async Task Update(Guid userId, string name, string surname, string nickname)
+        public async Task Update(Guid userId, string? name, string? surname, string? nickname, string? description)
         {
+            if (string.IsNullOrEmpty(name))
+                return;
+
+            if (string.IsNullOrEmpty(surname))
+                return;
+
+            if (string.IsNullOrEmpty(nickname))
+                return;
+
             await _context.Accounts.AsNoTracking()
                 .Where(u => u.Id == userId)
                     .ExecuteUpdateAsync(user => user
                         .SetProperty(p => p.Name, name)
                         .SetProperty(p => p.Surname, surname)
+                        .SetProperty(p => p.Description, description)
                         .SetProperty(p => p.Nickname, nickname));
 
             await _context.SaveChangesAsync();
@@ -124,21 +137,6 @@ namespace Instend.Repositories.Repositories
             var account = await _context.Accounts
                 .AsNoTracking()
                 .FirstOrDefaultAsync(expression);
-
-            if (account == null)
-                return null;
-
-            var avatar = Configuration.DefaultAvatar;
-            var header = "";
-            
-            if (string.IsNullOrEmpty(account.Avatar) == false)
-                avatar = Convert.ToBase64String(_imageService.CompressImage(await File.ReadAllBytesAsync(account.Avatar), 5, "png"));
-
-            if (string.IsNullOrEmpty(account.Header) == false)
-                header = Convert.ToBase64String(_imageService.CompressImage(await File.ReadAllBytesAsync(account.Header), 5, "png"));
-
-            account.Avatar = avatar;
-            account.Header = header;
 
             return account;
         }

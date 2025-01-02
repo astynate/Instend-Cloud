@@ -4,9 +4,16 @@ import styles from './styles/main.module.css';
 import PopUpWindow from "../../../../shared/pop-up-window/PopUpWindow";
 import CropImage from './Operations';
 
+const sides = {
+    TOP_LEFT: 'topLeft',
+    TOP_RIGHT: 'topRight',
+    BOTTOM_LEFT: 'bottomLeft',
+    BOTTOM_RIGHT: 'bottomRight'
+};
+
 const Crop = (props) => {
     const [isMouseDown, setMouseDown] = useState(false);
-    const [image, setImage] = useState();
+    const [image, setImage] = useState({});
     const [offsetTop, setOffsetTop] = useState(0);
     const [offsetLeft, setOffsetLeft] = useState(0);
     const [clientX, setClientX] = useState(0);
@@ -17,8 +24,10 @@ const Crop = (props) => {
     const [objectFit, setObjectFit] = useState('width');
     const [currentOffestX, setCurrentOffsetX] = useState(0);
     const [currentOffestY, setCurrentOffsetY] = useState(0);
-    const [croppedAvatar, setCroppedAvatar] = useState(image);
     const [cropState, setCropState] = useState(false);
+    const [startOffset, setStartOffsetState] = useState([0, 0]);
+    const [startSize, setStartSize] = useState([0, 0]);
+    const [side, setSide] = useState(sides.TOP_LEFT);
 
     const wrapperRef = useRef();
     
@@ -34,10 +43,7 @@ const Crop = (props) => {
 
     }, [offsetTop, offsetLeft]);
 
-    const onloadImage = () => {
-        const height = image.naturalHeight;
-        const width = image.naturalWidth;
-
+    const onloadImage = (height, width) => {
         setImageSize([height, width]);
 
         if ((width / height) <= props.aspectRatio) {
@@ -59,7 +65,7 @@ const Crop = (props) => {
         const image = new Image();
 
         image.src = event.target.result;
-        image.onload = onloadImage;
+        image.onload = () => onloadImage(image.height, image.width);
 
         if (event.target.result) {
             setImage(event.target.result);
@@ -72,16 +78,17 @@ const Crop = (props) => {
     
         reader.onload = readerOnloadEvent;
     
-        if (file) {
+        if (file && file instanceof Blob) {
             reader.readAsDataURL(file);
         }
     }, [props.image]);
     
-
-    const setClientOffset = (x, y) => {
+    const setClientOffset = (x, y, side) => {
         setClientX(x);
         setClientY(y);
-
+        setStartOffsetState([parseInt(offsetLeft), parseInt(offsetTop)]);
+        setStartSize([areaHeight, areaWidth]);
+        setSide(side);
         setMouseDown(true);
     };
 
@@ -93,58 +100,94 @@ const Crop = (props) => {
         setClientY(0);
     };
 
-    const MoveArea = (x, y) => {
-        if (isMouseDown) {
-            const offsetY = y - clientY + parseInt(currentOffestY);
-            const offsetX = x - clientX + parseInt(currentOffestX);
+    const MoveArea = (x, y, event) => {
+        if (isMouseDown === false) {
+            return;
+        }
 
-            if (objectFit === 'height') {
-                if (offsetY + areaHeight < HEIGHT_ALIGNMENT) {
-                    setOffsetTop(parseInt(offsetY <= 0 ? 1 : offsetY));
-                }
+        event.stopPropagation();
 
-                if (offsetX + areaWidth < HEIGHT_ALIGNMENT / imageSize[0] * imageSize[1]) {
-                    setOffsetLeft(parseInt(offsetX <= 0 ? 1 : offsetX));
-                }
-            } 
-            else {  
-                if (offsetY + areaHeight < WIDTH_ALIGNMENT / imageSize[1] * imageSize[0]) {
-                    setOffsetTop(parseInt(offsetY <= 0 ? 1 : offsetY));
-                }
+        const offsetY = y - clientY + parseInt(currentOffestY);
+        const offsetX = x - clientX + parseInt(currentOffestX);
 
-                if (offsetX + areaWidth < WIDTH_ALIGNMENT) {
-                    setOffsetLeft(parseInt(offsetX <= 0 ? 1 : offsetX));
-                }
-            }
+        if (objectFit === 'height') {
+            if (offsetY + areaHeight < HEIGHT_ALIGNMENT)
+                setOffsetTop(parseInt(offsetY <= 0 ? 1 : offsetY));
+
+            if (offsetX + areaWidth < HEIGHT_ALIGNMENT / imageSize[0] * imageSize[1])
+                setOffsetLeft(parseInt(offsetX <= 0 ? 1 : offsetX));
+        } 
+        else {  
+            if (offsetY + areaHeight < WIDTH_ALIGNMENT / imageSize[1] * imageSize[0])
+                setOffsetTop(parseInt(offsetY <= 0 ? 1 : offsetY));
+
+            if (offsetX + areaWidth < WIDTH_ALIGNMENT)
+                setOffsetLeft(parseInt(offsetX <= 0 ? 1 : offsetX));
         }
     };
 
-    const TransformScale = (x, type) => {
-        if (isMouseDown) {
-            const offset = x - clientX;
+    const TransformScale = (x, y) => {
+        if (isMouseDown === false)
+            return;
 
-            if (type === 0) {
-                if (offset > 0) {
-                    Decrease(Math.abs(offset));
-                } else {
-                    Icrease(Math.abs(offset));
-                }
-            } else {
-                if (offset < 0) {
-                    Decrease(Math.abs(offset));
-                } else {
-                    Icrease(Math.abs(offset));
-                }
-            }
-        }
+        const absoluteOffsetX = Math.abs(Math.abs(x) - Math.abs(clientX));
+        const absoluteOffsetY = Math.abs(Math.abs(y) - Math.abs(clientY));
+        const absoluteOffset = (absoluteOffsetX + absoluteOffsetY) / 2;
+
+        const isOffsetYPositive = (y - clientY) > 0;
+
+        const conditionOne = side === sides.TOP_LEFT && isOffsetYPositive;
+        const conditionTwo = side === sides.TOP_RIGHT && isOffsetYPositive;
+        const conditionThree = side === sides.BOTTOM_LEFT && !isOffsetYPositive;
+        const conditionFour = side === sides.BOTTOM_RIGHT && !isOffsetYPositive;
+
+        const isDecreaseOperation = conditionOne || conditionTwo || conditionThree || conditionFour;
+        const isIncreaseOperation = !isDecreaseOperation;
+
+        if (isDecreaseOperation)
+            Decrease(absoluteOffset);
+        
+        if (isIncreaseOperation)
+            Icrease(absoluteOffset);
     };
+
+    const updateOffesetLeft = (size, coefficient) => {
+        setOffsetLeft(Math.max(0, startOffset[0] + size * coefficient));
+    }
+
+    const updateOffesetTop = (size, coefficient) => {
+        setOffsetTop(Math.max(0, startOffset[1] + size * coefficient));
+    }
+
+    const updateOffset = (size, operationType) => {
+        if (side === sides.TOP_LEFT && operationType === 0) {
+            updateOffesetLeft(size, 1)
+            updateOffesetTop(size, 1);
+        }
+
+        if (side === sides.TOP_LEFT && operationType === 1) {
+            updateOffesetLeft(size, -1)
+            updateOffesetTop(size, -1);
+        }
+
+        if (side === sides.BOTTOM_LEFT && operationType === 0)
+            updateOffesetLeft(size, 1);
+
+        if (side === sides.BOTTOM_LEFT && operationType === 1)
+            updateOffesetLeft(size, -1);
+
+        if (side === sides.TOP_RIGHT && operationType === 0)
+            updateOffesetTop(size, 1);
+
+        if (side === sides.TOP_RIGHT && operationType === 1)
+            updateOffesetTop(size, -1);
+    }
 
     const Decrease = (size) => {
         if (areaHeight - size > 70 && areaWidth - size > 70) {
-            setAreaHeight(areaHeight - size);
-            setAreaWidth(areaWidth - size * props.aspectRatio);
-            setOffsetTop(prev => parseInt(prev) + size / 2);
-            setOffsetLeft(prev => parseInt(prev) + size / 2);
+            setAreaHeight(startSize[0] - size);
+            setAreaWidth(startSize[1] - size);
+            updateOffset(size, 0);
         }
     };
 
@@ -153,10 +196,9 @@ const Crop = (props) => {
         let MAX_WIDTH = objectFit === 'width' ? WIDTH_ALIGNMENT : 450 / imageSize[0] * imageSize[1];
 
         if (areaHeight + size < MAX_HEIGHT && areaWidth + size < MAX_WIDTH) {
-            setAreaHeight(areaHeight + size);
-            setAreaWidth(areaWidth + size * props.aspectRatio);
-            setOffsetTop(prev => parseInt(prev) - size / 2);
-            setOffsetLeft(prev => parseInt(prev) - size / 2);
+            setAreaHeight(startSize[0] + size);
+            setAreaWidth(startSize[1] + size);
+            updateOffset(size, 1);
         }
     };
 
@@ -168,12 +210,9 @@ const Crop = (props) => {
                 y={objectFit === 'height' ? imageSize[0] / HEIGHT_ALIGNMENT * offsetTop : imageSize[1] / WIDTH_ALIGNMENT * offsetTop}
                 height={objectFit === 'height' ? imageSize[0] / HEIGHT_ALIGNMENT * areaHeight : imageSize[1] / WIDTH_ALIGNMENT * areaHeight}
                 width={objectFit === 'height' ? imageSize[0] / HEIGHT_ALIGNMENT * areaWidth : imageSize[1] / WIDTH_ALIGNMENT * areaWidth}
-                setCroppedImage={setCroppedAvatar}
                 cropState={cropState}
                 setOpenState={props.setOpenState}
                 setAvatar={props.setAvatar}
-                setContext={setContext}
-                Update={props.Update}
             />
             <div 
                 className={styles.imageWrapper}
@@ -189,47 +228,43 @@ const Crop = (props) => {
                         className={styles.crop}                                     
                         onMouseUp={() => clientOffsetRecovery()}
                         onMouseLeave={() => clientOffsetRecovery()}
+                        onMouseMove={(event) => TransformScale(event.clientX, event.clientY)}
+                        onTouchMove={(event) => TransformScale(event.touches[0].clientX)}
                     >
                         <div className={styles.top}></div>
                         <div className={styles.middle}>
                             <div className={styles.left}></div>
-                            <div className={styles.workspace}>
+                            <div 
+                                className={styles.workspace}
+                            >
                                 <div 
                                     className={styles.dragAndDropPoint} 
-                                    onMouseDown={(event) => setClientOffset(event.clientX, event.clientX)}
-                                    onMouseMove={(event) => TransformScale(event.clientX, 0)}
+                                    onMouseDown={(event) => setClientOffset(event.clientX, event.clientY, sides.TOP_LEFT)}
                                     onTouchStart={(event) => setClientOffset(event.touches[0].clientX, event.touches[0].clientY)}
-                                    onTouchMove={(event) => TransformScale(event.touches[0].clientX, 0)}
                                 ></div>
                                 <div 
                                     className={styles.dragAndDropPoint} 
-                                    onMouseDown={(event) => setClientOffset(event.clientX, event.clientX)}
-                                    onMouseMove={(event) => TransformScale(event.clientX, 1)}
-                                    onTouchStart={(event) => setClientOffset(event.touches[0].clientX, event.touches[0].clientY)}
-                                    onTouchMove={(event) => TransformScale(event.touches[0].clientX, 1)}
+                                    onMouseDown={(event) => setClientOffset(event.clientX, event.clientY, sides.TOP_RIGHT)}
+                                    onTouchStart={(event) => setClientOffset(event.touches[0].clientX, event.touches[0].clientY, 1)}
                                 ></div>
                                 <div 
                                     className={styles.dragAndDropPoint}
-                                    onMouseDown={(event) => setClientOffset(event.clientX, event.clientX)}
-                                    onMouseMove={(event) => TransformScale(event.clientX, 0)}
+                                    onMouseDown={(event) => setClientOffset(event.clientX, event.clientY, sides.BOTTOM_LEFT)}
                                     onTouchStart={(event) => setClientOffset(event.touches[0].clientX, event.touches[0].clientY)}
-                                    onTouchMove={(event) => TransformScale(event.touches[0].clientX, 0)}
                                 ></div>
                                 <div 
                                     className={styles.dragAndDropPoint}
-                                    onMouseDown={(event) => setClientOffset(event.clientX, event.clientX)}
-                                    onMouseMove={(event) => TransformScale(event.clientX, 1)}
+                                    onMouseDown={(event) => setClientOffset(event.clientX, event.clientY, sides.BOTTOM_RIGHT)}
                                     onTouchStart={(event) => setClientOffset(event.touches[0].clientX, event.touches[0].clientY)}
-                                    onTouchMove={(event) => TransformScale(event.touches[0].clientX, 1)}
                                 ></div>
                                 <div 
                                     className={styles.circle}
                                     onMouseUp={() => clientOffsetRecovery()}
                                     onMouseLeave={() => clientOffsetRecovery()}
-                                    onMouseDown={(event) => setClientOffset(event.clientX, event.clientY)}
-                                    onMouseMove={(event) => MoveArea(event.clientX, event.clientY)}
+                                    onMouseDown={(event) => setClientOffset(event.clientX, event.clientY, 0)}
+                                    onMouseMove={(event) => MoveArea(event.clientX, event.clientY, event)}
                                     onTouchStart={(event) => setClientOffset(event.touches[0].clientX, event.touches[0].clientY)}
-                                    onTouchMove={(event) => MoveArea(event.touches[0].clientX, event.touches[0].clientY)}
+                                    onTouchMove={(event) => MoveArea(event.touches[0].clientX, event.touches[0].clientY, event)}
                                 ></div>
                             </div>
                             <div className={styles.right}></div>
@@ -242,7 +277,10 @@ const Crop = (props) => {
             <div className={styles.buttons}>
                 <div className={styles.navigation}>
                     <Back onClick={() => props.setPrevOperation(false)} />
-                    <Next onClick={() => setCropState(true)}/>
+                    <Next onClick={() => {
+                        setCropState(true);
+                        props.setAvatarSubmittedState(true);
+                    }}/>
                 </div>
             </div>
         </PopUpWindow>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import SelectElementWithCheckmark from '../../../../elements/select/select-element-with-checkmark/SelectElementWithCheckmark';
 import styles from './main.module.css';
+import StorageController from '../../../../../../api/StorageController';
 import Base64Handler from '../../../../../../utils/handlers/Base64Handler';
 
 const AttachmentImage = ({image, isEditable = false, setAttachments}) => {
@@ -9,7 +10,7 @@ const AttachmentImage = ({image, isEditable = false, setAttachments}) => {
     return (
         <div className={styles.imageWrapper}>
             <img 
-                src={Base64Handler.Base64ToUrlFormatPng(image.preview)} 
+                src={image.preview ? Base64Handler.Base64ToUrlFormatPng(image.preview) : StorageController.getFullFileURL(image.path)} 
                 draggable={false}
             />
             {isEditable && <SelectElementWithCheckmark

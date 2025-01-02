@@ -31,6 +31,10 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
         private readonly ICollectionsRepository _folderRepository;
 
+        private readonly IFileService _fileService;
+
+        private readonly IRequestHandler _requestHandler;
+
         private readonly IFriendsRepository _friendsRepository;
 
         private readonly GlobalContext _context;
@@ -44,6 +48,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             IEmailService emailService,
             IEncryptionService encryptionService,
             IFriendsRepository friendsRepository,
+            IRequestHandler requestHandler,
+            IFileService fileService,
             GlobalContext context
         )
         {
@@ -54,6 +60,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             _folderRepository = folderRepository;
             _friendsRepository = friendsRepository;
             _emailService = emailService;
+            _requestHandler = requestHandler;
+            _fileService = fileService;
             _context = context;
         }
 
@@ -150,7 +158,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
                         user.surname,
                         user.nickname,
                         user.email,
-                        user.password
+                        user.password,
+                        user.dateofBirth
                     );
 
                     if (account.IsFailure)
@@ -177,7 +186,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
                     var email = account.Value.Email;
                     var code = confirmation.Value.Code;
-                    var link = "account/email/confirmationsRepository/" + confirmation.Value.Link.ToString();
+                    var link = "accountTransferModel/email/confirmationsRepository/" + confirmation.Value.Link.ToString();
 
                     await _emailService.SendEmailConfirmation(email, code, Configuration.URL + link);
 
@@ -190,80 +199,37 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
         [HttpPut]
         [Authorize]
-        public async Task<IActionResult> Update([FromForm] UpdateAccountTranferModel userDTO, IRequestHandler requestHandler)
+        public async Task<IActionResult> Update([FromForm] UpdateAccountTranferModel accountTransferModel)
         {
-            //if (userDTO is null)
-            //    return BadRequest("Invalid user data");
+            var userId = _requestHandler
+                .GetUserId(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
 
-            //if (string.IsNullOrEmpty(userDTO.name) || string.IsNullOrEmpty(userDTO.surname) || string.IsNullOrEmpty(userDTO.nickname))
-            //    return BadRequest("First name, last name and nickname are required fields.");
+            if (userId.IsFailure)
+                return Unauthorized("Invalid token");
 
-            //var userId = requestHandler.GetUserId(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
+            var account = await _accountsRepository
+                .GetByIdAsync(Guid.Parse(userId.Value));
 
-            //if (userId.IsFailure)
-            //    return Unauthorized("Invalid token");
+            if (account == null)
+                return Conflict("Account not found");
 
-            //await _usersRepository.Update(Guid.Parse(userId.Value), userDTO.name, userDTO.surname, userDTO.nickname);
+            await _accountsRepository.Update
+            (
+                Guid.Parse(userId.Value),
+                accountTransferModel.name,
+                accountTransferModel.surname,
+                accountTransferModel.nickname,
+                accountTransferModel.description
+            );
 
-            //if (userDTO.avatar == "delete")
-            //{
-            //    var deleteResult = await _imageService.DeleteAvatar
-            //    (
-            //        _userDataRepository, 
-            //        Guid.Parse(userId.Value), 
-            //        Configuration.DefaultAvatarPath
-            //    );
+            if (accountTransferModel.avatar != null && accountTransferModel.avatar.Length > 0)
+            {
+                var avatarAsBytes = Convert
+                    .FromBase64String(accountTransferModel.avatar);
 
-            //    if (deleteResult.IsFailure)
-            //    {
-            //        return Conflict(deleteResult.Error);
-            //    }
-            //}
-
-            //else if (userDTO.avatar != null && userDTO.avatar.Length > 0)
-            //{
-            //    var updateResult = await _imageService.UpdateAvatar
-            //    (
-            //        _userDataRepository, 
-            //        Guid.Parse(userId.Value), 
-            //        Configuration.GetAvailableDrivePath() + userId.Value + "a", userDTO.avatar
-            //    );
-
-            //    if (updateResult.IsFailure)
-            //    {
-            //        return Conflict(updateResult.Error);
-            //    }
-            //}
-
-            //if (userDTO.header == "delete")
-            //{
-            //    var deleteResult = await _imageService.DeleteHeader
-            //    (
-            //        _userDataRepository,
-            //        Guid.Parse(userId.Value),
-            //        Configuration.GetAvailableDrivePath() + userId.Value + "h"
-            //    );
-
-            //    if (deleteResult.IsFailure)
-            //    {
-            //        return Conflict(deleteResult.Error);
-            //    }
-            //}
-
-            //else if (userDTO.header != null && userDTO.header.Length > 0)
-            //{
-            //    var updateResult = await _imageService.UpdateHeader
-            //    (
-            //        _userDataRepository, 
-            //        Guid.Parse(userId.Value), 
-            //        Configuration.GetAvailableDrivePath() + userId.Value + "h", userDTO.header
-            //    );
-
-            //    if (updateResult.IsFailure)
-            //    {
-            //        return Conflict(updateResult.Error);
-            //    }
-            //}
+                await System.IO.File
+                    .WriteAllBytesAsync(account.Avatar, avatarAsBytes);
+            }
 
             return Ok();
         }

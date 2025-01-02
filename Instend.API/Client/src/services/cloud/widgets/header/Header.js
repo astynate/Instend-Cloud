@@ -10,6 +10,7 @@ import HeaderMusicPlayer from '../../singletons/header-music-player/HeaderMusicP
 import Notifications from '../../singletons/notifications-popup/Notifications';
 import ProfilePopUp from '../../singletons/profile-popup/ProfilePopUp.jsx';
 import defaultAvatar from './images/default-avatar.png';
+import StorageController from '../../../../api/StorageController.js';
 
 const Header = observer((props) => {
     const [current, setCurrect] = useState(-1);
@@ -56,7 +57,7 @@ const Header = observer((props) => {
                 </div>
                 <div className={styles.button} onClick={() => setCurrect(2)}>
                     <img 
-                        src={`data:image/png;base64,${account.avatar ?? defaultAvatar}`} 
+                        src={StorageController.getFullFileURL(account.avatar)} 
                         draggable='false' 
                         className={styles.avatar} 
                     />

@@ -1,7 +1,5 @@
 ﻿using Instend.Core;
-using Instend.Core.Models.Storage;
 using Instend.Repositories.Storage;
-using Instend.Services.External.FileService;
 using Instend.Services.Internal.Handlers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

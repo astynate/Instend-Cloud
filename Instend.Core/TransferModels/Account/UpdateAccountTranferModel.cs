@@ -6,6 +6,7 @@
         string? surname,
         string? nickname,
         string? avatar,
-        string? header
+        string? description,
+        DateOnly? dateOfBirth
     );
 }

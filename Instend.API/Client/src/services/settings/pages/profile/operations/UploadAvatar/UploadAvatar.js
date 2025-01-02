@@ -1,15 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import img from './images/avatar.png';
 import styles from './styles/main.module.css';
 import PopUpWindow from '../../../../shared/pop-up-window/PopUpWindow';
-import { useTranslation } from "react-i18next";
 
-const UploadAvatar = ({Update, setNextOperation, isOpen}) => {
+const UploadAvatar = ({setAvatar = () => {}, setNextOperation, isOpen, setOpenState}) => {
     const [isFileEnter, setFileEnterState] = useState(false);
     const { t } = useTranslation();
-
-    useEffect(() => {
-        Update(null);
-    }, []);
 
     const onDragOver = (event) => {
         event.preventDefault();
@@ -24,19 +21,19 @@ const UploadAvatar = ({Update, setNextOperation, isOpen}) => {
     const onDrag = (event) => {
         event.preventDefault();
         
-        Update([...event.dataTransfer.files][0]);
+        setAvatar([...event.dataTransfer.files][0]);
         setNextOperation(true)
     };
 
     const setFile = (event) => {
         event.preventDefault();
        
-        props.Update(event.target.files[0], setContext);
-        props.setNextOperation(true);
+        setAvatar(event.target.files[0]);
+        setNextOperation(true);
     };
 
     return (
-        <PopUpWindow isOpen={isOpen} setOpenState={props.setOpenState}>
+        <PopUpWindow isOpen={isOpen} setOpenState={setOpenState}>
             <div 
                 className={styles.wrapper} 
                 id={isFileEnter === true ? 'file' : ''} 
@@ -45,9 +42,9 @@ const UploadAvatar = ({Update, setNextOperation, isOpen}) => {
                 onDrop={(event) => onDrag(event)}
             >
                 <div className={styles.content}>
-                    <img src={props.img} draggable="false" />
+                    <img src={img} draggable="false" />
                     <h1>{t('cloud.settings.profile.drop')}</h1>
-                    <p>{t('cloud.settings.profile.drop.desc')}</p>
+                    <p>Your avatar should be more than 100 x 100 px. And have no tranperent background.</p>
                     <div className={styles.line}></div>
                     <div className={styles.button}>
                         {t('cloud.settings.profile.select')}

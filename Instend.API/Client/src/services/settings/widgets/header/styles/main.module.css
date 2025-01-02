@@ -27,7 +27,7 @@
     left: 0;
     margin-left: auto;
     margin-right: auto;
-    width: 800px;
+    width: 650px;
     padding: 0px 5px;
     display: flex;
     border-bottom: 1px solid var(--main-border-color);
@@ -43,7 +43,7 @@
 .settingName h1 {
     margin: 0;
     padding: 0;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 700;
 }
 
@@ -51,26 +51,33 @@
     height: 100%;
     width: auto;
     display: flex;
-    grid-gap: 10px;
+    grid-gap: 5px;
     margin-left: auto;
     align-items: center;
 }
 
 .rightButtons span {
     font-size: 14px;
-    color: var(--main-paragraph-color);
+    color: var(--main-font-color);
     cursor: pointer;
+
 }
 
-  @keyframes button-loader-animation {
-    0% {
-      opacity: 1;
-    }
-    
-    100% {
-      opacity: 0;
-    }
+.secondButton {
+  padding: 8px 20px;
+  border-radius: 30px;
+  background: var(--main-accent-color);
+}
+
+@keyframes button-loader-animation {
+  0% {
+    opacity: 1;
   }
+  
+  100% {
+    opacity: 0;
+  }
+}
 
 @media (max-width: 1300px) {
     .header {

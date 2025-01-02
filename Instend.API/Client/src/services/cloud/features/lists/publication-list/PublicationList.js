@@ -20,13 +20,14 @@ const PublicationList = ({publications = [], fetchRequest, isHasMore, isHasBorde
             <div className={styles.publications} id={isDivided ? 'divided' : null}>
                 {publications
                     .sort((a, b) => NewsState.sortByDate(a, b))
-                    .map((publication, index) => {
+                    .map((publication) => {
                         return (
-                            <div className={styles.publication} id={isDivided ? 'separated' : null}>
-                                <Publication
-                                    key={index}
-                                    publication={publication}
-                                />
+                            <div 
+                                key={publication.id} 
+                                className={styles.publication} 
+                                id={isDivided ? 'separated' : null}
+                            >
+                                <Publication publication={publication} />
                             </div>
                         );
                     })}

@@ -44,10 +44,11 @@ namespace Instend.Repositories.Comments
             if (attachment.IsFailure)
                 return;
 
-            publication.Attachments.Add(attachment.Value);
+            publication.Attachments
+                .Add(attachment.Value);
 
-            await _fileService.SaveIFormFile(file, attachment.Value.Path);
-            await publication.Attachments.Last().SetPreview(_previewService);
+            await _fileService
+                .SaveIFormFile(file, attachment.Value.Path);
         }
 
         public async Task<Result<Publication>> AddAsync(PublicationTransferModel publicationTransferModel, Core.Models.Account.Account account)
@@ -103,11 +104,6 @@ namespace Instend.Repositories.Comments
 
             foreach (var publication in result)
             {
-                foreach (var attachment in publication.Attachments)
-                {
-                    await attachment.SetPreview(_previewService);
-                }
-
                 publication.IncrementNumberOfViews();
             }
 

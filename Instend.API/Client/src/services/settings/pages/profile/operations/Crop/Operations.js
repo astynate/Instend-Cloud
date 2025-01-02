@@ -10,6 +10,7 @@ const CropImage = (props) => {
       const image = new Image();
 
       image.src = props.image;
+
       image.onload = async () => {
         canvas.width = props.width;
         canvas.height = props.height;
@@ -29,14 +30,8 @@ const CropImage = (props) => {
           props.height
         )
 
-        await props.setCroppedImage(canvas.toDataURL());
-        await props.setAvatar(canvas.toDataURL());
-        await props.Update(canvas.toDataURL().replace('data:image/png;base64,', ''), props.setContext);
+        await props.setAvatar(canvas.toDataURL('image/png').replace('data:image/png;base64,', ''));
         await props.setOpenState(false);
-      };
-
-      image.onerror = function () {
-        props.setCroppedImage(props.image);
       };
     }
 
