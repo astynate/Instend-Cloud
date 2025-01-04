@@ -26,7 +26,7 @@ const Profile = observer(({isSaving, cancel, setCancelState, setSavingState = ()
     const [avatar, setAvatar] = useState(undefined);
     const [description, setDescription] = useState(account.description);
     const [dateOfBirth, setDateOfBirth] = useState(account.dateOfBirth);
-    const [links, setLinks] = useState([]);
+    const [links, setLinks] = useState(account.links ?? []);
 
     const onSuccess = () => {
         setSavingState(false);
@@ -45,11 +45,13 @@ const Profile = observer(({isSaving, cancel, setCancelState, setSavingState = ()
             name, 
             surname, 
             nickname, 
-            dateOfBirth
+            dateOfBirth,
+            links
         );
 
         if (validationResult[0] === false) {
             ApplicationState.AddErrorInQueue('Incorrect data', validationResult[1]);
+            setSavingState(false);
             return;
         }
 
@@ -60,6 +62,7 @@ const Profile = observer(({isSaving, cancel, setCancelState, setSavingState = ()
             description,
             isAvatarSubmitted ? avatar : '',
             dateOfBirth,
+            links,
             onSuccess,
             onError
         );
@@ -68,9 +71,10 @@ const Profile = observer(({isSaving, cancel, setCancelState, setSavingState = ()
     const addNewLink = () => {
         const defaultLink = {
             id: GlobalContext.NewGuid(),
-            icon: '00000000-0000-0000-0000-000000000001',
+            linkId: '00000000-0000-0000-0000-000000000001',
             name: "",
-            url: ""
+            link: "",
+            accountId: AccountState.account.id
         };
 
         setLinks(prev => [...prev, defaultLink]);
@@ -83,10 +87,11 @@ const Profile = observer(({isSaving, cancel, setCancelState, setSavingState = ()
     useEffect(() => {
         if (cancel) {
             setAvatar(undefined);
+            setCancelState(false);
             setName(account.name);
             setSurname(account.surname);
             setNickname(account.nickname);
-            setCancelState(false);
+            setLinks(account.links ?? []);
         }
     }, [cancel]);
 

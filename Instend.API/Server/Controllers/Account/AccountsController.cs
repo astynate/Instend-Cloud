@@ -12,6 +12,7 @@ using CSharpFunctionalExtensions;
 using Instend.Core.Dependencies.Services.Internal.Services;
 using Instend.Dependencies.Services;
 using Instend.Repositories.Contexts;
+using Instend.Repositories.Publications;
 
 namespace Instend_Version_2._0._0.Server.Controllers.Account
 {
@@ -35,6 +36,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
         private readonly IRequestHandler _requestHandler;
 
+        private readonly IPublicationsPhotosRepository _publicationsPhotosRepository;
+
         private readonly IFriendsRepository _friendsRepository;
 
         private readonly GlobalContext _context;
@@ -48,12 +51,14 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             IEmailService emailService,
             IEncryptionService encryptionService,
             IFriendsRepository friendsRepository,
+            IPublicationsPhotosRepository publicationsPhotosRepository,
             IRequestHandler requestHandler,
             IFileService fileService,
             GlobalContext context
         )
         {
             _confirmationRepository = confirmationsRepository;
+            _publicationsPhotosRepository = publicationsPhotosRepository;
             _imageService = imageService;
             _encryptionService = encryptionService;
             _accountsRepository = accountsRepository;
@@ -216,10 +221,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             await _accountsRepository.Update
             (
                 Guid.Parse(userId.Value),
-                accountTransferModel.name,
-                accountTransferModel.surname,
-                accountTransferModel.nickname,
-                accountTransferModel.description
+                account,
+                accountTransferModel
             );
 
             if (accountTransferModel.avatar != null && accountTransferModel.avatar.Length > 0)
@@ -233,6 +236,11 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
             return Ok();
         }
+
+        [HttpGet]
+        [Route("/api/accounts/photos")]
+        public async Task<IActionResult> GetPhotos(Guid accountId) 
+            => Ok(await _publicationsPhotosRepository.GetAccountPhotos(accountId));
 
         public async Task<Result> CreateSystemFolders(Guid userId)
         {

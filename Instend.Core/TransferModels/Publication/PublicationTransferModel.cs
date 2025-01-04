@@ -1,5 +1,4 @@
-﻿using Instend.Core.Models.Abstraction;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace Instend.Repositories.Publications
 {

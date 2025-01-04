@@ -11,10 +11,17 @@ namespace Instend.Repositories.Contexts
         public DbSet<AccountConfirmation> Confirmations { get; set; } = null!;
         public DbSet<AccountSession> Sessions { get; set; } = null!;
         public DbSet<AccountFollower> Followers { get; set; } = null!;
+        public DbSet<AccountLink> Links { get; set; } = null!;
         public DbSet<Reaction> Reactions { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder
+                .Entity<Core.Models.Account.Account>()
+                .HasMany(x => x.Links)
+                .WithOne()
+                .HasForeignKey(x => x.AccountId);
+
             base.OnModelCreating(modelBuilder);
         }
     }

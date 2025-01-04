@@ -10,8 +10,8 @@
     font-weight: 700;
 }
 
-.textBlock span {
-    font-size: 14px;
+.text {
+    font-size: 15px;
     color: var(--main-paragraph-color);
 }
 
@@ -22,11 +22,24 @@
     background: var(--main-border-color);
 }
 
-.title {
-    font-size: 22px;
+.titleWrapper h1 {
+    font-size: 18px;
     font-weight: 700;
     background: none;
     outline: none;
     border: none;
     font-family: 'Open Sans', sans-serif;
+}
+
+.titleWrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.titleWrapper h2 {
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--main-blue-color);
+    cursor: pointer;
+    user-select: none;
 }

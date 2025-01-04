@@ -44,7 +44,7 @@ class AccountController {
         return friend;
     }
 
-    static ChangeAccountData = async (name, surname, nickname, description, avatar, dateOfBirth, onSuccess, onError) => {
+    static ChangeAccountData = async (name, surname, nickname, description, avatar, dateOfBirth, links, onSuccess, onError) => {
         let form = new FormData();
 
         form.append('name', name);
@@ -55,6 +55,14 @@ class AccountController {
 
         if (!!avatar === true) {
             form.append('avatar', avatar);
+        }
+
+        for (let i = 0; i < links.length; i++) {
+            form.append(`links[${i}].Id`, links[i].id);
+            form.append(`links[${i}].LinkId`, links[i].linkId);
+            form.append(`links[${i}].Name`, links[i].name);
+            form.append(`links[${i}].Link`, links[i].link);
+            form.append(`links[${i}].AccountId`, links[i].accountId);
         }
 
         await instance
@@ -69,6 +77,19 @@ class AccountController {
             .catch(error => {
                 console.error(error);
                 onError();
+            });
+    }
+
+    static GetAccountPhotos = async (accountId, setState = () => {}) => {
+        await instance
+            .get(`api/accounts/photos?accountId=${accountId}`)
+            .then(response => {
+                if (response && response.data) {
+                    setState(response.data);
+                }
+            })
+            .catch(error => {
+                console.error(error);
             });
     }
 }

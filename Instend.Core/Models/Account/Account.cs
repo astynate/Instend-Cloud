@@ -28,6 +28,7 @@ namespace Instend.Core.Models.Account
 
         [NotMapped] public List<Account> Followers { get; set; } = new List<Account>();
         [NotMapped] public List<Account> Following { get; set; } = new List<Account>();
+        [NotMapped] public List<AccountLink> Links { get; set; } = new List<AccountLink>();
         public List<CollectionAccount> Collections { get; set; } = new List<CollectionAccount>();
         public List<FileAccount> Files { get; set; } = new List<FileAccount>();
         public List<AlbumAccount> Albums { get; set; } = new List<AlbumAccount>();

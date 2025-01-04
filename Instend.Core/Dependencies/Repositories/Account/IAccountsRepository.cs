@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Instend.Core.Models.Account;
+using Instend_Version_2._0._0.Server.TransferModels.Account;
 
 namespace Instend.Core.Dependencies.Repositories.Account
 {
@@ -13,8 +14,9 @@ namespace Instend.Core.Dependencies.Repositories.Account
         Task<Models.Account.Account[]> GetPopuplarPeopleAsync(int from, int count);
         Task Confirm(string email);
         Task AddAsync(Models.Account.Account user);
-        Task Update(Guid userId, string? name, string? surname, string? nickname, string? description);
+        Task Update(Guid userId, Core.Models.Account.Account account, UpdateAccountTranferModel updateAccountTranferModel);
         Task<Result> RecoverPassword(Guid user, string password);
         Task<Result<double>> ChangeOccupiedSpaceValue(Guid userId, double value);
+        Task UpdateLinks(Models.Account.Account account, AccountLink[] links);
     }
 }

@@ -5,6 +5,7 @@ import styles from './styles/main.module.css';
 import HeaderSearch from '../../../templates/album-view-template/compontens/header-search/HeaderSearch';
 import MenuWithUnderline from '../../../features/navigation/menu-with-underline/MenuWithUnderline';
 import MainProfilePage from '../pages/main/MainProfilePage';
+import AccountController from '../../../../../api/AccountController';
 import AccountState from '../../../../../state/entities/AccountState';
 
 const Profile = observer((props) => {

@@ -36,7 +36,13 @@ const MenuWithUnderline = ({items, defaultValue, rightItems, margin = 10}) => {
                 {items && items.map && items.map((element, index) => {
                     if (element.component && index === current) {
                         return (
-                            React.cloneElement(element.component, { key: index, style: {marginTop: margin} })
+                            React.cloneElement(
+                                element.component, { 
+                                    key: index, 
+                                    style: { marginTop: margin },
+                                    setCurrent: setCurrent
+                                }
+                            )
                         );
                     }
 

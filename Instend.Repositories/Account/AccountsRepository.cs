@@ -1,10 +1,10 @@
 ﻿using CSharpFunctionalExtensions;
 using CSharpFunctionalExtensions.ValueTasks;
-using Instend.Core;
 using Instend.Core.Dependencies.Repositories.Account;
 using Instend.Core.Dependencies.Services.Internal.Services;
+using Instend.Core.Models.Account;
 using Instend.Repositories.Contexts;
-using Instend.Services.External.FileService;
+using Instend_Version_2._0._0.Server.TransferModels.Account;
 using Microsoft.EntityFrameworkCore;
 
 namespace Instend.Repositories.Repositories
@@ -15,18 +15,14 @@ namespace Instend.Repositories.Repositories
 
         private readonly IEncryptionService _encryptionService;
 
-        private readonly IImageService _imageService;
-
         public AccountsRepository
         (
             GlobalContext context, 
-            IEncryptionService encryptionService, 
-            IImageService imageService
+            IEncryptionService encryptionService
         )
         {
             _context = context;
             _encryptionService = encryptionService;
-            _imageService = imageService;
         }
 
         public async Task<Core.Models.Account.Account?> GetByIdAsync(Guid id)
@@ -92,24 +88,81 @@ namespace Instend.Repositories.Repositories
             return Result.Success();
         }
 
-        public async Task Update(Guid userId, string? name, string? surname, string? nickname, string? description)
+        public async Task UpdateLinks(Core.Models.Account.Account account, AccountLink[]? links)
         {
-            if (string.IsNullOrEmpty(name))
+            if (links == null) 
+            {
+                _context.Links.RemoveRange(account.Links);
+
+                await _context.SaveChangesAsync();
+
+                return;
+            }
+
+            var linksToDelete = account.Links
+                .Where(existingLink => !links.Select(x => x.Id).Contains(existingLink.Id));
+
+            var linksToAdd = links
+                .Where(newLink => !account.Links.Select(x => x.Id).Contains(newLink.Id));
+
+            var linksToEditNew = links
+                .Where(newLink => account.Links.Select(x => x.Id).Contains(newLink.Id))
+                .OrderBy(x => x.Id)
+                .ToArray();
+
+            var linksToEditPrev = account.Links
+                .Where(prev => links.Select(x => x.Id).Contains(prev.Id))
+                .OrderBy(x => x.Id)
+                .ToArray();
+
+            _context.AttachRange(linksToEditPrev);
+
+            if (linksToAdd.Count() + linksToEditNew.Length > 7)
+            {
+                return;
+            }
+
+            foreach (var link in links)
+            {
+                link.AccountId = account.Id;
+            }
+
+            for (int i = 0; i < linksToEditPrev.Length; i++)
+            {
+                linksToEditPrev[i].Link = linksToEditNew[i].Link;
+                linksToEditPrev[i].LinkId = linksToEditNew[i].LinkId;
+                linksToEditPrev[i].Name = linksToEditNew[i].Name;
+            }
+
+            if (linksToAdd.Any())
+                await _context.Links.AddRangeAsync(linksToAdd);
+
+            if (linksToDelete.Any())
+                _context.Links.RemoveRange(linksToDelete);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task Update(Guid userId, Core.Models.Account.Account account, UpdateAccountTranferModel accountTransferModel)
+        {
+            if (string.IsNullOrEmpty(accountTransferModel.name))
                 return;
 
-            if (string.IsNullOrEmpty(surname))
+            if (string.IsNullOrEmpty(accountTransferModel.surname))
                 return;
 
-            if (string.IsNullOrEmpty(nickname))
+            if (string.IsNullOrEmpty(accountTransferModel.nickname))
                 return;
+
+            await UpdateLinks(account, accountTransferModel.links);
 
             await _context.Accounts.AsNoTracking()
                 .Where(u => u.Id == userId)
                     .ExecuteUpdateAsync(user => user
-                        .SetProperty(p => p.Name, name)
-                        .SetProperty(p => p.Surname, surname)
-                        .SetProperty(p => p.Description, description)
-                        .SetProperty(p => p.Nickname, nickname));
+                        .SetProperty(p => p.Name, accountTransferModel.name)
+                        .SetProperty(p => p.Surname, accountTransferModel.surname)
+                        .SetProperty(p => p.Description, accountTransferModel.description)
+                        .SetProperty(p => p.Nickname, accountTransferModel.nickname));
 
             await _context.SaveChangesAsync();
         }
@@ -136,7 +189,9 @@ namespace Instend.Repositories.Repositories
         {
             var account = await _context.Accounts
                 .AsNoTracking()
-                .FirstOrDefaultAsync(expression);
+                .Where(expression)
+                .Include(x => x.Links)
+                .FirstOrDefaultAsync();
 
             return account;
         }

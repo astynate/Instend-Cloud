@@ -6,10 +6,10 @@ import youtube from './images/links/youtube.png';
 import twitter from './images/links/twitter.png';
 
 export const GlobalLinks = {
-    "00000000-0000-0000-0000-000000000001": {image: facebook},
-    "00000000-0000-0000-0000-000000000002": {image: instagram},
-    "00000000-0000-0000-0000-000000000003": {image: youtube},
-    "00000000-0000-0000-0000-000000000004": {image: twitter},
-    "00000000-0000-0000-0000-000000000005": {image: spotify},
-    "00000000-0000-0000-0000-000000000006": {image: link},
+    "00000000-0000-0000-0000-000000000001": {image: facebook, color: "#EED9FF"},
+    "00000000-0000-0000-0000-000000000002": {image: instagram, color: "#FFC9C9"},
+    "00000000-0000-0000-0000-000000000003": {image: youtube, color: "#FFACAC"},
+    "00000000-0000-0000-0000-000000000004": {image: twitter, color: "#EED9FF"},
+    "00000000-0000-0000-0000-000000000005": {image: spotify, color: "#D5FFD2"},
+    "00000000-0000-0000-0000-000000000006": {image: link, color: "#C9E9FF"},
 };

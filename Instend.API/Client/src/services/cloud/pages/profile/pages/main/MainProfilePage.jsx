@@ -1,15 +1,33 @@
+import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { GlobalLinks } from '../../../../../../global/GlobalLinks';
 import NewsController from '../../../../../../api/NewsController';
 import AccountState from '../../../../../../state/entities/AccountState';
 import ProfileInformationBlock from '../../../../elements/profile/profile-information-block/ProfileInformationBlock';
 import PublicationList from '../../../../features/lists/publication-list/PublicationList';
+import arrow from './images/arrow.png';
 import styles from './main.module.css';
+import StorageController from '../../../../../../api/StorageController';
+import AccountController from '../../../../../../api/AccountController';
 
 const MainProfilePage = ({
         publications = [], 
         isHasMore = false, 
         setPublications = () => {}, 
-        setHasMoreState = () => {}
+        setHasMoreState = () => {},
+        setCurrent = () => {}
     }) => {
+
+    const [photos, setPhotos] = useState([]);
+
+    useEffect(() => {
+        setPhotos([]);
+
+        AccountController.GetAccountPhotos(
+            AccountState.account.id,
+            setPhotos
+        );
+    }, []);
 
     const { account } = AccountState;
 
@@ -20,9 +38,44 @@ const MainProfilePage = ({
                     <ProfileInformationBlock 
                         title={'Information'}
                         text={account.description ? account.description : 'This user has not updated profile description yet.'}
+                        content={
+                            <div className={styles.links}>
+                                {account.links.map(link => {
+                                    return (
+                                        <Link key={link.id} className={styles.link} to={link.link}>
+                                            <img 
+                                                className={styles.linkImage}
+                                                src={GlobalLinks[link.linkId].image}
+                                                draggable="false" 
+                                            />
+                                            <span className={styles.name} style={{color: GlobalLinks[link.linkId].color}}>{link.name}</span>
+                                            <img src={arrow} draggable="false" className={styles.arrow} />
+                                        </Link>
+                                    )
+                                })}
+                            </div>
+                        }
                     />
                     <ProfileInformationBlock 
                         title={'Photos'}
+                        button={{
+                            label: 'Show all',
+                            callback: () => setCurrent(1)
+                        }}
+                        content={
+                            <div className={styles.photos}>
+                                {photos.map(photo => {
+                                    return (
+                                        <img 
+                                            key={photo.id}
+                                            draggable="false"
+                                            className={styles.photo}
+                                            src={StorageController.getFullFileURL(photo.path)} 
+                                        />
+                                    )
+                                })}
+                            </div>
+                        }
                     />
                 </div>
             </div>

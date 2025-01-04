@@ -19,6 +19,7 @@ using Instend.Core.Dependencies.Services.Internal.Services;
 using Instend.Core.Dependencies.Services.Internal.Helpers;
 using Instend.Repositories.Contexts;
 using Instend.Services.Internal.Services;
+using Instend.Repositories.Publications;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +50,7 @@ builder.Services.AddScoped<IMessengerRepository, MessengerRepository>();
 builder.Services.AddScoped<IFriendsRepository, FriendsRepository>();
 builder.Services.AddScoped<IGroupsRepository, GroupsRepository>();
 builder.Services.AddScoped<IAccessHandler, AccessHandler>();
+builder.Services.AddScoped<IPublicationsPhotosRepository, PublicationsPhotosRepository>();
 builder.Services.AddScoped<IPublicationsRepository, PublicationsRepository>();
 builder.Services.AddScoped<IAttachmentsRepository, AttachmentsRepository>();
 

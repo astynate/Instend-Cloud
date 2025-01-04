@@ -39,7 +39,7 @@ const InputLink = ({id, value, setValue, maxLength, isEditable = true}) => {
     const setLinkUrl = (event) => {
         setLink(prev => {
             if (!!prev === true) {
-                prev.url = event.target.value;
+                prev.link = event.target.value;
             }
 
             return prev;
@@ -49,7 +49,7 @@ const InputLink = ({id, value, setValue, maxLength, isEditable = true}) => {
     const setLinkIcon = (iconId) => {
         setLink(prev => {
             if (!!prev === true) {
-                prev.icon = iconId;
+                prev.linkId = iconId;
             }
 
             return prev;
@@ -64,7 +64,7 @@ const InputLink = ({id, value, setValue, maxLength, isEditable = true}) => {
             >
                 <img 
                     draggable="false" 
-                    src={GlobalLinks[value && value.icon ? value.icon : '00000000-0000-0000-0000-000000000001'].image} 
+                    src={GlobalLinks[value && value.linkId ? value.linkId : '00000000-0000-0000-0000-000000000001'].image} 
                 />
                 {isIconMenuOpen && isEditable && <div className={styles.icons}>
                     {Object.entries(GlobalLinks).map(link => {
@@ -95,7 +95,7 @@ const InputLink = ({id, value, setValue, maxLength, isEditable = true}) => {
             <input 
                 type={"url"}
                 placeholder={'https://facebook.com/profile'}
-                value={isEditable === false ? '' : value.url}
+                value={isEditable === false ? '' : value.link}
                 id={isEditable === false ? 'disabled' : null}
                 className={styles.input} 
                 onChange={setLinkUrl}
