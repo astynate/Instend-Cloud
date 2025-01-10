@@ -12,7 +12,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Comments
     {
         private readonly IRequestHandler _requestHandler;
 
-        private readonly IAccountsRepository _accountsRepository;
+        private readonly FilesController _accountsRepository;
 
         private readonly IPublicationsRepository _publicationsRepository;
 
@@ -21,7 +21,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Comments
         public NewsController
         (
             IRequestHandler requestHandler, 
-            IAccountsRepository accountsRepository,
+            FilesController accountsRepository,
             IPublicationsRepository publicationsRepository,
             ISerializationHelper serializationHelper
         )
@@ -60,7 +60,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Comments
                 return Conflict("Account not finded");
 
             var publications = await _publicationsRepository
-                .GetNewsByAccount(date, account, 5);
+                .GetNewsByAccount(date, [account.Id, ..account.Following.Select(f => f.AccountId)], account.Id, 5);
 
             return Ok(_serializationHelper.SerializeWithCamelCase(publications));
         }
@@ -68,7 +68,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Comments
         [HttpGet]
         [Authorize]
         [Route("/api/account/publications")]
-        public async Task<IActionResult> GetPublictions(string? lastPublicationDate, Guid publicationId)
+        public async Task<IActionResult> GetPublictions(string? lastPublicationDate, Guid accountId)
         {
             DateTime date;
 
@@ -82,7 +82,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Comments
             }
 
             var publications = await _publicationsRepository
-                .GetAccountPublications(publicationId, date, 5);
+                .GetAccountPublications(accountId, date, 5);
 
             return Ok(_serializationHelper.SerializeWithCamelCase(publications));
         }

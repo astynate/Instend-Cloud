@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { useLocation } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
-import GoogleOAuth from '../../features/google-oauth/GoogleOAuth';
 import Button from '../../shared/button/Button';
 import InputText from "../../shared/input/InputText";
 import InputPassword from "../../shared/password/InputPassword";
@@ -96,7 +95,6 @@ const Login = observer(() => {
                 <Button title={t('account.login')} state={formState} onClick={() => {Authorize()}} />
             </div>
             <Line title={t('account.or')} />
-            <GoogleOAuth />
             <div className='external-links margin-top-20'>
                 <div className='external-link'>
                     <p>{t('account.dont_have_account')}</p>

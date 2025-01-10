@@ -28,6 +28,33 @@
     position: relative;
 }
 
+.itemsWrapper {
+    margin-top: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--not-transparent-border-color);
+}
+
+.itemsWrapper h1 {
+    font-size: 24px;
+}
+
+.items {
+    overflow-y: hidden;
+    overflow-x: scroll;
+    display: flex;
+    margin-top: 20px;
+    grid-gap: 10px;
+}
+
+.items::-webkit-scrollbar {
+    display: none;
+}
+
+.item {
+    width: 250px;
+    flex-shrink: 0;
+}
+
 @media (max-width: 700px) {
     .explore {
         height: calc(100vh - 60px - 50px);

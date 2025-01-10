@@ -13,8 +13,9 @@ const PopUpWindow = ({
         children
     }) => {
 
-    if (open === false)
-        return null
+    if (open !== true) {
+        return null;
+    }
     
     return (
         <div className={styles.popUpWrapper}>

@@ -48,7 +48,7 @@ const PrivateRoutes = [
         element: <Music />
     },
     {
-        path: '/profile',
+        path: '/profile/:id?',
         element: <Profile />
     },
     {

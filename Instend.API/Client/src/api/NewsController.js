@@ -24,7 +24,7 @@ class NewsController {
 
     static GetAccountPublications = async (accountId, lastPublicationDate = '', setPublications, setHasMoreState) => {
         await instance
-            .get(`api/news?lastPublicationDate=${lastPublicationDate}`)
+            .get(`api/account/publications?lastPublicationDate=${lastPublicationDate}&accountId=${accountId}`)
             .then((response) => {
                 if (!response || !response.data || !response.data.length) {
                     setHasMoreState(false);

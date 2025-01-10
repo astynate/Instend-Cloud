@@ -63,7 +63,7 @@ const Layout = observer(() => {
             );
         }
 
-        if (AccountState.user === null || AccountState.user === undefined) {
+        if (!!AccountState.account === false) {
             fetchAccount();
         }
     }, [AccountState.user]);

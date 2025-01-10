@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { NavLink, useLocation, useParams } from 'react-router-dom';
 import styles from './main.module.css';
 
-const SubMenu = (props) => {
+const SubMenu = ({items}) => {
     const [pointerOffset, setPointerOffset] = useState(0);
     const [width, setWidth] = useState(0);
     const [current, setCurrent] = useState();
@@ -38,7 +38,7 @@ const SubMenu = (props) => {
     return (
         <div className={styles.menuWrapper}>
             <div className={styles.menu}>
-                {props.items.map((element, index) => (
+                {items.map((element, index) => (
                     <div 
                         className={styles.button} 
                         key={index} 

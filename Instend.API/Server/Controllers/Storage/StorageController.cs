@@ -1,9 +1,5 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using Instend.Core;
-using Instend.Repositories.Storage;
+﻿using Instend.Core;
 using Instend.Services.External.FileService;
-using Instend.Services.Internal.Handlers;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
 
@@ -65,7 +61,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             var file = await _fileService.ReadFileAsync(path);
 
             if (file.IsFailure)
-                return File(Configuration.DefaultAvatar, "image/png");
+                return File(Convert.FromBase64String(Configuration.DefaultAvatar), "image/png");
 
             var splitedPath = path.Split(".");
 

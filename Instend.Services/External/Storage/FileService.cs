@@ -34,42 +34,6 @@ namespace Instend.Services.External.FileService
             }
         }
 
-        private async Task DeleteFolderContent
-        (
-            ICollectionsRepository folderRepository,
-            IFileRespository fileRespository,
-            Guid id
-        )
-        {
-            var files = await fileRespository.GetByParentCollectionId(Guid.Empty, id);
-
-            foreach (var file in files)
-            {
-                await fileRespository.Delete(file.Id);
-            }
-
-            await folderRepository.DeleteAsync(id);
-        }
-
-        public async Task DeleteFolderById
-        (
-            IFileRespository fileRespository,
-            ICollectionsRepository folderRepository,
-            IPreviewService preview,
-            Guid id
-        )
-        {
-            await DeleteFolderContent(folderRepository, fileRespository, id);
-
-            var folders = await folderRepository
-                .GetCollectionsByParentId(Guid.Empty, id);
-
-            foreach (var folder in folders)
-            {
-                await DeleteFolderById(fileRespository, folderRepository, preview, folder.Id);
-            }
-        }
-
         public byte[] CreateZipFromFiles(Core.Models.Storage.File.File[] files)
         {
             using (var memoryStream = new MemoryStream())

@@ -2,19 +2,21 @@
 using Instend.Repositories.Storage;
 using Instend.Services.External.FileService;
 using Instend.Services.Internal.Handlers;
-using Instend.Core.Dependencies.Repositories.Account;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Instend_Version_2._0._0.Server.Hubs;
+using Instend.Core.Dependencies.Repositories.Account;
 
 namespace Instend_Version_2._0._0.Server.Controllers.Storage
 {
     [ApiController]
-    [Route("[controller]")]
-    public class CloudController : ControllerBase
+    [Route("api/[controller]")]
+    public class FilesController : ControllerBase
     {
-        private readonly IFileRespository _fileRespository;
+        private readonly IFilesRespository _fileRespository;
+
+        private readonly IFileService _fileService;
 
         private readonly ICollectionsRepository _collectionsRepository;
 
@@ -28,30 +30,32 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IHubContext<GlobalHub> _globalHub;
 
-        public CloudController
+        public FilesController
         (
-            IFileRespository fileRespository,
-            ICollectionsRepository folderRepository,
+            IFilesRespository filesRespository,
+            ICollectionsRepository collectionsRepository,
             IHubContext<GlobalHub> globalHub,
             IAccessHandler accessHandler,
-            IAccountsRepository userDataRepository,
+            IAccountsRepository accountsRepository,
             IRequestHandler requestHandler,
-            IPreviewService previewService
+            IPreviewService previewService,
+            IFileService fileService
         )
         {
-            _fileRespository = fileRespository;
-            _collectionsRepository = folderRepository;
+            _fileRespository = filesRespository;
+            _collectionsRepository = collectionsRepository;
             _globalHub = globalHub;
             _accessHandler = accessHandler;
-            _accountsRepository = userDataRepository;
+            _accountsRepository = accountsRepository;
             _requestHandler = requestHandler;
             _previewService = previewService;
+            _fileService = fileService;
         }
 
         [HttpGet]
         [Authorize]
-        [Route("/api/file/{prefix}")]
-        public async Task<ActionResult> GetFileByPrevix(IRequestHandler requestHandler, string prefix)
+        [Route("/api/files/{prefix}")]
+        public async Task<ActionResult> GetFileByPrefix(IRequestHandler requestHandler, string prefix)
         {
             if (string.IsNullOrEmpty(prefix) || string.IsNullOrWhiteSpace(prefix))
                 return BadRequest("Invalid prefix");
@@ -66,8 +70,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         [HttpGet]
         [Authorize]
-        [Route("/file/download")]
-        public async Task<IActionResult> Download(IFileService fileService, Guid id)
+        [Route("/api/files/download")]
+        public async Task<IActionResult> Download(Guid id)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
@@ -89,46 +93,14 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             if (available.IsFailure)
                 return BadRequest(available.Error);
 
-            var fileAsBytes = await fileService.ReadFileAsync(file.Value.Path);
+            var fileAsBytes = await _fileService.ReadFileAsync(file.Value.Path);
 
             if (fileAsBytes.IsFailure)
                 return Conflict("Cannot read file");
 
-            var contentType = fileService.ConvertSystemTypeToContentType(file.Value.Type);
+            var contentType = _fileService.ConvertSystemTypeToContentType(file.Value.Type);
 
             return File(fileAsBytes.Value, contentType, file.Value.Name + "." + file.Value.Type);
-        }
-
-        [HttpGet]
-        [Authorize]
-        public async Task<ActionResult> GetFiles(IFileService fileService, IRequestHandler requestHandler, string? id)
-        {
-            var userId = Guid.Parse(requestHandler.GetUserId(Request.Headers["Authorization"]).Value);
-            var collectionId = id == null ? Guid.Empty : Guid.Parse(id);
-
-            if (collectionId != Guid.Empty)
-            {
-                var account = await _accountsRepository.GetByIdAsync(userId);
-
-                if (account == null)
-                    return BadRequest("Account not found");
-
-                var collection = await _collectionsRepository.GetByIdAsync(collectionId);
-
-                if (collection == null)
-                    return BadRequest("Collection not found");
-
-                var available = _accessHandler.GetCollectionAccessRequestResult(collection, account, Configuration.EntityRoles.Reader);
-
-                if (available.IsFailure)
-                    return BadRequest(available.Error);
-            }
-
-            var files = await _fileRespository.GetByParentCollectionId(userId, collectionId);
-            var folders = await _collectionsRepository.GetCollectionsByParentId(userId, collectionId);
-            var path = await _collectionsRepository.GetShortPathAsync(collectionId);
-
-            return Ok(new object[] { folders, files, path });
         }
 
         [HttpPost]
@@ -210,42 +182,6 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         [HttpPost]
         [Authorize]
-        [Route("/api/albums/upload")]
-        public async Task<IActionResult> UploadInAlbum([FromForm] IFormFile file, [FromForm] Guid folderId, [FromForm] int queueId, [FromForm] string? albumId)
-        {
-            throw new NotImplementedException();
-
-            //if (string.IsNullOrEmpty(albumId) || string.IsNullOrWhiteSpace(albumId))
-            //    return BadRequest("Album not found");
-
-            //var uploadedFile = await UploadFiles(file, folderId, queueId);
-
-            //if (uploadedFile.Result is not OkObjectResult okObjectResult)
-            //    return Conflict("Error when trying to upload a file");
-
-            //if (okObjectResult.Value == null)
-            //    return Conflict("Error when trying to upload a file");
-
-            //var actionResult = okObjectResult.Value.ToString();
-
-            //if (actionResult == null)
-            //    return Conflict("Error when trying to upload a file");
-
-            //var result = await _linkBaseRepository.AddFileToAlbum(Guid.Parse(albumId), Guid.Parse(actionResult));
-
-            //if (result.IsFailure)
-            //    return Conflict(result.Error);
-
-            //await _globalHub.Clients
-            //    .Group(albumId)
-            //    .SendAsync("AddToAlbum", new object[] { result.Value, albumId });
-
-            //return Ok();
-        }
-
-        [HttpPost]
-        [Authorize]
-        [Route("/file")]
         public async Task<IActionResult> CreateFile([FromForm] string name, [FromForm] string type, [FromForm] Guid collectionId, [FromForm] int queueId)
         {
             throw new NotImplementedException();

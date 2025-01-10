@@ -1,10 +1,11 @@
 ﻿using Instend.Core;
 using Instend.Core.Dependencies.Repositories.Account;
 using CSharpFunctionalExtensions;
-using Instend.Core.Models.Storage.Collection;
 using Instend.Core.Models.Account;
 using Instend.Core.Models.Abstraction;
 using Instend.Core.Models.Storage.Album;
+using Microsoft.AspNetCore.Http;
+using Instend.Repositories.Storage;
 
 namespace Instend.Services.Internal.Handlers
 {
@@ -12,12 +13,15 @@ namespace Instend.Services.Internal.Handlers
     {
         private readonly IRequestHandler _requestHandler;
 
+        private readonly ICollectionsRepository _collectionsRepository;
+
         private readonly IAccountsRepository _accountsRepository;
 
-        public AccessHandler(IRequestHandler requestHandler, IAccountsRepository accountRespotory)
+        public AccessHandler(IRequestHandler requestHandler, IAccountsRepository accountRespotory, ICollectionsRepository collectionsRepository)
         {
             _requestHandler = requestHandler;
             _accountsRepository = accountRespotory;
+            _collectionsRepository = collectionsRepository;
         }
 
         private Result GetAccessRequestResult(Configuration.EntityRoles accountRole, Configuration.EntityRoles operationLevel)
@@ -46,12 +50,36 @@ namespace Instend.Services.Internal.Handlers
             return accountAccess;
         }
 
-        public Result GetCollectionAccessRequestResult(Collection collection, Account account, Configuration.EntityRoles operationLevel)
+        public async Task<Result<(Guid accountId, Core.Models.Storage.Collection.Collection? collection)>> GetAccountAccessToCollection(Guid? id, HttpRequest request, Configuration.EntityRoles operationLevel)
         {
-            if (collection.Type == Configuration.CollectionTypes.System && operationLevel > Configuration.EntityRoles.Reader)
-                return Result.Failure("You can't perform this operation on system collection.");
+            var accountId = _requestHandler.GetUserId(request.Headers["Authorization"]).Value;
 
-            return GetAccountAccess(collection, account, operationLevel);
+            if (id != null && id.HasValue)
+            {
+                var account = await _accountsRepository
+                    .GetByIdAsync(Guid.Parse(accountId));
+
+                if (account == null)
+                    return Result.Failure<(Guid accountId, Core.Models.Storage.Collection.Collection? collection)>("Account not found");
+
+                var collection = await _collectionsRepository
+                    .GetByIdAsync(id.Value);
+
+                if (collection == null)
+                    return Result.Failure<(Guid accountId, Core.Models.Storage.Collection.Collection? collection)>("Collection not found");
+
+                if (collection.Type == Configuration.CollectionTypes.System && operationLevel > Configuration.EntityRoles.Reader)
+                    return Result.Failure<(Guid accountId, Core.Models.Storage.Collection.Collection? collection)>("You can't perform this operation on system collection.");
+
+                var result = GetAccountAccess(collection, account, operationLevel);
+
+                if (result.IsFailure)
+                    return Result.Failure<(Guid accountId, Core.Models.Storage.Collection.Collection? collection)>(result.Error);
+
+                return (account.Id, collection);
+            }
+
+            return (Guid.Parse(accountId), null);
         }
 
         public Result GetFileAccessRequestResult(Core.Models.Storage.File.File file, Account account, Configuration.EntityRoles operationLevel)

@@ -3,9 +3,10 @@
 }
 
 .content {
-    width: 70%;
-    margin-right: 23%;
-    margin-left: auto; 
+    width: 1000px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 7%;
 }
 
 @media (max-width: 1300px) {

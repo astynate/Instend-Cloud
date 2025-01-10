@@ -11,16 +11,16 @@ namespace Instend.Server.Controllers.Account
     [Route("[controller]")]
     public class ConfirmationsController : ControllerBase
     {
-        private readonly IAccountsRepository _accountsRepository;
+        private readonly FilesController _accountsRepository;
 
         private readonly IConfirmationsRepository _confirmationRespository;
 
-        private readonly AccountsContext _context;
+        private readonly GlobalContext _context;
 
         public ConfirmationsController
         (
-            AccountsContext context, 
-            IAccountsRepository accountsRepository, 
+            GlobalContext context, 
+            FilesController accountsRepository, 
             IConfirmationsRepository confirmationRespository
         )
         {
@@ -77,8 +77,12 @@ namespace Instend.Server.Controllers.Account
             if (confirmationUpdateResult.IsFailure)
                 return Conflict(confirmationUpdateResult.Error);
 
-            await emailService.SendEmailConfirmation(confirmationUpdateResult.Value.Email, confirmationUpdateResult.Value.Code,
-                confirmationUpdateResult.Value.Link.ToString());
+            await emailService.SendEmailConfirmation
+            (
+                confirmationUpdateResult.Value.Email, 
+                confirmationUpdateResult.Value.Code,
+                confirmationUpdateResult.Value.Link.ToString()
+            );
 
             return Ok();
         }

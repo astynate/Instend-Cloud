@@ -11,7 +11,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Comments
     [Route("api/[controller]")]
     public class PublicationsController : ControllerBase
     {
-        private readonly IAccountsRepository _accountsRepository;
+        private readonly FilesController _accountsRepository;
 
         private readonly IPublicationsRepository _publicationsRepository;
 
@@ -23,7 +23,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Comments
         (
             IPublicationsRepository publicationsRepository, 
             IRequestHandler requestHandler,
-            IAccountsRepository accountsRepository,
+            FilesController accountsRepository,
             ISerializationHelper serializaionHelper
         )
         {

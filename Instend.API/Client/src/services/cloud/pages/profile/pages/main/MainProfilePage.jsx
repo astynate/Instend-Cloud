@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { GlobalLinks } from '../../../../../../global/GlobalLinks';
 import NewsController from '../../../../../../api/NewsController';
-import AccountState from '../../../../../../state/entities/AccountState';
 import ProfileInformationBlock from '../../../../elements/profile/profile-information-block/ProfileInformationBlock';
 import PublicationList from '../../../../features/lists/publication-list/PublicationList';
 import arrow from './images/arrow.png';
@@ -11,6 +10,7 @@ import StorageController from '../../../../../../api/StorageController';
 import AccountController from '../../../../../../api/AccountController';
 
 const MainProfilePage = ({
+        account,
         publications = [], 
         isHasMore = false, 
         setPublications = () => {}, 
@@ -23,13 +23,18 @@ const MainProfilePage = ({
     useEffect(() => {
         setPhotos([]);
 
-        AccountController.GetAccountPhotos(
-            AccountState.account.id,
-            setPhotos
-        );
-    }, []);
+        if (account && account.id) {
+            AccountController.GetAccountPhotos(
+                account.id,
+                setPhotos,
+                0
+            );
+        }
+    }, [account]);
 
-    const { account } = AccountState;
+    if (!!account === false) {
+        return null;
+    }
 
     return (
         <div className={styles.wrapper}>
@@ -40,7 +45,7 @@ const MainProfilePage = ({
                         text={account.description ? account.description : 'This user has not updated profile description yet.'}
                         content={
                             <div className={styles.links}>
-                                {account.links.map(link => {
+                                {account.links && account.links.length && account.links.map(link => {
                                     return (
                                         <Link key={link.id} className={styles.link} to={link.link}>
                                             <img 

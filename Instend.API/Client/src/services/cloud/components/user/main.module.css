@@ -2,19 +2,23 @@
     height: auto;
     width: 100%;
     border: 1px solid var(--main-border-color);
-    /* background: var(--main-accent-color); */
     display: flex;
     align-items: center;
-    padding: 15px;
-    padding-top: 20px;
     justify-content: space-between;
     flex-direction: column;
     border-radius: 7px;
     grid-gap: 5px;
+    padding-top: 30px;
+    overflow: hidden;
+    cursor: pointer;
+    user-select: none;
 }
 
-.user:hover {
-    /* background: var(--main-accent-color); */
+.information {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .avatar {
@@ -41,18 +45,36 @@
 }
 
 .nickname {
-    font-size: 18px;
+    font-size: 17px !important;
     font-weight: 700;
     color: var(--main-font-color);
 }
 
 .fullname {
-    font-size: 14px;
+    font-size: 15px;
     color: var(--main-paragraph-color);
 }
 
 .button {
+    height: 50px;
+    width: 100%;
+    border: none;
+    outline: none;
+    border-top: 1px solid var(--main-border-color);
     margin-top: 10px;
+    cursor: pointer;
+    background: none;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 500;
+    justify-content: center;
+    color: var(--main-blue-color);
+}
+
+.button:hover {
+    background: var(--main-accent-color);
 }
 
 .statistic {

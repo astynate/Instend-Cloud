@@ -1,11 +1,11 @@
 import { instance } from "../state/application/Interceptors";
 
 class AccountController {
-    static GetAccountData = async (onSuccessCallback = () => {}, onErrorCallback = () => {}) => {
+    static GetAccountData = async (onSuccessCallback = () => {}, onErrorCallback = () => {}, id = '') => {
         await instance
-            .get('/accounts')
+            .get(`/accounts?id=${id}`)
             .then((response) => {
-                if (response && response.data && response.data.length > 1) {
+                if (response && response.data) {
                     onSuccessCallback(response.data);
                 } else {
                     onErrorCallback();
@@ -80,11 +80,24 @@ class AccountController {
             });
     }
 
-    static GetAccountPhotos = async (accountId, setState = () => {}) => {
+    static GetAccountPhotos = async (accountId, setState = () => {}, skip) => {
         await instance
-            .get(`api/accounts/photos?accountId=${accountId}`)
+            .get(`api/accounts/photos?accountId=${accountId}&skip=${skip}`)
             .then(response => {
                 if (response && response.data) {
+                    setState(prev => [...prev, ...response.data]);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
+    static GetAccountsByPrefix = async (prefix, setState) => {
+        await instance
+            .get(`accounts/all/${prefix}`)
+            .then(response => {
+                if (response.data) {
                     setState(response.data);
                 }
             })

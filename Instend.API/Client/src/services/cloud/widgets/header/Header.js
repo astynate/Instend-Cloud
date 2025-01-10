@@ -9,7 +9,6 @@ import musicActive from './images/music-active.png';
 import HeaderMusicPlayer from '../../singletons/header-music-player/HeaderMusicPlayer';
 import Notifications from '../../singletons/notifications-popup/Notifications';
 import ProfilePopUp from '../../singletons/profile-popup/ProfilePopUp.jsx';
-import defaultAvatar from './images/default-avatar.png';
 import StorageController from '../../../../api/StorageController.js';
 
 const Header = observer((props) => {
@@ -33,7 +32,7 @@ const Header = observer((props) => {
     }, []);
 
     return (
-        <div className={styles.header} ref={wrapper}>
+        <div className={styles.header} ref={wrapper} background={props.isBackgroundLess ? null : "visible"}>
             {props.children}
             <div className={styles.buttons}>
                 <div className={styles.button}>

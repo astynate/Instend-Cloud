@@ -1,32 +1,19 @@
 ﻿using CSharpFunctionalExtensions;
-using Instend.Core.Dependencies.Repositories.Account;
 using Instend.Repositories.Contexts;
-using Instend.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
 
 namespace Instend.Repositories.Storage
 {
-    public class FilesRespository : IFileRespository
+    public class FilesRespository : IFilesRespository
     {
-        private readonly GlobalContext _storageContext = null!;
+        private readonly GlobalContext _context = null!;
 
-        private readonly IPreviewService _previewService;
-
-        private readonly IAccountsRepository _accountsRepository;
-
-        public FilesRespository
-        (
-            GlobalContext storageContext,
-            IAccountsRepository accountsRepository, 
-            IPreviewService previewService
-        )
+        public FilesRespository(GlobalContext storageContext)
         {
-            _storageContext = storageContext;
-            _accountsRepository = accountsRepository;
-            _previewService = previewService;
+            _context = storageContext;
         }
 
-        public async Task<Result<Core.Models.Storage.File.File>> GetByIdAsync(Guid id) => await _storageContext.Files.AsNoTracking()
+        public async Task<Result<Core.Models.Storage.File.File>> GetByIdAsync(Guid id) => await _context.Files.AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id) ?? Result.Failure<Core.Models.Storage.File.File>("Not found");
 
         public async Task<Result<Core.Models.Storage.File.File>> AddAsync(string name, string? type, double size, Guid ownerId, Guid folderId)
@@ -36,27 +23,22 @@ namespace Instend.Repositories.Storage
             if (fileCreationResult.IsFailure == true)
                 return Result.Failure<Core.Models.Storage.File.File>(fileCreationResult.Error);
 
-            await _storageContext.AddAsync(fileCreationResult.Value);
-            await _storageContext.SaveChangesAsync();
+            await _context.AddAsync(fileCreationResult.Value);
+            await _context.SaveChangesAsync();
 
             return Result.Success(fileCreationResult.Value);
         }
 
-        private async Task SetFilesPreview(Core.Models.Storage.File.File[] files)
+        public async Task<Core.Models.Storage.File.File[]> GetByParentCollectionId(Guid userId, Guid parentCollectionId, int skip, int take)
         {
-            foreach (var file in files)
-            {
-                await file.SetPreview(_previewService);
-            }
-        }
-
-        public async Task<Core.Models.Storage.File.File[]> GetByParentCollectionId(Guid userId, Guid folderId)
-        {
-            var files = await _storageContext.Files
+            var files = await _context.Files
                 .AsNoTracking()
-                .Where(file => file.FolderId == folderId).ToArrayAsync();
+                .Where(file => file.FolderId == parentCollectionId)
+                .Skip(skip)
+                .Take(take)
+                .ToArrayAsync();
 
-            await SetFilesPreview(files); return files;
+            return files;
         }
 
         public async Task<Result<Core.Models.Storage.File.File>> UpdateName(Guid id, string name)
@@ -69,23 +51,25 @@ namespace Instend.Repositories.Storage
             var fileModel = file.Value;
             fileModel.Rename(name);
 
-            _storageContext.Files.Update(fileModel);
+            _context.Files.Update(fileModel);
 
-            await _storageContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return Result.Success(fileModel);
         }
 
-        public async Task<Result> Delete(Guid id)
+        public async Task Delete(Guid id)
         {
-            throw new NotImplementedException();
+            await _context.Files
+                .Where(x => x.Id == id)
+                .ExecuteDeleteAsync();
         }
 
-        public async Task<object[]> GetLastFilesWithType(Guid userId, int from, int count, string[] type)
+        public async Task<object[]> GetLastFilesWithType(Guid accountId, int from, int count, string[] type)
         {
-            var result = await _storageContext.FilesAccounts
+            var result = await _context.FilesAccounts
                 .AsNoTracking()
                 .Include(x => x.Account)
-                .Where(x => x.Account.Id == userId)
+                .Where(x => x.Account.Id == accountId)
                 .Include(x => x.File)
                 .Skip(from)
                 .Take(count)
@@ -96,7 +80,7 @@ namespace Instend.Repositories.Storage
 
         public async Task<object[]> GetFilesByPrefix(Guid userId, string prefix)
         {
-            var result = await _storageContext.FilesAccounts
+            var result = await _context.FilesAccounts
                 .AsNoTracking()
                 .Include(x => x.Account)
                 .Include(x => x.File)

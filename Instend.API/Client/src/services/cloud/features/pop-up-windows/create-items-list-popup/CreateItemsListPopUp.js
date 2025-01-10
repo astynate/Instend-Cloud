@@ -1,10 +1,10 @@
 import React from 'react';
 import styles from './main.module.css';
 
-const CreateItemsListPopUp = (props) => {
+const CreateItemsListPopUp = ({isOpen, items = []}) => {
     return (
-        <div className={styles.wrapper} id={props.isOpen ? 'open' : null}>
-            {props && props.items && props.items.map((element, index) => {
+        <div className={styles.wrapper} id={isOpen ? 'open' : null}>
+            {items.map((element, index) => {
                 if (element.type === 'upload') {
                     return (
                         <div className={styles.item} key={index}>
@@ -13,7 +13,7 @@ const CreateItemsListPopUp = (props) => {
                                 onInput={async (event) => await element.sendFiles(event)}
                                 multiple
                             />
-                            <img src={element.image} />
+                            <img src={element.image} draggable="false" />
                             <span>{element.title}</span>
                         </div>
                     );

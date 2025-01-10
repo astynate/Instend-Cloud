@@ -10,13 +10,13 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
     [Route("api/[controller]")]
     public class MusicController : ControllerBase
     {
-        private readonly IFileRespository _fileRespository;
+        private readonly IFilesRespository _fileRespository;
 
         private readonly IRequestHandler _requestHandler;
 
         private readonly IHubContext<GlobalHub> _globalHub;
 
-        public MusicController(IFileRespository fileRespository, IRequestHandler requestHandler, IHubContext<GlobalHub> storageHub)
+        public MusicController(IFilesRespository fileRespository, IRequestHandler requestHandler, IHubContext<GlobalHub> storageHub)
         {
             _fileRespository = fileRespository;
             _requestHandler = requestHandler;

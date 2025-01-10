@@ -2,14 +2,14 @@
     flex-shrink: 0;
     height: fit-content;
     width: fit-content;
-    padding: 9px 25px;
+    padding: 8px 20px;
     border-radius: 6px;
     outline: none;
     border: none;
     font-weight: 700;
     background: var(--main-button-background-color);
     font-family: 'Open Sans', sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
     color: var(--main-button-font-color);
     user-select: none;

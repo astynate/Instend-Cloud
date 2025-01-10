@@ -2,25 +2,21 @@ import React from 'react';
 import './styles/main.css';
 import './styles/media.css';
 
-const InputText = (props) => {
-
+const InputText = ({type='text', SetValue, autofocus, defaultValue, placeholder}) => {
     return (
-
         <div className="input-container">
             <input
-                type='text'
+                type={type}
                 className='input'
                 maxLength={30}
-                onChange={(event) => { props.SetValue(event.target.value); }}
-                autoFocus={props.autofocus}
-                defaultValue={props.defaultValue}
+                onChange={(event) => SetValue(event.target.value)}
+                autoFocus={autofocus}
+                defaultValue={defaultValue}
                 required
             />
-            <label htmlFor="input">{props.placeholder}</label>
+            {type !== 'date' && <label htmlFor="input">{placeholder}</label>}
         </div>
-
     );
-
 }
 
 export default InputText;

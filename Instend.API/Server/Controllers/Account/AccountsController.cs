@@ -22,7 +22,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
     {
         private readonly IConfirmationsRepository _confirmationRepository;
 
-        private readonly IAccountsRepository _accountsRepository;
+        private readonly FilesController _accountsRepository;
 
         private readonly IImageService _imageService;
 
@@ -38,7 +38,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
         private readonly IPublicationsPhotosRepository _publicationsPhotosRepository;
 
-        private readonly IFriendsRepository _friendsRepository;
+        private readonly IFollowersRepository _friendsRepository;
 
         private readonly GlobalContext _context;
 
@@ -46,11 +46,11 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
         (
             IConfirmationsRepository confirmationsRepository,
             IImageService imageService,
-            IAccountsRepository accountsRepository,
+            FilesController accountsRepository,
             ICollectionsRepository folderRepository,
             IEmailService emailService,
             IEncryptionService encryptionService,
-            IFriendsRepository friendsRepository,
+            IFollowersRepository friendsRepository,
             IPublicationsPhotosRepository publicationsPhotosRepository,
             IRequestHandler requestHandler,
             IFileService fileService,
@@ -72,22 +72,21 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetAccount(IRequestHandler requestHandler)
+        public async Task<IActionResult> GetAccount(Guid? id)
         {
-            var userId = requestHandler.GetUserId(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
+            var userId = _requestHandler
+                .GetUserId(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
 
             if (userId.IsFailure)
                 return Unauthorized("Invalid token");
 
-            var account = await _accountsRepository.GetByIdAsync(Guid.Parse(userId.Value));
+            var accountId = id.HasValue ? id.Value : Guid.Parse(userId.Value);
+            var account = await _accountsRepository.GetByIdAsync(accountId);
 
             if (account == null)
                 return Unauthorized("User not found");
 
-            var friends = await _friendsRepository
-                .GetFriendsByUserId(Guid.Parse(userId.Value));
-
-            return Ok(new object[] { account, friends });
+            return Ok(account);
         }
 
         [Authorize]
@@ -105,7 +104,6 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
         public async Task<IActionResult> GetPopuplarAccounts(int from, int count) 
             => Ok(await _accountsRepository.GetPopuplarPeopleAsync(from, count));
 
-        [Authorize]
         [HttpGet("email/{email}")]
         public async Task<IActionResult> GetAccountByEmail(string email)
         {
@@ -135,7 +133,6 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             return Ok(account);
         }
 
-        [Authorize]
         [HttpGet("nickname/{nickname}")]
         public async Task<IActionResult> GetAccountByNickname(string nickname)
         {
@@ -164,7 +161,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
                         user.nickname,
                         user.email,
                         user.password,
-                        user.dateofBirth
+                        user.dateOfBirth
                     );
 
                     if (account.IsFailure)
@@ -197,7 +194,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
                     transaction.Commit();
 
-                    return Ok(link);
+                    return Ok(confirmation.Value.Link);
                 }
             });
         }
@@ -239,8 +236,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
         [HttpGet]
         [Route("/api/accounts/photos")]
-        public async Task<IActionResult> GetPhotos(Guid accountId) 
-            => Ok(await _publicationsPhotosRepository.GetAccountPhotos(accountId));
+        public async Task<IActionResult> GetPhotos(Guid accountId, int skip) 
+            => Ok(await _publicationsPhotosRepository.GetAccountPhotos(accountId, skip));
 
         public async Task<Result> CreateSystemFolders(Guid userId)
         {

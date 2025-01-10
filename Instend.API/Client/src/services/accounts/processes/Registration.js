@@ -7,30 +7,29 @@ import Password from '../pages/create/Password';
 import Back from '../shared/back/Back';
 import Line from '../shared/line/Line';
 import { useTranslation } from 'react-i18next';
+import DateOfBirth from '../pages/create/DateOfBirth';
 
 let UserContext = createContext();
 
 const Registration = () => {
-
     const { t } = useTranslation();
 
     let user = {
-
         name: '',
         surname: '',
         nickname: '',
+        dateOfBirth: '',
         email: '',
         password: ''
-
     }
 
     return (
-
         <UserContext.Provider value={user}>
             <Routes>
                 <Route path="email" element={<Email />} />
                 <Route path="nickname" element={<Nickname />} />
                 <Route path="name" element={<Name />} />
+                <Route path="dateofbirth" element={<DateOfBirth />} />
                 <Route path="password" element={<Password />} />
             </Routes>
             <Back />
@@ -45,9 +44,7 @@ const Registration = () => {
                 </div>
             </div>
         </UserContext.Provider>
-
     );
-
 }
 
 export { Registration, UserContext };

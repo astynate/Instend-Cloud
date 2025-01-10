@@ -3,10 +3,9 @@ using Instend.Core.Models.Account;
 
 namespace Instend.Core.Dependencies.Repositories.Account
 {
-    public interface IFriendsRepository
+    public interface IFollowersRepository
     {
         Task<AccountFollower[]> GetFriendsByUserId(Guid userId);
-        Task<Result<AccountFollower>> SendRequestAsync(Guid userId, Guid ownerId);
-        Task<bool> SubmitRequestAsync(Guid userId, Guid friendId);
+        Task<Result<AccountFollower?>> ChangeFollowingState(Guid accountId, Guid followerId);
     }
 }

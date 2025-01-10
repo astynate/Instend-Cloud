@@ -18,9 +18,9 @@ const Layout = () => {
             <title>Instend Main</title>
             <img className={styles.background} src={background} draggable="false" />
             <div className={styles.content}>
-                <img className={styles.logo} src={logo} />
-                <h1 className={styles.title}>Welcome to Instend</h1>
-                <p className={styles.information}>Access your data from anywhere in the world. Chat with friends and find like-minded people in communities.</p>
+                <img className={styles.logo} src={logo} draggable="false" />
+                <h1 className={styles.title}>Instend Cloud</h1>
+                <p className={styles.information}>Access your data from anywhere in the world. Chat with your friends and develop your personal profile.</p>
                 <div className={styles.buttons}>
                     <Link to={AccountState.isAuthorize ? '/' : '/account/login'} className={styles.button}>Log in</Link>
                     <Link to='/support' className={styles.button} id="sub">Support</Link>

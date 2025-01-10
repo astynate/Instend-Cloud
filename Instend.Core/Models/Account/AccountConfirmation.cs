@@ -10,7 +10,7 @@ namespace Instend.Core.Models.Email
     public class AccountConfirmation
     {
         [Column("link")][Key] public Guid Link { get; private set; }
-        [Column("user_id")] public Guid UserId { get; private set; }
+        [Column("account_id")] public Guid AccountId { get; private set; }
         [Column("email")] public string Email { get; private set; } = null!;
         [Column("code")] public string Code { get; private set; } = null!;
         [Column("creation_time")] public DateTime CreationTime { get; private set; }
@@ -35,7 +35,7 @@ namespace Instend.Core.Models.Email
                 Code = code,
                 CreationTime = DateTime.Now,
                 EndTime = DateTime.Now.AddHours(Configuration.confirmationLifeTimeInHours),
-                UserId = userId
+                AccountId = userId
             };
 
             return Result.Success(confirmationModel);

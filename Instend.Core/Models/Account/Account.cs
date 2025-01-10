@@ -19,15 +19,16 @@ namespace Instend.Core.Models.Account
         [Column("description")] public string? Description { get; set; } = string.Empty;
         [Column("balance")] public decimal Balance { get; private set; } = 0;
         [Column("password")] public string Password { get; private set; } = null!;
+        [Column("number_of_followers")] public uint NumberOfFollowers { get; private set; } = 0;
+        [Column("number_of_following_accounts")] public uint NumberOfFollowingAccounts { get; private set; } = 0;
         [Column("storage_space")] public double StorageSpace { get; private set; } = 1073741824;
         [Column("occupied_space")] public double OccupiedSpace { get; private set; } = 0;
         [Column("is_confirmed")] public bool IsConfirmed { get; private set; } = false;
         [Column("creation_datetime")] public DateTime RegistrationDate { get; private set; } = DateTime.Now;
         [Column("date_of_birth")] public DateOnly DateOfBirth { get; private set; }
-        [Column("friend_count")] public uint FriendCount { get; private set; } = 0;
 
-        [NotMapped] public List<Account> Followers { get; set; } = new List<Account>();
-        [NotMapped] public List<Account> Following { get; set; } = new List<Account>();
+        [NotMapped] public List<AccountFollower> Followers { get; set; } = new List<AccountFollower>();
+        [NotMapped] public List<AccountFollower> Following { get; set; } = new List<AccountFollower>();
         [NotMapped] public List<AccountLink> Links { get; set; } = new List<AccountLink>();
         public List<CollectionAccount> Collections { get; set; } = new List<CollectionAccount>();
         public List<FileAccount> Files { get; set; } = new List<FileAccount>();
@@ -67,7 +68,7 @@ namespace Instend.Core.Models.Account
             account.Email = email;
             account.DateOfBirth = dateOfBirth;
             account.Password = password;
-            account.Avatar = Configuration.GetAvailableDrivePath() + account.Id + "-avatar";
+            account.Avatar = Configuration.GetAvailableDrivePath() + account.Id + "-avatar.png";
 
             return Result.Success(account);
         }
@@ -112,11 +113,14 @@ namespace Instend.Core.Models.Account
                 return Result.Failure<double>("Not enough space to perform this operation.");
 
             OccupiedSpace = Math.Max(0, result);
+            
             return OccupiedSpace;
         }
 
-        public void IncrementFriendCount() => FriendCount++;
-        public void DecrementFriendCount() => FriendCount--;
+        public void IncrementNumberOfFollowers() => NumberOfFollowers++;
+        public void DecrementNumberOfFollowers() => NumberOfFollowers--;
+        public void IncrementNumberOfFollowingAccounts() => NumberOfFollowingAccounts++;
+        public void DecrementNumberOfFollowingAccounts() => NumberOfFollowingAccounts--;
         public void ConfirmAccount() => IsConfirmed = true;
     }
 }

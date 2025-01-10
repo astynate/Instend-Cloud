@@ -3,17 +3,17 @@ import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { CalculateAge, ConvertYearMonthOnly } from '../../../../../../utils/handlers/DateHandler';
-import AccountState from '../../../../../../state/entities/AccountState';
 import SubContentWrapper from '../../../../features/wrappers/sub-content-wrapper/SubContentWrapper';
 import Data from '../../../../elements/profile/profile-data/Data';
 import styles from './main.module.css';
 import Username from '../../../../elements/profile/profile-username/Username';
 import CircleButtonWrapper from '../../../../features/wrappers/circle-button-wrapper/CircleButtonWrapper';
 import UserAvatar from '../../../../shared/avatars/user-avatar/UserAvatar';
+import AccountState from '../../../../../../state/entities/AccountState';
+import FollowersController from '../../../../../../api/FollowersController';
 
-const ProfileDescription = observer(({isMobile}) => {
+const ProfileDescription = observer(({isMobile, account}) => {
     const { t } = useTranslation();
-    const { account } = AccountState;
 
     if (!!account === false) { 
         return null;
@@ -33,18 +33,33 @@ const ProfileDescription = observer(({isMobile}) => {
                                 username={account.nickname}
                             />
                             <div className={styles.buttons}>
-                                <Link to={'/settings/profile'}>
-                                    <CircleButtonWrapper widthPaddings={20} heightPaddings={8}>
-                                        <span className={styles.buttonText}>Edit profile</span>
-                                    </CircleButtonWrapper>
-                                </Link>
+                                {account.id === AccountState.account.id ?
+                                    <Link to={'/settings/profile'}>
+                                        <CircleButtonWrapper widthPaddings={20} heightPaddings={7}>
+                                            <span className={styles.buttonText}>Edit profile</span>
+                                        </CircleButtonWrapper>
+                                    </Link>
+                                : 
+                                    <div style={{display: 'flex', gridGap: '10px'}}>
+                                        <div onClick={() => FollowersController.Follow(account.id)}>
+                                            <CircleButtonWrapper isAccent={!AccountState.IsAccountInTheListOfFollowingAcounts(account.id)} widthPaddings={20} heightPaddings={7}>
+                                                <span className={styles.buttonText}>{!AccountState.IsAccountInTheListOfFollowingAcounts(account.id) ? 'Follow' : 'Unfollow'}</span>
+                                            </CircleButtonWrapper>
+                                        </div>
+                                        <Link to={'/settings/profile'}>
+                                            <CircleButtonWrapper widthPaddings={20} heightPaddings={7}>
+                                                <span className={styles.buttonText}>Message</span>
+                                            </CircleButtonWrapper>
+                                        </Link>
+                                    </div>
+                                }
                             </div>
                         </div>
                         <Data 
                             stats={[
-                                {title: t('cloud.profile.coins'), amount: account.balance},
-                                {title: t('cloud.profile.friends'), amount: account.friendCount},
-                                {title: 'MB', amount: (account.storageSpace / (1024 * 1024)).toFixed(0)}
+                                {title: 'followers', amount: account.numberOfFollowers},
+                                {title: 'following', amount: account.numberOfFollowingAccounts},
+                                {title: 'coins', amount: account.balance}
                             ]}
                         />
                         <div style={{display: 'flex', gridGap: '5px', flexDirection: 'column'}}>

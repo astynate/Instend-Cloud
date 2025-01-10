@@ -15,7 +15,7 @@ const ValidateUserData = (user, password, confirm) => {
     if (ValidationHandler.ValidateStrings([user.name, user.surname, user.nickname]) === false) {
         return false;
     }
-
+    
     return password.length >= 8 && password === confirm;
 }
 
@@ -58,7 +58,6 @@ const Password = () => {
             setErrorState(true);
             setValidationState('invalid');
         }
-
     }
 
     useEffect(() => {

@@ -102,7 +102,8 @@ namespace Instend.Repositories.Account
 
         public async Task<Result<AccountConfirmation>> GetByEmailAsync(string email)
         {
-            AccountConfirmation? confirmation = await _context.Confirmations.AsNoTracking()
+            var confirmation = await _context.Confirmations
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Email == email);
 
             if (confirmation == null)
@@ -115,11 +116,6 @@ namespace Instend.Repositories.Account
             }
 
             return Result.Success(confirmation);
-        }
-
-        public Task ConfirmEmailAddressAsync(string email)
-        {
-            throw new NotImplementedException();
         }
     }
 }

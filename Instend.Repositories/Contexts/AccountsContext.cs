@@ -22,6 +22,18 @@ namespace Instend.Repositories.Contexts
                 .WithOne()
                 .HasForeignKey(x => x.AccountId);
 
+            modelBuilder.Entity<Core.Models.Account.Account>()
+                .HasMany(a => a.Followers)
+                .WithOne()
+                .HasForeignKey(af => af.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Core.Models.Account.Account>()
+                .HasMany(a => a.Following)
+                .WithOne()
+                .HasForeignKey(af => af.FollowerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             base.OnModelCreating(modelBuilder);
         }
     }

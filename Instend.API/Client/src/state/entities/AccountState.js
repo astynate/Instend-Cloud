@@ -4,7 +4,6 @@ class AccountState {
     isAccessibleRoute = false;
     countNotifications = 0;
     friends = [];
-    communities = [];
     publications = [];
     isAuthorize = false;
     isLoading = true;
@@ -18,7 +17,6 @@ class AccountState {
     Logout = () => {
         this.account = null;
         this.friends = [];
-        this.communities = [];
         this.publications = [];
         this.isAuthorize = false;
         this.publicationQueueId = 0;
@@ -52,8 +50,7 @@ class AccountState {
     }
 
     GetUserOnSuccessCallback = (data) => {
-        this.account = data[0];
-        this.friends = data[1];
+        this.account = data;
         this.isAuthorize = true;
         this.isLoading = false;
     }
@@ -70,11 +67,32 @@ class AccountState {
         this.account.occupiedSpace = occupiedSpace;
     }
 
-    IsUserInFriends = (userId) => {
-        const user = this.friends.find(user => 
-            (user.userId === userId || user.ownerId === userId));
+    ChangeFollowingState = (accountId) => {
+        if (!!this.account === false) {
+            return false;
+        }
 
-        return user != null;
+        const originalLength = this.account.following.length; 
+
+        this.account.following = this.account.following
+            .filter(a => a.accountId !== accountId); 
+        
+        if (originalLength === this.account.following.length) {
+            this.account.following = [...this.account.following, {accountId: accountId}];
+        }
+    }
+
+    IsAccountInTheListOfFollowingAcounts = (accountId) => {
+        if (this.account && this.account.following) {
+            return !!this.GetFollowerById(accountId);
+        }
+
+        return false;
+    }
+
+    GetFollowerById = (accountId) => {
+        return this.account.following
+            .find(a => a.accountId === accountId);
     }
 }
 

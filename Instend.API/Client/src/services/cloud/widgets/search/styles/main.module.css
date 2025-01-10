@@ -1,12 +1,12 @@
 .search {
     position: fixed;
-    top: 7px;
-    left: 50%;
-    transform: translateX(-50%);
     display: flex;
     align-items: center;
     height: 40px;
-    width: 36vw;
+    width: 500px;
+    left: 50%;
+    top: 5px;
+    transform: translateX(-50%);
     z-index: 999999999;
 }
 
@@ -18,8 +18,8 @@
     width: 100%;
     background: transparent;
     font-size: 16px;
-    margin-left: 5px;
-    padding-left: 25px;
+    margin-left: 7px;
+    padding-left: 22px;
     font-family: 'Open Sans', sans-serif;
     color: var(--search-font-color);
     border-bottom: 1px solid var(--search-border-color);
@@ -31,10 +31,10 @@
 }
 
 .search img {
-    height: 13px;
-    width: 13px;
+    height: 14px;
+    width: 14px;
     opacity: 0.5;
-    margin-top: 1px;
+    margin-top: 0px;
     user-select: none;
     top: auto;
     left: 10px;

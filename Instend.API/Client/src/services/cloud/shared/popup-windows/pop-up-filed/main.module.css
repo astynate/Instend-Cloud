@@ -2,18 +2,17 @@
     height: auto;
     width: 400px;
     padding: 20px;
-    padding-bottom: 25px;
     display: flex;
     flex-direction: column;
 }
 
 .field h1 {
-    font-size: 18px;
-    font-weight: 500;
+    font-size: 20px;
+    font-weight: 600;
 }
 
 .field span {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 400;
     color: var(--main-paragraph-color);
 }
@@ -26,8 +25,8 @@
     border-radius: 10px;
     color: var(--main-font-color);
     transition: 0.25s ease;
-    margin-top: 20px;
-    font-size: 16px;
+    margin-top: 12px;
+    font-size: 17px;
     font-family: 'Open Sans', sans-serif;
 }
 
@@ -41,7 +40,7 @@
 
 .field button {
     margin-left: auto;
-    margin-top: 38px;
+    margin-top: 30px;
 }
 
 @keyframes open {

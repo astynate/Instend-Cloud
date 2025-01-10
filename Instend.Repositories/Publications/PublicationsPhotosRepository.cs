@@ -14,12 +14,13 @@ namespace Instend.Repositories.Publications
             _context = context;
         }
 
-        public async Task<List<Attachment>> GetAccountPhotos(Guid accountId)
+        public async Task<List<Attachment>> GetAccountPhotos(Guid accountId, int skip)
         {
             return await _context.Publications
                 .AsNoTracking()
                 .Include(x => x.Attachments)
                 .Where(x => x.AccountId == accountId && x.Attachments.FirstOrDefault(x => Configuration.imageTypes.Contains(x.Type)) != null)
+                .Skip(skip)
                 .Take(9)
                 .SelectMany(x => x.Attachments)
                 .ToListAsync();

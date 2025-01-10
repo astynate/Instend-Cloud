@@ -25,6 +25,7 @@
     "account.create.email_desc": "Please enter your email. This field is required and must look like example@domain.com",
     "account.email": "Email",
     "account.create.name_desc": "Please enter your name and surname. This is a required fields.",
+    "account.create.dateofbirth_desc": "Please enter your real date of birth. You must be over than 5 years old.",
     "account.name": "Name",
     "account.surname": "Surname",
     "account.nickname": "Nickname",

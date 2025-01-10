@@ -3,9 +3,6 @@
     width: 300px;
     border-radius: 20px;
     background: var(--main-accent-color);
-    /* position: absolute;
-    top: 45px;
-    right: -5px; */
     z-index: 2;
     display: flex;
     padding-top: 15px;

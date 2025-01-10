@@ -3,15 +3,12 @@ using Instend.Core;
 using Instend.Core.Models.Access;
 using Instend.Core.Models.Storage.Collection;
 using Instend.Repositories.Contexts;
-using Instend.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
 
 namespace Instend.Repositories.Storage
 {
     public class CollectionsRepository : ICollectionsRepository
     {
-        private readonly IPreviewService _previewService = null!;
-
         private readonly GlobalContext _context = null!;
        
         private readonly Func<CollectionAccount, bool> IsSystemCollection = (CollectionAccount c) => c.Collection != null && c.Collection.Type == Configuration.CollectionTypes.System;
@@ -22,9 +19,8 @@ namespace Instend.Repositories.Storage
 
         private readonly Func<CollectionAccount, string, bool> IsNameEquals = (c, name) => c.Collection != null && c.Collection.Name == name;
 
-        public CollectionsRepository(IPreviewService previewService, GlobalContext storageContext)
+        public CollectionsRepository(GlobalContext storageContext)
         {
-            _previewService = previewService;
             _context = storageContext;
         }
 
@@ -75,41 +71,35 @@ namespace Instend.Repositories.Storage
             return systemCollections;
         }
 
-        public async Task<IEnumerable<Collection>> GetCollectionsByParentId(Guid userId, Guid folderId)
+        public async Task<IEnumerable<Collection>> GetCollectionsByParentId(Guid userId, Guid parentCollectionId, int skip, int take)
         {
-            var IsUserOwner = (Collection collection) => collection.FolderId == folderId;
-            var IsCollectionsIdEquals = (Collection collection) => collection.FolderId == folderId;
+            var IsUserOwner = (Collection collection) => collection.FolderId == parentCollectionId;
+            var IsCollectionsIdEquals = (Collection collection) => collection.FolderId == parentCollectionId;
             var IsTargetCollection = (Collection collection) => IsCollectionsIdEquals(collection) && (userId == Guid.Empty ? IsUserOwner(collection) : true);
 
             var collections = await _context.Collections
                 .AsNoTracking()
                 .Where(folder => IsTargetCollection(folder))
+                .Skip(skip)
+                .Take(take)
                 .ToArrayAsync();
 
             return collections;
         }
 
-        public async Task<IEnumerable<Collection>> GetShortPathAsync(Guid folderId)
+        public async Task<IEnumerable<Collection>> GetShortPathAsync(Guid collectionId)
         {
             var path = new List<Collection>();
-            var current = folderId;
+            var current = collectionId;
 
-            for (int i = 0; i < 5; i++)
-            {
-                var folder = await _context.Collections
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.Id == current);
+            var collection = await _context.Collections
+                .AsNoTracking()
+                .Where(x => x.Id == collectionId)
+                .Include(x => x.ParentCollection)
+                .SelectMany(x => x.Collections)
+                .ToArrayAsync();
 
-                if (folder == null || folder.Id == Guid.Empty)
-                    break;
-
-                current = folder.FolderId;
-                path.Add(folder);
-            }
-
-            path.Reverse();
-
-            return path.ToArray();
+            return path;
         }
 
         public async Task<Result<Collection>> AddAsync(string name, Guid ownerId, Guid folderId, Configuration.CollectionTypes folderType, bool visibility)

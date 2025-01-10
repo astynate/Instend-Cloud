@@ -167,9 +167,12 @@ namespace Instend.Repositories.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public Task<Core.Models.Account.Account[]> GetByPrefixAsync(string prefix)
+        public async Task<Core.Models.Account.Account[]> GetByPrefixAsync(string prefix)
         {
-            throw new NotImplementedException();
+            return await _context.Accounts
+                .Where(a => a.Nickname.Contains(prefix) || a.Name.Contains(prefix) || a.Surname.Contains(prefix))
+                .Take(5)
+                .ToArrayAsync();
         }
 
         public Task<Core.Models.Account.Account[]> GetPopuplarPeopleAsync(int from, int count)
@@ -190,6 +193,7 @@ namespace Instend.Repositories.Repositories
             var account = await _context.Accounts
                 .AsNoTracking()
                 .Where(expression)
+                .Include(x => x.Following)
                 .Include(x => x.Links)
                 .FirstOrDefaultAsync();
 

@@ -1,10 +1,12 @@
 .menuWrapper {
     position: fixed;
-    top: 58px;
+    top: 57px;
     left: 50%;
     transform: translateX(-50%);
-    border-radius: 50px;
-    padding: 3px;
+    border-radius: 13px;
+    padding: 4px;
+    background: var(--main-accent-color);
+    z-index: 9999;
 }
 
 .menu {
@@ -14,7 +16,7 @@
     left: 0;
     position: relative;
     z-index: 9999;
-    padding: 7px 15px;
+    padding: 6px 15px;
     align-items: center;
 }
 
@@ -28,6 +30,7 @@
 .button a {
     font-weight: 500;
     font-size: 16px;
+    width: 120px;
     color: var(--main-paragraph-color);
     border-radius: 10px;
     transition: 0.25s ease;
@@ -39,12 +42,12 @@
 
 .pointer {
     height: 100%;
-    width: 90px;
+    width: 120px;
     position: absolute;
     top: 0;
     left: 0;
     backdrop-filter: invert(100%);
-    border-radius: 30px;
+    border-radius: 10px;
     cursor: pointer;
     transition: 0.25s ease;
 }

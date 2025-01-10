@@ -1,3 +1,10 @@
+.header {
+    height: auto;
+    background: var(--main-background-color);
+    display: flex;
+    justify-content: space-between;
+}
+
 .wrapper {
     height: calc(100vh - var(--disconnected-height));
     width: 100%;
@@ -5,23 +12,11 @@
     flex-direction: column;
     box-sizing: border-box;
     position: relative;
-    /* padding-top: 5px; */
     user-select: none;
     overflow-y: scroll;
     overflow-x: hidden;
     padding-bottom: 20px;
 }
-
-/* .contentWrapper {
-    height: calc(100vh - 65px);
-    padding-right: 15px;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    padding-bottom: 20px;
-    position: relative;
-    min-width: 500px;
-    width: 100%;
-} */
 
 .content {
     width: 100%;

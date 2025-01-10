@@ -7,20 +7,16 @@ import ValidationHandler from "../../../../utils/handlers/ValidationHandler";
 import { useTranslation } from "react-i18next";
 
 const Email = () => {
-
     const user = useContext(UserContext);
     const [email, setEmail] = useState(user.email);
     const [isValidEmail, setEmailState] = useState(ValidationHandler.ValidateEmail(user.email));
     const { t } = useTranslation();
 
     useEffect(() => {
-
         user.email = email;
-
     }, [user, email]);
 
     return (
-
         <>
             <h1>{t('account.create.creation_of')} <span className="selected-text">Instend ID</span></h1>
             <p className='page-description'>{t('account.create.email_desc')}</p>
@@ -38,9 +34,7 @@ const Email = () => {
                 <Button title={t('account.next')} state={isValidEmail ? 'valid' : 'invalid'} />
             </Link>
         </>
-
     );
-
 }
 
 export default Email;

@@ -15,13 +15,13 @@ namespace Instend.Server.Controllers.Account
 
         private readonly IConfirmationsRepository _confirmationRespository;
 
-        private readonly IAccountsRepository _accountsRepository;
+        private readonly FilesController _accountsRepository;
 
         public PasswordRecoveryController
         (
             IEmailService emailService,
             IConfirmationsRepository confirmationRespository,
-            IAccountsRepository usersRepository
+            FilesController usersRepository
         )
         {
             _emailService = emailService;
@@ -72,7 +72,7 @@ namespace Instend.Server.Controllers.Account
                 return BadRequest("Invalid code");
 
             var passwordRecoverResult = await _accountsRepository
-                .RecoverPassword(searchConfirmationResult.Value.UserId, password);
+                .RecoverPassword(searchConfirmationResult.Value.AccountId, password);
 
             if (passwordRecoverResult.IsFailure)
                 return BadRequest(passwordRecoverResult.Error);

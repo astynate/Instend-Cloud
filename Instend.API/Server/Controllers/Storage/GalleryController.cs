@@ -18,13 +18,13 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
     [Route("api/[controller]")]
     public class GalleryController : ControllerBase
     {
-        private readonly IFileRespository _fileRespository;
+        private readonly IFilesRespository _fileRespository;
 
         private readonly ICollectionsRepository _folderRespository;
 
         private readonly IRequestHandler _requestHandler;
 
-        private readonly IAccountsRepository _accountsRepository;
+        private readonly CloudController _accountsRepository;
 
         private readonly IAlbumsRepository _albumsRepository;
 
@@ -38,12 +38,12 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         public GalleryController
         (
-            IFileRespository fileRespository, 
+            IFilesRespository fileRespository, 
             IRequestHandler requestHandler, 
             IAlbumsRepository albumRepository,
             ICollectionsRepository folderRepository,
             IHubContext<GlobalHub> globalHub,
-            IAccountsRepository accountsRepository,
+            CloudController accountsRepository,
             IAccessHandler accessHandler,
             IImageService imageService,
             AccountsContext context

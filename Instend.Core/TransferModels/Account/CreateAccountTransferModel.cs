@@ -9,6 +9,6 @@ namespace Instend.Core.TransferModels.Account
          [Required][MaxLength(45)] string nickname,
          [Required][MaxLength(45)] string email,
          [Required][MaxLength(45)] string password,
-         [Required][MaxLength(45)] DateOnly dateofBirth
+         [Required] DateOnly dateOfBirth
     );
 }

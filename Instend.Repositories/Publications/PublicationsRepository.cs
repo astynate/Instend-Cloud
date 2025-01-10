@@ -122,17 +122,12 @@ namespace Instend.Repositories.Comments
             return null;
         }
 
-        public async Task<List<Publication>> GetNewsByAccount(DateTime date, Core.Models.Account.Account account, int count)
+        public async Task<List<Publication>> GetNewsByAccount(DateTime date, Guid[] targetAccounts, Guid accountId, int count)
         {
-            var targetAccounts = account.Following
-                .Concat([account])
-                .Select(x => x.Id)
-                .ToArray();
-
             var result = await GetNewsByExpressionAsync
             (
                 x => targetAccounts.Contains(x.AccountId) && x.Date < date, 
-                account.Id, 
+                accountId, 
                 5
             );
 

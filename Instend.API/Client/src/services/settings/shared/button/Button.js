@@ -14,7 +14,10 @@ const Button = ({image, path, name, title, setCurrentSetting}) => {
     return (
         <div className={styles.button} id={location.pathname === path ? 'active' : null}>
             <NavLink to={path}>
-                <img src={image} draggable="false" />
+                <img 
+                    src={image} 
+                    draggable="false" 
+                />
                 {title}
             </NavLink>
         </div>

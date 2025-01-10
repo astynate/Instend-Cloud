@@ -3,8 +3,10 @@ import { useTranslation } from 'react-i18next';
 import ExploreState from '../../../../state/entities/ExploreState';
 import styles from './styles/main.module.css';
 import search from './images/search.png';
+import SubContentWrapper from '../../features/wrappers/sub-content-wrapper/SubContentWrapper';
+import AccountController from '../../../../api/AccountController';
 
-const Search = () => {
+const Search = ({isMovable = false}) => {
     const [isAvailable, setAvailable] = useState(true);
     const { t } = useTranslation();
     
@@ -18,24 +20,25 @@ const Search = () => {
         if (prefix && prefix !== '' && isAvailable === true) {
             timerId = setTimeout(async () => {
                 setAvailable(false);
-                await ExploreState.GetUsers(prefix);
-                await ExploreState.GetFiles(prefix);
+                await AccountController.GetAccountsByPrefix(prefix, ExploreState.setAccounts);
                 setAvailable(true);
             }, 700);
         }
     }
 
     return (
-        <div className={styles.search}>
-            <img 
-                src={search} 
-                draggable={false} 
-            />
-            <input 
-                placeholder={t('global.search_in_instend')} 
-                onInput={(event) => GetData(event.target.value)}
-            />
-        </div>
+        <SubContentWrapper>
+            <div className={styles.search}>
+                <img 
+                    src={search} 
+                    draggable={false} 
+                />
+                <input 
+                    placeholder={t('global.search_in_instend')} 
+                    onInput={(event) => GetData(event.target.value)}
+                />
+            </div>
+        </SubContentWrapper>
     );
 };
 

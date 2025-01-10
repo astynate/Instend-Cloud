@@ -4,10 +4,10 @@
 }
 
 .content {
-    width: 36vw;
+    width: 500px;
     top: 0;
     padding-right: 5px;
-    margin-right: calc(31vw);
+    margin-right: calc(33vw);
     margin-left: auto;
 }
 

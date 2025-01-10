@@ -21,13 +21,10 @@ namespace Instend.Repositories.Contexts
         public DbSet<Album> Albums { get; set; } = null!;
         public DbSet<AlbumFile> AlbumsFiles { get; set; } = null!;
         public DbSet<AlbumAccount> AlbumsAccounts { get; set; } = null!;
-
         public DbSet<Collection> Collections { get; set; } = null!;
         public DbSet<CollectionAccount> CollectionsAccounts { get; set; } = null!;
-
         public DbSet<Core.Models.Storage.File.File> Files { get; set; } = null!;
         public DbSet<FileAccount> FilesAccounts { get; set; } = null!;
-
         public DbSet<Attachment> Attachments { get; set; } = null!;
         public DbSet<SongFormat> SongsMeta { get; set; } = null!;
 
@@ -43,7 +40,6 @@ namespace Instend.Repositories.Contexts
                 .Entity<AccessItemBase>()
                 .UseTpcMappingStrategy();
 
-
             modelBuilder
                  .Entity<CollectionAccount>()
                  .HasOne(ca => ca.Collection)
@@ -54,7 +50,6 @@ namespace Instend.Repositories.Contexts
                 .HasOne(ca => ca.Account)
                 .WithMany(a => a.Collections);
 
-
             modelBuilder
                 .Entity<FileAccount>()
                  .HasOne(fa => fa.File)
@@ -64,7 +59,6 @@ namespace Instend.Repositories.Contexts
                 .Entity<FileAccount>()
                 .HasOne(fa => fa.Account)
                 .WithMany(a => a.Files);
-
 
             modelBuilder
                 .Entity<AlbumAccount>()

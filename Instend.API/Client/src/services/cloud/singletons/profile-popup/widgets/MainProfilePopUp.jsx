@@ -8,8 +8,11 @@ import logout from '../images/logout.png';
 import StorageController from '../../../../../api/StorageController';
 
 const MainProfilePopUp = ({setCurrentWindow = () => {}}) => {
+    let navigate = useNavigate();
+
     const Logout = () => {
-        useNavigate('/main');
+        navigate('/main');
+        
         localStorage.clear('system_access_token');
         document.cookie = "system_refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         AccountState.Logout();

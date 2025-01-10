@@ -18,17 +18,18 @@ const Home = observer((props) => {
 
   return (
     <div className={styles.home}>
-      <Header />
-      <Search />
+      <Header>
+        <Search />
+        <SubMenu 
+          items={[
+            {'name': 'News', 'route': '/'},
+            {'name': 'People', 'route': '/people'}
+          ]}
+        />
+      </Header>
       <div className={styles.headerWrapper}>
         <MainContentWrapper>
           <div className={styles.header}>
-            <SubMenu 
-              items={[
-                {'name': 'News', 'route': '/'},
-                {'name': 'People', 'route': '/people'}
-              ]}
-            />
             <div className={styles.overlay}>
               <div className={styles.circle}></div>
             </div>

@@ -1,10 +1,15 @@
 .wrapper {
     background: var(--item-accent-color);
-    border-radius: 30px;
+    border-radius: 13px;
     cursor: pointer;
     width: fit-content;
     height: fit-content;
     border: 1px solid transparent;
     transition: 0.15s ease;
     user-select: none;
+}
+
+.wrapper[accent="true"] {
+    background: var(--main-blue-color);
+    color: white;
 }

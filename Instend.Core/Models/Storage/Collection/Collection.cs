@@ -4,7 +4,7 @@ using Instend.Core.Models.Abstraction;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Instend.Core.Models.Access;
+using Instend.Core.Models.Storage.File;
 
 namespace Instend.Core.Models.Storage.Collection
 {
@@ -17,9 +17,11 @@ namespace Instend.Core.Models.Storage.Collection
         [Column("visibility")] public bool Visibility { get; private set; } = true;
         [Column("type")] public string TypeId { get; private set; } = Configuration.CollectionTypes.Ordinary.ToString();
 
-        [NotMapped] public List<File.File> Preview { get; private set; } = new();
+        public Collection ParentCollection { get; set; }
+        public List<Collection> Collections { get; set; } = [];
+        public List<File.File> Files { get; set; } = [];
 
-        //public IEnumerable<CollectionAccount> AccoutsWithAccess { get; set; } = [];
+        [NotMapped] public List<File.File> Preview { get; private set; } = new();
 
         [NotMapped]
         [EnumDataType(typeof(Configuration.CollectionTypes))]

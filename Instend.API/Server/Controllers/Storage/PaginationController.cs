@@ -11,7 +11,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
     [Authorize]
     public class PaginationController : ControllerBase
     {
-        private readonly IFileRespository _fileRespository;
+        private readonly IFilesRespository _fileRespository;
 
         private readonly IRequestHandler _requestHandler;
 
@@ -21,7 +21,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             { "music", Configuration.musicTypes }
         };
 
-        public PaginationController(IFileRespository fileRespository, IRequestHandler requestHandler)
+        public PaginationController(IFilesRespository fileRespository, IRequestHandler requestHandler)
         {
             _fileRespository = fileRespository;
             _requestHandler = requestHandler;

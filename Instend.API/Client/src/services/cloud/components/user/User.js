@@ -1,41 +1,25 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
+import { Link } from 'react-router-dom';
 import styles from './main.module.css';
-import Button from '../../../../shared/ui-kit/button/Button';
-import StatisticalUnit from '../../../../shared/ui-kit/statistical-unit/StatisticalUnit';
-import userState from '../../../../states/user-state';
-import AccountController from '../../../../api/AccountController';
+import StorageController from '../../../../api/StorageController';
 
-const User = observer(({id, name, nickname, avatar, coins, friends, space}) => {
+const User = observer(({id, name, nickname, avatar}) => {
     return (
         <div className={styles.user}>
-            <div className={styles.avatar}>
-                <img src={`data:image/png;base64,${avatar}`} draggable="false" />
-            </div>  
-            <div className={styles.name}>
-                <h1 className={styles.nickname}>{nickname}</h1>
-                <span className={styles.fullname}>{name}</span>
-            </div>
-            <div className={styles.statistic}>
-                <StatisticalUnit 
-                    title={"Coins"}
-                    amount={coins}
-                />
-                <StatisticalUnit 
-                    title={"Friends"}
-                    amount={friends}
-                />
-                <StatisticalUnit 
-                    title={"MB"}
-                    amount={space}
-                />
-            </div>
-            <div className={styles.button}>
-                <Button 
-                    value={userState.IsUserInFriends(id) ? "Remove" : "Add"}
-                    callback={() => AccountController.FollowUser(id)}
-                />
-            </div> 
+            <Link to={`/profile/${id}`} className={styles.information}>
+                <div className={styles.avatar}>
+                    <img 
+                        src={StorageController.getFullFileURL(avatar)} 
+                        draggable="false" 
+                    />
+                </div>  
+                <div className={styles.name}>
+                    <h1 className={styles.nickname}>{nickname}</h1>
+                    <span className={styles.fullname}>{name}</span>
+                </div>
+            </Link>
+            <button className={styles.button}>Follow</button> 
         </div>
     );
 });
