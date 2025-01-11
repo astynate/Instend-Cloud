@@ -1,7 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import styles from './main.module.css';
 import Header from '../../../widgets/header/Header';
 import Search from '../../../widgets/search/Search';
@@ -11,23 +10,19 @@ import UnitedButton from '../../../ui-kit/buttons/united-button/UnitedButton.js'
 import share from './images/header/account.png';
 import download from './images/header/download.png';
 import sort from './images/header/sort.png';
-import AddInFolder from '../features/add-in-folder/AddInFolder.jsx';
-import PopUpField from '../../../shared/popup-windows/pop-up-filed/PopUpField.js';
+import MainCloudPage from '../pages/main/MainCloudPage.jsx';
+import PublicationsCloudPage from '../pages/publications/PublicationsCloudPage.jsx';
+import MessagesCloudPage from '../pages/messages/MessagesCloudPage.jsx';
+import { Route, Routes } from 'react-router-dom';
 
-const Cloud = observer((props) => {
-  const [fileName, setFilename] = useState('');
-  const [isRenameOpen, setRenameState] = useState(false);
-  const [activeItems, setActiveItems] = useState([]);
-  const [isNewItem, setNewItemState] = useState();
-  const [creationType, setCreationType] = useState({});
-  const params = useParams();
+const Cloud = observer(({setPanelState}) => {
   const selectPlaceWrapper = useRef();
 
   useEffect(() => {
-    if (props.setPanelState) {
-      props.setPanelState(false); 
+    if (setPanelState) {
+      setPanelState(false); 
     }
-  }, [props.setPanelState]);
+  }, [setPanelState]);
 
   return (
     <div className={styles.wrapper} ref={selectPlaceWrapper}>
@@ -65,21 +60,11 @@ const Cloud = observer((props) => {
             />
         </div>
       </ContentWrapper>
-      <PopUpField
-        title={creationType.title}
-        text={creationType.text}
-        field={[fileName, setFilename]}
-        placeholder={creationType.placeholder}
-        open={isNewItem}
-        close={() => setNewItemState(false)}
-        callback={() => {}}
-      />
-      <AddInFolder 
-        OpenDialog={(type) => {
-          setNewItemState(true);
-          setCreationType(type);
-        }}
-      />
+      <Routes>
+        <Route path=":id?" element={<MainCloudPage />} />
+        <Route path="/publications/:id?" element={<PublicationsCloudPage />} />
+        <Route path="/messages/:id?" element={<MessagesCloudPage />} />
+      </Routes>
     </div>
   )
 });

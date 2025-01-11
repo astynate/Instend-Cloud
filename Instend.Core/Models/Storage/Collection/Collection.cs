@@ -1,10 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
-using Instend.Services.External.FileService;
 using Instend.Core.Models.Abstraction;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Instend.Core.Models.Storage.File;
 
 namespace Instend.Core.Models.Storage.Collection
 {
@@ -13,15 +11,12 @@ namespace Instend.Core.Models.Storage.Collection
     {
         [Column("name")] public string Name { get; private set; } = string.Empty;
         [Column("creation_time")] public DateTime CreationTime { get; private set; }
-        [Column("folder_id")] public Guid FolderId { get; private set; }
-        [Column("visibility")] public bool Visibility { get; private set; } = true;
+        [Column("collection_id")] public Guid CollectionId { get; private set; }
         [Column("type")] public string TypeId { get; private set; } = Configuration.CollectionTypes.Ordinary.ToString();
 
-        public Collection ParentCollection { get; set; }
+        public Collection? ParentCollection { get; set; } = null;
         public List<Collection> Collections { get; set; } = [];
         public List<File.File> Files { get; set; } = [];
-
-        [NotMapped] public List<File.File> Preview { get; private set; } = new();
 
         [NotMapped]
         [EnumDataType(typeof(Configuration.CollectionTypes))]
@@ -31,26 +26,9 @@ namespace Instend.Core.Models.Storage.Collection
             set => TypeId = value.ToString();
         }
 
-        public Collection() { }
+        private Collection() { }
 
-        public static Result<Collection> Create(string name, Guid ownerId, Guid folderId)
-        {
-            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrEmpty(name))
-                return Result.Failure<Collection>("Invalid folder name");
-
-            if (ownerId == Guid.Empty)
-                return Result.Failure<Collection>("Invalid ownder id");
-
-            return Result.Success(new Collection()
-            {
-                Id = Guid.NewGuid(),
-                Name = name,
-                CreationTime = DateTime.Now,
-                FolderId = folderId
-            });
-        }
-
-        public static Result<Collection> Create(string name, Guid folderId, Configuration.CollectionTypes folderType, bool visibility)
+        public static Result<Collection> Create(string name, Guid collectionId, Configuration.CollectionTypes folderType)
         {
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrEmpty(name))
                 return Result.Failure<Collection>("Invalid folder name");
@@ -60,20 +38,9 @@ namespace Instend.Core.Models.Storage.Collection
                 Id = Guid.NewGuid(),
                 Name = name,
                 CreationTime = DateTime.Now,
-                FolderId = folderId,
-                Type = folderType,
-                Visibility = visibility
+                CollectionId = collectionId,
+                Type = folderType
             });
-        }
-
-        public async Task SetPreviewAsync(IPreviewService previewService, List<File.File> preview)
-        {
-            foreach (var item in preview)
-            {
-                await item.SetPreview(previewService);
-            }
-
-            Preview = preview;
         }
     }
 }

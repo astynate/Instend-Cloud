@@ -6,10 +6,12 @@ export const AdaptId = (id) => {
 }
 
 class StorageState {
-    files = {};
-    folders = {};
     path = [];
-    folderQueueId = 0;
+    files = {};
+    collections = {};
+    publications = {};
+    messages = {};
+    collectionQueueId = 0;
     fileQueueId = 0;
     hasMoreSongs = true;
     hasMorePhotos = true;
@@ -20,12 +22,27 @@ class StorageState {
         makeAutoObservable(this);
     }
 
-    IsFolderExisitInFolders = (folder) => folder && folder.folderId && this.folders[AdaptId(folder.folderId)];
-    IsFolderExisitInFiles = (folder) =>  folder && folder.folderId && this.files[AdaptId(folder.folderId)];
+    SetCollectionsAsDefaultValue = () => {
+        this.collections = {};
+    }
+
+    IsItemsHasMore = (id, items) => {
+        return items[id] ? items[id].isHasMore : true;
+    }
+
+    SetItems = (id, items, newItems) => {
+        const isHasMore = items.length >= 5;
+        const combinedItems = items[id] ? [...items[id].items, ...newItems] : newItems;
+
+        items[id] = {
+            items: combinedItems,
+            isHasMore: isHasMore
+        };
+    };
+
     FindFileById = (id) => Object.values(this.files).flat().find(element => element.id === id);
-    FindFolderById = (id) => Object.values(this.folders).flat().find(element => element.id === id);
-    setFolders = (id, folders) => this.folders[id] = folders;
-    setFiles = (id, files) => this.files[id] = files;
+    FindCollectionById = (id) => Object.values(this.collections).flat().find(element => element.id === id);
+    SetPath = (path) => this.path = path;
 
     CreateLoadingFolder = (name, folderId) => {
         // const folder = {

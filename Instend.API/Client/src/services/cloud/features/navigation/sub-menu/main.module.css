@@ -5,7 +5,6 @@
     transform: translateX(-50%);
     border-radius: 13px;
     padding: 4px;
-    background: var(--main-accent-color);
     z-index: 9999;
 }
 

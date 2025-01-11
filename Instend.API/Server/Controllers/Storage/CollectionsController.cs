@@ -54,7 +54,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetPath(Guid? id)
+        public async Task<IActionResult> GetCollections(Guid? id, int skip, int take)
         {
             var available = await _accessHandler
                 .GetAccountAccessToCollection(id, Request, Configuration.EntityRoles.Reader);
@@ -63,13 +63,14 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                 return Conflict(available.Error);
 
             var path = await _collectionsRepository
-                .GetShortPathAsync(id);
+                .GetCollectionsByParentId(available.Value.accountId, id, skip, take);
 
             return Ok(path);
         }
 
         [HttpGet]
         [Authorize]
+        [Route("/api/[controller]/download")]
         public async Task<IActionResult> Download(Guid id)
         {
             var available = await _accessHandler.GetAccountAccessToCollection(id, Request, Configuration.EntityRoles.Reader);
@@ -93,13 +94,19 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> CreateFolder([FromForm] Guid? collectionId, [FromForm] string name, [FromForm] int queueId)
+        public async Task<ActionResult> CreateCollection([FromForm] Guid? collectionId, [FromForm] string name, [FromForm] int queueId)
         {
             var accountId = _requestHandler
                 .GetUserId(Request.Headers["Authorization"]);
 
             if (accountId.IsFailure)
                 return BadRequest("Invalid user id");
+
+            var account = await _accountsRepository
+                .GetByIdAsync(Guid.Parse(accountId.Value));
+
+            if (account == null)
+                return Conflict("Account not found");
 
             var available = await _accessHandler.GetAccountAccessToCollection
             (
@@ -112,7 +119,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest(available.Error);
 
             var result = await _collectionsRepository
-                .AddAsync(name, Guid.Parse(accountId.Value), collectionId ?? Guid.Empty);
+                .AddAsync(name, account, collectionId ?? Guid.Empty, Configuration.CollectionTypes.Ordinary);
 
             if (result.IsFailure)
                 return BadRequest("Failed to create collectionIdAsGuid");
@@ -120,7 +127,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             var groupId = collectionId.HasValue == false ? Guid.Parse(accountId.Value) : collectionId;
 
             await _globalHub.Clients.Group(groupId.ToString() ?? "")
-                .SendAsync("CreateFolder", new object[] { result.Value, queueId });
+                .SendAsync("CreateCollection", new object[] { result.Value, queueId });
 
             return Ok();
         }

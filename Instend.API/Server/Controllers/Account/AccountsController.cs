@@ -22,7 +22,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
     {
         private readonly IConfirmationsRepository _confirmationRepository;
 
-        private readonly FilesController _accountsRepository;
+        private readonly IAccountsRepository _accountsRepository;
 
         private readonly IImageService _imageService;
 
@@ -30,7 +30,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
         private readonly IEncryptionService _encryptionService;
 
-        private readonly ICollectionsRepository _folderRepository;
+        private readonly ICollectionsRepository _collectionsRepository;
 
         private readonly IFileService _fileService;
 
@@ -46,7 +46,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
         (
             IConfirmationsRepository confirmationsRepository,
             IImageService imageService,
-            FilesController accountsRepository,
+            IAccountsRepository accountsRepository,
             ICollectionsRepository folderRepository,
             IEmailService emailService,
             IEncryptionService encryptionService,
@@ -62,7 +62,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             _imageService = imageService;
             _encryptionService = encryptionService;
             _accountsRepository = accountsRepository;
-            _folderRepository = folderRepository;
+            _collectionsRepository = folderRepository;
             _friendsRepository = friendsRepository;
             _emailService = emailService;
             _requestHandler = requestHandler;
@@ -179,24 +179,37 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
                     if (confirmation.IsFailure)
                         return BadRequest(confirmation.Error);
 
+                    await CreateSystemFolders(account.Value);
+
                     await _confirmationRepository.AddAsync(confirmation.Value);
-
-                    var systemResult = await CreateSystemFolders(account.Value.Id);
-
-                    if (systemResult.IsFailure)
-                        return Conflict(systemResult.Error);
 
                     var email = account.Value.Email;
                     var code = confirmation.Value.Code;
-                    var link = "accountTransferModel/email/confirmationsRepository/" + confirmation.Value.Link.ToString();
+                    var link = "account/email/confirmations/" + confirmation.Value.Link;
 
                     await _emailService.SendEmailConfirmation(email, code, Configuration.URL + link);
 
-                    transaction.Commit();
+                    await transaction.CommitAsync();
 
                     return Ok(confirmation.Value.Link);
                 }
             });
+        }
+
+        private async Task<Result> CreateSystemFolders(Instend.Core.Models.Account.Account account)
+        {
+            string[] systemFolders = ["Music", "Photos", "Trash"];
+
+            foreach (var systemFolder in systemFolders)
+            {
+                var photos = await _collectionsRepository
+                    .AddAsync(systemFolder, account, Guid.Empty, Configuration.CollectionTypes.System);
+
+                if (photos.IsFailure)
+                    return Result.Failure(photos.Error);
+            }
+
+            return Result.Success();
         }
 
         [HttpPut]
@@ -238,21 +251,5 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
         [Route("/api/accounts/photos")]
         public async Task<IActionResult> GetPhotos(Guid accountId, int skip) 
             => Ok(await _publicationsPhotosRepository.GetAccountPhotos(accountId, skip));
-
-        public async Task<Result> CreateSystemFolders(Guid userId)
-        {
-            string[] systemFolders = ["Music", "Photos", "Trash"];
-
-            foreach (var systemFolder in systemFolders)
-            {
-                var photos = await _folderRepository
-                    .AddAsync(systemFolder, userId, Guid.Empty, Configuration.CollectionTypes.System, false);
-
-                if (photos.IsFailure)
-                    return Result.Failure(photos.Error);
-            }
-
-            return Result.Success();
-        }
     }
 }

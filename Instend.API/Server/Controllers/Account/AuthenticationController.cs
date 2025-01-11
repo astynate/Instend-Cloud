@@ -15,7 +15,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
     {
         private readonly ITokenService _tokenService;
 
-        private readonly FilesController _accountsRepository;
+        private readonly IAccountsRepository _accountsRepository;
 
         private readonly IConfirmationsRepository _confirmationRepository;
 
@@ -28,7 +28,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
         public AuthenticationController
         (
             ITokenService tokenService,
-            FilesController usersRepository,
+            IAccountsRepository usersRepository,
             IConfirmationsRepository emailRepository,
             IEmailService emailService,
             IEncryptionService encryptionService,

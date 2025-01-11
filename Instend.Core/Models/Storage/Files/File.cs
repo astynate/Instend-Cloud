@@ -13,7 +13,7 @@ namespace Instend.Core.Models.Storage.File
         [Column("last_edit_time")] public DateTime LastEditTime { get; private set; }
         [Column("Path")] public string Path { get; private set; } = string.Empty;
         [Column("type")] public string? Type { get; private set; } = null;
-        [Column("folder_id")] public Guid FolderId { get; private set; }
+        [Column("collection_id")] public Guid CollectionId { get; private set; }
         [Column("size")] public double Size { get; private set; } = 0;
 
         [NotMapped] public byte[] Preview { get; private set; } = [];
@@ -41,7 +41,7 @@ namespace Instend.Core.Models.Storage.File
                 Size = size,
                 Path = path,
                 Type = type,
-                FolderId = folderId
+                CollectionId = folderId
             });
         }
 

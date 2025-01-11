@@ -12,7 +12,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Comments
     {
         private readonly IRequestHandler _requestHandler;
 
-        private readonly FilesController _accountsRepository;
+        private readonly IAccountsRepository _accountsRepository;
 
         private readonly IPublicationsRepository _publicationsRepository;
 
@@ -21,7 +21,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Comments
         public NewsController
         (
             IRequestHandler requestHandler, 
-            FilesController accountsRepository,
+            IAccountsRepository accountsRepository,
             IPublicationsRepository publicationsRepository,
             ISerializationHelper serializationHelper
         )

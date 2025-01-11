@@ -5,8 +5,8 @@ namespace Instend.Core.Models.Abstraction
 {
     public abstract class AccessBase : DatabaseModel
     {
-        [Column("role")] 
-        public string RoleId { get; protected set; } = Configuration.EntityRoles.Reader.ToString();
+        [Column("role")] public string RoleId { get; protected set; } = Configuration.EntityRoles.Reader.ToString();
+        [Column("account_id")] public Guid AccountId { get; init; } = Guid.Empty;
 
         public Account.Account Account { get; init; } = null!;
 

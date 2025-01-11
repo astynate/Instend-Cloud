@@ -10,9 +10,10 @@ namespace Instend.Core.Models.Access
 
         private CollectionAccount() { }
 
-        public CollectionAccount(Storage.Collection.Collection collection, Configuration.EntityRoles ability) : base(ability) 
+        public CollectionAccount(Storage.Collection.Collection collection, Account.Account account, Configuration.EntityRoles ability) : base(ability) 
         { 
             Collection = collection;
+            Account = account;
         }
     }
 }

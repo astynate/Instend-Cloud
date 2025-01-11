@@ -54,6 +54,22 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         [HttpGet]
         [Authorize]
+        public async Task<IActionResult> GetCollections(Guid? id, int skip, int take)
+        {
+            var available = await _accessHandler
+                .GetAccountAccessToCollection(id, Request, Configuration.EntityRoles.Reader);
+
+            if (available.IsFailure)
+                return Conflict(available.Error);
+
+            var path = await _collectionsRepository
+                .GetCollectionsByParentId(available.Value.accountId, id, skip, take);
+
+            return Ok(path);
+        }
+
+        [HttpGet]
+        [Authorize]
         [Route("/api/files/{prefix}")]
         public async Task<ActionResult> GetFileByPrefix(IRequestHandler requestHandler, string prefix)
         {
@@ -188,8 +204,6 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
             //var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
-
-
             //var collection = await _collectionsRepository.GetByIdAsync(collectionId, userId);
 
             //if (collection == null)
@@ -244,7 +258,6 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         [Authorize]
         public async Task<IActionResult> Delete(Guid id, Guid folderId)
         {
-
             throw new NotImplementedException();
 
             //var fileModel = await _fileRespository.GetByIdAsync(id);

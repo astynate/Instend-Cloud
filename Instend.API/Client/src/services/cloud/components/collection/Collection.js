@@ -4,7 +4,7 @@ import { ConvertDate } from '../../../../utils/handlers/DateHandler';
 import styles from './main.module.css';
 import system from './images/gear.png';
 
-const Folder = (props) => {
+const Collection = (props) => {
   // const [files, setFiles] = useState([]);
   // const [isSelected, setSelectedState] = useState(false);
   // const [isSelectedOpen, setSelectOpenState] = useState(false);
@@ -87,4 +87,4 @@ const Folder = (props) => {
   // }
 };
 
-export default Folder;
+export default Collection;

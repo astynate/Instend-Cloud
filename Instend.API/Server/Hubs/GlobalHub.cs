@@ -119,6 +119,6 @@ namespace Instend_Version_2._0._0.Server.Hubs
         }
 
         public async Task CreateFolder(Collection folder)
-            => await Clients.Group(folder.Id.ToString()).SendAsync("CreateFolder", folder);
+            => await Clients.Group(folder.Id.ToString()).SendAsync("CreateCollection", folder);
     }
 }

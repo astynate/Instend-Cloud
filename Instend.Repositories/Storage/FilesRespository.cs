@@ -33,7 +33,7 @@ namespace Instend.Repositories.Storage
         {
             var files = await _context.Files
                 .AsNoTracking()
-                .Where(file => file.FolderId == parentCollectionId)
+                .Where(file => file.CollectionId == parentCollectionId)
                 .Skip(skip)
                 .Take(take)
                 .ToArrayAsync();

@@ -15,13 +15,13 @@ namespace Instend.Server.Controllers.Account
 
         private readonly IConfirmationsRepository _confirmationRespository;
 
-        private readonly FilesController _accountsRepository;
+        private readonly IAccountsRepository _accountsRepository;
 
         public PasswordRecoveryController
         (
             IEmailService emailService,
             IConfirmationsRepository confirmationRespository,
-            FilesController usersRepository
+            IAccountsRepository usersRepository
         )
         {
             _emailService = emailService;

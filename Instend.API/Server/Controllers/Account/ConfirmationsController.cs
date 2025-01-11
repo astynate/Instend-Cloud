@@ -11,7 +11,7 @@ namespace Instend.Server.Controllers.Account
     [Route("[controller]")]
     public class ConfirmationsController : ControllerBase
     {
-        private readonly FilesController _accountsRepository;
+        private readonly IAccountsRepository _accountsRepository;
 
         private readonly IConfirmationsRepository _confirmationRespository;
 
@@ -20,7 +20,7 @@ namespace Instend.Server.Controllers.Account
         public ConfirmationsController
         (
             GlobalContext context, 
-            FilesController accountsRepository, 
+            IAccountsRepository accountsRepository, 
             IConfirmationsRepository confirmationRespository
         )
         {

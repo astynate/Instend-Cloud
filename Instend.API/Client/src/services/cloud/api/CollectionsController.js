@@ -32,7 +32,7 @@ class CollectionsController {
     
         for (let i = 0; i < selectedItems.length; i++) {
             const item = selectedItems[i];
-            const endpoint = item.strategy === "folder" ? "folders" : "storage";
+            const endpoint = item.strategy === "folder" ? "collections" : "storage";
             const folderId = item.folderId === GlobalContext.guidEmpthy ? item.ownerId : item.folderId;
     
             if (item.strategy === "folder") {
@@ -59,12 +59,12 @@ class CollectionsController {
 
     static RenameFolder = async (fileName, item) => {    
         const endpoint = item.strategy === "file" ? "storage" : "folders";
-        const folderId = item.folderId === GuidEmpthy ? item.ownerId : item.folderId;
+        const collectionId = item.folderId === GlobalContext.guidEmpthy ? item.ownerId : item.folderId;
     
         StorageState.SetFolderAsLoaing(item.id, item.folderId);
     
         await instance
-            .put(`/${endpoint}?id=${item.id}&folderId=${folderId}&name=${fileName}`)
+            .put(`/api/${endpoint}?id=${item.id}&folderId=${collectionId}&name=${fileName}`)
             .catch((error) => {
                 ApplicationState.AddErrorInQueueByError('Attention!', error);
                 StorageState.RemoveFolderLoadingState(item.id, item.folderId);
@@ -73,30 +73,28 @@ class CollectionsController {
 
     static DownloadCollection = async (id) => {
         instance({
-            url: `/folders?id=${id}`,
+            url: `/api/collections?id=${id}`,
             method: 'GET',
             responseType: 'blob',
         })
         .then((response) => {
-            DownloadFromResponse(response);
+            // DownloadFromResponse(response);
         });
     }
 
-    static GetCollectionItems = async () => {
-        let items = [];
+    static GetCollectionsByParentId = async (id, onSuccess = () => {}) => {
+        const length = StorageState.collections[id] ? StorageState.collections[id].items.length : 0;
 
         await instance
-            .get(`/storage?id=${id ? id : ""}`)
+            .get(`api/collections?id=${id ?? ''}&skip=${length}&take=${5}`)
             .then(response => {
                 if (response.data && response.data.length) {
-                    items = response.data;
+                    onSuccess(response.data);
                 }
             })
             .catch((error) => { 
                 ApplicationState.AddErrorInQueueByError('Attention!', error);
             });
-
-        return items;
     }
 }
 

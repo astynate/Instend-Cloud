@@ -24,7 +24,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IRequestHandler _requestHandler;
 
-        private readonly CloudController _accountsRepository;
+        private readonly IAccountsRepository _accountsRepository;
 
         private readonly IAlbumsRepository _albumsRepository;
 
@@ -43,7 +43,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             IAlbumsRepository albumRepository,
             ICollectionsRepository folderRepository,
             IHubContext<GlobalHub> globalHub,
-            CloudController accountsRepository,
+            IAccountsRepository accountsRepository,
             IAccessHandler accessHandler,
             IImageService imageService,
             AccountsContext context

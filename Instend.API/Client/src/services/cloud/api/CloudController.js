@@ -94,6 +94,10 @@ class CloudController {
         const files = event.dataTransfer.files;
         await CloudController.UploadFilesAsync(files, folderId);
     }
+
+    static GetPath = async (onSuccess = () => {}) => {
+
+    }
 }
 
 export default CloudController;

@@ -1,10 +1,13 @@
 ﻿using CSharpFunctionalExtensions;
 using CSharpFunctionalExtensions.ValueTasks;
+using Instend.Core;
 using Instend.Core.Dependencies.Repositories.Account;
 using Instend.Core.Dependencies.Services.Internal.Services;
 using Instend.Core.Models.Account;
 using Instend.Repositories.Contexts;
+using Instend.Repositories.Storage;
 using Instend_Version_2._0._0.Server.TransferModels.Account;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Instend.Repositories.Repositories
@@ -15,14 +18,18 @@ namespace Instend.Repositories.Repositories
 
         private readonly IEncryptionService _encryptionService;
 
+        private readonly ICollectionsRepository _collectionsRepository;
+
         public AccountsRepository
         (
             GlobalContext context, 
-            IEncryptionService encryptionService
+            IEncryptionService encryptionService,
+            ICollectionsRepository collectionsRepository
         )
         {
             _context = context;
             _encryptionService = encryptionService;
+            _collectionsRepository = collectionsRepository;
         }
 
         public async Task<Core.Models.Account.Account?> GetByIdAsync(Guid id)
