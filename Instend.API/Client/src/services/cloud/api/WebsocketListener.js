@@ -4,12 +4,11 @@ import GalleryState from "../../../state/entities/GalleryState";
 import MusicState from "../../../state/entities/MusicState";
 import StorageState from "../../../state/entities/StorageState";
 import AccountState from "../../../state/entities/AccountState";
-// import { globalWSContext } from "../layout/Layout";
 
 class WebsocketListener {
-    static CreateFolderListener = async ([folder, queueId]) => {
+    static CreateCollectionListener = async ([folder, queueId]) => {
         // await connectToFoldersListener();
-        await StorageState.ReplaceLoadingFolder(folder, queueId);
+        await StorageState.ReplaceLoadingCollection(folder, queueId);
     };
 
     static UploadFileListener = async ([file, queueId, occupiedSpace, meta]) => {

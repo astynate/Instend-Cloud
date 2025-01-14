@@ -11,9 +11,9 @@ namespace Instend.Repositories.Contexts
         public DbSet<Group> Groups { get; set; } = null!;
         public DbSet<GroupMember> GroupMembers { get; set; } = null!;
         public DbSet<Message> Messages { get; set; } = null!;
-        public DbSet<MessageAttachment> MessageAttachments { get; set; } = null!;
+        public DbSet<MessageAttachment> MessagesAttachments { get; set; } = null!;
         public DbSet<MessageFile> MessageFiles { get; set; } = null!;
-        public DbSet<MessageCollection> MessageFolders { get; set; } = null!;
+        public DbSet<MessageCollection> MessagesCollections { get; set; } = null!;
         public DbSet<DirectMessage> DirectMessages { get; set; } = null!;
         public DbSet<GroupMessage> GroupMessages { get; set; } = null!;
 

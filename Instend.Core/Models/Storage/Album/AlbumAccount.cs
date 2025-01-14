@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Instend.Core.Models.Abstraction;
-using Instend.Core.Models.Storage.Album;
 
-namespace Instend.Core.Models.Access
+namespace Instend.Core.Models.Storage.Album
 {
     [Table("albums_accounts")]
     public class AlbumAccount : AccessBase
@@ -11,7 +10,7 @@ namespace Instend.Core.Models.Access
 
         private AlbumAccount() { }
 
-        public AlbumAccount(Album album, Configuration.EntityRoles role) : base(role) 
+        public AlbumAccount(Album album, Configuration.EntityRoles role) : base(role)
         {
             Album = album;
         }

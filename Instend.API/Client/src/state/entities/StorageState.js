@@ -27,58 +27,68 @@ class StorageState {
     }
 
     IsItemsHasMore = (id, items) => {
-        return items[id] ? items[id].isHasMore : true;
+        return items[AdaptId(id)] ? items[AdaptId(id)].isHasMore : true;
     }
 
     SetItems = (id, items, newItems) => {
-        const isHasMore = items.length >= 5;
-        const combinedItems = items[id] ? [...items[id].items, ...newItems] : newItems;
-
-        items[id] = {
-            items: combinedItems,
-            isHasMore: isHasMore
+        const adaptId = AdaptId(id);
+        const existingItems = items[adaptId] ? items[adaptId].items : [];
+        const combinedItems = new Set(existingItems.map(item => item.id));
+        const uniqueNewItems = [];
+    
+        newItems.forEach(newItem => {
+            if (!combinedItems.has(newItem.id)) {
+                combinedItems.add(newItem.id);
+                uniqueNewItems.push(newItem);
+            }
+        });
+    
+        items[adaptId] = {
+            items: [...existingItems, ...uniqueNewItems],
+            isHasMore: items.length >= 5
         };
-    };
+    };    
 
     FindFileById = (id) => Object.values(this.files).flat().find(element => element.id === id);
     FindCollectionById = (id) => Object.values(this.collections).flat().find(element => element.id === id);
     SetPath = (path) => this.path = path;
 
-    CreateLoadingFolder = (name, folderId) => {
-        // const folder = {
-        //     id: null,
-        //     queueId: this.folderQueueId,
-        //     name: name,
-        //     isLoading: true,
-        //     strategy: 'loadingFolder',
-        //     folderId: AdaptId(folderId)
-        // }
+    CreateLoadingCollection = (name, collectionId) => {
+        if (!!name === false) {
+            return undefined;
+        }
 
-        // if (this.IsFolderExisitInFolders(folder)) {
-        //     runInAction(() => {
-        //         this.folders[AdaptId(folderId)] = [folder, ...this.folders[AdaptId(folderId)]];
-        //         this.folderQueueId++;
-        //     });
-        // }
+        const collection = {
+            id: GlobalContext.NewGuid(),
+            queueId: this.collectionQueueId,
+            name: name,
+            isLoading: true,
+            strategy: 'loading-collection',
+            collectionId: AdaptId(collectionId)
+        }
 
-        // return folder.queueId;
+        runInAction(() => {
+            this.SetItems(collectionId, this.collections, [collection]);
+            this.collectionQueueId++;
+        });
+
+        return collection.queueId;
     }
 
-    ReplaceLoadingFolder = (folder, queueId) => {
-        // if (folder && folder.folderId) {
-        //     folder.strategy = 'folder';
+    ReplaceLoadingCollection = (collection, queueId) => {
+        if (!collection || !collection.collectionId) {
+            return;
+        }
 
-        //     runInAction(() => {
-        //         const index = this.folders[AdaptId(folder.folderId)]
-        //             .findIndex(element => element.queueId === queueId);
+        if (!this.collections[AdaptId(collection.collectionId)]) {
+            return;
+        }
 
-        //         if (index === -1) {
-        //             this.folders[AdaptId(folder.folderId)] = [folder, ...this.folders[AdaptId(folder.folderId)]]               
-        //         } else {
-        //             this.folders[AdaptId(folder.folderId)][index] = folder;
-        //         }
-        //     });
-        // }
+        runInAction(() => {
+            let items = this.collections[AdaptId(collection.collectionId)].items;
+            items = items.findIndex(element => element.queueId === queueId);
+            this.SetItems(collection.collectionId, this.collections, [collection]);
+        });
     }
 
     SetFolderAsLoaing = (id, folderId) => {

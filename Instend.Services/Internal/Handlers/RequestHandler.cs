@@ -16,16 +16,12 @@ namespace Instend.Services.Internal.Handlers
         public Result<string> GetUserId(string? authorizationHeader)
         {
             if (string.IsNullOrEmpty(authorizationHeader)) 
-            {
                 return Result.Failure<string>("Token cannot empthy");
-            }
 
             string token = authorizationHeader.Split(" ").Last();
 
             if (string.IsNullOrEmpty(token))
-            {
                 return Result.Failure<string>("Invalid token");
-            }
 
             return _tokenService.GetUserIdFromToken(token) ?? Result.Failure<string>("Invalid token");
         }

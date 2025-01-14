@@ -5,7 +5,6 @@ using Instend.Repositories.Gallery;
 using Instend.Repositories.Messenger;
 using Instend.Repositories.Storage;
 using Instend.Server.Hubs;
-using Instend.Services.External.FileService;
 using Instend.Services.Internal.Handlers;
 using Microsoft.AspNetCore.SignalR;
 
@@ -83,7 +82,7 @@ namespace Instend_Version_2._0._0.Server.Hubs
             => await JoinToEntity(_albumsRepository.GetAllAccountAlbums, "JoinToAlbumsHandler", authorization);
 
         public async Task JoinToCollections(string authorization)
-            => await JoinToEntity<Collection>(_collectionsRepository.GetCollectionsByAccountId, "JoinToCollectionsHandler", authorization);
+            => await JoinToEntity(_collectionsRepository.GetCollectionsByAccountId, "JoinToCollectionsHandler", authorization);
 
         public async Task ConnectToDirect(Guid id, string authorization)
         {

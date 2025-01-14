@@ -5,7 +5,7 @@
     height: 100%;
     width: 100%;
     flex-direction: column;
-    grid-gap: 10px;
+    grid-gap: 7px;
     cursor: pointer;
     transition: 0.25s ease;
     position: relative;
@@ -27,6 +27,7 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
+    column-gap: 2px;
     grid-gap: 2px;
     align-items: center;
     justify-content: center;
@@ -60,8 +61,8 @@
 }
 
 .name {
-    font-size: 15px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 600;
     text-overflow: ellipsis;
     color: var(--main-font-color);
     width: 100%;
@@ -88,16 +89,17 @@
 }
 
 .time {
-    font-size: 11px;
+    font-size: 12px;
+    font-weight: 500;
     color: var(--main-paragraph-color);
 }
 
 .file {
     height: 100%;
     width: 100%;
-    background: var(--pop-up-accent-color);
+    background: var(--main-accent-color);
     color: var(--main-blue-color);
-    border-radius: 6px;
+    border-radius: 7px;
     display: flex;
     align-items: center;
     justify-content: center;

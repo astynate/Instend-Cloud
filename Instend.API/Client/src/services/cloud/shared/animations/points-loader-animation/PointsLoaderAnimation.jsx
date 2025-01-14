@@ -18,7 +18,6 @@ const PointsLoaderAnimation = ({ color = 'var(--main-font-color)', size = '9px',
             <div className={styles.point} style={pointStyle}></div>
             <div className={styles.point} style={pointStyle}></div>
             <div className={styles.point} style={pointStyle}></div>
-            <div className={styles.point} style={pointStyle}></div>
         </div>
     );
 }

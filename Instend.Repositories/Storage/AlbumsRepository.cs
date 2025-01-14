@@ -1,10 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
 using Instend.Core;
 using Instend.Repositories.Gallery;
-using Microsoft.EntityFrameworkCore;
 using Instend.Repositories.Contexts;
 using Instend.Core.Models.Storage.Album;
-using Instend.Core.Models.Access;
 
 namespace Instend.Repositories.Storage
 {
@@ -19,45 +17,45 @@ namespace Instend.Repositories.Storage
 
         public async Task<Album?> GetByIdAsync(Guid id, int skip, int take)
         {
-            var album = await _storageContext.Albums
-                .AsNoTracking()
-                .Where(x => x.Id == id)
-                .Include(x => x.File)
-                .Skip(skip)
-                .Take(take)
-                .Include(x => x.AccountsWithAccess)
-                .FirstOrDefaultAsync();
+            //var album = await _storageContext.Albums
+            //    .AsNoTracking()
+            //    .Where(x => x.Id == id)
+            //    .Include(x => x.File)
+            //    .Skip(skip)
+            //    .Take(take)
+            //    .Include(x => x.AccountsWithAccess)
+            //    .FirstOrDefaultAsync();
 
-            return album;
+            return null;
         }
 
         public async Task<Album[]> GetAlbums(Guid userId, Configuration.AlbumTypes type, int skip, int take)
         {
-            var albums = await _storageContext.AlbumsAccounts
-                .AsNoTracking()
-                .Include(x => x.Account)
-                .Where(x => x.Account.Id == userId)
-                .Include(x => x.Album)
-                    .ThenInclude(x => x.AccountsWithAccess)
-                .Skip(skip)
-                .Take(take)
-                .Select(x => x.Album)
-                .ToArrayAsync();
+        //    var albums = await _storageContext.AlbumsAccounts
+        //        .AsNoTracking()
+        //        .Include(x => x.Account)
+        //        .Where(x => x.Account.Id == userId)
+        //        .Include(x => x.Album)
+        //            .ThenInclude(x => x.AccountsWithAccess)
+        //        .Skip(skip)
+        //        .Take(take)
+        //        .Select(x => x.Album)
+        //        .ToArrayAsync();
 
-            return albums;
+            return [];
         }
 
         public async Task<List<Album>> GetAllAccountAlbums(Guid accountId)
         {
-            var albums = await _storageContext.AlbumsAccounts
-                .AsNoTracking()
-                .Where(x => x.Account.Id == accountId)
-                .Include(x => x.Album)
-                    .ThenInclude(x => x.AccountsWithAccess)
-                .Select(x => x.Album)
-                .ToListAsync();
+            //var albums = await _storageContext.AlbumsAccounts
+            //    .AsNoTracking()
+            //    .Where(x => x.Account.Id == accountId)
+            //    .Include(x => x.Album)
+            //        .ThenInclude(x => x.AccountsWithAccess)
+            //    .Select(x => x.Album)
+            //    .ToListAsync();
 
-            return albums;
+            return [];
         }
 
         public async Task<Result<Album>> AddAsync(Guid ownerId, byte[] cover, string name, string? description, Configuration.AlbumTypes type)
@@ -96,18 +94,18 @@ namespace Instend.Repositories.Storage
 
         public async Task<Result> UpdateAlbum(Guid id, byte[] cover, string? name, string? description)
         {
-            var albumModel = await _storageContext.Albums
-                .FirstOrDefaultAsync(x => x.Id == id);
+            //var albumModel = await _storageContext.Albums
+            //    .FirstOrDefaultAsync(x => x.Id == id);
 
-            if (albumModel == null)
-                return Result.Failure("album not found");
+            //if (albumModel == null)
+            //    return Result.Failure("album not found");
 
-            albumModel.Update(name, description);
+            //albumModel.Update(name, description);
 
-            if (cover.Length > 0)
-                await File.WriteAllBytesAsync(albumModel.Cover, cover);
+            //if (cover.Length > 0)
+            //    await File.WriteAllBytesAsync(albumModel.Cover, cover);
 
-            await _storageContext.SaveChangesAsync();
+            //await _storageContext.SaveChangesAsync();
             return Result.Success();
         }
     }

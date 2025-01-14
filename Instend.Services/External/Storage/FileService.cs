@@ -38,19 +38,19 @@ namespace Instend.Services.External.FileService
         {
             using (var memoryStream = new MemoryStream())
             {
-                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
-                {
-                    foreach (var file in files)
-                    {
-                        var fileToWrite = archive.CreateEntry($"{file.Name}.{file.Type}");
+                //using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                //{
+                //    foreach (var file in files)
+                //    {
+                //        var fileToWrite = archive.CreateEntry($"{file.Name}.{file.Type}");
 
-                        using (var entryStream = fileToWrite.Open())
-                        {
-                            var fileBytes = System.IO.File.ReadAllBytes(file.Path);
-                            entryStream.Write(fileBytes, 0, fileBytes.Length);
-                        }
-                    }
-                }
+                //        using (var entryStream = fileToWrite.Open())
+                //        {
+                //            var fileBytes = System.IO.File.ReadAllBytes(file.Path);
+                //            entryStream.Write(fileBytes, 0, fileBytes.Length);
+                //        }
+                //    }
+                //}
 
                 return memoryStream.ToArray();
             }

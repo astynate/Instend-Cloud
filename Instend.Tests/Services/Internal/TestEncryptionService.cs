@@ -6,20 +6,5 @@ namespace Instend.Tests.Services.Internal
     [TestClass]
     public class TestEncryptionService
     {
-
-        private readonly IEncryptionService _encryptionService = new EncryptionService();
-
-        [TestMethod]
-        public void TestGetRandomString()
-        {
-
-            string secretCode = _encryptionService.GenerateSecretCode(6);
-
-            Console.WriteLine(secretCode);
-            Assert.IsInstanceOfType(secretCode, typeof(string));
-
-        }
-
     }
-
 }

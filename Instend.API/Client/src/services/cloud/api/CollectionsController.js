@@ -4,23 +4,23 @@ import ApplicationState from "../../../state/application/ApplicationState";
 import StorageState from "../../../state/entities/StorageState";
 
 class CollectionsController {
-    static CreateFolder = async (name, folderId) => {
+    static CreateCollection = async (name, collectionId) => {
         let form = new FormData();
-        let queueId = StorageState.CreateLoadingFolder(name, folderId);
+        let queueId = StorageState.CreateLoadingCollection(name, collectionId);
+
+        if (queueId === undefined) {
+            return;
+        }
                   
         form.append("name", name);
-        form.append("folderId", folderId ? folderId : "");
+        form.append("collectionId", collectionId ?? '');
         form.append("queueId", queueId);
     
         await instance
-            .post(`/folders`, form, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
+            .post(`api/collections`, form)
             .catch((error) => {
                 ApplicationState.AddErrorInQueue('Attention!', error.response.data);
-                StorageState.DeleteLoadingFolder(queueId, folderId);
+                StorageState.DeleteLoadingFolder(queueId, collectionId);
             });
     };
 

@@ -28,7 +28,7 @@ const Layout = observer(() => {
 
     let navigate = useNavigate();
 
-    globalWSContext.useSignalREffect("CreateFolder", WebsocketListener.CreateFolderListener);
+    globalWSContext.useSignalREffect("CreateCollection", WebsocketListener.CreateCollectionListener);
     globalWSContext.useSignalREffect("RenameFolder", WebsocketListener.RenameFolderListener); 
     globalWSContext.useSignalREffect("DeleteFolder", WebsocketListener.DeleteFolderListener);
     globalWSContext.useSignalREffect("UploadFile", WebsocketListener.UploadFileListener);

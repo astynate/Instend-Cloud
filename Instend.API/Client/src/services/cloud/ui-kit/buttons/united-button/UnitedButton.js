@@ -2,7 +2,7 @@ import React from "react";
 import styles from './main.module.css';
 import CircleButtonWrapper from "../../../features/wrappers/circle-button-wrapper/CircleButtonWrapper";
 
-const UnitedButton = ({buttons}) => {
+const UnitedButton = ({buttons, color}) => {
     return (
       <CircleButtonWrapper heightPaddings={0} widthPaddings={0}>
         <div className={styles.buttonWrapper}>

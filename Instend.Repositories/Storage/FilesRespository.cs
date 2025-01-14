@@ -29,14 +29,19 @@ namespace Instend.Repositories.Storage
             return Result.Success(fileCreationResult.Value);
         }
 
-        public async Task<Core.Models.Storage.File.File[]> GetByParentCollectionId(Guid userId, Guid parentCollectionId, int skip, int take)
+        public async Task<Core.Models.Storage.File.File[]> GetByParentCollectionId(Guid accountId, Guid parentCollectionId, int skip, int take)
         {
-            var files = await _context.Files
-                .AsNoTracking()
-                .Where(file => file.CollectionId == parentCollectionId)
-                .Skip(skip)
-                .Take(take)
-                .ToArrayAsync();
+            //var files = await _context.FilesAccounts
+            //    .AsNoTracking()
+            //    .Where(x => x.AccountId == accountId)
+            //    .Include(x => x.File)
+            //    .Where(file => file.File.CollectionId == parentCollectionId)
+            //    .Skip(skip)
+            //    .Take(take)
+            //    .Select(x => x.File)
+            //    .ToArrayAsync();
+
+            var files = await _context.Files.ToArrayAsync();
 
             return files;
         }
@@ -66,29 +71,29 @@ namespace Instend.Repositories.Storage
 
         public async Task<object[]> GetLastFilesWithType(Guid accountId, int from, int count, string[] type)
         {
-            var result = await _context.FilesAccounts
-                .AsNoTracking()
-                .Include(x => x.Account)
-                .Where(x => x.Account.Id == accountId)
-                .Include(x => x.File)
-                .Skip(from)
-                .Take(count)
-                .ToArrayAsync();
+            //var result = await _context.FilesAccounts
+            //    .AsNoTracking()
+            //    .Include(x => x.Account)
+            //    .Where(x => x.Account.Id == accountId)
+            //    .Include(x => x.File)
+            //    .Skip(from)
+            //    .Take(count)
+            //    .ToArrayAsync();
 
-            return result;
+            return [];
         }
 
         public async Task<object[]> GetFilesByPrefix(Guid userId, string prefix)
         {
-            var result = await _context.FilesAccounts
-                .AsNoTracking()
-                .Include(x => x.Account)
-                .Include(x => x.File)
-                .Where(x => x.Account.Id == userId && x.File.Name.ToLower().Contains(prefix.ToLower()))
-                .Take(6)
-                .ToArrayAsync();
+            //var result = await _context.FilesAccounts
+            //    .AsNoTracking()
+            //    .Include(x => x.Account)
+            //    .Include(x => x.File)
+            //    .Where(x => x.Account.Id == userId && x.File.Name.ToLower().Contains(prefix.ToLower()))
+            //    .Take(6)
+            //    .ToArrayAsync();
 
-            return result;
+            return [];
         }
     }
 }

@@ -24,7 +24,7 @@
 
 @keyframes bounce {
     to {
-        transform: translateY(-15px) scale(125%);
+        transform: translateY(-8px) scale(125%);
         opacity: 0.5;
     }
 }

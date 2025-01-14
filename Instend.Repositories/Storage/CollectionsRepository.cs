@@ -1,6 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
 using Instend.Core;
-using Instend.Core.Models.Access;
 using Instend.Core.Models.Storage.Collection;
 using Instend.Repositories.Contexts;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +27,7 @@ namespace Instend.Repositories.Storage
         {
             var collection = await _context.Collections
                 .AsNoTracking()
+                .Include(x => x.AccountsWithAccess)
                 .FirstOrDefaultAsync(collection => collection.Id == id);
 
             return collection;
@@ -40,6 +40,7 @@ namespace Instend.Repositories.Storage
                 .Include(x => x.Account)
                 .Where(x => x.Account.Id == userId)
                 .Include(x => x.Collection)
+                .ThenInclude(x => x.AccountsWithAccess)
                 .Where(x => x.Collection != null)
                 .Select(x => x.Collection)
                 .ToListAsync();
@@ -73,41 +74,55 @@ namespace Instend.Repositories.Storage
 
         public async Task<IEnumerable<Collection>> GetCollectionsByParentId(Guid accountId, Guid? parentCollectionId, int skip, int take = 5)
         {
-            Guid target = parentCollectionId ?? Guid.Empty;
-
             var collections = await _context.CollectionsAccounts
                 .Include(x => x.Account)
                 .Where(x => x.Account.Id == accountId)
                 .Include(x => x.Collection)
-                .Where(x => x.Collection.CollectionId == target)
+                .Where(x => x.Collection.CollectionId == parentCollectionId)
                 .Select(x => x.Collection)
                 .ToArrayAsync();
 
             return collections;
         }
 
-        public async Task<IEnumerable<Collection>> GetShortPathAsync(Guid? collectionId)
+        public async Task<IEnumerable<Collection?>> GetShortPathAsync(Guid? collectionId)
         {
-            return await _context.Collections
+            List<Collection> result = [];
+
+            var queryResult = await _context.Collections
                 .AsNoTracking()
                 .Where(x => x.Id == collectionId)
                 .Include(x => x.ParentCollection)
-                .SelectMany(x => x.Collections)
-                .ToArrayAsync();
+                .FirstOrDefaultAsync();
+
+            while (queryResult != null)
+            {
+                result.Add(queryResult);
+                queryResult = queryResult.ParentCollection;
+            };
+
+            return result;
         }
 
-        public async Task<Result<Collection>> AddAsync(string name, Core.Models.Account.Account account, Guid folderId, Configuration.CollectionTypes folderType)
+        public async Task<Result<Collection>> AddAsync(string name, Core.Models.Account.Account account, Guid? collectionId, Configuration.CollectionTypes collectionType)
         {
-            var collection = Collection.Create(name, folderId, folderType);
+            var collection = Collection.Create(name, collectionId, collectionType);
 
             if (collection.IsFailure)
                 return Result.Failure<Collection>(collection.Error);
 
-            var owner = new CollectionAccount(collection.Value, account, Configuration.EntityRoles.Owner);
+            var owner = new CollectionAccount
+            (
+                collection.Value.Id, 
+                account.Id, 
+                Configuration.EntityRoles.Owner
+            );
+
+            _context.Attach(collection.Value);
 
             collection.Value.AccountsWithAccess.Add(owner);
 
-            await _context.Collections.AddAsync(collection.Value);
+            await _context.AddAsync(collection.Value);
             await _context.SaveChangesAsync();
 
             return Result.Success(collection.Value);

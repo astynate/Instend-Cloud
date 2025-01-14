@@ -14,7 +14,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
     [Route("api/[controller]")]
     public class FilesController : ControllerBase
     {
-        private readonly IFilesRespository _fileRespository;
+        private readonly IFilesRespository _filesRespository;
 
         private readonly IFileService _fileService;
 
@@ -42,7 +42,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             IFileService fileService
         )
         {
-            _fileRespository = filesRespository;
+            _filesRespository = filesRespository;
             _collectionsRepository = collectionsRepository;
             _globalHub = globalHub;
             _accessHandler = accessHandler;
@@ -54,7 +54,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetCollections(Guid? id, int skip, int take)
+        public async Task<IActionResult> GetFiles(Guid? id, int skip, int take)
         {
             var available = await _accessHandler
                 .GetAccountAccessToCollection(id, Request, Configuration.EntityRoles.Reader);
@@ -62,10 +62,10 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             if (available.IsFailure)
                 return Conflict(available.Error);
 
-            var path = await _collectionsRepository
-                .GetCollectionsByParentId(available.Value.accountId, id, skip, take);
+            var files = await _filesRespository
+                .GetByParentCollectionId(available.Value.accountId, id ?? Guid.Empty, skip, take);
 
-            return Ok(path);
+            return Ok(files);
         }
 
         [HttpGet]
@@ -81,7 +81,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             if (userId.IsFailure)
                 return BadRequest(userId.Error);
 
-            return Ok(await _fileRespository.GetFilesByPrefix(Guid.Parse(userId.Value), prefix));
+            return Ok(await _filesRespository.GetFilesByPrefix(Guid.Parse(userId.Value), prefix));
         }
 
         [HttpGet]
@@ -89,34 +89,35 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         [Route("/api/files/download")]
         public async Task<IActionResult> Download(Guid id)
         {
-            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+            //var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
-            if (userId.IsFailure)
-                return BadRequest(userId.Error);
+            //if (userId.IsFailure)
+            //    return BadRequest(userId.Error);
 
-            var file = await _fileRespository.GetByIdAsync(id);
+            //var file = await _filesRespository.GetByIdAsync(id);
 
-            if (file.IsFailure)
-                return BadRequest("File not found");
+            //if (file.IsFailure)
+            //    return BadRequest("File not found");
 
-            var account = await _accountsRepository.GetByIdAsync(Guid.Parse(userId.Value));
+            //var account = await _accountsRepository.GetByIdAsync(Guid.Parse(userId.Value));
 
-            if (account == null)
-                return Conflict("Account not found");
+            //if (account == null)
+            //    return Conflict("Account not found");
 
-            var available = _accessHandler.GetFileAccessRequestResult(file.Value, account, Configuration.EntityRoles.Reader);
+            //var available = _accessHandler.GetFileAccessRequestResult(file.Value, account, Configuration.EntityRoles.Reader);
 
-            if (available.IsFailure)
-                return BadRequest(available.Error);
+            //if (available.IsFailure)
+            //    return BadRequest(available.Error);
 
-            var fileAsBytes = await _fileService.ReadFileAsync(file.Value.Path);
+            //var fileAsBytes = await _fileService.ReadFileAsync(file.Value.Path);
 
-            if (fileAsBytes.IsFailure)
-                return Conflict("Cannot read file");
+            //if (fileAsBytes.IsFailure)
+            //    return Conflict("Cannot read file");
 
-            var contentType = _fileService.ConvertSystemTypeToContentType(file.Value.Type);
+            //var contentType = _fileService.ConvertSystemTypeToContentType(file.Value.Type);
 
-            return File(fileAsBytes.Value, contentType, file.Value.Name + "." + file.Value.Type);
+            //return File(fileAsBytes.Value, contentType, file.Value.Name + "." + file.Value.Type);
+            return Ok();
         }
 
         [HttpPost]

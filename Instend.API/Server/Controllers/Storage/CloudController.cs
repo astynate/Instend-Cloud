@@ -1,4 +1,5 @@
 ﻿using Instend.Core;
+using Instend.Core.Dependencies.Services.Internal.Helpers;
 using Instend.Repositories.Storage;
 using Instend.Services.Internal.Handlers;
 using Microsoft.AspNetCore.Authorization;
@@ -12,12 +13,15 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
     {
         private readonly ICollectionsRepository _collectionsRepository;
 
+        private readonly ISerializationHelper _serializationHelper;
+
         private readonly IAccessHandler _accessHandler;
 
-        public CloudController(ICollectionsRepository folderRepository, IAccessHandler accessHandler)
+        public CloudController(ICollectionsRepository folderRepository, IAccessHandler accessHandler, ISerializationHelper serializationHelper)
         {
             _accessHandler = accessHandler;
             _collectionsRepository = folderRepository;
+            _serializationHelper = serializationHelper;
         }
 
         [HttpGet]
@@ -33,7 +37,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             var path = await _collectionsRepository
                 .GetShortPathAsync(id);
 
-            return Ok(path);
+            return Ok(_serializationHelper.SerializeWithCamelCase(path));
         }
     }
 }

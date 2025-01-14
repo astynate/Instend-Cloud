@@ -18,9 +18,7 @@ namespace Instend.Core.Models.Storage.Album
         [Column("views")] public long Views { get; private set; } = 0;
         [Column("reactions")] public long Reactions { get; private set; } = 0;
 
-        [NotMapped] public byte[] Preview { get; private set; } = [];
-
-        public List<File.File> File { get; set; } = [];
+        public List<AlbumAccount> AccountsWithAccess { get; init; } = [];
 
         public Album() { }
 
@@ -76,15 +74,5 @@ namespace Instend.Core.Models.Storage.Album
 
         public void IncrementViews() => Views++;
         public void OnDelete(IFileService fileService) => fileService.DeleteFile(Cover);
-
-        public async Task SetPreview(IPreviewService previewService)
-        {
-            var preview = await previewService.GetPreview("png", Cover);
-
-            if (preview.IsFailure)
-                return;
-
-            Preview = preview.Value;
-        }
     }
 }

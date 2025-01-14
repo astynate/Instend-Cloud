@@ -1,24 +1,24 @@
 import { useParams } from "react-router-dom";
 import AddButton from "../../../../ui-kit/buttons/add-button/Add";
 import excel from './images/types/excel.png';
-import illustrator from './images/types/illustrator.png';
 import newFolder from './images/types/new-folder.png';
 import note from './images/types/note.png';
-import photoshop from './images/types/photoshop.png';
 import powerpoint from './images/types/powerpoint.png';
 import upload from './images/types/upload.png';
 import word from './images/types/word.png';
 import CloudController from "../../../../api/CloudController";
+import CollectionsController from "../../../../api/CollectionsController";
 
 const AddInFolder = ({OpenDialog = () => {}}) => {
     let params = useParams();
     
     const types = {
-        "folder": {
-            title: "Create folder",
+        "collection": {
+            title: "Create collection",
             text: "Name is required",
-            placeholder: "Folder name",
-            type: "folder"
+            placeholder: "Collection name",
+            type: "collection",
+            callback: CollectionsController.CreateCollection
         },
         "txt": {
             title: "Create note",
@@ -43,32 +43,18 @@ const AddInFolder = ({OpenDialog = () => {}}) => {
             text: "Name is required",
             placeholder: "Presentation name",
             type: "pptx"
-        },
-        "psd": {
-            title: "Create Phoshop file",
-            text: "Name is required",
-            placeholder: "File name",
-            type: "psd"
-        },
-        "ai": {
-            title: "Create Illustrator file",
-            text: "Name is required",
-            placeholder: "File name",
-            type: "ai"
         }
     }
 
     return (
         <AddButton
             items={[
-                {image: newFolder, title: "Folder", callback: () => OpenDialog(types.folder)},
+                {image: newFolder, title: "Collection", callback: () => OpenDialog(types.collection)},
                 {image: upload, title: "Upload", callback: () => {}, type: "upload", sendFiles: (event) => CloudController.UploadFilesFromEvent(event, params.id)},
                 {image: note, title: "Note", callback: () => OpenDialog(types.txt)},
                 {image: word, title: "Word", callback: () => OpenDialog(types.docx)},
                 {image: excel, title: "Excel", callback: () => OpenDialog(types.xlsx)},
-                {image: powerpoint, title: "Powerpoint", callback: () => OpenDialog(types.pptx)},
-                {image: photoshop, title: "Photoshop", callback: () => OpenDialog(types.psd)},
-                {image: illustrator, title: "Illustrator", callback: () => OpenDialog(types.ai)}
+                {image: powerpoint, title: "Powerpoint", callback: () => OpenDialog(types.pptx)}
             ]}
         />
     );

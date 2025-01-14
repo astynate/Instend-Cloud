@@ -1,7 +1,4 @@
 ﻿using Instend.Core.Models.Abstraction;
-using Instend.Core.Models.Access;
-using Instend.Core.Models.Formats;
-using Instend.Core.Models.Storage.Album;
 using Instend.Core.Models.Storage.Collection;
 using Instend.Core.Models.Storage.File;
 using Instend.Services.External.FileService;
@@ -18,15 +15,10 @@ namespace Instend.Repositories.Contexts
             _fileService = fileService;
         }
 
-        public DbSet<Album> Albums { get; set; } = null!;
-        public DbSet<AlbumFile> AlbumsFiles { get; set; } = null!;
-        public DbSet<AlbumAccount> AlbumsAccounts { get; set; } = null!;
         public DbSet<Collection> Collections { get; set; } = null!;
         public DbSet<CollectionAccount> CollectionsAccounts { get; set; } = null!;
         public DbSet<Core.Models.Storage.File.File> Files { get; set; } = null!;
-        public DbSet<FileAccount> FilesAccounts { get; set; } = null!;
         public DbSet<Attachment> Attachments { get; set; } = null!;
-        public DbSet<SongFormat> SongsMeta { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -40,30 +32,22 @@ namespace Instend.Repositories.Contexts
                 .Entity<AccessItemBase>()
                 .UseTpcMappingStrategy();
 
-            modelBuilder
-                 .Entity<CollectionAccount>()
-                 .HasOne(ca => ca.Collection)
-                 .WithMany(c => c.AccountsWithAccess as IEnumerable<CollectionAccount>);
+            modelBuilder.Entity<Collection>()
+                .HasOne(x => x.ParentCollection)
+                .WithMany(x => x.Collections)
+                .HasForeignKey(x => x.CollectionId);
 
-            modelBuilder
-                .Entity<CollectionAccount>()
+            modelBuilder.Entity<CollectionAccount>()
+                .HasOne(ca => ca.Collection)
+                .WithMany(c => c.AccountsWithAccess)
+                .HasForeignKey(ca => ca.CollectionId)
+                .HasPrincipalKey(a => a.Id);
+
+            modelBuilder.Entity<CollectionAccount>()
                 .HasOne(ca => ca.Account)
-                .WithMany(a => a.Collections);
-
-            modelBuilder
-                .Entity<FileAccount>()
-                 .HasOne(fa => fa.File)
-                 .WithMany(f => f.AccountsWithAccess as IEnumerable<FileAccount>);
-
-            modelBuilder
-                .Entity<FileAccount>()
-                .HasOne(fa => fa.Account)
-                .WithMany(a => a.Files);
-
-            modelBuilder
-                .Entity<AlbumAccount>()
-                .HasOne(fa => fa.Album)
-                .WithMany(f => f.AccountsWithAccess as IEnumerable<AlbumAccount>);
+                .WithMany(a => a.Collections)
+                .HasForeignKey(ca => ca.AccountId)
+                .HasPrincipalKey(a => a.Id);
         }
 
         private void HandlerDatabaseStorageRelation(object[] entities)

@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.SignalR;
 namespace Instend_Version_2._0._0.Server.Controllers.Storage
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("/api/[controller]")]
     public class CollectionsController : ControllerBase
     {
         private readonly IRequestHandler _requestHandler;
@@ -94,6 +94,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         [HttpPost]
         [Authorize]
+        [Route("/api/[controller]")]
         public async Task<ActionResult> CreateCollection([FromForm] Guid? collectionId, [FromForm] string name, [FromForm] int queueId)
         {
             var accountId = _requestHandler
@@ -119,14 +120,15 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest(available.Error);
 
             var result = await _collectionsRepository
-                .AddAsync(name, account, collectionId ?? Guid.Empty, Configuration.CollectionTypes.Ordinary);
+                .AddAsync(name, account, collectionId, Configuration.CollectionTypes.Ordinary);
 
             if (result.IsFailure)
-                return BadRequest("Failed to create collectionIdAsGuid");
+                return BadRequest("Failed to create collection");
 
             var groupId = collectionId.HasValue == false ? Guid.Parse(accountId.Value) : collectionId;
 
-            await _globalHub.Clients.Group(groupId.ToString() ?? "")
+            await _globalHub.Clients
+                .Group(groupId.ToString() ?? "")
                 .SendAsync("CreateCollection", new object[] { result.Value, queueId });
 
             return Ok();

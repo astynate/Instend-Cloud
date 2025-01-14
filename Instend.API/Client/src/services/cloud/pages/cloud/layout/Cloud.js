@@ -14,6 +14,7 @@ import MainCloudPage from '../pages/main/MainCloudPage.jsx';
 import PublicationsCloudPage from '../pages/publications/PublicationsCloudPage.jsx';
 import MessagesCloudPage from '../pages/messages/MessagesCloudPage.jsx';
 import { Route, Routes } from 'react-router-dom';
+import CloudHeader from '../widgets/cloud-header/CloudHeader.js';
 
 const Cloud = observer(({setPanelState}) => {
   const selectPlaceWrapper = useRef();
@@ -38,7 +39,7 @@ const Cloud = observer(({setPanelState}) => {
       </Header>
       <ContentWrapper>
         <div className={styles.header}>
-            <UnitedButton
+            {/* <UnitedButton
                 buttons={[
                   { 
                     label: 'Open access', 
@@ -57,16 +58,17 @@ const Cloud = observer(({setPanelState}) => {
                     image: <img src={sort} draggable="false" /> 
                   },
                 ]}
-            />
+            /> */}
         </div>
       </ContentWrapper>
+      <CloudHeader />
       <Routes>
         <Route path=":id?" element={<MainCloudPage />} />
         <Route path="/publications/:id?" element={<PublicationsCloudPage />} />
         <Route path="/messages/:id?" element={<MessagesCloudPage />} />
       </Routes>
     </div>
-  )
+  );
 });
 
 export default Cloud;

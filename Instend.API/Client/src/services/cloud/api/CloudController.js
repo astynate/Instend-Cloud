@@ -95,8 +95,14 @@ class CloudController {
         await CloudController.UploadFilesAsync(files, folderId);
     }
 
-    static GetPath = async (onSuccess = () => {}) => {
-
+    static GetPath = async (id, onSuccess = () => {}) => {
+        await instance
+            .get(`api/cloud?id=${id ?? ''}`)
+            .then((response) => {
+                if (response && response.data) {
+                    onSuccess(response.data);
+                }
+            }); 
     }
 }
 

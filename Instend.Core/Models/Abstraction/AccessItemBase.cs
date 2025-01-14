@@ -8,8 +8,6 @@ namespace Instend.Core.Models.Abstraction
     {
         [Column("access")] 
         public string AccessId { get; protected set; } = Configuration.AccessTypes.Private.ToString();
-        
-        public List<AccessBase> AccountsWithAccess { get; init; } = [];
 
         public AccessItemBase() { }
 

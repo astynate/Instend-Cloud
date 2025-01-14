@@ -33,11 +33,11 @@ namespace Instend.Services.Internal.Handlers
         }
 
         private AccessBase? GetAccountAccessFromList(IEnumerable<AccessBase> accountsWithAccesss, Account account)
-            => accountsWithAccesss.FirstOrDefault(access => access.Account?.Id == account.Id);
+            => accountsWithAccesss.FirstOrDefault(access => access.AccountId == account.Id);
 
-        private Result<AccessBase> GetAccountAccess(AccessItemBase accessItemBase, Account account, Configuration.EntityRoles operationLevel)
+        private Result<AccessBase> GetAccountAccess(IEnumerable<AccessBase> accountsWithAccess, Account account, Configuration.EntityRoles operationLevel)
         {
-            var accountAccess = GetAccountAccessFromList(accessItemBase.AccountsWithAccess, account);
+            var accountAccess = GetAccountAccessFromList(accountsWithAccess, account);
 
             if (accountAccess == null)
                 return Result.Failure<AccessBase>("Account has no access to this item");
@@ -71,7 +71,7 @@ namespace Instend.Services.Internal.Handlers
                 if (collection.Type == Configuration.CollectionTypes.System && operationLevel > Configuration.EntityRoles.Reader)
                     return Result.Failure<(Guid accountId, Core.Models.Storage.Collection.Collection? collection)>("You can't perform this operation on system collection.");
 
-                var result = GetAccountAccess(collection, account, operationLevel);
+                var result = GetAccountAccess(collection.AccountsWithAccess, account, operationLevel);
 
                 if (result.IsFailure)
                     return Result.Failure<(Guid accountId, Core.Models.Storage.Collection.Collection? collection)>(result.Error);
@@ -83,9 +83,9 @@ namespace Instend.Services.Internal.Handlers
         }
 
         public Result GetFileAccessRequestResult(Core.Models.Storage.File.File file, Account account, Configuration.EntityRoles operationLevel)
-            => GetAccountAccess(file, account, operationLevel);
+            => GetAccountAccess(file.AccountsWithAccess, account, operationLevel);
 
         public Result GetAlbumAccessRequestResult(Album album, Account account, Configuration.EntityRoles operationLevel)
-            => GetAccountAccess(album, account, operationLevel);
+            => GetAccountAccess(album.AccountsWithAccess, account, operationLevel);
     }
 }

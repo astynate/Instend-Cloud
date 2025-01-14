@@ -1,6 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
-using Instend.Services.External.FileService;
 using Instend.Core.Models.Abstraction;
+using Instend.Core.Models.Storage.Album;
+using Instend.Core.Models.Storage.Files;
+using Instend.Services.External.FileService;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Instend.Core.Models.Storage.File
@@ -11,17 +13,16 @@ namespace Instend.Core.Models.Storage.File
         [Column("name")] public string Name { get; private set; } = string.Empty;
         [Column("creation_time")] public DateTime CreationTime { get; private set; }
         [Column("last_edit_time")] public DateTime LastEditTime { get; private set; }
-        [Column("Path")] public string Path { get; private set; } = string.Empty;
+        [Column("path")] public string Path { get; private set; } = string.Empty;
         [Column("type")] public string? Type { get; private set; } = null;
         [Column("collection_id")] public Guid CollectionId { get; private set; }
         [Column("size")] public double Size { get; private set; } = 0;
 
-        [NotMapped] public byte[] Preview { get; private set; } = [];
-        [NotMapped] public byte[] FileAsBytes { get; private set; } = [];
+        public List<FileAccount> AccountsWithAccess { get; init; } = [];
 
-        public File() { }
+        private File() { }
 
-        public static Result<File> Create(string name, string? type, double size, Guid ownerId, Guid folderId)
+        public static Result<File> Create(string name, string? type, double size, Guid ownerId, Guid collectionId)
         {
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrEmpty(name))
                 return Result.Failure<File>("Invalid folder name");
@@ -41,21 +42,11 @@ namespace Instend.Core.Models.Storage.File
                 Size = size,
                 Path = path,
                 Type = type,
-                CollectionId = folderId
+                CollectionId = collectionId
             });
         }
 
-        public void Rename(string name) => Name = string.IsNullOrEmpty(name) == false &&
-            string.IsNullOrWhiteSpace(name) == false ? name : Name;
-
-        public async Task SetPreview(IPreviewService previewService)
-        {
-            var result = await previewService.GetPreview(Type, Path);
-
-            if (result.IsSuccess)
-                Preview = result.Value;
-        }
-
+        public void Rename(string name) {}
         public void OnDelete(IFileService fileService) => fileService.DeleteFile(Path);
     }
 }

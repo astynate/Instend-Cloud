@@ -1,6 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
 using Instend.Core.Dependencies.Services.Internal.Services;
-using Instend.Core.Models.Access;
+using Instend.Core.Models.Storage.Album;
+using Instend.Core.Models.Storage.Collection;
+using Instend.Core.Models.Storage.Files;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;

@@ -1,10 +1,8 @@
 .wrapper {
     height: auto;
     width: fit-content;
-    /* position: absolute; */
     border-radius: 21px;
-    /* grid-template-columns: repeat(4, 1fr); */
-    max-width: 456px;
+    max-width: 348px;
     flex-wrap: wrap;
     z-index: 99999999999999999999999;
     grid-gap: 4px;

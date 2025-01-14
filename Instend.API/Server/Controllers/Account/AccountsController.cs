@@ -42,6 +42,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
         private readonly GlobalContext _context;
 
+        private static readonly string[] DefaultSystemFolders = { "Instend Cloud", "Music", "Photos", "Trash" };
+
         public AccountsController
         (
             IConfirmationsRepository confirmationsRepository,
@@ -169,6 +171,11 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
                     await _accountsRepository.AddAsync(account.Value);
 
+                    var result = await CreateSystemFolders(account.Value, null);
+
+                    if (result.IsFailure)
+                        return BadRequest(result.Error);
+
                     var confirmation = Instend.Core.Models.Email.AccountConfirmation.Create
                     (
                         account.Value.Email,
@@ -178,8 +185,6 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
                     if (confirmation.IsFailure)
                         return BadRequest(confirmation.Error);
-
-                    await CreateSystemFolders(account.Value);
 
                     await _confirmationRepository.AddAsync(confirmation.Value);
 
@@ -196,17 +201,17 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             });
         }
 
-        private async Task<Result> CreateSystemFolders(Instend.Core.Models.Account.Account account)
+        private async Task<Result> CreateSystemFolders(Instend.Core.Models.Account.Account account, string[]? systemFolders)
         {
-            string[] systemFolders = ["Music", "Photos", "Trash"];
+            systemFolders ??= DefaultSystemFolders;
 
             foreach (var systemFolder in systemFolders)
             {
-                var photos = await _collectionsRepository
+                var result = await _collectionsRepository
                     .AddAsync(systemFolder, account, Guid.Empty, Configuration.CollectionTypes.System);
 
-                if (photos.IsFailure)
-                    return Result.Failure(photos.Error);
+                if (result.IsFailure)
+                    return Result.Failure(result.Error);
             }
 
             return Result.Success();
@@ -248,7 +253,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
         }
 
         [HttpGet]
-        [Route("/api/accounts/photos")]
+        [Route("/api/accounts/result")]
         public async Task<IActionResult> GetPhotos(Guid accountId, int skip) 
             => Ok(await _publicationsPhotosRepository.GetAccountPhotos(accountId, skip));
     }
