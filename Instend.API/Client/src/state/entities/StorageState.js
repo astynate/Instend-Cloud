@@ -30,6 +30,12 @@ class StorageState {
         return items[AdaptId(id)] ? items[AdaptId(id)].isHasMore : true;
     }
 
+    RenameCollection = (collection) => this.RenameItem(this.collections, collection);   
+    RenameFile = (file) => this.RenameItem(this.files, file);
+    FindFileById = (id) => Object.values(this.files).flat().find(element => element.id === id);
+    FindCollectionById = (id) => Object.values(this.collections).flat().find(element => element.id === id);
+    SetPath = (path) => this.path = path;
+
     SetItems = (id, items, newItems) => {
         const adaptId = AdaptId(id);
         const existingItems = items[adaptId] ? items[adaptId].items : [];
@@ -48,10 +54,6 @@ class StorageState {
             isHasMore: items.length >= 5
         };
     };    
-
-    FindFileById = (id) => Object.values(this.files).flat().find(element => element.id === id);
-    FindCollectionById = (id) => Object.values(this.collections).flat().find(element => element.id === id);
-    SetPath = (path) => this.path = path;
 
     CreateLoadingCollection = (name, collectionId) => {
         if (!!name === false) {
@@ -76,80 +78,41 @@ class StorageState {
     }
 
     ReplaceLoadingCollection = (collection, queueId) => {
-        if (!collection || !collection.collectionId) {
-            return;
-        }
-
-        if (!this.collections[AdaptId(collection.collectionId)]) {
+        if (!collection || !this.collections[AdaptId(collection.collectionId)]) {
             return;
         }
 
         runInAction(() => {
-            let items = this.collections[AdaptId(collection.collectionId)].items;
-            items = items.findIndex(element => element.queueId === queueId);
+            const id = AdaptId(collection.collectionId);
+
+            this.collections[id].items = this.collections[id].items.filter(element => element.queueId !== queueId);
             this.SetItems(collection.collectionId, this.collections, [collection]);
         });
     }
 
-    SetFolderAsLoaing = (id, folderId) => {
-        // this.folders[AdaptId(folderId)] = this.folders[AdaptId(folderId)].map(element => {
-        //     if (element.id === id)
-        //         element.isLoading = true;
+    RenameItem = (items, data) => {
+        for (let key in items) {
+            const index = items[key].items
+                .findIndex(element => element.id === data[0]);
 
-        //     return element;
-        // });
+            if (index !== -1) {
+                runInAction(() => {
+                    items[key].items[index].name = data[1];
+                });
+            }
+        };
     }
 
-    RemoveFolderLoadingState = (id, folderId) => {
-        // this.folders[AdaptId(folderId)] = this.folders[AdaptId(folderId)].map(element => {
-        //     if (element.id === id)
-        //         element.isLoading = false;
+    RemoveCollection = (id) => {
+        if (this.collections[id])
+            delete this.collections[id];
 
-        //     return element;
-        // });
-    }
-
-    DeleteLoadingFolder = (queueId, folderId) => {
-        // this.folders = this.folders[AdaptId(folderId)]
-        //     .filter(element => element.queueId !== queueId);
-    }
-    
-    RenameFolder = (folder) => {
-        // for (let key in this.folders) {
-        //     const index = this.folders[key]
-        //         .findIndex(element => element.id === folder[0]);
-
-        //     if (index !== -1) {
-        //         runInAction(() => {
-        //             this.folders[key][index].name = folder[1];
-        //             this.folders[key][index].isLoading = false;
-        //         });
-        //     }
-        // };
-    }    
-
-    DeleteFolder = (id) => {
-        // if (this.folders[id])
-        //     delete this.folders[id];
-
-        // for (let key in this.folders) {
-        //     runInAction(() => {
-        //         this.folders[key] = this.folders[key]
-        //             .filter(element => element.id !== id);
-        //     });
-        // }
-    }
-
-    SetFileAsLoaing(id, folderId) {
-        // if (!this.files || !this.files[AdaptId(folderId)])
-        //     return false;
-
-        // this.files[AdaptId(folderId)] = this.files[AdaptId(folderId)].map(element => {
-        //     if (element.id === id)
-        //         element.isLoading = true;
-
-        //     return element;
-        // });
+        for (let key in this.collections) {
+            runInAction(() => {
+                this.collections[key].items = this.collections[key].items
+                    .filter(element => element.id !== id);
+            });
+        }
     }
 
     RemoveFileLoadingState(id, folderId) {
@@ -170,16 +133,15 @@ class StorageState {
     }
 
     CreateLoadingFile(name, folderId, type) {
-        // const file = {
-        //     id: null,
-        //     queueId: this.fileQueueId,
-        //     name: name,
-        //     isLoading: true,
-        //     strategy: 'loadingFile',
-        //     perscentage: 0,
-        //     folderId: folderId,
-        //     type: type
-        // }
+        const file = {
+            id: null,
+            queueId: this.fileQueueId,
+            name: name,
+            isLoading: true,
+            perscentage: 0,
+            folderId: folderId,
+            type: type
+        }
 
         // runInAction(() => {
         //     const isFolderExist = this.files[AdaptId(folderId)];
@@ -193,7 +155,7 @@ class StorageState {
         //     this.fileQueueId++;
         // });
 
-        // return file.queueId;
+        return file.queueId;
     }
 
     SetLoadingFilePerscentage(queueId, perscentage) {
@@ -230,27 +192,14 @@ class StorageState {
         //     });
         // }
     }
-
-    RenameFile = (file) => {
-        // for (let key in this.files) {
-        //     const index = this.files[key]
-        //         .findIndex(element => element.id === file.id);
-
-        //     if (index !== -1) {
-        //         runInAction(() => {
-        //             this.files[key][index].name = file.name;
-        //         });
-        //     }
-        // };
-    }
     
     DeleteFile = (data) => {
-        // for (let key in this.files) {
-        //     runInAction(() => {
-        //         this.files[key] = this.files[key]
-        //             .filter(element => element.id !== data);
-        //     });
-        // }
+        for (let key in this.files) {
+            runInAction(() => {
+                this.files[key].items = this.files[key].items
+                    .filter(element => element.id !== data);
+            });
+        }
     }
 
     SetFolderItemsById = (id, itemsAsLists) => {

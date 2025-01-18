@@ -23,9 +23,9 @@ namespace Instend.Core
 
         public static readonly string CorporatePassword = "kqzu gsig ghgn ecis";
 
-        public static readonly string DefaultAvatarPath = "D:/Instend LLC/System/default-avatar.png";
+        public static readonly string DefaultAvatarPath = "D:/Instend LLC/System/icons/default-avatar.png";
 
-        public static readonly string DefaultAlbumCoverPath = "D:/Instend LLC/System/default-album-cover.png";
+        public static readonly string DefaultAlbumCoverPath = "D:/Instend LLC/System/icons/default-album-cover.png";
 
         public static readonly string URL = "http://localhost:44441/";
 

@@ -7,13 +7,14 @@ namespace Instend.Core.Models.Storage.Files
     public class FileAccount : AccessBase
     {
         public File.File File { get; set; } = null!;
+        [Column("file_id")] public Guid FileId { get; set; } = Guid.Empty;
 
         private FileAccount() { }
 
-        public FileAccount(File.File file, Account.Account account, Configuration.EntityRoles ability) : base(ability)
+        public FileAccount(Guid fileId, Guid accountId, Configuration.EntityRoles ability) : base(ability)
         {
-            File = file;
-            Account = account;
+            FileId = fileId;
+            AccountId = accountId;
         }
     }
 }

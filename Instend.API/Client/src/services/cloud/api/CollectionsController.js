@@ -31,43 +31,21 @@ class CollectionsController {
         }
     
         for (let i = 0; i < selectedItems.length; i++) {
-            const item = selectedItems[i];
-            const endpoint = item.strategy === "folder" ? "collections" : "storage";
-            const folderId = item.folderId === GlobalContext.guidEmpthy ? item.ownerId : item.folderId;
-    
-            if (item.strategy === "folder") {
-                StorageState.SetFolderAsLoaing(item.id, item.folderId);
-            } else {
-                StorageState.SetFileAsLoaing(item.id, item.folderId);
-            }
-          
             await instance
-                .delete(`/${endpoint}?id=${item.id}&folderId=${folderId}`)
-                .catch((error) => {
-                    ApplicationState.AddErrorInQueue('Attention!', error.response.data);
-                    
-                    if (item.strategy === "folder") {
-                        StorageState.RemoveFolderLoadingState(item.id, item.folderId);
-                    } else {
-                        StorageState.RemoveFileLoadingState(item.id, item.folderId);
-                    }
+                .delete(`/api/collections?id=${selectedItems[i] ?? ''}`)
+                .catch(() => {
+                    ApplicationState.AddErrorInQueue('Attention!', 'Something went wrong!');
                 });
         }
 
         return true;
     };
 
-    static RenameFolder = async (fileName, item) => {    
-        const endpoint = item.strategy === "file" ? "storage" : "folders";
-        const collectionId = item.folderId === GlobalContext.guidEmpthy ? item.ownerId : item.folderId;
-    
-        StorageState.SetFolderAsLoaing(item.id, item.folderId);
-    
+    static RenameCollection = async (name, id) => {    
         await instance
-            .put(`/api/${endpoint}?id=${item.id}&folderId=${collectionId}&name=${fileName}`)
+            .put(`/api/collections?id=${id}&name=${name}`)
             .catch((error) => {
                 ApplicationState.AddErrorInQueueByError('Attention!', error);
-                StorageState.RemoveFolderLoadingState(item.id, item.folderId);
             });
     }
 

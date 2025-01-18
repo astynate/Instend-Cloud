@@ -16,6 +16,24 @@ class FilesController {
             .catch((error) => { 
                 ApplicationState.AddErrorInQueueByError('Attention!', error);
             });
+    };
+
+    static RenameFile = async (name, id) => {    
+        await instance
+            .put(`/api/files?id=${id}&name=${name}`)
+            .catch((error) => {
+                ApplicationState.AddErrorInQueueByError('Attention!', error);
+            });
+    }
+
+    static Delete = async (ids) => {
+        for (let i = 0; i < ids.length; i++) {
+            await instance
+                .delete(`/api/files?id=${ids[i]}`)
+                .catch((error) => {
+                    ApplicationState.AddErrorInQueueByError('Attention!', error);
+                });
+        }
     }
 };
 

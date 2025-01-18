@@ -1,4 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
+using Instend.Core;
+using Instend.Core.Models.Storage.Files;
 using Instend.Repositories.Contexts;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,35 +15,48 @@ namespace Instend.Repositories.Storage
             _context = storageContext;
         }
 
-        public async Task<Result<Core.Models.Storage.File.File>> GetByIdAsync(Guid id) => await _context.Files.AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == id) ?? Result.Failure<Core.Models.Storage.File.File>("Not found");
-
-        public async Task<Result<Core.Models.Storage.File.File>> AddAsync(string name, string? type, double size, Guid ownerId, Guid folderId)
+        public async Task<Result<Core.Models.Storage.File.File>> GetByIdAsync(Guid id)
         {
-            var fileCreationResult = Core.Models.Storage.File.File.Create(name, type, size, ownerId, folderId);
+            var result = await _context.Files
+                .AsNoTracking()
+                .Include(x => x.AccountsWithAccess)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
-            if (fileCreationResult.IsFailure == true)
-                return Result.Failure<Core.Models.Storage.File.File>(fileCreationResult.Error);
-
-            await _context.AddAsync(fileCreationResult.Value);
-            await _context.SaveChangesAsync();
-
-            return Result.Success(fileCreationResult.Value);
+            return result ?? Result.Failure<Core.Models.Storage.File.File>("File not found");
         }
 
-        public async Task<Core.Models.Storage.File.File[]> GetByParentCollectionId(Guid accountId, Guid parentCollectionId, int skip, int take)
+        public async Task<Result<Core.Models.Storage.File.File>> AddAsync(string name, string? type, double size, Guid accountId, Guid? collectionId)
         {
-            //var files = await _context.FilesAccounts
-            //    .AsNoTracking()
-            //    .Where(x => x.AccountId == accountId)
-            //    .Include(x => x.File)
-            //    .Where(file => file.File.CollectionId == parentCollectionId)
-            //    .Skip(skip)
-            //    .Take(take)
-            //    .Select(x => x.File)
-            //    .ToArrayAsync();
+            var file = Core.Models.Storage.File.File.Create(name, type, size, accountId, collectionId);
 
-            var files = await _context.Files.ToArrayAsync();
+            var owner = new FileAccount
+            (
+                file.Value.Id,
+                accountId,
+                Configuration.EntityRoles.Owner
+            );
+
+            _context.Attach(file.Value);
+
+            file.Value.AccountsWithAccess.Add(owner);
+
+            await _context.AddAsync(file.Value);
+            await _context.SaveChangesAsync();
+
+            return Result.Success(file.Value);
+        }
+
+        public async Task<Core.Models.Storage.File.File[]> GetByParentCollectionId(Guid accountId, Guid? parentCollectionId, int skip, int take)
+        {
+            var files = await _context.FilesAccounts
+                .AsNoTracking()
+                .Where(x => x.AccountId == accountId)
+                .Include(x => x.File)
+                .Where(file => file.File.CollectionId == parentCollectionId)
+                .Skip(skip)
+                .Take(take)
+                .Select(x => x.File)
+                .ToArrayAsync();
 
             return files;
         }
@@ -53,20 +68,26 @@ namespace Instend.Repositories.Storage
             if (file.IsFailure)
                 return Result.Failure<Core.Models.Storage.File.File>(file.Error);
 
-            var fileModel = file.Value;
-            fileModel.Rename(name);
+            _context.Attach(file.Value);
 
-            _context.Files.Update(fileModel);
+            file.Value.Rename(name);
+
+            _context.Files.Update(file.Value);
 
             await _context.SaveChangesAsync();
-            return Result.Success(fileModel);
+            return Result.Success(file.Value);
         }
 
         public async Task Delete(Guid id)
         {
-            await _context.Files
-                .Where(x => x.Id == id)
-                .ExecuteDeleteAsync();
+            var file = await _context.Files
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (file != null)
+            {
+                _context.Files.Remove(file);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task<object[]> GetLastFilesWithType(Guid accountId, int from, int count, string[] type)

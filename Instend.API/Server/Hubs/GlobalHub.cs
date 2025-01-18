@@ -67,7 +67,7 @@ namespace Instend_Version_2._0._0.Server.Hubs
                 return;
 
             IEnumerable<DatabaseModel> entities = await callback(userId);
-            IEnumerable<string> groups = [..entities.Select(x => x.Id.ToString()), Context.ConnectionId];
+            IEnumerable<string> groups = [..entities.Select(x => x.Id.ToString()), userId.ToString()];
 
             await _joinHubHelper.Join(handler, Context.ConnectionId, groups, entities);
         }
@@ -116,8 +116,5 @@ namespace Instend_Version_2._0._0.Server.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, group.Id.ToString());
             await Clients.Caller.SendAsync("ReceiveMessage", _serializator.SerializeWithCamelCase(group));
         }
-
-        public async Task CreateFolder(Collection folder)
-            => await Clients.Group(folder.Id.ToString()).SendAsync("CreateCollection", folder);
     }
 }

@@ -22,7 +22,7 @@ class CloudController {
         };
     
         await instance
-            .post(`/file`, formData, data)
+            .post(`api/files`, formData, data)
             .catch(response => {
                 ApplicationState.AddErrorInQueue('Attention!', response.data);
                 StorageState.DeleteLoadingFile(queueId, folderId);
@@ -48,11 +48,11 @@ class CloudController {
             const queueId = await StorageState.CreateLoadingFile(fileName, folderId, type);
     
             files.append('file', file);
-            files.append('folderId', folderId ? folderId : "");
+            files.append('collectionId', folderId ? folderId : "");
             files.append('queueId', queueId);
     
             await instance
-                .post('/storage', files, {
+                .post('/api/files', files, {
                     onUploadProgress: (progressEvent) => {
                         const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
                         StorageState.SetLoadingFilePerscentage(queueId, percentCompleted);
@@ -79,7 +79,7 @@ class CloudController {
 
     static DownloadFile = async (id) => {
         await instance
-            .get(`/file/download?id=${id}`, {responseType: "blob"})
+            .get(`api/files/download?id=${id}`, {responseType: "blob"})
             .then((response) => {
                 ResponseHandler.DownloadFromResponse(response);
             });

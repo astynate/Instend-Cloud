@@ -1,0 +1,16 @@
+.select {
+    position: relative;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    padding-right: 20px;
+    color: var(--main-blue-color);
+    background: var(--pop-up-accent-color);
+    border: 1px solid var(--main-border-color);
+}

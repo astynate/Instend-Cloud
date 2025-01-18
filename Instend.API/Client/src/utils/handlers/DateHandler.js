@@ -26,7 +26,7 @@ export const ConvertFullDate = (date) => {
     
     const options = { 
         year: 'numeric', 
-        month: 'long', 
+        month: 'short', 
         day: 'numeric', 
         hour: 'numeric', 
         minute: 'numeric', 

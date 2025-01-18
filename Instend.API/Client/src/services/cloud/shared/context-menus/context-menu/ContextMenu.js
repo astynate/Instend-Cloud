@@ -1,60 +1,50 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './main.module.css';
 
-const ContextMenu = ({close, position, isContextMenu, items, brefore=<></>, after=<></>}) => {
-    const wrapper = useRef(null);
-    const [isContextMenuOpen, setContextMenuState] = useState(isContextMenu);
+const ContextMenu = ({children, items = [], textBefore = '', onContextMenu = () => {}}) => {
+    const [position, setPosition] = useState([0, 0]);
+    const [isContextMenuOpen, setContextMenuState] = useState(false);
 
-    const handleClickOutside = () => {
-        if (isContextMenu) {
-            close();
-        }
-        
-        setContextMenuState(true);
+    const close = () => {
+        setContextMenuState(false);
     };
 
     useEffect(() => {
-        if (wrapper.current) {
-            let x = position[0];
-            let y = position[1];
-        
-            const menuWidth = wrapper.current.offsetWidth;
-            const menuHeight = wrapper.current.offsetHeight;
-        
-            const windowWidth = window.innerWidth;
-            const windowHeight = window.innerHeight;
-        
-            if ((x + menuWidth) > windowWidth) {
-                x = windowWidth - menuWidth;
-            }
-        
-            if ((y + menuHeight) > windowHeight) {
-                y = windowHeight - menuHeight;
-            }
-        
-            wrapper.current.style.left = `${x}px`;
-            wrapper.current.style.top = `${y}px`;
-        }        
-
-        document.addEventListener('click', handleClickOutside);
+        document.addEventListener('click', close);
       
         return () => {
-            document.removeEventListener('click', handleClickOutside);
+            document.removeEventListener('click', close);
         }
     }, []);
 
     return (
-        <div className={styles.contextMenu} ref={wrapper}>
-            {(brefore)}
-            {items.map((element, index) => {
-                return (
-                    <div key={index} className={styles.menuItem} onClick={element[2]}>
-                        <div className={element.length >= 4 && element[3] ? styles.red : null}>{element[1]}</div>
-                        <img className={element.length >= 4 && element[3] ? styles.redImage : null} src={element[0]} />
-                    </div>
-                )
-            })}
-            {(after)}
+        <div 
+            onContextMenu={(e) => {
+                setContextMenuState(true);
+                e.preventDefault();
+
+                let x = e.clientX;
+                let y = e.clientY;
+
+                setPosition([x, y]);
+                onContextMenu();
+            }}
+        >
+            {children}
+            {isContextMenuOpen && <div 
+                className={styles.contextMenu} 
+                style={{left: position[0], top: position[1]}}
+            >
+                {textBefore && <span className={styles.before}>{textBefore}</span>}
+                {items.map((item, index) => {
+                    return (
+                        <div key={index} className={styles.menuItem} onClick={item.callback ? item.callback : () => {}}>
+                            <div className={item.red ? styles.red : null}>{item.title}</div>
+                            <img className={item.red ? styles.redImage : null} src={item.image} />
+                        </div>
+                    )
+                })}
+            </div>}
         </div>
     );
 };

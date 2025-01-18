@@ -3,13 +3,11 @@ import { Link } from 'react-router-dom';
 import { ConvertDate } from '../../../../utils/handlers/DateHandler';
 import styles from './main.module.css';
 import system from './images/gear.png';
-import SelectElementWithCheckmark from '../../elements/select/select-element-with-checkmark/SelectElementWithCheckmark';
 import PointsLoaderAnimation from '../../shared/animations/points-loader-animation/PointsLoaderAnimation';
 
 const Collection = ({collection = {}, onContextMenu = () => {}, callback = () => {}, setSelectedFolders = () => {}}) => {
     const [files, setFiles] = useState([]);
     const [isSelected, setSelectedState] = useState(false);
-    const [isSelectedOpen, setSelectOpenState] = useState(false);
 
     useEffect(() => {
       if (collection && !collection.isLoading) {
@@ -51,16 +49,7 @@ const Collection = ({collection = {}, onContextMenu = () => {}, callback = () =>
           className={styles.wrapper} 
           id={isSelected === true ? 'selected' : null} 
           onContextMenu={onContextMenu}
-          onMouseEnter={() => setSelectOpenState(true)}
-          onMouseLeave={() => setSelectOpenState(false)}
         >
-          <SelectElementWithCheckmark
-            isSelected={isSelected}
-            setSelectedState={setSelectedState}
-            isSelectedOpen={isSelectedOpen}
-            setSelectedFiles={setSelectedFolders}
-            element={collection ?? {id: undefined}}
-          />
           <div className={styles.content} onClick={callback}>
             {(files)}
           </div>

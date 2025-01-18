@@ -1,5 +1,6 @@
 ﻿using Instend.Core;
 using Instend.Core.Dependencies.Repositories.Account;
+using Instend.Core.Dependencies.Services.Internal.Helpers;
 using Instend.Repositories.Storage;
 using Instend.Services.External.FileService;
 using Instend.Services.Internal.Handlers;
@@ -20,6 +21,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IAccountsRepository _accountsRepository;
 
+        private readonly ISerializationHelper _serializationHelper;
+
         private readonly IAccessHandler _accessHandler;
 
         private readonly IFileService _fileService;
@@ -35,6 +38,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             IHubContext<GlobalHub> storageHub, 
             ICollectionsRepository folderRepository,
             IAccountsRepository accountsRepository,
+            ISerializationHelper serializationHelper,
             IFileService fileService,
             IFilesRespository fileRespository,
             IRequestHandler requestHandler,
@@ -46,6 +50,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             _accessHandler = accessHandler;
             _requestHandler = requestHandler;
             _collectionsRepository = folderRepository;
+            _serializationHelper = serializationHelper;
             _fileRespository = fileRespository;
             _fileService = fileService;
             _previewService = previewService;
@@ -129,7 +134,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
             await _globalHub.Clients
                 .Group(groupId.ToString() ?? "")
-                .SendAsync("CreateCollection", new object[] { result.Value, queueId });
+                .SendAsync("CreateCollection", _serializationHelper.SerializeWithCamelCase(new object[] { result.Value, queueId }));
 
             return Ok();
         }
@@ -158,53 +163,25 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         [HttpDelete]
         [Authorize]
-        public async Task<IActionResult> Delete(Guid folderId, Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            var available = await _accessHandler.GetAccountAccessToCollection
+            (
+                id,
+                Request,
+                Configuration.EntityRoles.Writer
+            );
 
-            //var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+            if (available.IsFailure)
+                return Conflict(available.Error);
 
-            //if (userId.IsFailure)
-            //    return BadRequest("Invalid user id");
+            await _collectionsRepository.DeleteAsync(id);
 
-            //var ownerId = Guid.Parse(userId.Value);
-            //var collection = await _folderRepository.GetByIdAsync(id, Guid.Parse(userId.Value));
+            await _globalHub.Clients
+                .Group(available.Value.collection?.Id.ToString() ?? available.Value.accountId.ToString())
+                .SendAsync("DeleteCollection", id);
 
-            //if (collection == null)
-            //    return BadRequest("Folder not found");
-
-            //var available = await _accessHandler.GetAccessStateAsync
-            //(
-            //    collection, 
-            //    Configuration.EntityRoles.Writer, 
-            //    Request.Headers["Authorization"]
-            //);
-
-            //if (available.IsFailure)
-            //    return BadRequest(available.Error);
-
-            //ownerId = collection.AccountId;
-
-            //await _fileService.DeleteFolderById
-            //(
-            //    _fileRespository, 
-            //    _folderRepository, 
-            //    _previewService, 
-            //    id
-            //);
-
-            //await _globalHub.Clients.Group(folderId.ToString())
-            //    .SendAsync("DeleteFolder", id);
-
-            //var owner = await _accountsRepository.GetByIdAsync(ownerId);
-
-            //if (owner == null)
-            //    return Conflict("Owner not found");
-
-            //await _globalHub.Clients.Group(ownerId.ToString())
-            //    .SendAsync("UpdateOccupiedSpace", owner.OccupiedSpace);
-
-            //return Ok();
+            return Ok();
         }
     }
 }

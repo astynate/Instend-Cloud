@@ -51,7 +51,7 @@
 
 .dark-mode {
     --main-background-color: #000;
-    --main-border-color: rgba(255, 255, 255, 0.2);
+    --main-border-color: rgba(255, 255, 255, 0.15);
     --main-accent-color: #1e2021; /* 212125 2c2c2c 1e2021 */
     --main-font-color: #ffffff;
     --main-header-font-color: #161616;
@@ -59,7 +59,7 @@
     --main-blue-color: #2DA7FF;
     --main-red-color: rgb(255, 44, 44);
     --main-accent-font-color: white;
-    --main-paragraph-color: #cdcdcd;
+    --main-paragraph-color: #cdcdcd; /* 797979 cdcdcd */
     --main-button-background-color: rgb(255, 255, 255);
     --main-filter: invert(100%);
     --main-button-font-color: rgb(0, 0, 0);
@@ -78,7 +78,7 @@
     --button-loader-color: rgb(255, 255, 255);
     --main-blur-effect: blur(10px) saturate(50%);
     --color-scheme: dark;
-    --pop-up-accent-color: #3b3c3f;
+    --pop-up-accent-color: #292D2F;
     --input-background: rgba(255, 255, 255, 0.05);
     --input-placeholder: #9e9ea5;
     --input-border: #777780;

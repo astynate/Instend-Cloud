@@ -1,69 +1,39 @@
 .accessPicker {
     height: auto;
-    width: 370px;
+    width: 450px;
     display: flex;
     flex-direction: column;
     user-select: none;
     border-top: 1px solid var(--main-border-color);
 }
 
-.item {
+.items {
+    height: 360px;
+    overflow-y: scroll;
+    overflow-x: hidden;
     display: flex;
-    align-items: center;
-    cursor: pointer;
-    grid-gap: 10px;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    padding-left: 22px;
-    padding-right: 22px;
-    border-bottom: 1px solid var(--main-border-color);
-    transition: 0.25s ease;
-}
-
-.item span {
-    transition: 0.25s ease;
+    flex-direction: column;
+    padding-top: 25px;
 }
 
 .title {
+    font-size: 17px;
+    font-family: 'Open Sans', sans-serif;
+    color: var(--main-font-color);
+    font-weight: 500;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.description {
+    font-size: 15px;
+    font-family: 'Open Sans', sans-serif;
     color: var(--main-font-color);
     opacity: 0.4;
-}
-
-.item[id="active"] .title {
-    opacity: 0.9;
-}
-
-.item[id="active"] .headerImage {
-    opacity: 0.9;
-}
-
-.item[id="active"] .next {
-    opacity: 0.9;
-}
-
-.item[id="active"] .select {
-    opacity: 0.9;
-    background: var(--main-font-color);
-}
-
-/* ------------------------------ */
-
-.item:hover .title {
-    opacity: 0.7;
-}
-
-.item:hover .headerImage {
-    opacity: 0.7;
-}
-
-.item:hover .next {
-    opacity: 0.7;
-}
-
-.item:hover .select {
-    opacity: 0.7;
-    background: var(--main-font-color);
-    transition: 0.25s ease;
+    font-weight: 400;
+    padding-left: 10px;
+    margin-top: 3px;
+    padding-right: 10px;
 }
 
 .headerImage {
@@ -98,30 +68,30 @@
 }
 
 .footer {
-    height: 50px;
+    height: auto;
     display: flex;
-    margin-top: 100px;
     justify-content: space-between;
     grid-gap: 15px;
     align-items: end;
+    padding-top: 15px;
+    padding-bottom:20px;
     padding-left: 20px;
-    padding-bottom: 25px;
     padding-right: 20px;
+    border-top: 1px solid var(--main-border-color);
 }
 
 .copy {
-    padding: 7px 17px;
+    padding: 9px 18px;
     font-size: 16px;
-    border-radius: 7px;
+    border-radius: 13px;
     color: var(--main-font-color);
-    border: 1px solid rgba(255, 255, 255, 0.2);
     cursor: pointer;
     background: var(--pop-up-accent-color);
     transition: 0.15s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    grid-gap: 5px;
+    grid-gap: 8px;
 }
 
 .copyWrapper {
@@ -155,4 +125,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.paddings {
+    width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+    display: flex;
+    flex-direction: column;
 }

@@ -15,13 +15,22 @@ namespace Instend.Services.Internal.Handlers
 
         private readonly ICollectionsRepository _collectionsRepository;
 
+        private readonly IFilesRespository _filesRespository;
+
         private readonly IAccountsRepository _accountsRepository;
 
-        public AccessHandler(IRequestHandler requestHandler, IAccountsRepository accountRespotory, ICollectionsRepository collectionsRepository)
+        public AccessHandler
+        (
+            IRequestHandler requestHandler, 
+            IAccountsRepository accountRespotory, 
+            ICollectionsRepository collectionsRepository, 
+            IFilesRespository filesRespository
+        )
         {
             _requestHandler = requestHandler;
             _accountsRepository = accountRespotory;
             _collectionsRepository = collectionsRepository;
+            _filesRespository = filesRespository;
         }
 
         private Result GetAccessRequestResult(Configuration.EntityRoles accountRole, Configuration.EntityRoles operationLevel)
@@ -66,7 +75,7 @@ namespace Instend.Services.Internal.Handlers
                     .GetByIdAsync(id.Value);
 
                 if (collection == null)
-                    return Result.Failure<(Guid accountId, Core.Models.Storage.Collection.Collection? collection)>("Collection not found");
+                    return Result.Failure<(Guid accountId, Core.Models.Storage.Collection.Collection? collection)>("ParentCollection not found");
 
                 if (collection.Type == Configuration.CollectionTypes.System && operationLevel > Configuration.EntityRoles.Reader)
                     return Result.Failure<(Guid accountId, Core.Models.Storage.Collection.Collection? collection)>("You can't perform this operation on system collection.");
@@ -82,8 +91,30 @@ namespace Instend.Services.Internal.Handlers
             return (Guid.Parse(accountId), null);
         }
 
-        public Result GetFileAccessRequestResult(Core.Models.Storage.File.File file, Account account, Configuration.EntityRoles operationLevel)
-            => GetAccountAccess(file.AccountsWithAccess, account, operationLevel);
+        public async Task<Result<(Guid accountId, Core.Models.Storage.File.File file)>> GetFileAccessRequestResult(Guid id, HttpRequest request, Configuration.EntityRoles operationLevel)
+        {
+            var accountId = _requestHandler
+                .GetUserId(request.Headers["Authorization"]);
+
+            var account = await _accountsRepository
+                .GetByIdAsync(Guid.Parse(accountId.Value));
+
+            var file = await _filesRespository.GetByIdAsync(id);
+
+            if (file.IsFailure)
+                return Result.Failure<(Guid accountId, Core.Models.Storage.File.File file)>("File not found");
+
+            if (account == null)
+                return Result.Failure<(Guid accountId, Core.Models.Storage.File.File file)>("Account not found");
+
+            var result = await GetAccountAccessToCollection(file.Value.CollectionId, request, operationLevel);
+
+            if (result.IsSuccess)
+                return (account.Id, file.Value);
+
+
+            return (account.Id, file.Value);
+        } 
 
         public Result GetAlbumAccessRequestResult(Album album, Account account, Configuration.EntityRoles operationLevel)
             => GetAccountAccess(album.AccountsWithAccess, account, operationLevel);

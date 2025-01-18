@@ -11,6 +11,6 @@ namespace Instend.Services.Internal.Handlers
     {
         Result GetAlbumAccessRequestResult(Album album, Account account, Configuration.EntityRoles operationLevel);
         Task<Result<(Guid accountId, Collection? collection)>> GetAccountAccessToCollection(Guid? id, HttpRequest request, Configuration.EntityRoles operationLevel);
-        Result GetFileAccessRequestResult(Core.Models.Storage.File.File file, Account account, Configuration.EntityRoles operationLevel);
+        Task<Result<(Guid accountId, Core.Models.Storage.File.File file)>> GetFileAccessRequestResult(Guid id, HttpRequest request, Configuration.EntityRoles operationLevel);
     }
 }

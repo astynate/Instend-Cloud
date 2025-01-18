@@ -1,6 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import styles from './main.module.css';
 import Header from '../../../widgets/header/Header';
 import Search from '../../../widgets/search/Search';
@@ -13,10 +14,11 @@ import sort from './images/header/sort.png';
 import MainCloudPage from '../pages/main/MainCloudPage.jsx';
 import PublicationsCloudPage from '../pages/publications/PublicationsCloudPage.jsx';
 import MessagesCloudPage from '../pages/messages/MessagesCloudPage.jsx';
-import { Route, Routes } from 'react-router-dom';
 import CloudHeader from '../widgets/cloud-header/CloudHeader.js';
+import OpenAccessProcess from '../../../process/open-access/OpenAccessProcess.js';
 
 const Cloud = observer(({setPanelState}) => {
+  const [isAccessProcessWindowOpen, setAccessProcessWindowState] = useState(false);
   const selectPlaceWrapper = useRef();
 
   useEffect(() => {
@@ -39,15 +41,14 @@ const Cloud = observer(({setPanelState}) => {
       </Header>
       <ContentWrapper>
         <div className={styles.header}>
-            {/* <UnitedButton
-                buttons={[
-                  { 
-                    label: 'Open access', 
-                    image: <img src={share} draggable="false" /> 
-                  }
-                ]}
-            />
             <UnitedButton
+                buttons={[{ 
+                    label: 'Open access', 
+                    image: <img src={share} draggable="false" />,
+                    callback: () => setAccessProcessWindowState(p => !p) 
+                }]}
+            />
+            {/* <UnitedButton
                 buttons={[
                   { 
                     label: 'Download', 
@@ -61,6 +62,10 @@ const Cloud = observer(({setPanelState}) => {
             /> */}
         </div>
       </ContentWrapper>
+      {isAccessProcessWindowOpen && <OpenAccessProcess 
+          isOpen={isAccessProcessWindowOpen}
+          close={() => setAccessProcessWindowState(false)}
+      />}
       <CloudHeader />
       <Routes>
         <Route path=":id?" element={<MainCloudPage />} />

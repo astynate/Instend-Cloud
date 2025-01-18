@@ -131,7 +131,22 @@ namespace Instend.Repositories.Storage
         public async Task UpdateNameAsync(Guid id, string name)
             => await _context.Collections.Where(x => x.Id == id).ExecuteUpdateAsync(property => property.SetProperty(x => x.Name, name));
 
-        public async Task DeleteAsync(Guid id) 
-            => await _context.Collections.Where(x => x.Id == id).ExecuteDeleteAsync();
+        public async Task DeleteAsync(Guid id) {
+            var collection = await _context.Collections
+                .Include(x => x.Collections)
+                    .ThenInclude(x => x.Files)
+                    .Take(30)
+                .Include(x => x.Collections)
+                    .ThenInclude(x => x.Collections)
+                    .Take(30)
+                .Include(x => x.Files)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (collection != null)
+            {
+                _context.Remove(collection);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }

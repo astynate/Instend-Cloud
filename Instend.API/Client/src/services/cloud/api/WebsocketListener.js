@@ -6,9 +6,9 @@ import StorageState from "../../../state/entities/StorageState";
 import AccountState from "../../../state/entities/AccountState";
 
 class WebsocketListener {
-    static CreateCollectionListener = async ([folder, queueId]) => {
-        // await connectToFoldersListener();
-        await StorageState.ReplaceLoadingCollection(folder, queueId);
+    static CreateCollectionListener = async (data) => {
+        const [collection, queueId] = JSON.parse(data);
+        await StorageState.ReplaceLoadingCollection(collection, queueId);
     };
 
     static UploadFileListener = async ([file, queueId, occupiedSpace, meta]) => {
@@ -24,7 +24,7 @@ class WebsocketListener {
 
     static DeleteFileListener = (data) => {
         StorageState.DeleteFile(data);
-        MusicState.DeleteSong(data);
+        // MusicState.DeleteSong(data);
     };
 
     static PinnedStateChangesListener = (data) => {
@@ -98,8 +98,8 @@ class WebsocketListener {
     static UpdateAlbumListner = ({id, coverAsBytes, name, description}) => GalleryState.UpdateAlbum(id, coverAsBytes, name, description);
     static CreateAlbumListner = ([album, queueId]) => GalleryState.ReplaceLoadingAlbum(album, queueId);
     static RenameFileListener = (data) => StorageState.RenameFile(data);
-    static RenameFolderListener = (data) => StorageState.RenameFolder(data);
-    static DeleteFolderListener = (data) => StorageState.DeleteFolder(data);
-}
+    static RenameCollectionListener = (data) => StorageState.RenameCollection(data);
+    static RemoveCollectionListener = (data) => StorageState.RemoveCollection(data);
+};
 
 export default WebsocketListener;

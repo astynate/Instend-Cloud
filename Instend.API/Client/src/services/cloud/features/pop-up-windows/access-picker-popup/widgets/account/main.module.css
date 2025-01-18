@@ -1,0 +1,39 @@
+.account {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    grid-gap: 12px;
+    cursor: pointer;
+    border-radius: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.account:hover {
+    background: var(--pop-up-accent-color);
+}
+
+.avatar {
+    height: 75px;
+    width: 75px;
+    border-radius: 100%;
+    background: var(--pop-up-accent-color);
+}
+
+.information {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.name {
+    color: var(--main-font-color);
+    font-weight: 500;
+}
+
+.state {
+    color: var(--main-blue-color);
+}

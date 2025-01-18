@@ -20,6 +20,40 @@ import './css/animations.css';
 
 export const globalWSContext = createSignalRContext();
 
+const WaitingForConnection = async () => {
+    try {
+        while (globalWSContext.connection.state === 'Connecting') {
+            ApplicationState.SetConnectionState(1);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+    
+        if (globalWSContext.connection.state === 'Disconnected') {
+            ApplicationState.SetConnectionState(2);
+            
+            await globalWSContext.connection.start();
+            await WaitingForConnection();
+        }
+    
+        const token = localStorage.getItem('system_access_token');
+    
+        try {
+            // await globalWSContext.invoke('JoinToDirects', token);
+            // await globalWSContext.invoke('JoinToGroups', token);
+            // await globalWSContext.invoke('JoinToAlbums', token);
+            await globalWSContext.invoke('JoinToCollections', token);
+        } catch(error) {
+            console.error(error);
+    
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            await WaitingForConnection();
+        }
+    
+        ApplicationState.SetConnectionState(0);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const Layout = observer(() => {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [isErrorExist, setErrorExistingState] = useState(false);
@@ -29,8 +63,8 @@ const Layout = observer(() => {
     let navigate = useNavigate();
 
     globalWSContext.useSignalREffect("CreateCollection", WebsocketListener.CreateCollectionListener);
-    globalWSContext.useSignalREffect("RenameFolder", WebsocketListener.RenameFolderListener); 
-    globalWSContext.useSignalREffect("DeleteFolder", WebsocketListener.DeleteFolderListener);
+    globalWSContext.useSignalREffect("RenameCollection", WebsocketListener.RenameCollectionListener); 
+    globalWSContext.useSignalREffect("DeleteCollection", WebsocketListener.RemoveCollectionListener);
     globalWSContext.useSignalREffect("UploadFile", WebsocketListener.UploadFileListener);
     globalWSContext.useSignalREffect("RenameFile", WebsocketListener.RenameFileListener); 
     globalWSContext.useSignalREffect("DeleteFile", WebsocketListener.DeleteFileListener);
@@ -54,6 +88,10 @@ const Layout = observer(() => {
     globalWSContext.useSignalREffect("LeaveGroup", WebsocketListener.LeaveGroupListner);
 
     useEffect(() => {
+        WaitingForConnection()
+    }, [globalWSContext?.connection]);
+
+    useEffect(() => {
         const fetchAccount = async () => {
             AccountState.SetLoadingState(true);
 
@@ -66,7 +104,7 @@ const Layout = observer(() => {
         if (!!AccountState.account === false) {
             fetchAccount();
         }
-    }, [AccountState.user]);
+    }, [AccountState.account]);
 
     useLayoutEffect(() => {
         if (AccountState.isAuthorize === false && AccountState.isLoading === false) {

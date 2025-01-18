@@ -1,6 +1,7 @@
 ﻿using Instend.Core.Models.Abstraction;
 using Instend.Core.Models.Storage.Collection;
 using Instend.Core.Models.Storage.File;
+using Instend.Core.Models.Storage.Files;
 using Instend.Services.External.FileService;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,7 @@ namespace Instend.Repositories.Contexts
         public DbSet<Collection> Collections { get; set; } = null!;
         public DbSet<CollectionAccount> CollectionsAccounts { get; set; } = null!;
         public DbSet<Core.Models.Storage.File.File> Files { get; set; } = null!;
+        public DbSet<FileAccount> FilesAccounts { get; set; } = null!;
         public DbSet<Attachment> Attachments { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -32,10 +34,14 @@ namespace Instend.Repositories.Contexts
                 .Entity<AccessItemBase>()
                 .UseTpcMappingStrategy();
 
+            /// Collections
+            /// [CONFIGURATION]
+
             modelBuilder.Entity<Collection>()
                 .HasOne(x => x.ParentCollection)
                 .WithMany(x => x.Collections)
-                .HasForeignKey(x => x.CollectionId);
+                .HasForeignKey(x => x.CollectionId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<CollectionAccount>()
                 .HasOne(ca => ca.Collection)
@@ -46,6 +52,27 @@ namespace Instend.Repositories.Contexts
             modelBuilder.Entity<CollectionAccount>()
                 .HasOne(ca => ca.Account)
                 .WithMany(a => a.Collections)
+                .HasForeignKey(ca => ca.AccountId)
+                .HasPrincipalKey(a => a.Id);
+
+            /// Files
+            /// [CONFIGURATION]
+
+            modelBuilder.Entity<Core.Models.Storage.File.File>()
+                .HasOne(x => x.ParentCollection)
+                .WithMany(x => x.Files)
+                .HasForeignKey(x => x.CollectionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FileAccount>()
+                .HasOne(ca => ca.File)
+                .WithMany(c => c.AccountsWithAccess)
+                .HasForeignKey(ca => ca.FileId)
+                .HasPrincipalKey(a => a.Id);
+
+            modelBuilder.Entity<FileAccount>()
+                .HasOne(ca => ca.Account)
+                .WithMany(a => a.Files)
                 .HasForeignKey(ca => ca.AccountId)
                 .HasPrincipalKey(a => a.Id);
         }

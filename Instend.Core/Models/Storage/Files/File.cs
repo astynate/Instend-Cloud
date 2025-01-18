@@ -15,23 +15,24 @@ namespace Instend.Core.Models.Storage.File
         [Column("last_edit_time")] public DateTime LastEditTime { get; private set; }
         [Column("path")] public string Path { get; private set; } = string.Empty;
         [Column("type")] public string? Type { get; private set; } = null;
-        [Column("collection_id")] public Guid CollectionId { get; private set; }
+        [Column("collection_id")] public Guid? CollectionId { get; private set; }
         [Column("size")] public double Size { get; private set; } = 0;
 
+        public Collection.Collection? ParentCollection { get; init; } = null;
         public List<FileAccount> AccountsWithAccess { get; init; } = [];
 
         private File() { }
 
-        public static Result<File> Create(string name, string? type, double size, Guid ownerId, Guid collectionId)
+        public static Result<File> Create(string name, string? type, double size, Guid accountId, Guid? collectionId)
         {
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrEmpty(name))
-                return Result.Failure<File>("Invalid folder name");
+                return Result.Failure<File>("Invalid collection name.");
 
-            if (ownerId == Guid.Empty)
-                return Result.Failure<File>("Invalid ownder id");
+            if (accountId == Guid.Empty)
+                return Result.Failure<File>("Invalid account data.");
 
             var id = Guid.NewGuid();
-            var path = Configuration.GetAvailableDrivePath() + id;
+            var path = Configuration.GetAvailableDrivePath() + id + "." + type;
 
             return Result.Success(new File()
             {
@@ -46,7 +47,7 @@ namespace Instend.Core.Models.Storage.File
             });
         }
 
-        public void Rename(string name) {}
+        public void Rename(string name) => Name = name;
         public void OnDelete(IFileService fileService) => fileService.DeleteFile(Path);
     }
 }

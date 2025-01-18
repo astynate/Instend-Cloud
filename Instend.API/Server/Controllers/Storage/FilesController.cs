@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Instend_Version_2._0._0.Server.Hubs;
 using Instend.Core.Dependencies.Repositories.Account;
+using Instend.Repositories.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace Instend_Version_2._0._0.Server.Controllers.Storage
 {
@@ -28,12 +30,15 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IRequestHandler _requestHandler;
 
+        private readonly GlobalContext _context;
+
         private readonly IHubContext<GlobalHub> _globalHub;
 
         public FilesController
         (
             IFilesRespository filesRespository,
             ICollectionsRepository collectionsRepository,
+            GlobalContext context,
             IHubContext<GlobalHub> globalHub,
             IAccessHandler accessHandler,
             IAccountsRepository accountsRepository,
@@ -50,6 +55,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             _requestHandler = requestHandler;
             _previewService = previewService;
             _fileService = fileService;
+            _context = context;
         }
 
         [HttpGet]
@@ -63,7 +69,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                 return Conflict(available.Error);
 
             var files = await _filesRespository
-                .GetByParentCollectionId(available.Value.accountId, id ?? Guid.Empty, skip, take);
+                .GetByParentCollectionId(available.Value.accountId, id, skip, take);
 
             return Ok(files);
         }
@@ -120,179 +126,147 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             return Ok();
         }
 
+        private (string name, string? type) GetFileData(IFormFile file)
+        {
+            var nameSplit = file.FileName.Split(".");
+            var name = nameSplit[0] ?? "Unknown";
+            var type = nameSplit.Length >= 2 ? nameSplit[nameSplit.Length - 1] : null;
+
+            return (name, type);
+        }
+
         [HttpPost]
         [Authorize]
         [RequestSizeLimit(10L * 1024L * 1024L * 1024L)]
         [RequestFormLimits(MultipartBodyLengthLimit = 10L * 1024L * 1024L * 1024L)]
-        public async Task<ActionResult<Guid>> UploadFiles([FromForm] IFormFile file, [FromForm] Guid collectionId, [FromForm] int queueId)
+        public async Task<ActionResult<Guid>> UploadFiles([FromForm] IFormFile file, [FromForm] Guid? collectionId, [FromForm] int queueId)
         {
-            throw new NotImplementedException();
-            //var userId = Guid.Parse(_requestHandler.GetUserId(Request.Headers["Authorization"]).Value);
-            //var ownerId = userId;
+            var available = await _accessHandler
+                .GetAccountAccessToCollection(collectionId, Request, Configuration.EntityRoles.Reader);
 
-            //Collection? collection = null;
+            if (available.IsFailure)
+                return Conflict(available.Error);
 
-            //if (collectionId != Guid.Empty)
-            //{
-            //    collection = await _collectionsRepository.GetByIdAsync(collectionId, userId);
+            var fileData = GetFileData(file);
 
-            //    if (collection == null)
-            //        return BadRequest("Folder not found");
+            return await _context.Database.CreateExecutionStrategy().ExecuteAsync<ActionResult>(async () =>
+            {
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    var fileModel = await _filesRespository.AddAsync(fileData.name, fileData.type, file.Length, available.Value.accountId, collectionId);
 
-            //    if (collection.Type != Configuration.CollectionTypes.System)
-            //    {
-            //        var available = await _accessHandler.GetAccessStateAsync(collection,
-            //            Configuration.EntityRoles.Writer, Request.Headers["Authorization"]);
+                    if (fileModel.IsFailure)
+                        return Conflict(fileModel.Error);
 
-            //        if (available.IsFailure)
-            //            return BadRequest(available.Error);
-            //    }
+                    await _fileService.SaveIFormFile(file, fileModel.Value.Path);
 
-            //    ownerId = collection.AccountId;
-            //}
+                    var result = await _accountsRepository.ChangeOccupiedSpaceValue(available.Value.accountId, file.Length);
+                    var group = fileModel.Value.CollectionId ?? available.Value.accountId;
 
-            //var nameSplit = file.FileName.Split(".");
-            //var name = nameSplit[0] ?? "Not set";
-            //var type = nameSplit.Length >= 2 ? nameSplit[nameSplit.Length - 1] : null;
+                    if (result.IsFailure)
+                        return Conflict(result.Error);
 
-            //return await _context.Database.CreateExecutionStrategy().ExecuteAsync<ActionResult<Guid>>(async () =>
-            //{
-            //    using (var transaction = _context.Database.BeginTransaction())
-            //    {
-            //        var fileModel = await _fileRespository.AddAsync(name, type, file.Length, userId,
-            //            collection == null ? Guid.Empty : collection.Id);
+                    await _globalHub.Clients
+                        .Group(group.ToString())
+                        .SendAsync("UploadFile", new { fileModel.Value, queueId });
 
-            //        if (fileModel.IsFailure)
-            //            return Conflict(fileModel.Error);
+                    await transaction.CommitAsync();
 
-            //        using (var fileStream = new FileStream(fileModel.Value.Path, FileMode.Create))
-            //        {
-            //            await file.CopyToAsync(fileStream);
-            //        }
-
-            //        var metaData = await ProcessFileType
-            //        (
-            //            fileModel.Value.Id, 
-            //            fileModel.Value.Path, 
-            //            fileModel.Value.Type
-            //        );
-
-            //        if (file.Length > 0)
-            //            await fileModel.Value.SetPreview(_previewService);
-
-            //        var result = await _accountsRepository.ChangeOccupiedSpaceValue(ownerId, file.Length);
-            //        var group = fileModel.Value.FolderId == Guid.Empty ? fileModel.Value.AccountId.ToString() : fileModel.Value.FolderId.ToString();
-
-            //        if (result.IsFailure)
-            //            return Conflict(result.Error);
-
-            //        await _storageHub.Clients
-            //            .Group(group)
-            //            .SendAsync("UploadFile", new object?[] { fileModel.Value, queueId, result.Value, metaData });
-
-            //        transaction.Commit();
-
-            //        return Ok(fileModel.Value.Id);
-            //    }
-            //});
+                    return Ok(fileModel.Value.Id);
+                }
+            });
         }
 
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> CreateFile([FromForm] string name, [FromForm] string type, [FromForm] Guid collectionId, [FromForm] int queueId)
-        {
-            throw new NotImplementedException();
+        //[HttpPost]
+        //[Authorize]
+        //public async Task<IActionResult> CreateFile([FromForm] string name, [FromForm] string type, [FromForm] Guid collectionId, [FromForm] int queueId)
+        //{
+        //    throw new NotImplementedException();
 
-            //var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+        //    //var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
-            //var collection = await _collectionsRepository.GetByIdAsync(collectionId, userId);
+        //    //var collection = await _collectionsRepository.GetByIdAsync(collectionId, userId);
 
-            //if (collection == null)
-            //    return BadRequest("Collection not found");
+        //    //if (collection == null)
+        //    //    return BadRequest("Collection not found");
 
-            //var available = await _accessHandler.GetCollectionAccessRequestResult(collection, Configuration.EntityRoles.Writer);
+        //    //var available = await _accessHandler.GetCollectionAccessRequestResult(collection, Configuration.EntityRoles.Writer);
 
-            //if (available.IsFailure)
-            //    return BadRequest(available.Error);
+        //    //if (available.IsFailure)
+        //    //    return BadRequest(available.Error);
 
-            //var result = await _fileRespository.AddAsync(name, type, 0, Guid.Parse(userId.Value), collectionId);
-            //var group = result.Value.FolderId == Guid.Empty ? result.Value.AccountId.ToString() : result.Value.FolderId.ToString();
+        //    //var result = await _fileRespository.AddAsync(name, type, 0, Guid.Parse(userId.Value), collectionId);
+        //    //var group = result.Value.FolderId == Guid.Empty ? result.Value.AccountId.ToString() : result.Value.FolderId.ToString();
 
-            //if (result.IsFailure)
-            //    return BadRequest(result.Error);
+        //    //if (result.IsFailure)
+        //    //    return BadRequest(result.Error);
 
-            //await System.IO.File.WriteAllBytesAsync(result.Value.Path, []);
-            //await _storageHub.Clients.Group(group).SendAsync("UploadFile", new object[] { result.Value, queueId });
+        //    //await System.IO.File.WriteAllBytesAsync(result.Value.Path, []);
+        //    //await _storageHub.Clients.Group(group).SendAsync("UploadFile", new object[] { result.Value, queueId });
 
-            //return Ok();
-        }
+        //    //return Ok();
+        //}
 
         [HttpPut]
         [Authorize]
         public async Task<IActionResult> UpdateName(Guid id, string name)
         {
-            throw new NotImplementedException();
+            var access = await _accessHandler
+                .GetFileAccessRequestResult(id, Request, Configuration.EntityRoles.Writer);
 
-            //var fileModel = await _fileRespository.GetByIdAsync(id);
+            if (access.IsFailure)
+                return BadRequest(access.Error);
 
-            //if (fileModel.IsFailure)
-            //    return BadRequest("File not found");
+            var result = await _filesRespository.UpdateName(id, name);
 
-            //var available = await _accessHandler.GetAccessStateAsync(fileModel.Value, 
-            //    Configuration.EntityRoles.Writer, Request.Headers["Authorization"]);
+            if (result.IsFailure)
+                return BadRequest(result.Error);
 
-            //if (available.IsFailure)
-            //    return BadRequest(available.Error);
+            await _globalHub.Clients
+                .Group((access.Value.file.CollectionId ?? access.Value.accountId).ToString())
+                .SendAsync("RenameFile", new object[] { id, result.Value.Name });
 
-            //var result = await _fileRespository.UpdateName(id, name);
-
-            //if (result.IsFailure)
-            //    return BadRequest(result.Error);
-
-            //await _storageHub.Clients.Group(result.Value.FolderId == Guid.Empty ? result.Value.AccountId.ToString() : 
-            //    result.Value.FolderId.ToString()).SendAsync("RenameFile", result.Value);
-
-            //return Ok();
+            return Ok();
         }
 
         [HttpDelete]
         [Authorize]
-        public async Task<IActionResult> Delete(Guid id, Guid folderId)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            var access = await _accessHandler
+                .GetFileAccessRequestResult(id, Request, Configuration.EntityRoles.Writer);
 
-            //var fileModel = await _fileRespository.GetByIdAsync(id);
+            if (access.IsFailure)
+                return BadRequest(access.Error);
 
-            //if (fileModel.IsFailure)
-            //    return BadRequest("File not found");
+            await _context.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
+            {
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    await _filesRespository.Delete(id);
 
-            //var available = await _accessHandler.GetAccessStateAsync(fileModel.Value,
-            //    Configuration.EntityRoles.Writer, Request.Headers["Authorization"]);
+                    await _accountsRepository
+                        .ChangeOccupiedSpaceValue(access.Value.accountId, access.Value.file.Size);
 
-            //if (available.IsFailure)
-            //    return BadRequest(available.Error);
+                    await transaction.CommitAsync();
 
-            //var result = await _fileRespository.Delete(id);
+                    var user = await _accountsRepository
+                        .GetByIdAsync(access.Value.accountId);
 
-            //if (result.IsFailure)
-            //    return BadRequest(result.Error);
+                    if (user == null)
+                        return;
 
-            //await _storageHub.Clients.Group(folderId.ToString())
-            //    .SendAsync("DeleteFile", id);
+                    await _globalHub.Clients
+                        .Group((access.Value.file.CollectionId ?? access.Value.accountId).ToString())
+                        .SendAsync("DeleteFile", id);
 
-            //await _accountsRepository
-            //    .ChangeOccupiedSpaceValue(fileModel.Value.AccountId, -fileModel.Value.Size);
+                    await _globalHub.Clients
+                        .Group(access.Value.accountId.ToString())
+                        .SendAsync("UpdateOccupiedSpace", user.OccupiedSpace);
+                }
+            });
 
-            //var user = await _accountsRepository
-            //    .GetByIdAsync(fileModel.Value.AccountId);
-
-            //if (user == null)
-            //    return Conflict("User not found");
-
-            //await _storageHub.Clients.Group(fileModel.Value.AccountId.ToString())
-            //    .SendAsync("UpdateOccupiedSpace", user.OccupiedSpace);
-
-            //return Ok();
+            return Ok();
         }
     }
 }
