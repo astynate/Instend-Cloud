@@ -16,6 +16,14 @@
     padding-top: 25px;
 }
 
+.loader {
+    height: 360px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .title {
     font-size: 17px;
     font-family: 'Open Sans', sans-serif;

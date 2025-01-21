@@ -44,7 +44,7 @@ const Password = () => {
             if (response.status === 200) {
                 const responseData = await response.text();
 
-                navigate(`/account/email/confirmation/${responseData.replace('"', '')}`, { replace: true });
+                navigate(`/account/email/confirmation/${responseData}`.replaceAll('"', ''), { replace: true });
                 setValidationState('valid');
             } else {
                 setErrorState(true);

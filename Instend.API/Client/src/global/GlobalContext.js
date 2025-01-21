@@ -24,7 +24,13 @@ class GlobalContext {
             
             return v.toString(16);
         });
-    }
+    };
+
+    static roles = [
+        {name: 'Viewer'},
+        {name: 'Editor'},
+        {name: 'Owner'},
+    ];
 }
 
 export default GlobalContext;

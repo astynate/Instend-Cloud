@@ -1,0 +1,50 @@
+.role {
+    display: flex;
+    align-items: center;
+    grid-gap: 5px;
+    position: relative;
+    cursor: pointer;
+}
+
+.select {
+    display: flex;
+    grid-gap: 3px;
+    align-items: center;
+}
+
+.role img {
+    height: 13px;
+    width: 13px;
+    margin-top: 2px;
+    object-fit: contain;
+}
+
+.state {
+    font-weight: 500;
+    color: var(--main-blue-color);
+}
+
+.list {
+    top: 22.5px;
+    left: -7px;
+    position: absolute;
+    font-weight: 500;
+    color: var(--main-blue-color);
+    background: var(--main-accent-color);
+    border: 1px solid var(--main-border-color);
+    z-index: 1;
+    display: flex;
+    grid-gap: 1px;
+    flex-direction: column;
+    border-radius: 5px;
+}
+
+.item {
+    cursor: pointer;
+    padding: 3px 13px;
+    border-radius: 5px;
+}
+
+.item:hover {
+    background: var(--pop-up-accent-color);
+}

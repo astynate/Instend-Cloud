@@ -1,7 +1,8 @@
+import StorageController from '../../../../../../../api/StorageController';
 import Account from '../../widgets/account/Account';
 import styles from './main.module.css';
 
-const InviteAccounts = ({manageCallback = () => {}}) =>{
+const InviteAccounts = ({users = [], manageCallback = () => {}}) =>{
     return (
         <>
             <div className={styles.header}>
@@ -9,20 +10,15 @@ const InviteAccounts = ({manageCallback = () => {}}) =>{
                 <span className={styles.link} onClick={manageCallback}>Manage invitations</span>
             </div>
             <div className={styles.people}>
-                <Account />
-                <Account />
-                <Account />
-                <Account />
-                <Account />
-                <Account />
-                <Account />
-                <Account />
-                <Account />
-                <Account />
-                <Account />
-                <Account />
-                <Account />
-                <Account />
+                {users.map((role) => {
+                    return (
+                        <Account 
+                            key={role.account.id} 
+                            account={role.account}
+                            role={role}
+                        />
+                    )
+                })} 
             </div>
         </>
     );

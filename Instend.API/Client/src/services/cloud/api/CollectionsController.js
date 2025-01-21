@@ -1,9 +1,22 @@
 import { instance } from "../../../state/application/Interceptors";
-import GlobalContext from "../../../global/GlobalContext";
 import ApplicationState from "../../../state/application/ApplicationState";
 import StorageState from "../../../state/entities/StorageState";
 
 class CollectionsController {
+    static GetCollectionById = async (id, onSuccess, onError) => {
+        await instance
+            .get(`/api/collections/${id}`)
+            .then(response => {
+                if (response && response.data) {
+                    onSuccess(response.data);
+                }
+            })
+            .catch(error => {
+                onError();
+                console.error(error);
+            });
+    }
+    
     static CreateCollection = async (name, collectionId) => {
         let form = new FormData();
         let queueId = StorageState.CreateLoadingCollection(name, collectionId);

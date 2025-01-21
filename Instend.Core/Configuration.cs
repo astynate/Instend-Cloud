@@ -123,8 +123,9 @@ namespace Instend.Core
         public enum AccessTypes
         {
             Private,
-            Favorites,
-            Public,
+            InvitedUsers,
+            SelectedChatsAndInvitedUsers,
+            Public
         }
 
         public enum CollectionTypes

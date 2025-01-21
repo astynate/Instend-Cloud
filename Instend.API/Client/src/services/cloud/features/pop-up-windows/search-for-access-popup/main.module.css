@@ -1,7 +1,11 @@
 .openAccessWrapper {
-    height: 410px;
-    width: 370px;
+    height: 430px;
+    width: 450px;
     display: flex;
     flex-direction: column;
-    grid-gap: 20px;
+}
+
+.header {
+    border-bottom: 1px solid var(--main-border-color);
+    padding-bottom: 10px;
 }

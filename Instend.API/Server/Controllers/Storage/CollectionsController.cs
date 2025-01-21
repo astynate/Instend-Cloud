@@ -59,6 +59,19 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         [HttpGet]
         [Authorize]
+        [Route("/api/collections/{id}")]
+        public async Task<IActionResult> GetCollections(Guid id)
+        {
+            var collection = await _collectionsRepository.GetByIdAsync(id);
+
+            if (collection == null)
+                return Conflict("Collection is not found");
+
+            return Ok(_serializationHelper.SerializeWithCamelCase(collection));
+        }
+
+        [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetCollections(Guid? id, int skip, int take)
         {
             var available = await _accessHandler

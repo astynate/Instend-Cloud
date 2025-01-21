@@ -6,10 +6,10 @@ namespace Instend.Core.Models.Storage.Collection
     [Table("collections_accounts")]
     public class CollectionAccount : AccessBase
     {
-        public Collection Collection { get; init; } = null!;
+        public Collection? Collection { get; init; }
         public Guid CollectionId { get; init; } = Guid.Empty;
 
-        private CollectionAccount() { }
+        public CollectionAccount() { }
 
         public CollectionAccount(Guid collectionId, Guid accountId, Configuration.EntityRoles role) : base(role)
         {

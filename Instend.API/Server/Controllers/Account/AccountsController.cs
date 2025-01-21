@@ -42,7 +42,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
         private readonly GlobalContext _context;
 
-        private static readonly string[] DefaultSystemFolders = { "Instend Cloud", "Music", "Photos", "Trash" };
+        private static readonly string[] DefaultSystemFolders = {"Music", "Photos", "Trash"};
 
         public AccountsController
         (
@@ -208,7 +208,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             foreach (var systemFolder in systemFolders)
             {
                 var result = await _collectionsRepository
-                    .AddAsync(systemFolder, account, Guid.Empty, Configuration.CollectionTypes.System);
+                    .AddAsync(systemFolder, account, null, Configuration.CollectionTypes.System);
 
                 if (result.IsFailure)
                     return Result.Failure(result.Error);

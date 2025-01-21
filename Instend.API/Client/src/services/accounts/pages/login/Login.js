@@ -62,12 +62,6 @@ const Login = observer(() => {
             if (response.status === 200) {
                 localStorage.setItem('system_access_token', await response.text());
 
-                await AccountController.GetAccountData(
-                    AccountState.GetUserOnSuccessCallback,
-                    AccountState.GetUserOnFailureCallback,
-                    () => AccountState.SetLoadingState(false)
-                );
-
                 navigate('/');
                 setFormState('valid');
             } else if (response.status === 470) {
@@ -92,7 +86,7 @@ const Login = observer(() => {
             <InputText placeholder={t('account.email_or_nickname')} SetValue={setEmail} autofocus={true} />
             <InputPassword placeholder={t('account.password')} SetValue={setPassword} autofocus={false} />
             <div className='margin-top-40'>
-                <Button title={t('account.login')} state={formState} onClick={() => {Authorize()}} />
+                <Button title={t('account.login')} state={formState} onClick={() => Authorize()} />
             </div>
             <Line title={t('account.or')} />
             <div className='external-links margin-top-20'>

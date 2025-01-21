@@ -54,6 +54,10 @@
     justify-content: center;
 }
 
+.accessButton[id="disabled"] {
+    opacity: 0.5;
+}
+
 @media (max-width: 700px) {
     .wrapper {
         padding-left: 25px;

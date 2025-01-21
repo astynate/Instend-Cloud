@@ -14,3 +14,15 @@
     background: var(--pop-up-accent-color);
     border: 1px solid var(--main-border-color);
 }
+
+.select:focus {
+    outline: 4px solid rgba(54, 121, 255, 0.3);
+}
+
+.select::after {
+    content: "";
+    width: 0.8em;
+    height: 0.5em;
+    background-color: red;
+    clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+  }

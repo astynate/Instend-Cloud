@@ -28,6 +28,7 @@ namespace Instend.Repositories.Storage
             var collection = await _context.Collections
                 .AsNoTracking()
                 .Include(x => x.AccountsWithAccess)
+                    .ThenInclude(x => x.Account)
                 .FirstOrDefaultAsync(collection => collection.Id == id);
 
             return collection;

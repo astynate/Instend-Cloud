@@ -159,7 +159,7 @@ const Profile = observer(({isSaving, cancel, setCancelState, setSavingState = ()
                     title={`Hi! I'm an Artist and Software Engineer :)`} 
                     defaultValue={description} 
                     setValue={setDescription}
-                    maxLength={20}
+                    maxLength={200}
                     isMultiline={true}
                 />
                 <div className={styles.settingDescriptionWrapper}>

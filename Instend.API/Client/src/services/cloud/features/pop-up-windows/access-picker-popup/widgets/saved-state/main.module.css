@@ -1,0 +1,30 @@
+.unsaved {
+    width: 100%;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--main-border-color);
+}
+
+.title {
+    font-weight: 600;
+    color: var(--main-red-color);
+}
+
+.title[id="saved"] {
+    color: var(--main-blue-color);
+}
+
+.paragraph {
+    max-width: 70%;
+    font-weight: 400;
+    font-size: 12px;
+    text-align: center;
+    color: var(--main-font-color);
+    opacity: 0.4;
+}

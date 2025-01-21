@@ -4,9 +4,10 @@ import CircleButtonWrapper from "../../../features/wrappers/circle-button-wrappe
 
 const UnitedButton = ({buttons, isAccent = false}) => {
     return (
-      <CircleButtonWrapper heightPaddings={0} widthPaddings={0}>
+      <CircleButtonWrapper heightPaddings={0} widthPaddings={0} isPopUpButton={isAccent}>
         <div className={styles.buttonWrapper}>
           {buttons.map((button, index) => {
+  
             return (
               <React.Fragment key={index}>             
                 <div 

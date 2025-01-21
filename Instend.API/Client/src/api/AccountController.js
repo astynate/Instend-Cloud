@@ -94,10 +94,13 @@ class AccountController {
     }
 
     static GetAccountsByPrefix = async (prefix, setState) => {
+        if (!!prefix === false)
+            return;
+
         await instance
             .get(`accounts/all/${prefix}`)
             .then(response => {
-                if (response.data) {
+                if (response && response.data) {
                     setState(response.data);
                 }
             })

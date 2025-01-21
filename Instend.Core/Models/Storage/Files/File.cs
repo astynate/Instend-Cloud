@@ -1,6 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
 using Instend.Core.Models.Abstraction;
-using Instend.Core.Models.Storage.Album;
 using Instend.Core.Models.Storage.Files;
 using Instend.Services.External.FileService;
 using System.ComponentModel.DataAnnotations.Schema;

@@ -13,3 +13,7 @@
     background: var(--main-blue-color);
     color: white;
 }
+
+.wrapper[popup="true"] {
+    background: var(--pop-up-accent-color);
+}

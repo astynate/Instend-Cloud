@@ -1,0 +1,13 @@
+.horizontalScroll {
+    height: auto;
+    width: 100%;
+    display: flex;
+    grid-gap: 10px;
+    overflow-x: scroll;
+    overflow-y: visible;
+    padding-right: 10px;
+}
+
+.horizontalScroll::-webkit-scrollbar {
+    display: none;
+}

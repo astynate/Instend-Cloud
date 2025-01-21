@@ -13,11 +13,11 @@
 }
 
 .search img {
-    height: 15px;
-    width: 15px;
+    height: 16px;
+    width: 16px;
     filter: var(--main-filter);
     opacity: 0.4;
-    margin-left: 10px;
+    margin-left: 12.5px;
 }
 
 .search input {
@@ -31,5 +31,6 @@
 }
 
 .search input::placeholder {
-    color: var(--main-paragraph-color);
+    color: var(--main-font-color);
+    opacity: 0.4;
 }

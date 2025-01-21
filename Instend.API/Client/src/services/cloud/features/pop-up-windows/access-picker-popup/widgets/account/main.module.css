@@ -7,13 +7,23 @@
     justify-content: center;
     grid-gap: 12px;
     cursor: pointer;
+    overflow: visible;
     border-radius: 10px;
     padding-top: 10px;
     padding-bottom: 10px;
 }
 
+.account[editable="true"], .account[new="true"] {
+    cursor: default;
+    border: 1px solid var(--main-border-color);}
+
 .account:hover {
     background: var(--pop-up-accent-color);
+}
+
+.account[editable="true"]:hover, .account[new="true"]:hover {
+    cursor: default;
+    background: none;
 }
 
 .avatar {
@@ -36,4 +46,32 @@
 
 .state {
     color: var(--main-blue-color);
+}
+
+.name {
+    max-width: 90%;
+    overflow: hidden;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+}
+
+.button {
+    border: none;
+    outline: none;
+    margin-top: 5px;
+    padding: 5px 12px;
+    border-radius: 30px;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 500;
+    font-family: 'Open Sans', sans-serif;
+    background: var(--pop-up-accent-color);
+}
+
+.blue {
+    color: var(--main-blue-color);
+}
+
+.red {
+    color: var(--main-red-color);
 }
