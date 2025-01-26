@@ -253,7 +253,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
         }
 
         [HttpGet]
-        [Route("/api/accounts/result")]
+        [Route("/api/accounts/photos")]
         public async Task<IActionResult> GetPhotos(Guid accountId, int skip) 
             => Ok(await _publicationsPhotosRepository.GetAccountPhotos(accountId, skip));
     }

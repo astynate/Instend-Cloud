@@ -8,28 +8,76 @@ class MusicState {
     loadPercentage = 0;
     repeatState = 0;
     time = 0;
+    duration = 0;
 
     constructor() {
         makeAutoObservable(this);
-    }
+    };
 
     SetCurrentSongIndex = (index) => {
         this.currentSongIndex = index;
+    };
+
+    setDuration = (duration) => {
+        if (!duration) {
+            return;
+        }
+
+        this.duration = duration;
     }
 
-    SetSongQueue = (songs) => {
-        if (songs && songs.filter) {
-            this.songQueue = songs
-                .filter(element => GlobalContext.musicTypes.includes(element.type));
-        }
+    GetCurrentSongData = () => {
+        const defaultSong = {
+            name: 'Song is not selected',
+            artist: 'Artist',
+            album: 'Album'
+        };
+
+        if (this.songQueue.length === 0)
+            return defaultSong;
+
+        const song = this.songQueue[this.currentSongIndex];
+        
+        if (!song)
+            return defaultSong;
+
+        return {
+            name: song.name ? song.name : 'Untitled song',
+            artist: song.artist ? song.artist : 'Unknown',
+            album: song.album ? song.album : 'Album',
+        };
     }
+
+    IsSongIsPlaying = (id) => {
+        if (this.isPlaying === false) {
+            return false;
+        }
+
+        if (!this.songQueue || this.songQueue.length === 0) {
+            return false;
+        }
+
+        return this.songQueue[this.currentSongIndex].id === id;
+    };
+
+    SetSongQueue = (songs) => {
+        if (!songs || !songs.filter) {
+            return;
+        }
+
+        this.setTime(0);
+
+        this.songQueue = songs
+            .filter(element => GlobalContext.supportedMusicTypes.includes(element.type));
+    };
 
     setPlayingState = (state) => {
         this.isPlaying = state;
-    }
+    };
 
-    SetSongAsPlaying = (id) => {
-        const index = this.songQueue.findIndex(element => element.id === id);
+    SetSongAsPlaying = (song) => {
+        const index = this.songQueue
+            .findIndex(element => element.id === song.id);
 
         if (index === this.currentSongIndex) {
             this.isPlaying = !this.isPlaying;
@@ -37,25 +85,19 @@ class MusicState {
         }
 
         if (index === -1) {
-            this.songQueue = [...this.songQueue, {id: id}];
+            this.songQueue = [...this.songQueue, song];
             this.currentSongIndex = this.songQueue.length - 1;
         } else {
             this.currentSongIndex = index;
         }
 
+        this.setTime(0);
         this.isPlaying = true;
-    }
+    };
 
     setTime = (timeValue) => {
-        const isExist = this.songQueue.length > 0 && this.songQueue[this.currentSongIndex] && 
-            this.songQueue[this.currentSongIndex].id;
-
-        if (isExist) {
-            if (this.songQueue[this.currentSongIndex].durationTicks) {
-                this.time = timeValue;
-            }
-        }
-    }
+        this.time = timeValue ?? 0;
+    };
 
     ChangePlayingState = () => {
         if (this.songQueue.length > 0) {
@@ -64,7 +106,7 @@ class MusicState {
         }
         
         this.isPlaying = false;
-    }
+    };
 
     GetCurrentSongId = () => {
         if (this.songQueue[this.currentSongIndex] && this.songQueue[this.currentSongIndex].id) {
@@ -72,17 +114,17 @@ class MusicState {
         }
 
         return null;
-    }
+    };
 
     setProgress = (progress) => {
         this.loadPercentage = progress;
-    }
+    };
 
     DeleteSong = (id) => {
         if (id) {
             this.songQueue = this.songQueue.filter(x => x.id !== id);
         }
-    }
+    };
 
     NextRepeatState = () => {
         if (this.repeatState + 1 >= 3) {
@@ -91,7 +133,7 @@ class MusicState {
         }
         
         this.repeatState++;
-    }
+    };
 
     HandleRepeatStateOne = () => {
         this.time = 0;
@@ -101,7 +143,7 @@ class MusicState {
         } else {
             this.currentSongIndex++;
         }
-    }
+    };
 
     HandleRepeatStateTwo = () => {
         this.time = 0;
@@ -112,11 +154,11 @@ class MusicState {
         } else {
             this.currentSongIndex++;
         }
-    }
+    };
 
     HandleRepeatStateThree = () => {
         this.time = 0;
-    }
+    };
 
     TurnOnNextSong = () => {
         const callbacks = [
@@ -126,7 +168,7 @@ class MusicState {
         ];
         
         callbacks[this.repeatState]();
-    }
-}
+    };
+};
 
 export default new MusicState();

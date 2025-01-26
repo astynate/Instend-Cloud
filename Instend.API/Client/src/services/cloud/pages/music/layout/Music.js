@@ -3,11 +3,8 @@ import { Route, Routes } from 'react-router-dom';
 import styles from './main.module.css';
 import Header from '../../../widgets/header/Header';
 import Search from '../../../widgets/search/Search';
-// import Menu from '../../../widgets/menu/Menu';
-// import Songs from '../pages/songs/Songs';
-// import Playlists from '../pages/playlists/Playlists';
-// import Playlist from '../pages/playlist/Playlist';
-// import SubContentWrapper from '../../../features/sub-content-wrapper/SubContentWrapper';
+import SubMenu from '../../../features/navigation/sub-menu/SubMenu';
+import Songs from '../pages/songs/Songs';
 
 const Music = (props) => {
   const scroll = useRef();
@@ -18,9 +15,12 @@ const Music = (props) => {
 
   return (
     <div className={styles.music} ref={scroll}>
-      {props.isMobile === false && <Header><Search /></Header>}
-      {/* <div className={styles.header}>
-        <Menu 
+      {props.isMobile === false && 
+        <Header>
+          <Search />
+        </Header>}
+      <div className={styles.header}>
+        <SubMenu 
           items={[
             {
               'name': 'Songs', 
@@ -34,26 +34,24 @@ const Music = (props) => {
         />
       </div>
       <div className={styles.content}>
-        <SubContentWrapper>
-          <Routes>
-            <Route 
-              path=''
-              element={<Songs isMobile={props.isMobile} />} 
-            />
-            <Route 
-              path='/playlists'
-              element={<Playlists />} 
-            />
-            <Route 
-              path='/playlists/:id'
-              element={<Playlist 
-                scroll={scroll}
-                isMobile={props.isMobile}
-              />} 
-            />
-          </Routes>
-        </SubContentWrapper>
-      </div> */}
+        <Routes>
+          <Route 
+            path=''
+            element={<Songs isMobile={props.isMobile} />} 
+          />
+          {/* <Route 
+            path='/playlists'
+            element={<Playlists />} 
+          />
+          <Route 
+            path='/playlists/:id'
+            element={<Playlist 
+              scroll={scroll}
+              isMobile={props.isMobile}
+            />} 
+          /> */}
+        </Routes>
+      </div>
     </div>
   )
 }

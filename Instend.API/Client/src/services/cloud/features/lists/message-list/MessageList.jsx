@@ -9,6 +9,8 @@
 // import { observer } from "mobx-react-lite";
 // import { SpecialTypes } from "../../../../../../../../utils/handlers/SpecialType";
 
+import { observer } from "mobx-react-lite";
+
 const MessageList = observer(({chat, scroll}) => {
     // const wrapper = useRef();
     // const scrollRef = useRef();

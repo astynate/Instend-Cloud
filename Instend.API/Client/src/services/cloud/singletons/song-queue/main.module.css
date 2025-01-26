@@ -1,0 +1,113 @@
+.wrapper {
+    height: 100%;
+    width: 400px;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--main-accent-color);
+    border-radius: var(--main-border-radius);
+}
+
+.header {
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--main-border-color);
+}
+
+.header {
+    padding: 15px 20px;
+}
+
+.header h1 {
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.header span {
+    font-size: 18px;
+    cursor: pointer;
+    color: var(--main-blue-color);
+}
+
+.songs {
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border-bottom: 1px solid var(--main-border-color);
+}
+
+.songCover {
+    height: 45px;
+    width: 45px;
+    border-radius: 3px;
+    background: var(--main-font-color);
+}
+
+.informationWrapper {
+    display: flex;
+    align-items: center;
+    grid-gap: 10px;
+}
+
+.top {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 15px;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--main-border-color);
+}
+
+.information {
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--main-font-color);
+}
+
+.artist {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--main-paragraph-color);
+}
+
+.bottom {
+    margin: 15px 25px;
+}
+
+.range {
+    display: flex;
+    grid-gap: 15px;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 500;
+    text-wrap: nowrap;
+    color: var(--main-font-color);
+}
+
+.controlButtons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.center {
+    display: flex;
+    grid-gap: 30px;
+}
+
+.center img:nth-child(1) {
+    transform: rotate(180deg);
+}
+
+.button {
+    height: 18px;
+    width: auto;
+    filter: var(--main-filter);
+    cursor: pointer;
+}

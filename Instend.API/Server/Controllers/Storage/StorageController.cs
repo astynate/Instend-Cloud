@@ -1,4 +1,5 @@
-﻿using Instend.Core;
+﻿using DocumentFormat.OpenXml.InkML;
+using Instend.Core;
 using Instend.Services.External.FileService;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
@@ -18,6 +19,9 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         private async Task<IActionResult> ReturnFilePart(string path)
         {
+            if (Response.HasStarted)
+                return new EmptyResult();
+
             if (Request.Headers.TryGetValue("Range", out var range))
             {
                 var match = Regex.Match(range.First() ?? "", @"\d+");
@@ -43,13 +47,13 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                     fs.Seek(startByte, SeekOrigin.Begin);
                     fs.Read(buffer, 0, (int)contentLength);
 
-                    Response.StatusCode = 206;
                     Response.Headers.Add("Content-Range", $"bytes {startByte}-{endByte}/{fs.Length}");
                     Response.Headers.Add("Content-Length", contentLength.ToString());
+                    Response.StatusCode = StatusCodes.Status206PartialContent;
 
                     await Response.Body.WriteAsync(buffer, 0, (int)contentLength);
 
-                    return StatusCode(StatusCodes.Status206PartialContent);
+                    return new EmptyResult();
                 }
             }
 

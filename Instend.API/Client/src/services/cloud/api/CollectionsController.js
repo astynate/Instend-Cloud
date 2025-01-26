@@ -1,6 +1,7 @@
 import { instance } from "../../../state/application/Interceptors";
 import ApplicationState from "../../../state/application/ApplicationState";
 import StorageState from "../../../state/entities/StorageState";
+import ResponseHandler from "../../../utils/handlers/ResponseHandler";
 
 class CollectionsController {
     static GetCollectionById = async (id, onSuccess, onError) => {
@@ -63,13 +64,13 @@ class CollectionsController {
     }
 
     static DownloadCollection = async (id) => {
-        instance({
-            url: `/api/collections?id=${id}`,
+        await instance({
+            url: `/api/collections/download?id=${id ?? ''}`,
             method: 'GET',
             responseType: 'blob',
         })
         .then((response) => {
-            // DownloadFromResponse(response);
+            ResponseHandler.DownloadFromResponse(response);
         });
     }
 

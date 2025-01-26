@@ -51,7 +51,7 @@ const OpenAccessProcess = observer(({
                 access={access}
                 users={users}
                 setAccess={setAccess}
-                callback={() => sendAccessRequest(access, users)}
+                callback={(onSuccess) => sendAccessRequest(access, users, onSuccess)}
                 isLoading={isLoading}
             />
         ),
@@ -68,7 +68,7 @@ const OpenAccessProcess = observer(({
 
     if (isOpen === false) {
         return null;
-    }
+    };
 
     return (
         <OpenAccessContext.Provider value={{

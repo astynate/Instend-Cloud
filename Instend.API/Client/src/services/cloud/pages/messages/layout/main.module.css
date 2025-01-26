@@ -1,8 +1,13 @@
 .wrapper {
+    --margins: 7px;
+}
+
+.wrapper {
     height: calc(100vh - var(--disconnected-height));
     overflow: hidden;
     display: grid;
     grid-template-columns: 350px auto;
+    grid-gap: var(--margins);
     width: 100%;
 }
 

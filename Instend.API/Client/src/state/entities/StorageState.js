@@ -36,7 +36,7 @@ class StorageState {
     FindCollectionById = (id) => Object.values(this.collections).flat().find(element => element.id === id);
     SetPath = (path) => this.path = path;
 
-    SetItems = (id, items, newItems) => {
+    SetItems = (id, items, newItems, setIsHasMore = true) => {
         const adaptId = AdaptId(id);
         const existingItems = items[adaptId] ? items[adaptId].items : [];
         const combinedItems = new Set(existingItems.map(item => item.id));
@@ -51,9 +51,17 @@ class StorageState {
     
         items[adaptId] = {
             items: [...existingItems, ...uniqueNewItems],
-            isHasMore: items.length >= 5
+            isHasMore: setIsHasMore ? newItems.length >= 5 : false
         };
-    };    
+    };
+    
+    OnGetFilesByTypeSuccess = (files) => {
+        for (let file of files) {
+            if (!!file === true) {
+                this.SetItems(files.collectionId, this.files, [file], false);   
+            }
+        }
+    };
 
     CreateLoadingCollection = (name, collectionId) => {
         if (!!name === false) {
@@ -115,143 +123,62 @@ class StorageState {
         }
     }
 
-    RemoveFileLoadingState(id, folderId) {
-        // this.files[AdaptId(folderId)] = this.files[AdaptId(folderId)].map(element => {
-        //     if (element.id === id)
-        //         element.isLoading = false;
-
-        //     return element;
-        // });
-    }
-
-    DeleteLoadingFile(queueId, folderId) {
-        // if (!this.files || !this.files[AdaptId(folderId)] || !this.files[AdaptId(folderId)].filter)
-        //     return false;
-
-        // this.files[AdaptId(folderId)] = this.files[AdaptId(folderId)]
-        //     .filter(element => element.queueId !== queueId);
-    }
-
-    CreateLoadingFile(name, folderId, type) {
+    CreateLoadingFile(name, collectionId, type) {
         const file = {
-            id: null,
+            id: GlobalContext.NewGuid(),
             queueId: this.fileQueueId,
             name: name,
             isLoading: true,
             perscentage: 0,
-            folderId: folderId,
+            folderId: collectionId,
             type: type
-        }
+        };
 
-        // runInAction(() => {
-        //     const isFolderExist = this.files[AdaptId(folderId)];
-
-        //     if (isFolderExist === true) {
-        //         this.files[AdaptId(folderId)] = [file, ...this.files[AdaptId(folderId)]];
-        //     } else {
-        //         this.files[AdaptId(folderId)] = [file];
-        //     }
-            
-        //     this.fileQueueId++;
-        // });
+        runInAction(() => {
+            this.SetItems(collectionId, this.files, [file]);
+            this.fileQueueId++;
+        });
 
         return file.queueId;
     }
 
     SetLoadingFilePerscentage(queueId, perscentage) {
-        // const object = Object.values(this.files).flat()
-        //     .find(element => element.queueId == queueId);
+        const object = Object
+            .values(this.files)
+            .flat()
+            .find(element => element.queueId == queueId);
 
-        // if (object && object.perscentage !== null && object.perscentage !== undefined)
-        //     object.perscentage = perscentage;
-    }
-
-    SetFileBytes(id, bytes) {
-        // const object = Object.values(this.files).flat()
-        //     .find(element => element.id == id);
-
-        // if (object && object.fileAsBytes !== null && object.fileAsBytes !== undefined)
-        //     object.fileAsBytes = bytes;
+        if (object && object.perscentage !== null && object.perscentage !== undefined)
+            object.perscentage = perscentage;
     }
 
     ReplaceLoadingFile(file, queueId) {
-        // if (file && file.folderId) {
-        //     file.strategy = 'file';
+        console.log(this.files, queueId);
+        this.DeleteFile(queueId);
 
-        //     runInAction(() => {
-        //         if (this.IsFolderExisitInFiles(file)) {
-        //             const index = this.files[AdaptId(file.folderId)]
-        //                 .findIndex(element => element.queueId === queueId);
-
-        //             if (index === -1) {
-        //                 this.files[AdaptId(file.folderId)] = [file, ...this.files[AdaptId(file.folderId)]]               
-        //             } else {
-        //                 this.files[AdaptId(file.folderId)][index] = file;
-        //             }
-        //         }
-        //     });
-        // }
+        runInAction(() => {
+            this.SetItems(file.collectionId, this.files, [file]);
+        });
     }
     
     DeleteFile = (data) => {
         for (let key in this.files) {
             runInAction(() => {
                 this.files[key].items = this.files[key].items
-                    .filter(element => element.id !== data);
+                    .filter(element => element.id !== data && element.queueId !== data);
             });
         }
     }
 
-    SetFolderItemsById = (id, itemsAsLists) => {
-        // id = AdaptId(id);
+    GetSelectionByType = (types) => {
+        const result = Object.values(this.files)
+            .flat()
+            .map(o => o.items)
+            .flat()
+            .filter(element => element.type ? types.includes(element.type) === true : null);
 
-        // runInAction(() => {
-        //     this.folders[id] = itemsAsLists[0] ? itemsAsLists[0]
-        //         .map(folder => { 
-        //             return {...folder, strategy: 'folder'} 
-        //         }) : [];
-
-        //     this.files[id] = itemsAsLists[1] ? itemsAsLists[1]
-        //         .map(file => {
-        //             if (file.file !== undefined && file.meta !== undefined)
-        //                 return {...file.file, ...file.meta, strategy: 'file'}
-
-        //             return null;
-        //         })
-        //         .filter(e => e) : [];
-
-        //     this.path[id] = itemsAsLists[2] ? 
-        //         itemsAsLists[2] : [];
-        // });
+        return result;
     }
-
-    SetAdditionalFiles = (files) => {
-        // if (files.length <= 0)
-        //     return false;
-
-        // for (let i = 0; i < files.length; i++) {
-        //     let file = response.data[i];
-            
-        //     if (file.file !== undefined && file.meta !== undefined)
-        //         file = {...file.file, ...file.meta, strategy: 'file'}
-
-        //     if (!file.id || !file.folderId)
-        //         continue;
-
-        //     if (!this.files[file.folderId] || !this.files[file.folderId].filter) {
-        //         this.files[file.folderId] = [file];
-        //         continue;
-        //     }
-                
-        //     this.files[file.folderId] = this.files[file.folderId]
-        //         .filter(element => element.id !== file.id);
-
-        //     this.files[file.folderId] = [file, ...this.files[file.folderId]];
-        // }
-    };
-
-    GetSelectionByType = (type) => Object.values(this.files).flat()
-        .filter(element => element.type ? type.includes(element.type) === true : null); 
 }
 
 export default new StorageState();

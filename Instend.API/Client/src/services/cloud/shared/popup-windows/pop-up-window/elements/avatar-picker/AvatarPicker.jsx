@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import styles from './main.module.css';
 import image from './image.png';
 
@@ -21,6 +20,6 @@ const AvatarPicker = ({avatar, setAvatar}) => {
             }} accept='image/*' />
         </div>
     );
-}
+};
 
 export default AvatarPicker;

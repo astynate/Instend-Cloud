@@ -37,9 +37,10 @@ class WebsocketListener {
         ChatsState.DeleteMessage(chatId, messageId);
     };
 
-    static UploadFileListener = ([file, albumId, queueId]) => {
+    static UploadFileListener = ([file, queueId]) => {
+        console.log(file);
         StorageState.ReplaceLoadingFile(file, queueId);
-        GalleryState.ReplaceLoadingPhoto(file, queueId, albumId);
+        // GalleryState.ReplaceLoadingPhoto(file, queueId, albumId);
     };
 
     static AddCommentListner = ({comment, user, albumId, queueId}) => {

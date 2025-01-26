@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ConvertDate } from '../../../../utils/handlers/DateHandler';
 import styles from './main.module.css';
-import system from './images/gear.png';
-import PointsLoaderAnimation from '../../shared/animations/points-loader-animation/PointsLoaderAnimation';
+import StorageItemDescription from '../../features/storage/storage-item-description/StorageItemDescription';
 
 const Collection = ({collection = {}, onContextMenu = () => {}, callback = () => {}, setSelectedFolders = () => {}}) => {
     const [files, setFiles] = useState([]);
@@ -28,17 +26,7 @@ const Collection = ({collection = {}, onContextMenu = () => {}, callback = () =>
                 )})
               }
             </div>
-            <div className={styles.description}>
-              <div className={styles.nameWrapper}>
-                <span className={styles.name}>{collection.name ? collection.name : "Unknown"}</span>
-              </div>
-              <div style={{marginTop: '17px'}}>
-                <PointsLoaderAnimation 
-                  size='5px' 
-                  gap='7px' 
-                />
-              </div>
-            </div>
+            <StorageItemDescription name={collection.name} />
           </div> 
         );
     };
@@ -53,13 +41,10 @@ const Collection = ({collection = {}, onContextMenu = () => {}, callback = () =>
           <div className={styles.content} onClick={callback}>
             {(files)}
           </div>
-          <div className={styles.description}>
-            <div className={styles.nameWrapper}>
-              {collection.typeId === 'System' && <img src={system} className={styles.folderType} />}
-              <span className={styles.name}>{collection.name}</span>
-            </div>
-            <span className={styles.time}>{ConvertDate(collection.creationTime)}</span>
-          </div>
+          <StorageItemDescription
+            name={collection.name} 
+            time={collection.creationTime}
+          />
         </div>
       </Link>
     );

@@ -1,7 +1,7 @@
 .songInformation {
     padding: 0px;
     display: flex;
-    margin-top: 30px;
+    margin-top: 10px;
 }
 
 .coverWrapper {
@@ -9,25 +9,14 @@
     user-select: none;
 }
 
-.effect {
-    height: 280px;
-    width: 280px;
-    border-radius: 50px;
-    filter: blur(0px);
-    opacity: 0.5;
-    background: rgb(117, 123, 129);
-    position: relative;
-}
-
 .cover {
-    height: 280px;
-    width: 280px;
+    height: 200px;
+    width: 200px;
     border-radius: 10px;
     background: #757b81;
     z-index: 0;
     top: 0;
     left: 0;
-    position: absolute;
     overflow: hidden;
 }
 
@@ -40,22 +29,24 @@
 
 .information {
     padding-left: 48px;
+    grid-gap: 25px;
     display: flex;
     flex-direction: column;
     justify-content: end;
     overflow: hidden;
 }
 
-.artist {
-    font-weight: 600;
-    font-size: 28px;
-    color: var(--main-font-color);
+.songName {
+    overflow: hidden;
+    width: 100%;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
 }
 
 .songName span {
     margin-top: 12.5%;
-    font-weight: 800;
-    font-size: 72px;
+    font-weight: 700;
+    font-size: 48px;
     color: var(--main-font-color);
     width: 100%;
     text-overflow: ellipsis;
@@ -63,12 +54,11 @@
     text-wrap: nowrap;
 }
 
-.songName {
-    margin-bottom: 15px;
-    overflow: hidden;
-    width: 100%;
-    text-wrap: nowrap;
-    text-overflow: ellipsis;
+.artist {
+    font-weight: 500;
+    font-size: 20px;
+    color: var(--main-font-color);
+    opacity: 0.8;
 }
 
 .playPanel {

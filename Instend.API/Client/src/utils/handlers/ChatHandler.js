@@ -1,6 +1,6 @@
 import ChatTypes from "../../services/cloud/pages/messages/widgets/chat/helpers/ChatTypes";
-import ChatsState from "../../state/entities/ChatsState";
 import AccountState from "../../state/entities/AccountState";
+import ChatsState from "../../state/entities/ChatsState";
 import { SpecialTypes } from "./SpecialType";
 
 class ChatHandler {
@@ -9,8 +9,8 @@ class ChatHandler {
             return {};
         }
 
-        if (message.userId === userState.user.id) {
-            return userState.user;
+        if (message.userId === AccountState.account.id) {
+            return AccountState.account;
         }
 
         const user = ChatsState.users
@@ -38,12 +38,15 @@ class ChatHandler {
         let result = ChatTypes.notSelect;
 
         if (chat && chat.type) {
-            return Object.values(ChatTypes).find(element => {
-                if (element && element.prefix) {
-                    return chat.type === element.prefix;
-                }
-                return false;
-            }) || result;
+            return Object
+                .values(ChatTypes)
+                .find(element => {
+                    if (element && element.prefix) {
+                        return chat.type === element.prefix;
+                    }
+
+                    return false;
+                }) || result;
         }
 
         return result;

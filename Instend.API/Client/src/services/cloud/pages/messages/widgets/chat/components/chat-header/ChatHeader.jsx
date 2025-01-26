@@ -1,6 +1,6 @@
-// import styles from './main.module.css';
-// import ChatInformation from '../../../../features/chat-information/ChatInformation';
-// import ChatAvatar from '../../../../elements/chat-avatar/ChatAvatar';
+import StorageController from '../../../../../../../../api/StorageController';
+import ChatAvatar from '../../../../elements/chat-avatar/ChatAvatar';
+import styles from './main.module.css';
 
 const ChatHeader = ({
         avatar, 
@@ -23,19 +23,13 @@ const ChatHeader = ({
                 title={"Group information"}
                 additionalContent={additionalContent}
                 content={content}
-            />
+            /> */}
             <div className={styles.header}>
             <div className={styles.left} onClick={() => setChatInformation(true)}>
-                    {/* {isMobile && 
-                        <img 
-                            src={back} 
-                            className={styles.back} 
-                            onClick={close}
-                        />} 
                     <div className={styles.avatar}>
                         {avatar ? 
                             <img 
-                                src={`data:image/png;base64,${avatar}`}
+                                src={StorageController.getFullFileURL(avatar)}
                                 className={styles.avatarImage} 
                                 draggable="false"
                             />
@@ -52,9 +46,9 @@ const ChatHeader = ({
                         className={styles.buttonImage} 
                         draggable="false"
                         // onClick={() => setOpenState(true)}
-                    />
+                    /> */}
                 </div>
-            </div> */}
+            </div>
         </>
     );
 }

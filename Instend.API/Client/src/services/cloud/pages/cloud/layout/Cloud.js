@@ -14,16 +14,20 @@ import PublicationsCloudPage from '../pages/publications/PublicationsCloudPage.j
 import MessagesCloudPage from '../pages/messages/MessagesCloudPage.jsx';
 import CloudHeader from '../widgets/cloud-header/CloudHeader.js';
 import OpenAccessProcess from '../../../process/open-access/OpenAccessProcess.js';
-import StorageState from '../../../../../state/entities/StorageState.js';
 import CollectionsController from '../../../api/CollectionsController.js';
 import AccountController from '../../../../../api/AccountController.js';
 import AccessController from '../../../api/AccessController.js';
+import download from './images/header/download.png';
+import sort from './images/header/sort.png';
+import arrow from './images/header/arrow.png';
+import PopUpSelectOneOfList from '../../../shared/popup-windows/pop-up-select-one-of-list/PopUpSelectOneOfList.jsx';
 
 const Cloud = observer(({setPanelState}) => {
+  const [isSortWindowOpen, setSortWindowOpenState] = useState(false);
   const [isAccessProcessWindowOpen, setAccessProcessWindowState] = useState(false);
+  const [isAscending, setAscendingState] = useState(true);
+  const [sortingType, setSortingType] = useState(0);
   const selectPlaceWrapper = useRef();
-
-  const { path } = StorageState;
 
   let params = useParams();
 
@@ -45,6 +49,14 @@ const Cloud = observer(({setPanelState}) => {
           ]}
         />
       </Header>
+      <PopUpSelectOneOfList 
+        isOpen={isSortWindowOpen}
+        buttons={[
+          { title: 'Date', callback: () => setSortingType(0) },
+          { title: 'Name', callback: () => setSortingType(1) },
+        ]}
+        setOpenState={setSortWindowOpenState}
+      />
       <ContentWrapper>
         <div className={styles.header}>
             <div className={styles.accessButton} id={!!params['*'] ? '' : 'disabled'} >
@@ -57,18 +69,31 @@ const Cloud = observer(({setPanelState}) => {
                   }]}
               />
             </div>
-            {/* <UnitedButton
-                buttons={[
-                  { 
-                    label: 'Download', 
-                    image: <img src={download} draggable="false" /> 
-                  },
-                  { 
-                    label: 'Name', 
-                    image: <img src={sort} draggable="false" /> 
-                  },
-                ]}
-            /> */}
+            <div className={styles.rightButtons}>
+              <UnitedButton
+                  buttons={[
+                    { 
+                      label: '', 
+                      image: <img src={arrow} draggable="false" id={isAscending ? '' : 'reversed'} />,
+                      callback: () => setAscendingState(p => !p)
+                    },
+                  ]}
+              />
+              <UnitedButton
+                  buttons={[
+                    { 
+                      label: 'Download', 
+                      image: <img src={download} draggable="false" />,
+                      callback: () => CollectionsController.DownloadCollection(params.id)
+                    },
+                    { 
+                      label: sortingType === 0 ? 'Date' : 'Name', 
+                      image: <img src={sort} draggable="false" />,
+                      callback: () => setSortWindowOpenState(true)
+                    },
+                  ]}
+              />
+            </div>
         </div>
       </ContentWrapper>
       {isAccessProcessWindowOpen && <OpenAccessProcess 
@@ -76,11 +101,11 @@ const Cloud = observer(({setPanelState}) => {
           close={() => setAccessProcessWindowState(false)}
           getItem={(onSucces, onError) => CollectionsController.GetCollectionById(params['*'], onSucces, onError)}
           fetchData={AccountController.GetAccountsByPrefix}
-          sendAccessRequest={(access, roles) => AccessController.UpdateCollectionAccess(params['*'], access, roles)}
+          sendAccessRequest={(access, roles, onSucces) => AccessController.UpdateCollectionAccess(params['*'], access, roles, onSucces)}
       />}
       <CloudHeader />
       <Routes>
-        <Route path=":id?" element={<MainCloudPage />} />
+        <Route path=":id?" element={<MainCloudPage sortingType={sortingType} isAscending={isAscending} />} />
         <Route path="/publications/:id?" element={<PublicationsCloudPage />} />
         <Route path="/messages/:id?" element={<MessagesCloudPage />} />
       </Routes>

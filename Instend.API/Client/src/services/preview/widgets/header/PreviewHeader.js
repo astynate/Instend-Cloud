@@ -2,12 +2,9 @@ import React from 'react';
 import styles from './main.module.css';
 import PreviewButton from '../../shared/button/PreviewButton';
 import close from './images/close.png';
-import download from './images/download.png';
 import zoomIn from './images/zoom-in.png';
 import zoomOut from './images/zoom-out.png';
 import more from './images/more.png';
-import { instance } from '../../../../state/Interceptors';
-import { DownloadFromResponse } from '../../../../utils/DownloadFromResponse';
 
 const PreviewHeader = (props) => {
     return (
@@ -19,7 +16,7 @@ const PreviewHeader = (props) => {
                 <h1 className={styles.name}>{props.name}</h1>
                 <p className={styles.time}>{props.time}</p>
             </div>
-            <div className={styles.buttons}>
+            {/* <div className={styles.buttons}>
                 <PreviewButton 
                     src={zoomIn}
                     title=""
@@ -47,7 +44,7 @@ const PreviewHeader = (props) => {
                         // }
                     }}
                 />
-            </div>
+            </div> */}
         </div>
     );
  };

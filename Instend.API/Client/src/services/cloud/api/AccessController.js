@@ -1,7 +1,7 @@
 import { instance } from "../../../state/application/Interceptors"
 
 class AccessController {
-    static UpdateCollectionAccess = async (id, access, roles) => {
+    static UpdateCollectionAccess = async (id, access, roles, onSucces = () => {}) => {
         const form = new FormData();
 
         form.append('id', id);
@@ -14,7 +14,13 @@ class AccessController {
         }
 
         await instance
-            .post('/api/access/collections', form);
+            .post('/api/access/collections', form)
+            .then(_ => {
+                onSucces();
+            })
+            .catch(error => {
+                console.error(error);
+            });
     };
 };
 

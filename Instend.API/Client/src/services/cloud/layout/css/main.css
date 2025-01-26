@@ -13,6 +13,11 @@ body {
     width: 100dvw;
     overflow: hidden;
     font-family: 'Open Sans', sans-serif;
+    background: var(--main-background-color);
+}
+
+body {
+    --main-border-radius: 15px;
 }
 
 a {
@@ -30,6 +35,7 @@ h1 {
     flex-direction: column;
     height: 100dvh;
     width: 100dvw;
+    background: var(--main-background-color);
 }
 
 .cloud-content-wrapper {

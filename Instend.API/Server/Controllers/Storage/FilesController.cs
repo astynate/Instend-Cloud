@@ -9,6 +9,7 @@ using Instend_Version_2._0._0.Server.Hubs;
 using Instend.Core.Dependencies.Repositories.Account;
 using Instend.Repositories.Contexts;
 using Microsoft.EntityFrameworkCore;
+using Instend.Core.Dependencies.Services.Internal.Helpers;
 
 namespace Instend_Version_2._0._0.Server.Controllers.Storage
 {
@@ -30,6 +31,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IRequestHandler _requestHandler;
 
+        private readonly ISerializationHelper _serializationHelper;
+
         private readonly GlobalContext _context;
 
         private readonly IHubContext<GlobalHub> _globalHub;
@@ -42,6 +45,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             IHubContext<GlobalHub> globalHub,
             IAccessHandler accessHandler,
             IAccountsRepository accountsRepository,
+            ISerializationHelper serializationHelper,
             IRequestHandler requestHandler,
             IPreviewService previewService,
             IFileService fileService
@@ -49,6 +53,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         {
             _filesRespository = filesRespository;
             _collectionsRepository = collectionsRepository;
+            _serializationHelper = serializationHelper;
             _globalHub = globalHub;
             _accessHandler = accessHandler;
             _accountsRepository = accountsRepository;
@@ -168,7 +173,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
                     await _globalHub.Clients
                         .Group(group.ToString())
-                        .SendAsync("UploadFile", new { fileModel.Value, queueId });
+                        .SendAsync("UploadFile", _serializationHelper.SerializeWithCamelCase(new { fileModel.Value, queueId }));
 
                     await transaction.CommitAsync();
 

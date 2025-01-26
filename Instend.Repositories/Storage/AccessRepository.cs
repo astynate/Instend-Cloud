@@ -15,9 +15,9 @@ namespace Instend.Repositories.Storage
             _context = context;
         }
 
-        private async Task UpdateRoles(List<AccessBase> prev, List<AccessBase> current)
+        private async Task UpdateRoles<Users>(List<Users> prev, List<Users> current) where Users : AccessBase
         {
-            var prevAccountIds = current.Select(x => x.AccountId);
+            var prevAccountIds = prev.Select(x => x.AccountId);
             var currentAccountIds = current.Select(x => x.AccountId);
 
             var rolesToUpdate = prev.Where(x => currentAccountIds.Contains(x.AccountId));
@@ -43,13 +43,14 @@ namespace Instend.Repositories.Storage
 
         public async Task<Result> ChangeAccess<Item, Users>
         (
-            List<AccessBase> prev,
-            List<AccessBase> current,
+            List<Users> prev,
+            List<Users> current,
             AccessItemBase item,
             Configuration.AccessTypes accessType,
             Guid accountId
         )
             where Item : AccessItemBase
+            where Users : AccessBase
         {
             if (current.Count() > 30)
                 return Result.Failure("The maximum value of participans is 30.");

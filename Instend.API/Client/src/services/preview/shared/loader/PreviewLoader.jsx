@@ -6,4 +6,4 @@ export const PreviewLoader = () => {
             <div className={styles.loader} />
         </div>
     );
-}
+};

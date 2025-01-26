@@ -9,6 +9,6 @@ const PlayButton = ({isPlaying, callback}) => {
             <img src={isPlaying ? pause : playButton} draggable="false" />
         </div>
     );
-}
+};
 
 export default PlayButton;

@@ -1,6 +1,6 @@
 .wrapper {
-    height: 100vh;
-    width: 100vw;
+    height: 100svh;
+    width: 100svw;
     background: rgba(0, 0, 0, 0.95);
     z-index: 999999999;
     top: 0;
@@ -8,6 +8,18 @@
     position: fixed;
     animation: open 0.5s ease;
     --height: 55px;
+}
+
+.contentWrapper {
+    --margins: 3px;
+    height: calc(100vh - var(--margins) * 2);
+    width: calc(100vw - var(--margins) * 2);
+    background: var(--main-accent-color);
+    border-radius: 5px;
+    overflow: hidden;
+    margin: var(--margins);
+    display: grid;
+    grid-template-rows: 60px 1fr 60px;
 }
 
 .preview {
@@ -49,6 +61,37 @@
     object-fit: contain;
 }
 
+.fileList {
+    height: 60px;
+    width: 100%;
+    grid-gap: 3px;
+    padding-left: 30px;
+    padding-right: 30px;
+    display: flex;
+    align-items: center;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+.fileList::-webkit-scrollbar {
+    display: none;
+}
+
+.fileListItem {
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+    border-radius: 3px;
+    cursor: pointer;
+    background: var(--pop-up-accent-color);
+}
+
+.fileListItem[state="active"] {
+    outline: 3px solid var(--main-blue-color);
+    outline-offset: 0px;
+    z-index: 1;
+}
+
 @keyframes open {
     0% {
         opacity: 0;
@@ -61,16 +104,16 @@
 }
 
 .navigateButton {
-    height: calc(100vh - var(--height));
+    height: 50px;
     width: 50px;
+    border-radius: 100%;
     position: fixed;
-    background: rgb(25, 25, 25);
+    background: var(--pop-up-accent-color);
     z-index: 999;
-    top: var(--height);
-    left: 0;
-    /* border-radius: 7px; */
+    top: 50%;
+    transform: translateY(-50%);
+    left: 25px;
     cursor: pointer;
-    opacity: 0;
     transition: 0.25s ease;
     display: flex;
     align-items: center;
@@ -95,7 +138,7 @@
 
 .navigateButton[id="right"] {
     left: auto;
-    right: 0;
+    right: 25px;
 }
 
 .placeholder {

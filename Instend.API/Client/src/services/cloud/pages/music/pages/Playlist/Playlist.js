@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
+import { toJS } from 'mobx';
 import styles from './main.module.css';
 import AlbumView from '../../../../widgets/album-view/AlbumView';
 import galleryState from '../../../../../../state/entities/GalleryState';
-import { useParams } from 'react-router-dom';
 import Scroll from '../../../../widgets/scroll/Scroll';
 import AddInMusic from '../../widgets/add-in-music/AddInMusic';
 import Placeholder from '../../../../shared/placeholder/Placeholder';
 import PlayButton from '../../shared/ui-kit/play-button/PlayButton';
-import { observer } from 'mobx-react-lite';
-import Song from '../../shared/song/Song';
-import musicState from '../../../../../../states/music-state';
 import SongList from '../../widgets/song-list/SongList';
-import { toJS } from 'mobx';
 
 const Playlist = observer(({scroll, isMobile}) => {
     const params = useParams();

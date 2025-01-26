@@ -15,7 +15,7 @@ const PopUpWindow = ({
 
     if (open !== true) {
         return null;
-    }
+    };
     
     return (
         <div className={styles.popUpWrapper}>

@@ -1,47 +1,60 @@
-import React, { useContext, useEffect, useState } from 'react';
-import styles from './main.module.css';
-import SongInformation from '../../widgets/song-information/SongInformation';
-import SongList from '../../widgets/song-list/SongList';
-import storageState from '../../../../../../state/entities/StorageState';
-import FileAPI from '../../../../api/FileAPI';
-import Scroll from '../../../../widgets/scroll/Scroll';
+import React, { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
-import { layoutContext } from '../../../../layout/Layout';
-import AddInMusic from '../../widgets/add-in-music/AddInMusic';
-import musicState from '../../../../../../states/music-state';
+import styles from './main.module.css';
+import StorageState from '../../../../../../state/entities/StorageState';
+import GlobalContext from '../../../../../../global/GlobalContext';
+import SongsHeader from '../../widgets/songs-header/SongsHeader';
+import SubContentWrapper from '../../../../features/wrappers/sub-content-wrapper/SubContentWrapper';
+import FilesController from '../../../../api/FilesController';
+import Song from '../../../../components/song/Song';
+import MusicState from '../../../../../../state/entities/MusicState';
 
-const Songs = observer((props) => {
-    const { song } = useContext(layoutContext);
-    let songs = storageState.GetSelectionByType(FileAPI.musicTypes);
+const Songs = observer(({}) => {
+    const { SetSongQueue, ChangePlayingState, GetCurrentSongData } = MusicState;
+
+    let songs = StorageState.GetSelectionByType(GlobalContext.supportedMusicTypes);
+    let song = GetCurrentSongData();
+
+    useEffect(() => {
+        FilesController.GetLastFilesWithType(
+            5, 
+            songs.length, 
+            'music',
+            StorageState.OnGetFilesByTypeSuccess
+        );
+    }, [songs.length]);
 
     return (
-        <div className={styles.songs}>
-            {!props.isMobile && <SongInformation 
+        <SubContentWrapper>
+            <SongsHeader 
                 song={song}
                 callback={() => {
-                    if (songs.length > 0 && musicState.songQueue.length === 0) {
-                        musicState.SetSongQueue(songs);
-                        musicState.SetCurrentSongIndex(0);
-                        musicState.ChangePlayingState();
-                    } else if (musicState.songQueue.length > 0) {
-                        musicState.ChangePlayingState();
-                    }
-                }}
-            />}
-            <SongList 
-                songs={songs} 
-                isMobile={props.isMobile}
-            />
-            <Scroll
-                scroll={props.scroll}
-                isHasMore={storageState.hasMoreSongs}
-                count={storageState.countSongs}
-                callback={() => {
-                    storageState.SetAdditionalFiles(storageState.hasMoreSongs, storageState.countSongs, "music");
+                    SetSongQueue(songs);
+                    ChangePlayingState();
                 }}
             />
-            <AddInMusic />
-        </div>
+            <div className={styles.songListHeader}>
+                <div className={styles.name}>
+                    <span className={styles.item}>#</span>
+                    <span className={styles.item}>Name</span>
+                </div>
+                <span className={styles.item}>Album</span>
+                <span className={styles.item}>Date</span>
+                <span className={styles.item}>Time</span>
+            </div>
+            <div className={styles.songs}>
+                {songs.map((song, index) => {
+                    return (
+                        <Song
+                            key={song.id} 
+                            index={index + 1}
+                            song={song}
+                            setQueue={() => SetSongQueue(songs)}
+                        />
+                    )
+                })}
+            </div>
+        </SubContentWrapper>
     );
 });
 

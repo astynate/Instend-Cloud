@@ -1,7 +1,6 @@
 .createGroup {
     height: auto;
     width: 400px;
-    /* border-top: 1px solid var(--main-border-color); */
     display: flex;
     flex-direction: column;
     padding: 0px 10px 10px 10px;

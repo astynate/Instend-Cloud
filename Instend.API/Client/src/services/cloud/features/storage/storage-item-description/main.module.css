@@ -1,0 +1,35 @@
+.description {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0.7;
+    transition: 0.5s ease;
+    white-space: nowrap;
+    text-wrap: nowrap;
+}
+
+.name {
+    font-size: 16px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    color: var(--main-font-color);
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+    max-width: 100%;
+    text-wrap: nowrap;
+}
+
+.nameWrapper {
+    display: flex;
+    align-items: center;
+    grid-gap: 3px; 
+    justify-content: center;
+    max-width: 80%;
+}
+
+.time {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--main-paragraph-color);
+}

@@ -10,7 +10,7 @@ const Input = ({type = 'text', isMultiline, title, value, defaultValue, setValue
             onChange={(event) => setValue(event.target.value)}
             maxLength={maxLength}
         />
-    }
+    };
     
     return (
         <input 

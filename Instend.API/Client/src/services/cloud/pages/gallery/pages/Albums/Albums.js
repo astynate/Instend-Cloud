@@ -1,6 +1,3 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { autorun } from 'mobx';
-import { toJS } from 'mobx';
 import { observer } from 'mobx-react-lite';
 // import { DeleteAlbums, UpdateAlbum } from '../../api/AlbumRequests';
 // import styles from './main.module.css';

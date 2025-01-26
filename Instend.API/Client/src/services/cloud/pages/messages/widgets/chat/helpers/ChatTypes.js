@@ -1,9 +1,14 @@
 import Direct from "../types/Direct";
 import Draft from "../types/Draft";
 import Group from "../types/Group";
+import NotSelected from "../types/NotSelected";
 
 const ChatTypes = {
-    notSelect: undefined,
+    notSelect: {
+        prefix: 'unselect',
+        type: -1,
+        object: NotSelected,
+    },
     direct: {
         prefix: 'direct',
         type: 0,

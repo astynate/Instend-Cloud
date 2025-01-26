@@ -1,18 +1,6 @@
-.previewImage {
-    height: calc(100svh - var(--height));
-    width: 100vw;
+.image {
+    height: calc(100svh - 3px * 2 - 60px * 2);
+    width: 90%;
     object-fit: contain;
-    image-rendering: pixelated;
-    filter: blur(10px);
-}
-
-.preview, .image {
-    height: calc(100svh - var(--height));
-    width: 100vw;
-    object-fit: contain;
-}
-
-.preview {
-    filter: blur(60px);
-    image-rendering: pixelated;
+    margin: auto;
 }

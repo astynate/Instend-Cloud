@@ -1,0 +1,77 @@
+.createChat {
+    height: 440px;
+    width: 420px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.accounts {
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin-top: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    display: grid;
+    grid-gap: 5px;
+    grid-template-columns: repeat(3, 1fr);
+    user-select: none;
+    
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: var(--pop-up-accent-color);
+        border-radius: 20px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #888;
+        border-radius: 20px;
+        border: 3px solid var(--sub-accent-color);
+    }
+}
+
+.account {
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 10px;
+    text-align: center;
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 10px;
+    transition: 0.15s ease;
+}
+
+.account:hover {
+    background: var(--pop-up-accent-color);
+}
+
+.avatar {
+    height: 80px;
+    width: 80px;
+    border-radius: 100%;
+}
+
+.account h1 {
+    font-size: 16px;
+    max-width: 80%;
+    margin-top: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.account span {
+    color: var(--main-font-color);
+    opacity: 0.7;
+    max-width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

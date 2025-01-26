@@ -8,7 +8,7 @@ import styles from './main.module.css';
 // import ScrollElementWithAction from '../../../../elements/scroll-element-with-action/ScrollElementWithAction';
 // import PhotoList from '../../../../features/lists/photo-list/PhotoList';
 
-const Album = observer(({photoGrid, scale, scroll}) => {
+const Album = observer(({}) => {
     // const { albums } = GalleryState;
     // const params = useParams();
     // const wrapper = useRef();

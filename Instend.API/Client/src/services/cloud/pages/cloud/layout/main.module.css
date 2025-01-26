@@ -58,6 +58,19 @@
     opacity: 0.5;
 }
 
+.rightButtons {
+    display: flex;
+    grid-gap: 7px;
+}
+
+img {
+    transition: 0.15s ease;
+}
+
+img[id="reversed"] {
+    transform: rotate(180deg);
+}
+
 @media (max-width: 700px) {
     .wrapper {
         padding-left: 25px;

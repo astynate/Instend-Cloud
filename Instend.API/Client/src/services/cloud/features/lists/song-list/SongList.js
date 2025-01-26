@@ -16,58 +16,50 @@ const SongList = observer(({songs, isHeaderless, isMobile, isHasIndex = true, se
     const [isCreateAlbumOpen, setCreateAlbumOpen] = useState(false);
     const songWrapper = useRef();
 
-    const single = [
-        [null, "Edit", () => {setCreateAlbumOpen(true)}],
-        [null, "Download", async () => {
-            setActiveItems(prev => {
-                if (prev[0] && prev[0].id) {
-                    (async () => {
-                        await instance
-                            .get(`/file/download?id=${prev[0].id}`, {
-                                responseType: "blob"
-                            })
-                            .then((response) => {
-                                DownloadFromResponse(response);
-                            })
-                            .catch((error) => {
-                                console.error(error);
-                            });
-                    })();
-                }
+    // const single = [
+    //     [null, "Edit", () => {setCreateAlbumOpen(true)}],
+    //     [null, "Download", async () => {
+    //         setActiveItems(prev => {
+    //             if (prev[0] && prev[0].id) {
+    //                 (async () => {
+    //                     await instance
+    //                         .get(`/file/download?id=${prev[0].id}`, {
+    //                             responseType: "blob"
+    //                         })
+    //                         .then((response) => {
+    //                             DownloadFromResponse(response);
+    //                         })
+    //                         .catch((error) => {
+    //                             console.error(error);
+    //                         });
+    //                 })();
+    //             }
 
-                return prev;
-            });
-        }],
-        [null, "Delete", () => {
-            setActiveItems(prev => {
-                Delete(prev);  
-                return prev;
-            })
-        }]
-    ]
+    //             return prev;
+    //         });
+    //     }],
+    //     [null, "Delete", () => {
+    //         setActiveItems(prev => {
+    //             Delete(prev);  
+    //             return prev;
+    //         })
+    //     }]
+    // ]
     
-    const multiple = [
-        [null, "Delete", () => {
-            setActiveItems(prev => {
-                Delete(prev);
-                return prev;
-            })
-        }]
-    ]
+    // const multiple = [
+    //     [null, "Delete", () => {
+    //         setActiveItems(prev => {
+    //             Delete(prev);
+    //             return prev;
+    //         })
+    //     }]
+    // ]
 
     return (
         <div className={styles.songList}>
-            {!isHeaderless && !isMobile && <div className={styles.songListHeader}>
-                <div className={styles.name}>
-                    <span className={styles.item}>#</span>
-                    <span className={styles.item}>Name</span>
-                </div>
-                <span className={styles.item}>Album</span>
-                <span className={styles.item}>Plays</span>
-                <span className={styles.item}>Time</span>
-            </div>}
+
             <div className={styles.songs} ref={songWrapper}>
-                {songs && songs.map && songs.map((element, index) => {
+                {/* {songs && songs.map && songs.map((element, index) => {
                     return (
                         <Song 
                             key={index}
@@ -80,9 +72,9 @@ const SongList = observer(({songs, isHeaderless, isMobile, isHasIndex = true, se
                             setSelectedFiles={setSelectedFiles}
                         />
                     )
-                })}
+                })} */}
             </div>
-            <SelectBox 
+            {/* <SelectBox 
                 selectPlace={[songWrapper]}
                 selectedItems={[selectedItems, setSelectedItems]}
                 activeItems={[activeItems, setActiveItems]}
@@ -95,7 +87,7 @@ const SongList = observer(({songs, isHeaderless, isMobile, isHasIndex = true, se
                 open={isCreateAlbumOpen}
                 close={() => {setCreateAlbumOpen(false)}}
                 song={activeItems[0]}
-            />}
+            />} */}
         </div>
     )
 });

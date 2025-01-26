@@ -28,7 +28,7 @@ const AccessPicker = ({
     const updateAccess = (value) => {
         context.setSavedState(false);
         setAccess(value);
-    }
+    };
 
     return (
         <PopUpWindow
@@ -75,7 +75,7 @@ const AccessPicker = ({
                             }}
                             onMouseLeave={() => setCopyInfoState(false)}
                             onClick={() => {
-                                navigator.clipboard.writeText('http://localhost:44441/cloud' + params.id);
+                                navigator.clipboard.writeText('http://localhost:44441/cloud/' + context.item.id);
                                 setCopiedState(true);
                             }}
                         >
@@ -91,7 +91,7 @@ const AccessPicker = ({
                             },
                             { 
                                 label: <span style={{fontSize: '17px', fontWeight: '500', color: 'var(--main-blue-color)'}}>Save</span>,
-                                callback: callback
+                                callback: () => callback(close)
                             },
                         ]}
                     />

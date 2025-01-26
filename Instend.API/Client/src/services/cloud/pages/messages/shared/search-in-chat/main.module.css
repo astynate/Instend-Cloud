@@ -1,10 +1,10 @@
 .search {
     display: flex;
     align-items: center;
-    padding: 9px 12px;
+    padding: 0px 12px;
     grid-gap: 4px;
     border-radius: 11px;
-    background: var(--main-accent-color);
+    background: var(--pop-up-accent-color);
 }
 
 .searchField {
@@ -12,6 +12,8 @@
     outline: none;
     width: 100%;
     font-size: 15px;
+    padding-top: 9px;
+    padding-bottom: 9px;
     font-family: 'Open Sans', sans-serif;
     background: none;
     font-weight: 400;
@@ -22,5 +24,5 @@
     width: 13px;
     object-fit: contain;
     filter: var(--main-filter);
-    opacity: 0.6;
+    opacity: 0.4;
 }

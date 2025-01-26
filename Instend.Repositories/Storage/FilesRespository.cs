@@ -90,18 +90,18 @@ namespace Instend.Repositories.Storage
             }
         }
 
-        public async Task<object[]> GetLastFilesWithType(Guid accountId, int from, int count, string[] type)
+        public async Task<Core.Models.Storage.File.File[]> GetLastFilesWithType(Guid accountId, int from, int count, string[] types)
         {
-            //var result = await _context.FilesAccounts
-            //    .AsNoTracking()
-            //    .Include(x => x.Account)
-            //    .Where(x => x.Account.Id == accountId)
-            //    .Include(x => x.File)
-            //    .Skip(from)
-            //    .Take(count)
-            //    .ToArrayAsync();
+            var result = await _context.FilesAccounts
+                .AsNoTracking()
+                .Where(x => x.AccountId == accountId)
+                .Include(x => x.File)
+                .Skip(from)
+                .Take(count)
+                .Select(x => x.File)
+                .ToArrayAsync();
 
-            return [];
+            return result;
         }
 
         public async Task<object[]> GetFilesByPrefix(Guid userId, string prefix)

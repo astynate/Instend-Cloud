@@ -93,20 +93,23 @@ class ChatsState {
         this.chats = [chat, ...this.chats];
     }
 
-    setDraft = (user) => {
-        if (user && AccountState.user && AccountState.user.id) {
-            if (this.chats.map(chat => chat.id).includes(user.id) || AccountState.user.id === user.id) {
-                return false;
-            }
-
-            user.type = 'draft';
-            user.messages = [];
-
-            this.draft = user;
+    setDraft = (account) => {
+        if (!account|| !AccountState.account || !AccountState.account.id) {
+            this.draft = null;
             return true;
+        };
+
+        const isChatExist = this.chats.map(chat => chat.id).includes(account.id);
+        const isSelftMessage = AccountState.account.id === account.id;
+        
+        if (isChatExist === true || isSelftMessage === true) {
+            return false;
         }
 
-        this.draft = null;
+        account.type = 'draft';
+        account.messages = [];
+
+        this.draft = account;
         return true;
     }
     
@@ -154,16 +157,16 @@ class ChatsState {
     }
 
     AddMessage(chat, message, userPublic, queueId) {
-        switch (chat.type) {
-            case (ChatTypes.direct.prefix): {
-                chat = ChatHandler.AdaptDirect(chat, message, userPublic);
-                break;
-            }
-            case (ChatTypes.group.prefix): {
-                chat = ChatHandler.AdaptGroup(chat, message);
-                break;
-            }
-        }
+        // switch (chat.type) {
+        //     case (ChatTypes.direct.prefix): {
+        //         chat = ChatHandler.AdaptDirect(chat, message, userPublic);
+        //         break;
+        //     }
+        //     case (ChatTypes.group.prefix): {
+        //         chat = ChatHandler.AdaptGroup(chat, message);
+        //         break;
+        //     }
+        // }
 
         if (this.chats.map(e => e.directId ?? e.id).includes(chat.directId ?? chat.id) === false) {
             this.chats = [chat, ...this.chats];

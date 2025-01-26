@@ -1,9 +1,22 @@
+import SubMenu from '../../../../features/navigation/sub-menu/SubMenu';
 import styles from './main.module.css'
 
-const GalleryHeader = () => {
+const GalleryHeader = ({scale}) => {
     return (
         <div className={styles.header}>
-          <div className={styles.up}>
+          <SubMenu
+            items={[
+              {
+                'name': 'Photos', 
+                'route': '/gallery'
+              }, 
+              {
+                'name': 'Albums', 
+                'route': '/gallery/albums'
+              }
+            ]}
+          />
+          {/* <div className={styles.up}>
               <div className={styles.rangeWrapper}>
                 <Range
                   min={1}
@@ -13,18 +26,6 @@ const GalleryHeader = () => {
                   inc={1}
                 />
               </div>
-              <Menu 
-                items={[
-                  {
-                    'name': 'Photos', 
-                    'route': '/gallery'
-                  }, 
-                  {
-                    'name': 'Albums', 
-                    'route': '/gallery/albums'
-                  }
-                ]}
-              />
             {!props.isMobile && <div className={styles.buttons}>
               <SelectItems 
                 icon={sort}
@@ -36,7 +37,7 @@ const GalleryHeader = () => {
                 states={[setTemplate]}
               />
             </div>}
-          </div>
+          </div> */}
         </div>
     );
 }

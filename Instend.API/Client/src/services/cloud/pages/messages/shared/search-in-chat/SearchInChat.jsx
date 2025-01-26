@@ -11,6 +11,6 @@ const SearchInChat = () => {
             />
         </div>
     );
-}
+};
 
 export default SearchInChat;

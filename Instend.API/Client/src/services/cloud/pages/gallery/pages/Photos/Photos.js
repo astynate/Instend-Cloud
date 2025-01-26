@@ -1,112 +1,58 @@
-// import React, { useEffect, useRef, useState } from 'react';
-// import styles from './main.module.css';
-// import Sroll from '../../../../widgets/scroll/Scroll';
 import { observer } from 'mobx-react-lite';
-// import { GetPhotoById } from '../../layout/Gallery';
-// import { ConvertDate, ConvertFullDate } from '../../../../../../utils/DateHandler';
-// import Placeholder from '../../../../shared/placeholder/Placeholder';
-// import { toJS } from 'mobx';
-// import PhotoList from '../../shared/photo-list/PhotoList';
-// import storageState from '../../../../../../state/entities/StorageState';
-// import FileAPI from '../../../../api/FileAPI';
-// import AddInGallery from '../../widgets/add-in-gallery-button/AddInGallery';
-// import { ByDate, ByName } from '../../../cloud/layout/Cloud';
+import { useEffect, useState } from 'react';
+import styles from './main.module.css';
+import StorageState from '../../../../../../state/entities/StorageState';
+import GlobalContext from '../../../../../../global/GlobalContext';
+import StorageController from '../../../../../../api/StorageController';
+import FilesController from '../../../../api/FilesController';
+import ContentWrapper from '../../../../features/wrappers/content-wrapper/ContentWrapper';
+import SortingHandler from '../../../../../../utils/handlers/SortingHandler';
+import Preview from '../../../../../preview/layout/Preview';
 
-const Photos = observer((props) => {
-    // const photosWrapper = useRef();
-    // const [date, setDate] = useState(null);
-    // const [current, setCurrent] = useState([]);
-    // const dataRef = useRef();
-    
-    // let photos = storageState.GetSelectionByType([...FileAPI.videoTypes, ...FileAPI.imageTypes]);
+const Photos = observer(({}) => {
+    const [index, setIndex] = useState(0);
+    const [isPreviewOpen, setPreviewOpenState] = useState(false);
 
-    // useEffect(() => {
-    //     const fetchPhotos = async () => {
-    //       const startPhoto = await GetPhotoById(current[0]);
-    //       const endPhoto = await GetPhotoById(current[current.length - 1]);
-    
-    //       try {
-    //         if (startPhoto.lastEditTime && endPhoto.lastEditTime) {
-    //           setDate(`${ConvertDate(startPhoto.lastEditTime)} — ${ConvertDate(endPhoto.lastEditTime)}`);
-    //         }
-    //       } catch {}
-    //     }
-    //     fetchPhotos();
-    // }, [current]);
+    let photos = StorageState
+        .GetSelectionByType(GlobalContext.supportedImageTypes);
 
-    // if (date === null && toJS(photos).length > 0) {
-    //     setDate(ConvertFullDate(photos[0].lastEditTime));
-    // }
-    
-    // const changeDate = () => {
-    //     // try {
-    //     //     const element = photosWrapper.current;
-    //     //     let children = Array.from(element.children);
-    
-    //     //     children = children.filter((item) => {
-    //     //         let rect = item.getBoundingClientRect();
-    //     //         return CalculateAverageEqual(rect.top, dataRef.current.offsetTop, 60);
-    //     //     });
-    
-    //     //     if (children.length > 0) {
-    //     //         setCurrent(children.map(e => e.id));
-    //     //     } else if (galleryState.photos.length > 0) {
-    //     //         setDate(ConvertFullDate(galleryState.photos[0].lastEditTime));
-    //     //     }
-    //     // } catch (error) {
-    //     //     console.error(error);
-    //     // }
-    // }
+    useEffect(() => {
+        FilesController.GetLastFilesWithType(
+            5, 
+            photos.length, 
+            'gallery',
+            StorageState.OnGetFilesByTypeSuccess
+        );
+    }, [photos.length]);
 
-    // useEffect(() => {
-    //     props.scroll.current.addEventListener('scroll', changeDate);
-      
-    //     return () => {
-    //       try {
-    //         props.scroll.current.removeEventListener('scroll', changeDate);
-    //       } catch {}
-    //     };
-    // }, []);
-
-    // return (
-    //     <>
-    //         {/* {photos && photos.length > 0 && <div className={styles.down}>
-    //             <div className={styles.currentDate}>
-    //                 <span className={styles.date} ref={dataRef}>{date}</span>
-    //                 <span className={styles.location}>Instend Cloud</span>
-    //             </div>
-    //         </div>} */}
-    //         {photos && photos.length === 0 &&
-    //             <div className={styles.placeholder}>
-    //                 <Placeholder title='No photos or videos uploaded.' />
-    //             </div>}
-    //         <AddInGallery id={null} />
-    //         <PhotoList 
-    //             photos={photos.sort((a, b) => {
-    //                 if (props.sortingType === 0) {
-    //                   return ByDate(a, b, true)
-    //                 } else if (props.sortingType === 1) {
-    //                   return ByDate(a, b, false)
-    //                 } else if (props.sortingType === 2) {
-    //                   return ByName(a, b, true)
-    //                 } else if (props.sortingType === 3) {
-    //                   return ByName(a, b, false)
-    //                 }
-    //             })} 
-    //             scale={props.scale}
-    //             photoGrid={props.photoGrid}
-    //             forwardRef={photosWrapper}
-    //         />
-    //         <Sroll
-    //             scroll={props.scroll}
-    //             isHasMore={storageState.hasMorePhotos}
-    //             count={storageState.countPhotos}
-    //             callback={() => {
-    //                 storageState.SetAdditionalFiles();
-    //             }}
-    //         />
-    //     </>
-    // );
+    return (
+        <ContentWrapper>
+            {isPreviewOpen && 
+                <Preview
+                    close={() => setPreviewOpenState(false)}
+                    index={index}
+                    files={photos}
+                />}
+            <div className={styles.photos}>
+                {photos && photos.length && photos
+                    .sort((a, b) => SortingHandler.CompareTwoDates(a.creationTime, b.creationTime))
+                    .map((photo, index) => {
+                        return (
+                            <div 
+                                className={styles.photo} 
+                                key={photo.id}
+                                onClick={() => {
+                                    setIndex(index);
+                                    setPreviewOpenState(true);
+                                }}
+                            >
+                                <img src={StorageController.getFullFileURL(photo.path)} draggable="false" />
+                            </div>
+                        )
+                    })}
+            </div>
+        </ContentWrapper>
+    );
 });
 
 export default Photos;

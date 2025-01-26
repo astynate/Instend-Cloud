@@ -82,7 +82,7 @@ class AccountController {
 
     static GetAccountPhotos = async (accountId, setState = () => {}, skip) => {
         await instance
-            .get(`api/accounts/photos?accountId=${accountId}&skip=${skip}`)
+            .get(`/api/accounts/photos?accountId=${accountId}&skip=${skip}`)
             .then(response => {
                 if (response && response.data) {
                     setState(prev => [...prev, ...response.data]);

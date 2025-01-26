@@ -6,7 +6,7 @@ import notificationsActive from './images/notifications-active.png';
 import AccountState from '../../../../state/entities/AccountState.js';
 import music from './images/music.png';
 import musicActive from './images/music-active.png';
-import HeaderMusicPlayer from '../../singletons/header-music-player/HeaderMusicPlayer';
+import SongQueue from '../../singletons/song-queue/SongQueue.jsx';
 import Notifications from '../../singletons/notifications-popup/Notifications';
 import ProfilePopUp from '../../singletons/profile-popup/ProfilePopUp.jsx';
 import StorageController from '../../../../api/StorageController.js';
@@ -42,7 +42,10 @@ const Header = observer((props) => {
                         draggable='false' 
                         onClick={() => setCurrect(0)}
                     />
-                    {current === 0 && <HeaderMusicPlayer />}
+                    {current === 0 && 
+                        <div className={styles.songQueueWrapper}>
+                            <SongQueue />
+                        </div>}
                 </div>
                 <div className={styles.button}>
                     {AccountState.countNotifications > 0 && <div className={styles.hasNotifications}></div>}

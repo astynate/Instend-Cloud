@@ -6,8 +6,10 @@ import MusicState from '../../../../state/entities/MusicState';
 
 const MusicPlayer = observer(() => {
     const [isAvailable, setAvailableState] = useState(true);
-    const { isPlaying } = MusicState;
     const audioRef = useRef(null);
+
+    const { isPlaying, songQueue, currentSongIndex, TurnOnNextSong, setProgress } = MusicState;
+    const { setDuration } = MusicState;
 
     const ChangePlayingState = (state) => {
         if (isAvailable && audioRef.current) {
@@ -17,33 +19,38 @@ const MusicPlayer = observer(() => {
             setAvailableState(false);
          
             if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    setAvailableState(true);
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+                playPromise.
+                    then(_ => {
+                        setAvailableState(true);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
 
                 return;
             }
 
             setAvailableState(true);
-        }
-    }
+        };
+    };
 
     const handleTimeUpdate = () => {
-        MusicState.setTime(convertSecondsToTicks(audioRef.current.currentTime));
+        MusicState.setTime(audioRef.current.currentTime);
     };
 
     const handleProgress = () => {
         const audio = audioRef.current;
+
+        if (audio.duration) {
+            setDuration(audio.duration);
+        }
         
         if (audio && audio.buffered.length > 0) {
             const loaded = audio.buffered.end(audio.buffered.length - 1);
             const total = audio.duration;
             const loadedPercentage = (loaded / total) * 100;
             
-            MusicState.setProgress(loadedPercentage);
+            setProgress(loadedPercentage);
         }
     };
 
@@ -53,10 +60,10 @@ const MusicPlayer = observer(() => {
 
     useEffect(() => {
         const audio = audioRef.current;
-        const newTime = convertTicksToSeconds(MusicState.time);
+        const newTime = MusicState.time;
 
         if (audio && audio.currentTime >= audio.duration) {
-            MusicState.TurnOnNextSong();
+            TurnOnNextSong();
             audio.currentTime = 0;
 
             if (MusicState.repeatState === 2)
@@ -72,24 +79,20 @@ const MusicPlayer = observer(() => {
 
     useEffect(() => {
         ChangePlayingState(isPlaying);
-    }, [isPlaying]);
-    
-    useEffect(() => {
-        ChangePlayingState(true);
-    }, [MusicState.songQueue, MusicState.currentSongIndex]);
+    }, [isPlaying, songQueue, currentSongIndex]);
 
     return (
-        MusicState.songQueue.length > 0 && 
-        <audio 
-            key={MusicState.songQueue[MusicState.currentSongIndex].id}
-            ref={audioRef} 
-            className={styles.player} 
-            controls 
-            onTimeUpdate={handleTimeUpdate}
-            onProgress={handleProgress}
-        >
-            <source src={`${process.env.REACT_APP_SERVER_URL}/api/storage/file?id=${MusicState.songQueue[MusicState.currentSongIndex].id}&token=${localStorage.getItem('system_access_token')}`} />
-        </audio>
+        songQueue.length > 0 &&
+            <audio 
+                key={songQueue[currentSongIndex].id}
+                ref={audioRef} 
+                className={styles.player} 
+                controls 
+                onTimeUpdate={handleTimeUpdate}
+                onProgress={handleProgress}
+            >
+                <source src={`${process.env.REACT_APP_SERVER_URL}/api/storage/stream?path=${songQueue[currentSongIndex].path}`} />
+            </audio>
     );
 });
 

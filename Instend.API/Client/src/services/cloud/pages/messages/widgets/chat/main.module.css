@@ -1,12 +1,14 @@
 .chat {
-    height: calc(100vh - var(--disconnected-height));
-    width: 100%;
-    overflow-y: scroll;
-    overflow-x: hidden;
+    height: calc(100vh - var(--disconnected-height) - var(--margins) * 2);
+    width: auto;
+    overflow: hidden;
     position: relative;
     display: flex;
     flex-direction: column;
-    background: var(--main-background-color);
+    margin: var(--margins);
+    margin-left: 0;
+    border-radius: var(--main-border-radius);
+    background: var(--background-accent-color);
 }
 
 .chat[id="mobile"] {

@@ -89,9 +89,14 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         [HttpGet]
         [Authorize]
         [Route("/api/[controller]/download")]
-        public async Task<IActionResult> Download(Guid id)
+        public async Task<IActionResult> Download(Guid? id)
         {
-            var available = await _accessHandler.GetAccountAccessToCollection(id, Request, Configuration.EntityRoles.Reader);
+            var available = await _accessHandler.GetAccountAccessToCollection
+            (
+                id, 
+                Request, 
+                Configuration.EntityRoles.Reader
+            );
 
             if (available.IsFailure)
                 return Conflict(available.Error);
@@ -99,12 +104,12 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             var files = await _fileRespository.GetByParentCollectionId
             (
                 available.Value.accountId,
-                available.Value.collection.Id,
+                id,
                 0,
                 int.MaxValue
             );
 
-            var name = available.Value.collection == null ? "Instend Cloud — Main.zip" : available.Value.collection.Name + ".zip";
+            var name = available.Value.collection == null ? "Instend Cloud.zip" : available.Value.collection.Name + ".zip";
             var archive = _fileService.CreateZipFromFiles(files);
 
             return File(archive, System.Net.Mime.MediaTypeNames.Application.Zip, name);

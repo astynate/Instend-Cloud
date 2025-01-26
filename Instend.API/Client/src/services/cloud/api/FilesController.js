@@ -1,10 +1,11 @@
 import ApplicationState from "../../../state/application/ApplicationState";
 import { instance } from "../../../state/application/Interceptors";
-import StorageState from "../../../state/entities/StorageState";
+import StorageState, { AdaptId } from "../../../state/entities/StorageState";
 
 class FilesController {
     static GetFilesByParentCollectionId = async (id, onSuccess = () => {}) => {
-        const length = StorageState.files[id] ? StorageState.files[id].items.length : 0;
+        const collectionFiles = StorageState.files[AdaptId(id)];
+        const length = collectionFiles ? collectionFiles.items.length : 0;
 
         await instance
             .get(`api/files?id=${id ?? ''}&skip=${length}&take=${5}`)
@@ -34,6 +35,19 @@ class FilesController {
                     ApplicationState.AddErrorInQueueByError('Attention!', error);
                 });
         }
+    }
+
+    static GetLastFilesWithType = async (take, skip, type, onSuccess = () => {}) => {
+        await instance
+            .get(`/api/pagination?take=${take}&skip=${skip}&type=${type}`)
+            .then(response => {
+                if (response && response.data) {
+                    onSuccess(response.data);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
     }
 };
 

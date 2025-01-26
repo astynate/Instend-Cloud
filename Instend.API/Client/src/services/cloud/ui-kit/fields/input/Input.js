@@ -12,6 +12,6 @@ const Input = ({placeholder, value, setValue, maxLength = 30}) => {
             maxLength={maxLength}
         />
     );
- };
+};
 
 export default Input;

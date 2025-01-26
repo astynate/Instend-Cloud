@@ -1,6 +1,6 @@
 import { useRef } from 'react';
-import styles from './main.module.css';
 import { ButtonEffectHandler } from '../../../../../../utils/ui/ButtonEffectHandler';
+import styles from './main.module.css';
 
 const MainMessageButton = ({
         image, 
@@ -25,6 +25,6 @@ const MainMessageButton = ({
             <img src={image} draggable="false" />
         </button>
     );
-}
+};
 
 export default MainMessageButton;

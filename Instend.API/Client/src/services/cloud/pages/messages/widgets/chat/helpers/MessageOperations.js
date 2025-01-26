@@ -4,4 +4,4 @@ export const MessageOperations = {
     'Forward': 2,
     'Save': 3,
     'Edit': 4
-}
+};

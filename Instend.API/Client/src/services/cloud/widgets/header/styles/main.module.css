@@ -93,6 +93,13 @@
     position: absolute;
 }
 
+.songQueueWrapper {
+    height: calc(100vh - 45px - 22.5px);
+    top: 45px;
+    right: -105px;
+    position: absolute;
+}
+
 @media (max-width: 700px) {
     .header {
         display: none;

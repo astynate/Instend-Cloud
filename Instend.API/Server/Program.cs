@@ -39,6 +39,7 @@ builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<GlobalContext>();
 
+builder.Services.AddScoped<IAccessRepository, AccessRepository>();
 builder.Services.AddScoped<IAccountsRepository, AccountsRepository>();
 builder.Services.AddScoped<ISessionsRepository, SessionsRepository>();
 builder.Services.AddScoped<IConfirmationsRepository, ConfirmationsRespository>();

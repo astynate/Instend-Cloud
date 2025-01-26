@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
 import { ConvertBytesToMb } from '../../../../../utils/handlers/StorageSpaceHandler';
+import { useIsActiveButton, useIsCurrentRoute } from './helpers/NavigationPanelLocationHelper';
 import styles from './css/main.module.css';
 import logo from './images/logo/main-logo-black.svg';
 import home_passive from './images/buttons/home_passive.svg';
@@ -24,12 +25,11 @@ import createImage from './images/buttons/create.png';
 import CreatePublicationPopup from '../../../features/pop-up-windows/create-publication-popup/CreatePublicationPopup';
 import AccountState from '../../../../../state/entities/AccountState';
 import PublicationsController from '../../../api/PublicationsController';
+import ProfilePopUp from '../../../singletons/profile-popup/ProfilePopUp';
 import './css/navigation.buttons.css';
 import './css/main.css';
 import './css/progress-bar.css';
 import './css/media-queries.css';
-import { useIsActiveButton, useIsCurrentRoute } from './helpers/NavigationPanelLocationHelper';
-import ProfilePopUp from '../../../singletons/profile-popup/ProfilePopUp';
 
 const NavigationPanel = observer(({isPanelRolledUp}) => {
     const [isOpened, setOpenedState] = useState(false);
@@ -121,7 +121,7 @@ const NavigationPanel = observer(({isPanelRolledUp}) => {
                     </button>
                     <div className={styles.panel} state={isOpened ? 'opened' : null}>
                         <button onClick={() => setCreatePostWindowState(true)}>Publication</button>
-                        <button>Transaction</button>
+                        {/* <button>Transaction</button> */}
                     </div>
                 </div>
                 {isPanelRolledUp === false && <>

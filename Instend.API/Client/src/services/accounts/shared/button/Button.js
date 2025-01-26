@@ -1,5 +1,5 @@
 import React from 'react';
-import './main.css'
+import './main.css';
 
 const Button = ({state, onClick, title}) => {
     return (
@@ -19,6 +19,6 @@ const Button = ({state, onClick, title}) => {
         </div>
         </button>
     );
-}
+};
 
 export default Button;

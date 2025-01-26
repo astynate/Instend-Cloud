@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
+import { ConvertFullDate } from '../../../../../../utils/handlers/DateHandler';
 import PopUpField from '../../../../shared/popup-windows/pop-up-filed/PopUpField';
 import AddInFolder from '../../features/add-in-folder/AddInFolder';
 import StorageState, { AdaptId } from '../../../../../../state/entities/StorageState';
@@ -13,10 +14,9 @@ import CloudController from '../../../../api/CloudController';
 import ContextMenu from '../../../../shared/context-menus/context-menu/ContextMenu';
 import remove from './images/remove.png';
 import rename from './images/rename.png';
-import { ConvertFullDate } from '../../../../../../utils/handlers/DateHandler';
 import File from '../../../../components/file/File';
 
-const MainCloudPage = observer(() => {
+const MainCloudPage = observer(({isAscending, sortingType}) => {
     const [newItemName, setNewItemName] = useState('');
     const [isRenameCollectionOpen, setRenameCollectionState] = useState(false);
     const [isRenameFileOpen, setRenameFileState] = useState(false);
@@ -39,22 +39,38 @@ const MainCloudPage = observer(() => {
 
         if (isHasMoreCollections)
             CollectionsController.GetCollectionsByParentId(params.id, setCollections);
-    }, [params.id, StorageState.collections]);
+    }, [params.id, collections]);
 
     useEffect(() => {
         const isHasMoreFiles = StorageState
-            .IsItemsHasMore(params.id, StorageState.files);
+            .IsItemsHasMore(params.id, files);
 
         const setFiles = (files) => StorageState
             .SetItems(params.id, StorageState.files, files);
 
         if (isHasMoreFiles)
             FilesController.GetFilesByParentCollectionId(params.id, setFiles);
-    }, [params.id, StorageState.files]);
+    }, [params.id, files[AdaptId(params.id)]?.items]);
 
     useEffect(() => {
         CloudController.GetPath(params.id, StorageState.SetPath);
     }, [params.id]);
+
+    const sortItems = (a, b) => {
+        let comparison = 0;
+
+        if (sortingType === 0) {
+            const dateA = new Date(a.creationTime);
+            const dateB = new Date(b.creationTime);
+            comparison = dateA - dateB;
+        } else if (sortingType === 1) {
+            const nameA = a.name.toLowerCase();
+            const nameB = b.name.toLowerCase();
+            comparison = nameA.localeCompare(nameB);
+        }
+
+        return isAscending ? comparison : -comparison;
+    }
 
     return (
         <>
@@ -89,6 +105,8 @@ const MainCloudPage = observer(() => {
                 <div className={styles.items}>
                     {collections[AdaptId(params.id)] && collections[AdaptId(params.id)].items && collections[AdaptId(params.id)].items
                         .filter(collection => collection.typeId !== 'System')
+                        .slice()
+                        .sort(sortItems)
                         .map(collection => {
                             const renameCallback = () => {
                                 setRenameCollectionState(true);
@@ -113,6 +131,8 @@ const MainCloudPage = observer(() => {
                             )
                         })}
                     {files[AdaptId(params.id)] && files[AdaptId(params.id)].items && files[AdaptId(params.id)].items
+                        .slice()
+                        .sort(sortItems)
                         .map(file => {
                             const renameCallback = () => {
                                 setRenameFileState(true);
@@ -132,6 +152,7 @@ const MainCloudPage = observer(() => {
                                 >
                                     <File
                                         file={file}
+                                        isLoading={file.isLoading}
                                     />
                                 </ContextMenu>
                             )

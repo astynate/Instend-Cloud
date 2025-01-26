@@ -1,4 +1,5 @@
 ﻿using Instend.Core;
+using Instend.Core.Dependencies.Services.Internal.Helpers;
 using Instend.Repositories.Storage;
 using Instend.Services.Internal.Handlers;
 using Microsoft.AspNetCore.Authorization;
@@ -15,22 +16,25 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IRequestHandler _requestHandler;
 
+        private readonly ISerializationHelper _serializationHelper;
+
         private readonly Dictionary<string, string[]> Types = new Dictionary<string, string[]>
         {
             { "gallery", Configuration.imageTypes.Concat(Configuration.videoTypes).ToArray() },
             { "music", Configuration.musicTypes }
         };
 
-        public PaginationController(IFilesRespository fileRespository, IRequestHandler requestHandler)
+        public PaginationController(IFilesRespository fileRespository, IRequestHandler requestHandler, ISerializationHelper serializationHelper)
         {
             _fileRespository = fileRespository;
             _requestHandler = requestHandler;
+            _serializationHelper = serializationHelper;
         }
 
         [HttpGet]
         [Authorize]
         [Route("/api/pagination")]
-        public async Task<IActionResult> GetPhotos(int from, int count, string type)
+        public async Task<IActionResult> GetPhotos(int skip, int take, string type)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
@@ -40,7 +44,10 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             if (!Types.ContainsKey(type)) 
                 return BadRequest("Invalid type");
 
-            return Ok(await _fileRespository.GetLastFilesWithType(Guid.Parse(userId.Value), from, count, Types[type]));
+            var result = await _fileRespository
+                .GetLastFilesWithType(Guid.Parse(userId.Value), skip, take, Types[type]);
+
+            return Ok(_serializationHelper.SerializeWithCamelCase(result));
         }
     }
 }
