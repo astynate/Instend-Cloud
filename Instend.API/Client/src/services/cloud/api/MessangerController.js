@@ -1,67 +1,36 @@
+import GlobalContext from "../../../global/GlobalContext";
+import { instance } from "../../../state/application/Interceptors";
+import ChatsState from "../../../state/entities/ChatsState";
+
 class MessangerController {
     static CreateGroup = async () => {
-        // const connectionId = globalWSContext?.connection?.connectionId;
-
-        // if (!connectionId) {
-        //     applicationState.AddErrorInQueue('Attantion!', 'Check your connection.');
-        //     return;
-        // }
-        
-        // if (name === '' || name === null || name === undefined) {
-        //     applicationState.AddErrorInQueue('Attantion!', 'Name fields is required.');
-        //     return;
-        // }
-
-        // if (avatar === null || avatar === undefined) {
-        //     applicationState.AddErrorInQueue('Attantion!', 'Please select a group avatar.');
-        //     return;
-        // }
-
-        // let form = new FormData();
-
-        // form.append('name', name);
-        // form.append('connectionId', connectionId);
-        // form.append('avatar', avatar);
-
-        // await instance.post('/api/groups', form)
-        //     .then(response => {
-        //         var result = response.data;
-
-        //         if (result) {
-        //             chatsState.addGroup(result);
-        //             navigate(`/messages/${result.Id}`);
-        //         }
-        //     })
-        //     .catch(error => {
-        //         applicationState.AddErrorInQueue('Attantion!', 'Something went wrong.');
-        //     });
-
-        // close();
     };
 
-    static CreateDirect = () => {
-        // if (user.id === userState.user.id) {
-        //     applicationState.AddErrorInQueue('Attantion!', `You can't chat with yourself!`);
-        //     return;
-        // }
+    static SendMessage = async (chat, text, attachments) => {
+        const form = new FormData();
+        const type = chat.type.type === 2 ? 0 : 1;
 
-        // const chat = ChatHandler.GetChat(user.id);
+        const message = {
+            id: GlobalContext.NewGuid(),
 
-        // if (chat) {
-        //     navigate(`/messages/${chat.id}`);
-        //     setCreatePopUpState(false);
-        //     return;
-        // }
+        };
 
-        // if (user.id) {
-        //     const result = chatsState.setDraft(user);
-            
-        //     if (result === true) {
-        //         navigate(`/messages`);
-        //     }
-        // }
+        const queueId = ChatsState.SetLoadingMessage(
+            chat,
+            message,
+            attachments
+        );
 
-        // setCreatePopUpState(false);
+        form.append('id', chat.id);
+        form.append('text', text);
+        form.append('type', type);
+        form.append('queueId', queueId);
+        
+        await instance
+            .post('api/messages', form)
+            .catch(error => {
+                console.error(error);
+            });
     };
 };
 

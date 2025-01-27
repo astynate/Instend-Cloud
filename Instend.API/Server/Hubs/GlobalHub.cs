@@ -91,7 +91,7 @@ namespace Instend_Version_2._0._0.Server.Hubs
             if (IsValidUserData(authorization, out userId) == false)
                 return;
 
-            var direct = await _directRepository.GetAsync(id, userId, 0, 1);
+            var direct = await _directRepository.GetAsync(id, 0, 1);
 
             if (direct == null)
                 return;

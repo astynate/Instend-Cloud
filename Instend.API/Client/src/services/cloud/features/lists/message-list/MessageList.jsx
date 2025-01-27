@@ -1,18 +1,9 @@
-// import { useEffect, useRef, useState } from "react";
-// import styles from './main.module.css';
-// import { useParams } from "react-router-dom";
-// import chatsState from "../../../../../../../../states/ChatsState";
-// import ChatHandler from "../../../../../../../../utils/handlers/ChatHandler";
-// import { GetMessageDateIfItNessecery, GetMessagePosition } from "../../helpers/MessageActions";
-// import Message from "../../../../shared/message/Message";
-// import userState from "../../../../../../../../state/entities/UserState";
-// import { observer } from "mobx-react-lite";
-// import { SpecialTypes } from "../../../../../../../../utils/handlers/SpecialType";
-
+import { useRef } from 'react';
 import { observer } from "mobx-react-lite";
+import styles from './main.module.css';
 
 const MessageList = observer(({chat, scroll}) => {
-    // const wrapper = useRef();
+    const wrapper = useRef();
     // const scrollRef = useRef();
     // const [isHasMore, setHaseMoreState] = useState(true);
     
@@ -66,9 +57,11 @@ const MessageList = observer(({chat, scroll}) => {
     //     HandleScroll();
     // }, [params.id, chat?.messages]);
 
-    // return (
-    //     <div className={styles.messages} ref={wrapper}>
-    //         {/* {chat && chat.messages && <SelectBox
+    return (
+        <div className={styles.messages} ref={wrapper}>
+        </div>
+    );
+    //         {chat && chat.messages && <SelectBox
     //             selectPlace={[wrapper]}
     //             selectedItems={[selectedItems, setSelectedItems]}
     //             activeItems={[activeItems, setActiveItems]}
@@ -76,7 +69,7 @@ const MessageList = observer(({chat, scroll}) => {
     //             items={chat.messages}
     //             single={isMyMessage ? senderSingleContext : receiverSingleContext}
     //             multiple={isMyMessage ? senderMultipleContext : receiverMultipleContext}
-    //         />} */}
+    //         />} 
     //         <div ref={scrollRef}></div>
     //         {chat.messages && chat.messages.map((element, index) => {
     //             const avatar = ChatHandler.GetMessageUser(element).avatar;
@@ -109,8 +102,6 @@ const MessageList = observer(({chat, scroll}) => {
     //                 </div>
     //             );
     //         })}
-    //     </div>
-    // );
 });
 
 export default MessageList;

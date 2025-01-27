@@ -14,7 +14,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class MessageController : ControllerBase
+    public class MessagesController : ControllerBase
     {
         private readonly IMessengerRepository _messengerReposiroty;
 
@@ -30,7 +30,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
 
         private readonly IChatBase[] _chatFactory = [];
 
-        public MessageController
+        public MessagesController
         (
             IMessengerRepository messengerReposiroty, 
             IRequestHandler requestHandler, 
@@ -92,7 +92,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
         {
             if (direct.IsAccepted == false)
             {
-                await _messageHub.Clients.Group(direct.AccountModelId.ToString()).SendAsync("NewDirectHandler", direct.Id);
+                await _messageHub.Clients.Group(direct.AccountId.ToString()).SendAsync("NewDirectHandler", direct.Id);
                 await _messageHub.Clients.Group(direct.OwnerId.ToString()).SendAsync("NewDirectHandler", direct.Id);
 
                 return;

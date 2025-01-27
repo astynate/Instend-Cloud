@@ -6,6 +6,8 @@ using Instend.Repositories.Contexts;
 using Instend.Core.Models.Messenger.Direct;
 using Instend.Core.Models.Messenger.Message;
 using System.Linq.Expressions;
+using Instend.Core.Models.Abstraction;
+using Instend.Core.Models.Account;
 
 namespace Instend.Repositories.Messenger
 {
@@ -19,7 +21,7 @@ namespace Instend.Repositories.Messenger
 
         private static readonly Func<Direct, Guid, bool> IsUserInvitor = (Direct direct, Guid userId) => direct.OwnerId == userId;
 
-        private static readonly Func<Direct, Guid, bool> IsUserInvited = (Direct direct, Guid userId) => direct.AccountModelId == userId;
+        private static readonly Func<Direct, Guid, bool> IsUserInvited = (Direct direct, Guid userId) => direct.AccountId == userId;
 
         private static readonly Func<Direct, Guid, Guid, bool> IsFirstUserOwner = (Direct d, Guid o, Guid u) => IsUserInvitor(d, o) && IsUserInvited(d, u);
 
@@ -36,9 +38,9 @@ namespace Instend.Repositories.Messenger
             _messengerRepository = messengerRepository;
         }
 
-        public async Task<Result<Direct>> CreateNewDirect(Guid userId, Guid ownerId)
+        public async Task<Result<Direct>> CreateNewDirect(Guid accountId, Guid ownerId)
         {
-            var direct = Direct.Create(userId, ownerId);
+            var direct = Direct.Create(accountId, ownerId);
 
             if (direct.IsFailure)
                 return Result.Failure<Direct>("Failed to create chat");
@@ -67,13 +69,13 @@ namespace Instend.Repositories.Messenger
         }
 
         public async Task<List<Direct>> GetAccountDirectsAsync(Guid userId)
-            => await GetAsync((d) => IsUserInvitor(d, userId) || IsUserInvited(d, userId), 0, 1);
+            => await GetAsync((d) => d.AccountId == userId || d.OwnerId == userId, 0, 1);
 
-        public async Task<Direct?> GetAsync(Guid id, Guid userId, int numberOfSkipedMessages, int countMessages)
+        public async Task<Direct?> GetAsync(Guid id, int numberOfSkipedMessages, int countMessages)
         {
             var result = await GetAsync
             (
-                (d) => d.Id == id && (IsUserInvitor(d, userId) || IsUserInvited(d, userId)), 
+                (d) => d.Id == id, 
                 numberOfSkipedMessages, 
                 countMessages
             );
@@ -85,46 +87,61 @@ namespace Instend.Repositories.Messenger
         {
             var result = await GetAsync
             (
-                (d) => IsFirstUserOwner(d, userId, ownerId) || IsFirstUserOwner(d, ownerId, userId), 
-                numberOfSkipedMessages, 
+                (x) => (x.OwnerId == userId && x.AccountId == ownerId) || (x.OwnerId == ownerId && x.AccountId == userId),
+                numberOfSkipedMessages,
                 countMessages
             );
 
             return result.FirstOrDefault();
         }
 
-        public async Task<Result<Guid>> DeleteDirect(Guid id, Guid userId)
+        public async Task<Result<Guid>> DeleteDirect(Guid interlocutorId, Guid accountId)
         {
-            return Result.Success(id);
+            var direct = await _context.Directs
+                .Where(x => (x.OwnerId == interlocutorId && x.AccountId == accountId) || (x.OwnerId == accountId && x.AccountId == interlocutorId))
+                .Include(x => x.Messages)
+                    .ThenInclude(x => x.Attachments)
+                .FirstOrDefaultAsync();
+            
+            if (direct == null)
+            {
+                return Result.Failure<Guid>("Direct not found");
+            }
+
+            _context.Remove(direct);
+            await _context.SaveChangesAsync();
+
+            return direct.Id;
         }
 
-        public async Task<Result<object>> SendMessage(Guid ownerId, Guid userId, string text)
+        public async Task<Result<DatabaseModel>> SendMessage(Guid id, Guid senderId, string text)
         {
-            var direct = await GetByAccountIdsAsync(userId, ownerId, 0, 1);
-
-            if (direct != null && direct.IsAccepted == false)
-                return Result.Failure<Direct>("Invite is not accepted");
+            var direct = await GetByAccountIdsAsync(senderId, id, 0, 1);
 
             if (direct == null)
             {
-                var directCreationResult = await CreateNewDirect(userId, ownerId);
+                var result = await CreateNewDirect(id, senderId);
 
-                if (directCreationResult.IsFailure)
-                    return Result.Failure<Direct>(directCreationResult.Error);
+                if (result.IsFailure)
+                    return Result.Failure<DatabaseModel>(result.Error);
 
-                direct = directCreationResult.Value;
+                direct = result.Value;
             }
 
-            return await _context.Database.CreateExecutionStrategy().ExecuteAsync(async Task<Result<Direct>> () =>
+            if (direct != null && direct.IsAccepted == false)
+                return Result.Failure<DatabaseModel>("Invite is not accepted");
+
+            return await _context.Database.CreateExecutionStrategy().ExecuteAsync(async Task<Result<DatabaseModel>> () =>
             {
                 using (var transaction = _context.Database.BeginTransaction())
                 {
-                    var message = Message.Create(text, ownerId);
+                    var message = Message.Create(text, id);
 
                     if (message.IsFailure)
-                        return Result.Failure<Direct>(message.Error);
+                        return Result.Failure<DatabaseModel>(message.Error);
 
                     direct.Messages.Append(message.Value);
+
                     await _context.SaveChangesAsync();
 
                     transaction.Commit();

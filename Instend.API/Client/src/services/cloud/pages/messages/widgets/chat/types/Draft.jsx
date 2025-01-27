@@ -18,15 +18,9 @@ const Draft = observer(({operation, setDefaultOperation, scrollElement}) => {
                 isChatInformation={false}
                 setChatInformation={() => {}}
             />
-            <div className={styles.draftBody}>
-                {/* <ChatPlaceholder 
-                    title={"There are no messages here"} 
-                    subTitle={"Write a message to start chatting"} 
-                /> */}
-            </div>
-            {/* {draft.messages.length === 0 ?
+            {draft.messages.length === 0 ?
                 <div className={styles.draftBody}>
-                    <ChatPlaceholder 
+                    <ChatPlaceholder
                         title={"There are no messages here"} 
                         subTitle={"Write a message to start chatting"} 
                     />
@@ -35,8 +29,7 @@ const Draft = observer(({operation, setDefaultOperation, scrollElement}) => {
                 <MessageList
                     chat={draft}
                     scroll={scrollElement}
-                />
-            } */}
+                />}
             <Input
                 operation={operation}
                 setDefaultOperation={setDefaultOperation}

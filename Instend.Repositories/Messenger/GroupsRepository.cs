@@ -6,6 +6,7 @@ using Instend.Core.Dependencies.Repositories.Account;
 using Instend.Repositories.Contexts;
 using Instend.Core.Models.Messenger.Group;
 using Instend.Core.Models.Messenger.Message;
+using Instend.Core.Models.Abstraction;
 
 namespace Instend.Repositories.Messenger
 {
@@ -121,17 +122,17 @@ namespace Instend.Repositories.Messenger
             return Result.Success((membersToAdd, membersToDelete));
         }
 
-        public async Task<Result<object>> SendMessage(Guid userId, Guid groupId, string text)
+        public async Task<Result<DatabaseModel>> SendMessage(Guid userId, Guid groupId, string text)
         {
             var group = await GetGroup(groupId, userId, 0, 1);
 
             if (group == null)
-                return Result.Failure<Group>("Group not found");
+                return Result.Failure<DatabaseModel>("Group not found");
 
             var messageModel = Message.Create(text, userId);
 
             if (messageModel.IsFailure)
-                return Result.Failure<Group>(messageModel.Error);
+                return Result.Failure<DatabaseModel>(messageModel.Error);
 
             group.Messages.Add(messageModel.Value);
 

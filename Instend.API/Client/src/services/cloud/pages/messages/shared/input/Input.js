@@ -6,8 +6,10 @@ import smile from './images/smile.png';
 import send from './images/send.png';
 import voice from './images/voice.png';
 import MainMessageButton from '../../elements/message-button/MainMessageButton';
+import PopUpList from '../../../../shared/popup-windows/pop-up-list/PopUpList';
+import MessangerController from '../../../../api/MessangerController';
 
-const Input = ({operation, setDefaultOperation, chat, type = 0}) => {
+const Input = ({operation, chat, type = 0, callback = () => {}}) => {
     const [text, setText] = useState('');
     const [attachments, setAttachements] = useState([]);
     const [isCreatePopUpOpen, setCreatePopUpState] = useState(false);
@@ -65,20 +67,16 @@ const Input = ({operation, setDefaultOperation, chat, type = 0}) => {
         const textValue = text;
         const replyTo = operation === MessageOperations.Reply ? '' : '';
 
+        if (!!text === false) {
+            return 
+        }
+
+        await MessangerController.SendMessage(chat, text, type);
+
         setText('');
         setAttachements([]);
         setSelectedFiles([]);
         setSelectedFolders([]);
-
-        // await SendMessage(
-        //     textValue, 
-        //     attachmentsValue, 
-        //     replyTo, 
-        //     chat, 
-        //     type,
-        //     selectedFilesValue,
-        //     selectedFoldersValue
-        // );
     };
 
     const HandleAttechmentsScroll = () => {
@@ -108,12 +106,32 @@ const Input = ({operation, setDefaultOperation, chat, type = 0}) => {
             <div className={styles.input}>
                 <div className={styles.wrapper}>
                     <div className={styles.inputWrapper}>
-                        <MainMessageButton 
-                            image={attach}
-                            onMouseEnter={() => Open()}
-                            onMouseLeave={() => Close()}
-                            callback={() => document.getElementById('message-file-picker').click()}
-                        />
+                        <div className={styles.button}>
+                            {isCreatePopUpOpen && 
+                                <div 
+                                    className={styles.popup} 
+                                    onMouseEnter={() => Open()}
+                                    onMouseLeave={() => Close()}
+                                >
+                                    <PopUpList 
+                                        items={[
+                                            { title: 'Collection' },
+                                            { title: 'Album' },
+                                            { title: 'Playlist' },
+                                            { title: 'Photo' },
+                                            { title: 'Music' },
+                                            { title: 'From device' },
+                                            { title: 'From cloud' }
+                                        ]}
+                                    />
+                                </div>}
+                            <MainMessageButton 
+                                image={attach}
+                                onMouseEnter={() => Open()}
+                                onMouseLeave={() => Close()}
+                                callback={() => document.getElementById('message-file-picker').click()}
+                            />
+                        </div>
                         <textarea 
                             placeholder='Type a message' 
                             className={styles.input}
@@ -125,12 +143,13 @@ const Input = ({operation, setDefaultOperation, chat, type = 0}) => {
                             maxLength={4000}
                             autoFocus
                         />
-                        {/* <MainMessageButton
-                            image={smile}
+                        <input 
+                            type="file" 
+                            id="message-file-picker" 
+                            style={{ display: 'none' }} 
+                            multiple 
+                            onChange={handleFileChange} 
                         />
-                        <MainMessageButton 
-                            image={text !== '' ? send : voice}
-                        /> */}
                     </div>
                 </div>
             </div>

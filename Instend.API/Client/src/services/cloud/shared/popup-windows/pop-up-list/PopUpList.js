@@ -10,7 +10,9 @@ const PopUpList = ({items, close}) => {
                         key={index}
                         className={styles.item} 
                         onClick={async () => {
-                            await element.callback();
+                            if (element.callback) {
+                                await element.callback();
+                            }
 
                             if (close) {
                                 close();

@@ -7,6 +7,6 @@ const ChatPlaceholder = ({title, subTitle}) => {
             <span>{subTitle}</span>
         </div>
     );
-}
+};
 
 export default ChatPlaceholder;

@@ -14,4 +14,4 @@ namespace Instend.Core.TransferModels.Messenger
         Guid[]? folderIds,
         Guid? replyTo
     );
-}
+};

@@ -27,6 +27,6 @@ instance.interceptors.response.use(
   },
   (error) => {
     console.error(error);
-    ApplicationState.AddErrorInQueueByError('Attention!', error);
+    // ApplicationState.AddErrorInQueueByError('Attention!', error);
   }
 );

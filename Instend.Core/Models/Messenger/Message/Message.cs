@@ -12,7 +12,7 @@ namespace Instend.Core.Models.Messenger.Message
         [Column("id")][Key] public Guid Id { get; private set; } = Guid.NewGuid();
         [Column("text")] public string Text { get; private set; } = string.Empty;
         [Column("account_id")] public Guid AccountId { get; private set; }
-        [Column("message_id")] public Guid MessageId { get; private set; }
+        [Column("message_id")] public Guid ReplyToId { get; private set; }
         [Column("date")] public DateTime Date { get; private set; } = DateTime.Now;
         [Column("is_viewed")] public bool IsViewed { get; set; } = false;
 
@@ -20,8 +20,8 @@ namespace Instend.Core.Models.Messenger.Message
         public Message? ReplyTo { get; set; } = null;
 
         public List<Attachment> Attachments { get; set; } = [];
-        public List<Collection> Folders { get; set; } = [];
-        public List<Storage.File.File> Files { get; set; } = [];
+        //public List<Collection> Folders { get; set; } = [];
+        //public List<Storage.File.File> Files { get; set; } = [];
 
         private Message() { }
 

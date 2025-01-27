@@ -153,7 +153,6 @@ class StorageState {
     }
 
     ReplaceLoadingFile(file, queueId) {
-        console.log(this.files, queueId);
         this.DeleteFile(queueId);
 
         runInAction(() => {

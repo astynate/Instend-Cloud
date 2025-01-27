@@ -21,23 +21,29 @@ namespace Instend.Repositories.Contexts
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder
-                .Entity<Message>()
-                .HasMany(m => m.Files)
-                .WithMany()
-                .UsingEntity<MessageFile>();
+            //modelBuilder
+            //    .Entity<Message>()
+            //    .HasMany(m => m.Files)
+            //    .WithMany()
+            //    .UsingEntity<MessageFile>();
 
-            modelBuilder
-                .Entity<Message>()
-                .HasMany(m => m.Folders)
-                .WithMany()
-                .UsingEntity<MessageCollection>();
+            //modelBuilder
+            //    .Entity<Message>()
+            //    .HasMany(m => m.Folders)
+            //    .WithMany()
+            //    .UsingEntity<MessageCollection>();
 
             modelBuilder
                 .Entity<Message>()
                 .HasMany(m => m.Attachments)
                 .WithMany()
                 .UsingEntity<MessageAttachment>();
+
+            modelBuilder
+                .Entity<Message>()
+                .HasOne(m => m.Sender)
+                .WithMany()
+                .HasForeignKey(x => x.AccountId);
 
             modelBuilder
                 .Entity<Direct>()

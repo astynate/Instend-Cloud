@@ -1,6 +1,8 @@
 import { makeAutoObservable } from "mobx";
 import AccountState from "./AccountState";
 import ChatHandler from "../../utils/handlers/ChatHandler";
+import GlobalContext from "../../global/GlobalContext";
+import ChatTypes from "../../services/cloud/pages/messages/widgets/chat/helpers/ChatTypes";
 
 class ChatsState {
     chats = [];
@@ -106,7 +108,7 @@ class ChatsState {
             return false;
         }
 
-        account.type = 'draft';
+        account.type = ChatTypes.draft;
         account.messages = [];
 
         this.draft = account;
@@ -135,57 +137,35 @@ class ChatsState {
         }
     }
 
-    SetLoadingMessage = (chat, message, attachments) => {
+    SetLoadingMessage = (chat, text, attachments) => {
         const queueId = this.messageQueueId;
 
-        if (chat !== null && chat !== undefined) {
-            const messageValue = {
-                date: new Date(),
-                id: undefined,
-                text: message,
-                userId: AccountState.user.id,
-                attachments: attachments,
-                queueId: queueId,
-                isViewed: false
-            };
-
-            this.messageQueueId++;
-            chat.messages = [...chat.messages, messageValue];
+        if (!!chat === false) {
+            return queueId;
         }
+
+        const messageValue = {
+            date: new Date(),
+            id: GlobalContext.NewGuid(),
+            text: text,
+            userId: AccountState.account.id,
+            attachments: attachments,
+            queueId: queueId,
+            isViewed: false
+        };
+
+        this.messageQueueId++;
+        chat.messages = [...chat.messages, messageValue];
 
         return queueId;
     }
 
-    AddMessage(chat, message, userPublic, queueId) {
-        // switch (chat.type) {
-        //     case (ChatTypes.direct.prefix): {
-        //         chat = ChatHandler.AdaptDirect(chat, message, userPublic);
-        //         break;
-        //     }
-        //     case (ChatTypes.group.prefix): {
-        //         chat = ChatHandler.AdaptGroup(chat, message);
-        //         break;
-        //     }
-        // }
+    AddMessage(chat, message, queueId) {
+        // this.messageQueueId++;
 
-        if (this.chats.map(e => e.directId ?? e.id).includes(chat.directId ?? chat.id) === false) {
-            this.chats = [chat, ...this.chats];
-        } 
-        else {
-            const chatValue = ChatHandler.GetChat(chat.directId ?? chat.id);
+        // if (chat.type)
 
-            if (chatValue) {
-                if (message.userId === AccountState.user.id) {
-                    chatValue.messages = chatValue.messages.filter(e => e.queueId !== queueId);
-                }
-
-                chatValue.messages = [...chatValue.messages, message];
-            }
-        }
-
-        if (this.users.map(u => u.Id).includes(userPublic.Id) === false) {
-            this.users = [userPublic, ...this.users];
-        }
+        // return this.messageQueueId;
     }
 
     GetMessages = async (chatId) => {

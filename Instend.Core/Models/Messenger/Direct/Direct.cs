@@ -7,12 +7,12 @@ namespace Instend.Core.Models.Messenger.Direct
     [Table("directs")]
     public class Direct : DatabaseModel
     {
-        [Column("user_id")] public Guid AccountModelId { get; set; }
+        [Column("account_id")] public Guid AccountId { get; set; }
         [Column("owner_id")] public Guid OwnerId { get; set; }
         [Column("date")] public DateTime Date { get; set; } = DateTime.Now;
         [Column("is_accepted")]  public bool IsAccepted { get; set; } = false;
 
-        [NotMapped] public string Type { get; init; } ="direct";
+        [NotMapped] public string Type { get; init; } = "direct";
 
         public List<Message.Message> Messages { get; init; } = [];
 
@@ -28,7 +28,7 @@ namespace Instend.Core.Models.Messenger.Direct
 
             return new Direct()
             {
-                AccountModelId = userId,
+                AccountId = userId,
                 OwnerId = ownerId
             };
         }
