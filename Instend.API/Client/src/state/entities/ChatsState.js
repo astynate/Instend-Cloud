@@ -3,6 +3,9 @@ import AccountState from "./AccountState";
 import ChatHandler from "../../utils/handlers/ChatHandler";
 import GlobalContext from "../../global/GlobalContext";
 import ChatTypes from "../../services/cloud/pages/messages/widgets/chat/helpers/ChatTypes";
+import SortingHandler from "../../utils/handlers/SortingHandler";
+import { SpecialTypes } from "../../utils/handlers/SpecialType";
+import StorageController from "../../api/StorageController";
 
 class ChatsState {
     chats = [];
@@ -10,90 +13,66 @@ class ChatsState {
     draft = null;
     connected = false;
     messageQueueId = 1;
-    isChatsLoaded = false;
-    countLoadedChats = 0;
+    numberOfLoadedDirects = 0;
+    numberOfLoadedGroups = 0;
+    isHasMoreDirects = true;
+    isHasMoreGroups = true;
     isBusy = false;
 
     constructor() {
         makeAutoObservable(this);
     }
 
-    IsDraftWithTargetUser = (id) => {
-        return this.draft && this.draft.id && id === ChatsState.draft.id;
-    }
+    increaseNumberOfLoadedDirects = (value) => {
+        this.numberOfLoadedDirects += value;
+    };
 
-    SetChats = (chatsValue) => {
-        chatsValue = JSON.parse(chatsValue);
+    increaseNumberOfLoadedGroups = (value) => {
+        this.numberOfLoadedGroups += value;
+    };
 
-        const isDirectsConnected = chatsValue.directs.length === 0;
-        const isGroupsConnected = chatsValue.groups.length === 0;
+    IsDraftWithTargetUser = (chat) => {
+        const accountId = chat.ownerId === AccountState.account.id ? chat.accountId : chat.ownerId;
+        return this.draft && this.draft.id === accountId;
+    };
 
-        this.connected = isDirectsConnected && isGroupsConnected;
-        this.countLoadedChats++;
+    setHasMoreDirects = (state) => {
+        this.isHasMoreDirects = !!state;
+    };
 
-        if (chatsValue.directs.length >= 0) {
-            this.chats = [...chatsValue.directs
-                .map(element => {
-                    if (element.model && element.messageModel && element.userPublic) {
-                        const chat = ChatHandler.AdaptDirect(element.model, element.messageModel, element.userPublic);
+    setHasMoreGroups = (state) => {
+        this.isHasMoreGroups = !!state;
+    };
 
-                        if (this.users.map(u => u.id).includes(element.userPublic.id) === false) {
-                            this.users = [element.userPublic, ...this.users];
-                        }
+    addChat = (chat) => {
+        if (!chat.messages || chat.messages.length === 0) {
+            const message = {
+                id: GlobalContext.NewGuid(),
+                specialType: SpecialTypes.Alert,
+                date: chat.date,
+                text: 'Chat has been created'
+            };
 
-                        return chat;
-                    }
+            chat.messages = [message];
+        };
 
-                    return null;
-                })
-                .filter(e => e), ...this.chats];
-        }
+        chat.isHasMore = true;
 
-        if (chatsValue.groups.length >= 0) {
-            this.chats = [...chatsValue.groups
-                .map(element => {
-                    if (element.model) {
-                        const chat = ChatHandler.AdaptGroup(element.model, element.messageModel);
-
-                        for (let index in element.model.members) {
-                            if (!element.model.members[index]) {
-                                continue;
-                            }
-
-                            if (this.users.map(u => u.id).includes(element.model.members[index].id) === false) {
-                                this.users = [element.model.members[index], ...this.users];
-                            }
-                        }
-
-                        return chat;
-                    }
-                })
-                .filter(e => e), ...this.chats];
-        }
-
-        const uniqueIds = new Set();
-
-        this.chats = this.chats.filter(chat => {
-            if (uniqueIds.has(chat.id)) {
-                return false;
-            }
-            uniqueIds.add(chat.id);
-            return true; 
-        });
-    }
-
-    addGroup = (group, message = null) => {
-        // this.chats = [...this.chats, ChatTypes.group.adapt(groupModel, messageModel)];
-    }
-
-    setChatsLoadedState = (state) => {
-        this.isChatsLoaded = state;
-    }
+        this.chats = [...this.chats, chat]
+            .sort((a, b) => SortingHandler.CompareTwoDates(a.date, b.date, true));
+    };
 
     AddChatInQueue = (chat, type) => {
         chat.type = type;
         this.chats = [chat, ...this.chats];
-    }
+    };
+
+    GetChatById = (id) => {
+        const result = this.chats
+            .find(chat => chat.id === id);
+
+        return result;
+    };
 
     setDraft = (account) => {
         if (!account|| !AccountState.account || !AccountState.account.id) {
@@ -106,14 +85,16 @@ class ChatsState {
         
         if (isChatExist === true || isSelftMessage === true) {
             return false;
-        }
+        };
 
         account.type = ChatTypes.draft;
         account.messages = [];
+        account.avatar = StorageController.getFullFileURL(account.avatar);
 
         this.draft = account;
+        
         return true;
-    }
+    };
     
     SetConnectedState = (state) => {
         this.connected = state;
@@ -121,21 +102,12 @@ class ChatsState {
         if (state === false) {
             this.chats = [];
         }
-    }
+    };
 
-    UpdateDirectAccessState = (id, state) => {
-        if (state === false) {
-            this.chats = this.chats.filter(element => {
-                return !(element.directId && element.directId === id);
-            });
-        } else {
-            this.chats.map(element => {
-                if (element.directId && element.directId === id) {
-                    element.isAccepted = true;
-                }
-            });
-        }
-    }
+    AcceptDirect = (id) => {
+        let chat = this.GetChatById(id);
+        chat.isAccepted = true;
+    };
 
     SetLoadingMessage = (chat, text, attachments) => {
         const queueId = this.messageQueueId;
@@ -146,9 +118,10 @@ class ChatsState {
 
         const messageValue = {
             date: new Date(),
-            id: GlobalContext.NewGuid(),
+            id: undefined,
             text: text,
-            userId: AccountState.account.id,
+            sender: AccountState.account,
+            accountId: AccountState.account.id,
             attachments: attachments,
             queueId: queueId,
             isViewed: false
@@ -158,47 +131,31 @@ class ChatsState {
         chat.messages = [...chat.messages, messageValue];
 
         return queueId;
-    }
+    };
 
-    AddMessage(chat, message, queueId) {
-        // this.messageQueueId++;
+    AddMessage = (transferModel, queueId) => {
+        let chat = this.GetChatById(transferModel.id);
 
-        // if (chat.type)
-
-        // return this.messageQueueId;
-    }
-
-    GetMessages = async (chatId) => {
-        if (this.isBusy === true) {
+        if (!chat) {
+            this.chats = [...this.chats, transferModel];
             return;
-        }
+        };
 
-        const chat = ChatHandler.GetChat(chatId);
+        chat.messages = chat.messages
+            .filter(m => m.queueId !== queueId);
 
-        // if (chat && chat.hasMore === true && chat.messages) {
-        //     this.isBusy = true;
+        this.addUniqueMessages(transferModel, false);
+    };
 
-        //     await instance
-        //         .get(`/api/${chat.type}s?destination=${chatId}&from=${chat.messages.length}&count=${20}`)
-        //         .then(response => {
-        //             if (!response || !response.data) {
-        //                 return;
-        //             } 
-
-        //             if (response.data.length === 0) {
-        //                 chat.hasMore = false;
-        //             }
-
-        //             if (response.data.map && response.data.length > 0) {                    
-        //                 response.data.map(element => {
-        //                     chat.messages = [element, ...chat.messages];
-        //                 });
-        //             }
-
-        //             this.isBusy = false;
-        //         });
-        // }
-    }
+    addUniqueMessages = async (chat, isSetHasMore = true) => {
+        let target = this.GetChatById(chat.id);
+    
+        let existingMessageIds = new Set(target.messages.map(message => message.id));
+        let newMessages = chat.messages.filter(message => !existingMessageIds.has(message.id));
+    
+        target.isHasMore = isSetHasMore ? newMessages.length >= 5 : target.isHasMore;
+        target.messages = [...newMessages, ...target.messages].sort((a, b) => SortingHandler.CompareTwoDates(a.date, b.date, false));
+    };   
 
     ViewMessage = (id, chatId) => {
         const chat = ChatHandler.GetChat(chatId);
@@ -207,27 +164,17 @@ class ChatsState {
             let message = chat.messages.find(element => element.id === id);
             if (message) message.isViewed = true;
         }
-    }
+    };
 
     SetDraftMessage = (message) => {
         if (this.draft && this.draft.id) {        
             this.draft.messages = [message];
         }
-    }
+    };
 
-    DeleteChat = (id, user) => {
-        if (user === AccountState.user.id) {
-            this.chats = this.chats
-                .filter(element => element.directId !== id && element.id !== id);
-        } else {
-            const chat = ChatHandler.GetChat(id);
-
-            if (chat && chat.members) {
-                chat.members = chat.members
-                    .filter(u => u.id !== user && u.Id !== user);
-            }
-        }
-    }
+    DeleteChat = (id) => {
+        this.chats = this.chats.filter(x => x.id !== id);
+    };
 
     DeleteMessage = (messageId, chatId) => {
         const chat = this.chats
@@ -237,7 +184,7 @@ class ChatsState {
             chat.messages = chat.messages
                 .filter(element => element.id !== messageId);
         }
-    }
+    };
 
     addGroupMember = (id, user) => {
         const chat = ChatHandler.GetChat(id);
@@ -245,7 +192,7 @@ class ChatsState {
         if (chat && chat.members) {
             chat.members = [...chat.members, user];
         }
-    }
+    };
 
     removeGroupMember = (id, userId) => {
         const chat = ChatHandler.GetChat(id);
@@ -254,7 +201,7 @@ class ChatsState {
             chat.members = chat.members
                 .filter(e => e.id !== userId && e.Id !== userId);
         }
-    }
-}
+    };
+};
 
 export default new ChatsState();

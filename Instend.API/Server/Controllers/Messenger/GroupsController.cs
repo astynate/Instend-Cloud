@@ -8,7 +8,6 @@ using Instend.Services.External.FileService;
 using Microsoft.AspNetCore.Authorization;
 using Instend.Core.Dependencies.Services.Internal.Helpers;
 using Instend.Core.Models.Messenger.Group;
-using Instend.Core.Models.Messenger.Message;
 
 namespace Instend_Version_2._0._0.Server.Controllers.Messenger
 {
@@ -42,6 +41,22 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
             _serialyzer = serialyzer;
         }
 
+        [HttpGet]
+        [Route("/api/groups/all")]
+        [Authorize]
+        public async Task<ActionResult<Group>> GetGroups(int skip, int take)
+        {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+                return BadRequest(userId.Error);
+
+            var result = await _groupsRepository
+                .GetAccountGroups(Guid.Parse(userId.Value), skip, take);
+
+            return Ok(_serialyzer.SerializeWithCamelCase(result));
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<ActionResult<Group>> CreateGroup([FromForm] string name, [FromForm] IFormFile avatar, [FromForm] string connectionId)
@@ -55,25 +70,25 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
             {
                 await avatar.CopyToAsync(stream);
 
+                var nameSplited = avatar.FileName.Split(".");
+                var type = nameSplited.LastOrDefault();
+
                 var result = await _groupsRepository
-                    .Create(name, stream.ToArray(), Guid.Parse(userId.Value));
+                    .Create(name, stream.ToArray(), type ?? "", Guid.Parse(userId.Value));
 
                 if (result.IsFailure)
                     return Conflict(result.Error);
 
-                result.Value.Avatar = _imageService
-                    .CompressImage(stream.ToArray(), 5, "png");
-
                 await _messageHub.Groups
                     .AddToGroupAsync(connectionId, result.Value.Id.ToString());
 
-                return Ok(JsonConvert.SerializeObject(result.Value));
+                return Ok(_serialyzer.SerializeWithCamelCase(result.Value));
             }
         }
 
         [HttpPost]
         [Route("members")]
-        [Microsoft.AspNetCore.Authorization.Authorize]
+        [Authorize]
         public async Task<ActionResult> LeaveGroup([FromForm] Guid id, [FromForm] Guid[] users)
         {
             //var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
@@ -114,7 +129,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
         [HttpGet]
         [Authorize]
         [Route("/api/groups")]
-        public async Task<IActionResult> GetLastMessages(Guid destination, int from, int count)
+        public async Task<IActionResult> GetLastMessages(Guid id, DateTime date, int take = 5)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
@@ -122,9 +137,31 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
                 return BadRequest(userId.Error);
 
             var messages = await _groupsRepository
-                .GetByIdAsync(destination, Guid.Parse(userId.Value), from, count);
+                .GetByIdAsync(id, Guid.Parse(userId.Value), date, take);
+
+            if (messages == null)
+                return Conflict("Group not found");
 
             return Ok(_serialyzer.SerializeWithCamelCase(messages));
+        }
+
+        [HttpDelete]
+        [Authorize]
+        [Route("/api/groups")]
+        public async Task<IActionResult> DeleteGroup(Guid id)
+        {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+                return BadRequest(userId.Error);
+
+            var result = await _groupsRepository
+                .DeleteGroupAsync(id, Guid.Parse(userId.Value));
+
+            if (result.IsFailure)
+                return Conflict("Group not found");
+
+            return Ok();
         }
     }
 }

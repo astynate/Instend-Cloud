@@ -1,12 +1,30 @@
-.chat {
+.wrapper {
+    margin-top: var(--margins);
     height: calc(100vh - var(--disconnected-height) - var(--margins) * 2);
     width: auto;
+    display: flex;
+    margin-top: var(--margins);
+    margin-right: var(--margins);
+    grid-gap: var(--margins);
+}
+
+.chat {
+    height: 100%;
+    width: 100%;
     overflow: hidden;
     position: relative;
     display: flex;
     flex-direction: column;
-    margin: var(--margins);
     margin-left: 0;
+    border-radius: var(--main-border-radius);
+    background: var(--background-accent-color);
+}
+
+.rightPanel {
+    height: 100%;
+    width: 550px;
+    overflow-y: scroll;
+    overflow-x: hidden;
     border-radius: var(--main-border-radius);
     background: var(--background-accent-color);
 }
@@ -29,8 +47,8 @@
 }
 
 .buttonImage {
-    height: 20px;
-    width: 20px;
+    height: 18px;
+    width: 18px;
     filter: var(--main-filter);
     cursor: pointer;
 }

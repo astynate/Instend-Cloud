@@ -1,107 +1,94 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { observer } from "mobx-react-lite";
+import { useParams } from 'react-router-dom';
+import { GetMessageDateIfItNessecery, GetMessagePosition } from '../../../pages/messages/widgets/chat/helpers/MessageActions';
 import styles from './main.module.css';
+import ChatsState from '../../../../../state/entities/ChatsState';
+import Message from '../../../pages/messages/shared/message/Message';
+import AccountState from '../../../../../state/entities/AccountState';
 
 const MessageList = observer(({chat, scroll}) => {
     const wrapper = useRef();
-    // const scrollRef = useRef();
-    // const [isHasMore, setHaseMoreState] = useState(true);
+    const scrollRef = useRef();
+    const [isHasMore, setHaseMoreState] = useState(true);
+
+    const { GetMessages } = ChatsState;
+    const { account } = AccountState;
     
-    // let params = useParams();
+    let params = useParams();
 
-    // const HandleScroll = async () => {
-    //     if (scrollRef && scrollRef.current && isHasMore === true) {
-    //         const offsetTop = scrollRef.current.getBoundingClientRect().top;
+    const HandleScroll = async () => {
+        if (scrollRef && scrollRef.current && isHasMore === true) {
+            const offsetTop = scrollRef.current.getBoundingClientRect().top;
 
-    //         if (offsetTop > 0 && chat.hasMore === true) {
-    //             const timeoutMilliseconds = 7000;
-    //             const getMessagesPromise = chatsState.GetMessages(params.id);
+            if (offsetTop > 0 && chat.hasMore === true) {
+                const timeoutMilliseconds = 7000;
+                const getMessagesPromise = GetMessages(params.id);
 
-    //             let operationCompleted = false;
+                let operationCompleted = false;
     
-    //             const timeoutId = setTimeout(() => {
-    //                 operationCompleted = true;
-    //                 return;
-    //             }, timeoutMilliseconds);
+                const timeoutId = setTimeout(() => {
+                    operationCompleted = true;
+                    return;
+                }, timeoutMilliseconds);
         
-    //             try {
-    //                 await getMessagesPromise;
-    //                 clearTimeout(timeoutId);
-    //                 operationCompleted = true;
-    //             } catch (error) {
-    //                 console.error('Error fetching messages:', error);
-    //             }
+                try {
+                    await getMessagesPromise;
+                    clearTimeout(timeoutId);
+                    operationCompleted = true;
+                } catch (error) {
+                    console.error('Error fetching messages:', error);
+                }
         
-    //             if (operationCompleted) {
-    //                 setHaseMoreState(true);
-    //             } else {
-    //                 console.warn('GetMessages operation did not complete within 7 seconds');
-    //             }
-    //         }
-    //     }
-    // };
+                if (operationCompleted) {
+                    setHaseMoreState(true);
+                } else {
+                    console.warn('GetMessages operation did not complete within 7 seconds');
+                }
+            }
+        }
+    };
 
-    // useEffect(() => {
-    //     if (scroll && scroll.current) {
-    //         scroll.current.addEventListener('scroll', HandleScroll);
-    //     }
+    useEffect(() => {
+        if (scroll && scroll.current) {
+            scroll.current.addEventListener('scroll', HandleScroll);
+        }
     
-    //     return () => {
-    //         if (scroll && scroll.current) {
-    //             scroll.current.removeEventListener('scroll', HandleScroll);
-    //         }
-    //     };
-    // }, []);
+        return () => {
+            if (scroll && scroll.current) {
+                scroll.current.removeEventListener('scroll', HandleScroll);
+            }
+        };
+    }, []);
 
-    // useEffect(() => {
-    //     HandleScroll();
-    // }, [params.id, chat?.messages]);
+    useEffect(() => {
+        HandleScroll();
+    }, [params.id, chat?.messages]);
 
     return (
         <div className={styles.messages} ref={wrapper}>
+            <div ref={scrollRef}></div>
+            {chat.messages && chat.messages
+                .map((message, index) => {
+                    const position = GetMessagePosition(message, chat, index);
+                    const date = GetMessageDateIfItNessecery(message, chat, index);
+                    const isCurrentAccountMessage = message.accountId === account.id;
+
+                    return (
+                        <div key={message.id ?? index} data={message.id}>
+                            {date && <div className={styles.date}>
+                                <span>{date}</span>
+                            </div>}
+                            <Message
+                                position={position}
+                                message={message} 
+                                isCurrentAccountMessage={isCurrentAccountMessage}
+                            /> 
+                        </div>
+                    );
+                })}
         </div>
     );
-    //         {chat && chat.messages && <SelectBox
-    //             selectPlace={[wrapper]}
-    //             selectedItems={[selectedItems, setSelectedItems]}
-    //             activeItems={[activeItems, setActiveItems]}
-    //             itemsWrapper={wrapper}
-    //             items={chat.messages}
-    //             single={isMyMessage ? senderSingleContext : receiverSingleContext}
-    //             multiple={isMyMessage ? senderMultipleContext : receiverMultipleContext}
-    //         />} 
-    //         <div ref={scrollRef}></div>
-    //         {chat.messages && chat.messages.map((element, index) => {
-    //             const avatar = ChatHandler.GetMessageUser(element).avatar;
-    //             const position = GetMessagePosition(element, chat, index);
-    //             const date = GetMessageDateIfItNessecery(element, chat, index);
-    //             const sendingType = element.queueId ? 0 : element.isViewed || element.isViewed ? 2 : 1;
-    //             const key = sendingType === 0 ? index : element.Id;
-
-    //             return (
-    //                 <div key={key ?? index} data={element.id}>
-    //                     {date && <div className={styles.date}>
-    //                         <span>{date}</span>
-    //                     </div>}
-    //                     <Message
-    //                         id={element.id ?? index}
-    //                         name={null}
-    //                         text={element.text}
-    //                         chatId={chat.directId ? chat.directId : params.id}
-    //                         avatar={avatar}
-    //                         key={key + element.isViewed}
-    //                         type={element.userId === userState.user.id ? 'My' : 'Other'}
-    //                         position={position}
-    //                         time={element.date}
-    //                         attachments={element.attachments}
-    //                         message={element}
-    //                         isSelected={false}
-    //                         specialType={element.specialType ?? SpecialTypes.None}
-    //                         sendingType={element.queueId ? 0 : element.isViewed || element.isViewed ? 2 : 1}
-    //                     /> 
-    //                 </div>
-    //             );
-    //         })}
 });
 
 export default MessageList;

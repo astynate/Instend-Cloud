@@ -7,6 +7,8 @@ using Instend.Repositories.Contexts;
 using Instend.Core.Models.Messenger.Group;
 using Instend.Core.Models.Messenger.Message;
 using Instend.Core.Models.Abstraction;
+using Instend.Core;
+using Instend.Core.Models.Messenger.Direct;
 
 namespace Instend.Repositories.Messenger
 {
@@ -38,9 +40,9 @@ namespace Instend.Repositories.Messenger
             _messengerRepository = messengerRepository;
         }
 
-        public async Task<Result<Group>> Create(string name, byte[] avatar, Guid ownerId)
+        public async Task<Result<Group>> Create(string name, byte[] avatar, string type, Guid ownerId)
         {
-            var result = Group.Create(name, ownerId);
+            var result = Group.Create(name, type);
             var account = await _accountRespository.GetByIdAsync(ownerId);
 
             if (account == null)
@@ -49,7 +51,14 @@ namespace Instend.Repositories.Messenger
             if (result.IsFailure)
                 return result;
 
-            result.Value.Members.Add(account);
+            var owner = new GroupMember
+            (
+                Configuration.GroupRoles.Owner, 
+                result.Value.Id, 
+                ownerId
+            );
+
+            result.Value.Members.Add(owner);
 
             await _context.AddAsync(result.Value);
             await _context.SaveChangesAsync();
@@ -58,35 +67,45 @@ namespace Instend.Repositories.Messenger
             return result;
         }
 
-        public async Task<List<GroupMember>> GetUserGroups(Guid userId, int count)
+        public async Task<List<Group>> GetAccountGroups(Guid accountId, int skip, int take)
         {
             var groups = await _context.GroupMembers
-                .Where(x => x.AccountId == userId)
+                .Where(x => x.AccountId == accountId)
+                .Skip(skip)
+                .Take(take)
                 .Include(x => x.Group)
-                .Skip(count)
-                .Take(1)
+                    .ThenInclude(g => g.Messages
+                        .Where(m => m.Date < DateTime.Now)
+                        .OrderByDescending(m => m.Date)
+                        .Take(1))
+                        .ThenInclude(x => x.Sender)
+                    .Select(x => x.Group)
                 .ToListAsync();
 
             return groups;
         }
 
-        public async Task<Group?> GetGroup(Guid id, Guid userId, int from, int count)
+        public async Task<Group?> GetByIdAsync(Guid id, Guid userId, DateTime date, int countMessages)
         {
             var members = await _context.GroupMembers
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == id && x.AccountId == userId);
+                .FirstOrDefaultAsync(x => x.GroupId == id && x.AccountId == userId);
 
             if (members == null) 
                 return null;
 
             var result = await _context.Groups
                 .Where(x => x.Id == id)
+                .AsSplitQuery()
+                .Include(x => x.Members)
+                .Include(x => x.Messages
+                    .Where(x => x.Date < date)
+                    .OrderByDescending(x => x.Date)
+                    .Take(countMessages))
+                    .ThenInclude(x => x.Attachments)
+                .AsSplitQuery()
                 .Include(x => x.Messages)
                     .ThenInclude(x => x.Sender)
-                .Skip(from)
-                .Take(count)
-                .OrderByDescending(x => x.Date)
-                .Include(x => x.Members)
                 .FirstOrDefaultAsync();
 
             return result;
@@ -112,19 +131,14 @@ namespace Instend.Repositories.Messenger
 
             _context.GroupMembers.RemoveRange(members);
 
-            foreach (var user in membersToAdd)
-            {
-                await _context.GroupMembers.AddAsync(new GroupMember(id, user));
-            }
-
             await _context.SaveChangesAsync(); 
 
             return Result.Success((membersToAdd, membersToDelete));
         }
 
-        public async Task<Result<DatabaseModel>> SendMessage(Guid userId, Guid groupId, string text)
+        public async Task<Result<DatabaseModel>> SendMessage(Guid groupId, Guid userId, string text)
         {
-            var group = await GetGroup(groupId, userId, 0, 1);
+            var group = await GetByIdAsync(groupId, userId, DateTime.Now, 1);
 
             if (group == null)
                 return Result.Failure<DatabaseModel>("Group not found");
@@ -134,6 +148,9 @@ namespace Instend.Repositories.Messenger
             if (messageModel.IsFailure)
                 return Result.Failure<DatabaseModel>(messageModel.Error);
 
+            _context.Attach(group);
+            await _context.AddAsync(messageModel.Value);
+
             group.Messages.Add(messageModel.Value);
 
             await _context.SaveChangesAsync();
@@ -142,13 +159,32 @@ namespace Instend.Repositories.Messenger
         }
 
         public Task<List<Group>> GetAccountGroups(Guid id)
-        {
-            throw new NotImplementedException();
-        }
+            => GetAccountGroups(id, 0, int.MaxValue);
 
-        public Task<Group?> GetByIdAsync(Guid id, Guid userId, int from, int count)
+        public async Task<Result> DeleteGroupAsync(Guid id, Guid accountId)
         {
-            throw new NotImplementedException();
+            var group = await _context.Groups
+                .Where(x => x.Id == id)
+                .Include(x => x.Members)
+                .Include(x => x.Messages)
+                    .ThenInclude(x => x.Attachments)
+                .FirstOrDefaultAsync();
+
+            if (group == null)
+                return Result.Failure("Group not found");
+
+            if (group.Members.Where(x => x.AccountId == accountId).Any() == false)
+                return Result.Failure("You hav not permissions to perform this operation");
+            
+            var attachments = group.Messages.SelectMany(x => x.Attachments);
+
+            _context.RemoveRange(attachments);
+            _context.RemoveRange(group.Messages);;
+            _context.Groups.Remove(group);
+
+            await _context.SaveChangesAsync();
+
+            return Result.Success();
         }
     }
 }

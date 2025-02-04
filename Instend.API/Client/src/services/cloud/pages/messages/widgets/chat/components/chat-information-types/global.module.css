@@ -1,0 +1,44 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 10px;
+}
+
+.avatar img {
+    height: 70px;
+    width: 70px;
+    border-radius: 100%;
+}
+
+.header {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    display: flex;
+    background: var(--main-accent-color);
+}
+
+.chatName {
+    font-size: 16px;
+    color: var(--main-font-color);
+}
+
+.chatSubTitle {
+    font-size: 16px;
+    color: var(--main-font-color);
+    opacity: 0.7;
+}
+
+.chatInformation {
+    display: flex;
+    flex-direction: column;
+    padding-left: 15px;
+    justify-content: center;
+}
+
+.items {
+    height: 100%;
+    width: 100%;
+    background: var(--main-accent-color);
+}

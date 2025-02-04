@@ -11,17 +11,14 @@ namespace Instend.Core.Models.Messenger.Group
         [Column("avatar_path")] public string AvatarPath { get; private set; } = string.Empty;
         [Column("date")] public DateTime Date { get; private set; } = DateTime.Now;
         [Column("number_of_participants")] public int NumberOfParticipants { get; private set; } = 1;
-        [Column("owner_id")] public Guid OwnerId { get; private set; }
-
-        [NotMapped] public byte[] Avatar { get; set; } = [];
         [NotMapped] public string Type { get; set; } = "group";
 
-        public List<Account.Account> Members { get; set; } = [];
+        public List<GroupMember> Members { get; set; } = [];
         public List<Message.Message> Messages { get; set; } = [];
 
         private Group() { }
 
-        public static Result<Group> Create(string name, Guid ownerId)
+        public static Result<Group> Create(string name, string type)
         {
             if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
                 return Result.Failure<Group>("Invalid name");
@@ -30,14 +27,13 @@ namespace Instend.Core.Models.Messenger.Group
                 return Result.Failure<Group>("The name can contain a maximum of 30 letters.");
 
             var id = Guid.NewGuid();
-            var avatarPath = Configuration.GetAvailableDrivePath() + id.ToString();
+            var avatarPath = Configuration.GetAvailableDrivePath() + id.ToString() + "." + type;
 
             return new Group()
             {
                 Id = id,
                 Name = name,
-                AvatarPath = avatarPath,
-                OwnerId = ownerId
+                AvatarPath = avatarPath
             };
         }
     }

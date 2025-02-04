@@ -1,7 +1,7 @@
+import { SpecialTypes } from "./SpecialType";
 import ChatTypes from "../../services/cloud/pages/messages/widgets/chat/helpers/ChatTypes";
 import AccountState from "../../state/entities/AccountState";
 import ChatsState from "../../state/entities/ChatsState";
-import { SpecialTypes } from "./SpecialType";
 
 class ChatHandler {
     static GetMessageUser = (message) => {
@@ -21,18 +21,22 @@ class ChatHandler {
         }
 
         return user;
-    }
+    };
+
+    static GetChatInformationHeader = () => {
+        
+    };
 
     static GetChatId = (chat) => {
         return chat.directId ? chat.directId : chat.id;
-    }
+    };
 
     static GetChat(id) {
         if (!id) return null;
 
         return ChatsState.chats
             .find(x => x && (x.directId === id || x.id === id || x.Id === id));
-    }
+    };
 
     static GetChatHandlerByType = (chat) => {
         let result = ChatTypes.notSelect;
@@ -50,7 +54,7 @@ class ChatHandler {
         }
 
         return result;
-    }
+    };
 
     static GetChatType = (params) => {
         const regex = /#.*?-/g;
@@ -66,7 +70,7 @@ class ChatHandler {
         }
 
         return result;
-    }
+    };
 
     static AdaptDirect = (directModel, messageModel, userPublic) => {
         const chat = {
@@ -82,7 +86,7 @@ class ChatHandler {
         }
 
         return chat;
-    }
+    };
 
     static AdaptGroup = (groupModel, messageModel) => {
         if (!messageModel) {
@@ -105,7 +109,7 @@ class ChatHandler {
         }
 
         return chat;
-    }
-}
+    };
+};
 
 export default ChatHandler;

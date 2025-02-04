@@ -1,6 +1,5 @@
 ﻿using Instend.Core.Dependencies.Services.Internal.Helpers;
 using Instend.Core.Models.Abstraction;
-using Instend.Core.Models.Storage.Collection;
 using Instend.Repositories.Gallery;
 using Instend.Repositories.Messenger;
 using Instend.Repositories.Storage;
@@ -84,20 +83,17 @@ namespace Instend_Version_2._0._0.Server.Hubs
         public async Task JoinToCollections(string authorization)
             => await JoinToEntity(_collectionsRepository.GetCollectionsByAccountId, "JoinToCollectionsHandler", authorization);
 
-        public async Task ConnectToDirect(Guid id, string authorization)
+        public async Task ConnectToDirect(Guid id)
         {
-            var userId = Guid.Empty;
-
-            if (IsValidUserData(authorization, out userId) == false)
-                return;
-
-            var direct = await _directRepository.GetAsync(id, 0, 1);
+            var currentTime = DateTime.Now;
+            var delayedTime = currentTime.AddSeconds(5);
+            var direct = await _directRepository.GetAsync(id, delayedTime, 1);
 
             if (direct == null)
                 return;
 
             await Groups.AddToGroupAsync(Context.ConnectionId, direct.Id.ToString());
-            await Clients.Caller.SendAsync("ReceiveMessage", _serializator.SerializeWithCamelCase(direct));
+            await Clients.Caller.SendAsync("ReceiveMessage", _serializator.SerializeWithCamelCase(new { transferModel = direct }));
         }
 
         public async Task ConnectToGroup(Guid id, string authorization)
@@ -108,7 +104,7 @@ namespace Instend_Version_2._0._0.Server.Hubs
                 return;
 
             var group = await _groupsRepository
-                .GetByIdAsync(id, Guid.Parse(userId.Value), 0, 1);
+                .GetByIdAsync(id, Guid.Parse(userId.Value), DateTime.Now, 1);
 
             if (group == null) 
                 return;

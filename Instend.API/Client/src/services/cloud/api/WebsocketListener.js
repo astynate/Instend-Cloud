@@ -1,7 +1,7 @@
+import { globalWSContext } from "../layout/Layout";
 import GlobalContext from "../../../global/GlobalContext";
 import ChatsState from "../../../state/entities/ChatsState";
 import GalleryState from "../../../state/entities/GalleryState";
-import MusicState from "../../../state/entities/MusicState";
 import StorageState from "../../../state/entities/StorageState";
 import AccountState from "../../../state/entities/AccountState";
 
@@ -24,7 +24,6 @@ class WebsocketListener {
 
     static DeleteFileListener = (data) => {
         StorageState.DeleteFile(data);
-        // MusicState.DeleteSong(data);
     };
 
     static PinnedStateChangesListener = (data) => {
@@ -38,41 +37,35 @@ class WebsocketListener {
     };
 
     static UploadFileListener = ([file, queueId]) => {
-        console.log(file);
         StorageState.ReplaceLoadingFile(file, queueId);
-        // GalleryState.ReplaceLoadingPhoto(file, queueId, albumId);
     };
 
     static AddCommentListner = ({comment, user, albumId, queueId}) => {
         GalleryState.ReplaceLoadingComment({comment: comment, user: user}, queueId, albumId);
     };
 
-    static DirectAccessChangeListner = (data) => {
-        const { id, state } = JSON.parse(data);
-        ChatsState.UpdateDirectAccessState(id, state);
+    static AcceptDirect = (id) => {
+        ChatsState.AcceptDirect(id);
     };
 
     static GetChatsListner = (chats) => {
-        ChatsState.SetChats(chats);
+        ChatsState.addChat(chats);
         ChatsState.setChatsLoadedState(true);
     };
 
-    static ReceiveMessageListner = (data) => {
-        const { model, message, account, queueId } = JSON.parse(data);
+    static ReceiveMessageListner = (data, navigate) => {
+        const { transferModel, queueId } = JSON.parse(data);
 
-        if (model) {
-            ChatsState.AddMessage(
-                model, 
-                message, 
-                account, 
-                queueId
-            );
-        }
+        if (!transferModel) {
+            return false;
+        };
 
-        if (ChatsState.IsDraftWithTargetUser(account.id)) {
-            // navigate(`/messages/${account.id}`);
+        ChatsState.AddMessage(transferModel, queueId);
+
+        if (ChatsState.IsDraftWithTargetUser(transferModel)) {
+            navigate(`/messages/${transferModel.id}`);
             ChatsState.setDraft(null);
-        }
+        };
     };
 
     static ConnectToGroupListner = (id) => {
@@ -89,9 +82,16 @@ class WebsocketListener {
         ChatsState.DeleteChat(id, user);
     };
 
-    static DeleteDirectoryListner = (id) => ChatsState.DeleteChat(id, AccountState.user.id);
+    static NewConnectionListner = async (id) => {
+        if (!globalWSContext || !globalWSContext.connection) {
+            return false;
+        };
+
+        globalWSContext.connection.invoke('ConnectToDirect', id);
+    };
+
+    static DeleteDirectListner = (id) => ChatsState.DeleteChat(id);
     static ViewMessageListner = ({ id, chatId }) => ChatsState.ViewMessage(id, chatId);
-    static NewConnectionListner = async (id) => {};
     static UpdateOccupiedSpaceListner = (space) => AccountState.ChangeOccupiedSpace(space);
     static DeleteCommentListner = (id) => GalleryState.DeleteCommentById(id);
     static AddToAlbumListner = ([file, albumId]) => GalleryState.AddToAlbum(file, albumId);

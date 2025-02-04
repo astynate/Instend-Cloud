@@ -1,35 +1,22 @@
-import StorageController from '../../../../../../../../api/StorageController';
 import ChatAvatar from '../../../../elements/chat-avatar/ChatAvatar';
 import styles from './main.module.css';
+import info from './images/info.png';
 
 const ChatHeader = ({
         avatar, 
         title, 
-        subTitle, 
-        isChatInformation,
-        setChatInformation,
-        additionalContent=<></>, 
-        content=<></>
+        subTitle,
+        setRightPanelOpenState = () => {},
     }) => {
 
     return (
         <>
-            {/* <ChatInformation 
-                open={isChatInformation}
-                close={() => setChatInformation(false)}
-                name={title}
-                avatar={avatar}
-                subTitle={subTitle}
-                title={"Group information"}
-                additionalContent={additionalContent}
-                content={content}
-            /> */}
             <div className={styles.header}>
-            <div className={styles.left} onClick={() => setChatInformation(true)}>
+            <div className={styles.left}>
                     <div className={styles.avatar}>
                         {avatar ? 
                             <img 
-                                src={StorageController.getFullFileURL(avatar)}
+                                src={avatar}
                                 className={styles.avatarImage} 
                                 draggable="false"
                             />
@@ -42,11 +29,11 @@ const ChatHeader = ({
                     </div>
                 </div>
                 <div className={styles.right}>
-                    {/* <img src={info} 
+                    <img src={info} 
                         className={styles.buttonImage} 
                         draggable="false"
-                        // onClick={() => setOpenState(true)}
-                    /> */}
+                        onClick={() => setRightPanelOpenState(p => !p)}
+                    />
                 </div>
             </div>
         </>

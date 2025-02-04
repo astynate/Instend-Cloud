@@ -25,34 +25,33 @@ const WaitingForConnection = async () => {
         while (globalWSContext.connection.state === 'Connecting') {
             ApplicationState.SetConnectionState(1);
             await new Promise(resolve => setTimeout(resolve, 2000));
-        }
+        };
     
         if (globalWSContext.connection.state === 'Disconnected') {
             ApplicationState.SetConnectionState(2);
             
             await globalWSContext.connection.start();
             await WaitingForConnection();
-        }
+        };
     
         const token = localStorage.getItem('system_access_token');
     
         try {
-            // await globalWSContext.invoke('JoinToDirects', token);
-            // await globalWSContext.invoke('JoinToGroups', token);
-            // await globalWSContext.invoke('JoinToAlbums', token);
+            await globalWSContext.invoke('JoinToDirects', token);
+            await globalWSContext.invoke('JoinToGroups', token);
             await globalWSContext.invoke('JoinToCollections', token);
         } catch(error) {
             console.error(error);
     
             await new Promise(resolve => setTimeout(resolve, 5000));
             await WaitingForConnection();
-        }
+        };
     
         ApplicationState.SetConnectionState(0);
     } catch (error) {
         console.log(error);
-    }
-}
+    };
+};
 
 const Layout = observer(() => {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -77,13 +76,13 @@ const Layout = observer(() => {
     globalWSContext.useSignalREffect("AddComment", WebsocketListener.AddCommentListner);
     globalWSContext.useSignalREffect("DeleteComment", WebsocketListener.DeleteAlbumListner);
     globalWSContext.useSignalREffect("GetChats", WebsocketListener.GetChatsListner);
-    globalWSContext.useSignalREffect("ReceiveMessage", WebsocketListener.ReceiveMessageListner);
-    globalWSContext.useSignalREffect("NewConnection", WebsocketListener.NewConnectionListner);
-    globalWSContext.useSignalREffect("HandleAccessStateChange", WebsocketListener.DirectAccessChangeListner);
+    globalWSContext.useSignalREffect("ReceiveMessage", (data) => WebsocketListener.ReceiveMessageListner(data, navigate));
+    globalWSContext.useSignalREffect("NewDirectHandler", WebsocketListener.NewConnectionListner);
+    globalWSContext.useSignalREffect("AcceptDirect", WebsocketListener.AcceptDirect);
     globalWSContext.useSignalREffect("DeleteMessage", WebsocketListener.DeleteMessageListener);
     globalWSContext.useSignalREffect("HandlePinnedStateChanges", WebsocketListener.PinnedStateChangesListener);
     globalWSContext.useSignalREffect("ViewMessage", WebsocketListener.ViewMessageListner);
-    globalWSContext.useSignalREffect("DeleteDirectory", WebsocketListener.DeleteDirectoryListner);
+    globalWSContext.useSignalREffect("DeleteDirect", WebsocketListener.DeleteDirectListner);
     globalWSContext.useSignalREffect("ConnetToGroup", WebsocketListener.ConnectToGroupListner);
     globalWSContext.useSignalREffect("LeaveGroup", WebsocketListener.LeaveGroupListner);
 
@@ -99,11 +98,11 @@ const Layout = observer(() => {
                 AccountState.GetUserOnSuccessCallback,
                 AccountState.GetUserOnFailureCallback,
             );
-        }
+        };
 
         if (!!AccountState.account === false) {
             fetchAccount();
-        }
+        };
     }, [AccountState.account]);
 
     useLayoutEffect(() => {

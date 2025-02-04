@@ -8,12 +8,13 @@
 
 .inputWrapper {
     height: auto;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    /* padding-top: 3px;
+    padding-bottom: 3px; */
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-top: 1px solid var(--main-border-color);
     transition: 0.25s ease;
 }
 
@@ -21,17 +22,17 @@
     width: 100%;
     outline: none;
     border: none;
-    padding-left: 13px;
+    /* padding-left: 13px; */
     background: transparent;
     font-size: 15px;
     font-family: 'Open sans', sans-serif;
     color: var(--main-font-color);
-    background: var(--pop-up-accent-color);
+    /* background: var(--pop-up-accent-color); */
     resize: none;
     overflow-y: scroll;
     padding-top: 8px;
     padding-bottom: 13px;
-    border-radius: 20px;
+    /* border-radius: 20px; */
     max-height: 300px;
     transition: 0.25s ease;
     border: 1px solid transparent;

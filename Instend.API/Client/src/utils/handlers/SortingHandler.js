@@ -1,9 +1,9 @@
 class SortingHandler {
-    static CompareTwoDates = (a, b) => {
+    static CompareTwoDates = (a, b, isAscending = false) => {
         const dateA = new Date(a);
         const dateB = new Date(b);
         
-        return dateB - dateA;
+        return isAscending ? dateB - dateA : dateA - dateB;
     };
 };
 

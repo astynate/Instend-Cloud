@@ -7,7 +7,6 @@ using Instend.Core.Models.Messenger.Direct;
 using Instend.Core.Models.Messenger.Message;
 using System.Linq.Expressions;
 using Instend.Core.Models.Abstraction;
-using Instend.Core.Models.Account;
 
 namespace Instend.Repositories.Messenger
 {
@@ -15,27 +14,16 @@ namespace Instend.Repositories.Messenger
     {
         private readonly GlobalContext _context = null!;
 
-        private readonly IMessengerRepository _messengerRepository;
-
         private readonly IAccountsRepository _accountsRepository;
-
-        private static readonly Func<Direct, Guid, bool> IsUserInvitor = (Direct direct, Guid userId) => direct.OwnerId == userId;
-
-        private static readonly Func<Direct, Guid, bool> IsUserInvited = (Direct direct, Guid userId) => direct.AccountId == userId;
-
-        private static readonly Func<Direct, Guid, Guid, bool> IsFirstUserOwner = (Direct d, Guid o, Guid u) => IsUserInvitor(d, o) && IsUserInvited(d, u);
 
         public DirectRepository
         (
             GlobalContext context,
-            IAccountsRepository accountsRepository,
-            IMessengerRepository messengerRepository
-
+            IAccountsRepository accountsRepository
         )
         {
             _context = context;
             _accountsRepository = accountsRepository;
-            _messengerRepository = messengerRepository;
         }
 
         public async Task<Result<Direct>> CreateNewDirect(Guid accountId, Guid ownerId)
@@ -53,43 +41,46 @@ namespace Instend.Repositories.Messenger
             return direct;
         }
 
-        private async Task<List<Direct>> GetAsync(Expression<Func<Direct, bool>> function, int numberOfSkipedMessages, int countMessages)
+        private async Task<List<Direct>> GetAsync(Expression<Func<Direct, bool>> function, DateTime date, int countMessages, int skipDirects, int countDirects)
         {
             var result = await _context.Directs
                 .Where(function)
+                .Skip(skipDirects)
+                .Take(countDirects)
+                .Include(x => x.Account)
+                .Include(x => x.Owner)
+                .AsSplitQuery()
+                .Include(x => x.Messages
+                    .Where(x => x.Date < date)
+                    .OrderByDescending(x => x.Date)
+                    .Take(countMessages))
+                    .ThenInclude(x => x.Attachments)
+                .AsSplitQuery()
                 .Include(x => x.Messages)
                     .ThenInclude(x => x.Sender)
-                .OrderByDescending(x => x.Date)
-                .Skip(numberOfSkipedMessages)
-                .Take(countMessages)
-                .Take(1)
                 .ToListAsync();
 
             return result;
         }
 
         public async Task<List<Direct>> GetAccountDirectsAsync(Guid userId)
-            => await GetAsync((d) => d.AccountId == userId || d.OwnerId == userId, 0, 1);
+            => await GetAsync((d) => d.AccountId == userId || d.OwnerId == userId, DateTime.Now, 1, 0, int.MaxValue);
 
-        public async Task<Direct?> GetAsync(Guid id, int numberOfSkipedMessages, int countMessages)
+        public async Task<Direct?> GetAsync(Guid id, DateTime date, int countMessages)
         {
-            var result = await GetAsync
-            (
-                (d) => d.Id == id, 
-                numberOfSkipedMessages, 
-                countMessages
-            );
-
+            var result = await GetAsync((d) => d.Id == id, date, countMessages, 0, 1);
             return result.FirstOrDefault();
         }
 
-        public async Task<Direct?> GetByAccountIdsAsync(Guid userId, Guid ownerId, int numberOfSkipedMessages, int countMessages)
+        public async Task<Direct?> GetByAccountIdsAsync(Guid userId, Guid ownerId, DateTime date, int countMessages)
         {
             var result = await GetAsync
             (
                 (x) => (x.OwnerId == userId && x.AccountId == ownerId) || (x.OwnerId == ownerId && x.AccountId == userId),
-                numberOfSkipedMessages,
-                countMessages
+                date,
+                countMessages,
+                0,
+                1
             );
 
             return result.FirstOrDefault();
@@ -104,11 +95,14 @@ namespace Instend.Repositories.Messenger
                 .FirstOrDefaultAsync();
             
             if (direct == null)
-            {
                 return Result.Failure<Guid>("Direct not found");
-            }
 
+            var attachments = direct.Messages.SelectMany(x => x.Attachments);
+
+            _context.RemoveRange(attachments);
+            _context.RemoveRange(direct.Messages);
             _context.Remove(direct);
+
             await _context.SaveChangesAsync();
 
             return direct.Id;
@@ -116,17 +110,7 @@ namespace Instend.Repositories.Messenger
 
         public async Task<Result<DatabaseModel>> SendMessage(Guid id, Guid senderId, string text)
         {
-            var direct = await GetByAccountIdsAsync(senderId, id, 0, 1);
-
-            if (direct == null)
-            {
-                var result = await CreateNewDirect(id, senderId);
-
-                if (result.IsFailure)
-                    return Result.Failure<DatabaseModel>(result.Error);
-
-                direct = result.Value;
-            }
+            var direct = await GetAsync(id, DateTime.Now, 1);
 
             if (direct != null && direct.IsAccepted == false)
                 return Result.Failure<DatabaseModel>("Invite is not accepted");
@@ -135,13 +119,27 @@ namespace Instend.Repositories.Messenger
             {
                 using (var transaction = _context.Database.BeginTransaction())
                 {
-                    var message = Message.Create(text, id);
+                    if (direct == null)
+                    {
+                        var result = await CreateNewDirect(id, senderId);
+
+                        if (result.IsFailure)
+                            return Result.Failure<DatabaseModel>(result.Error);
+
+                        direct = result.Value;
+                    }
+
+                    _context.Attach(direct);
+
+                    var message = Message.Create(text, senderId);
 
                     if (message.IsFailure)
                         return Result.Failure<DatabaseModel>(message.Error);
 
-                    direct.Messages.Append(message.Value);
+                    await _context.Messages.AddAsync(message.Value);
+                    await _context.SaveChangesAsync();
 
+                    direct.Messages.Add(message.Value);
                     await _context.SaveChangesAsync();
 
                     transaction.Commit();
@@ -149,6 +147,20 @@ namespace Instend.Repositories.Messenger
                     return direct;
                 }
             });
+        }
+
+        public async Task<List<Direct>> GetAccountDirectsAsync(Guid userId, int skip, int take)
+        {
+            return await GetAsync((x) => x.OwnerId == userId || x.AccountId == userId, DateTime.Now, 1, skip, take);
+        }
+
+        public async Task<bool> AcceptDirect(Guid directId, Guid accountId)
+        {
+            var result = await _context.Directs
+                .Where(x => x.Id == directId && x.AccountId == accountId)
+                .ExecuteUpdateAsync(x => x.SetProperty(x => x.IsAccepted, true));
+
+            return result > 0;
         }
     }
 }

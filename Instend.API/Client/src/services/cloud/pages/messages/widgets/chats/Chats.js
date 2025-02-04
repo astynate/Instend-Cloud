@@ -2,15 +2,37 @@ import React, { useEffect, useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import create from './images/create.png';
 import styles from './main.module.css';
+import remove from './images/remove.png';
 import SearchInChat from '../../shared/search-in-chat/SearchInChat';
 import CreateGroup from '../../features/create-group/CreateGroup';
 import NewMessage from '../../features/new-message/NewMessage';
+import ChatsState from '../../../../../../state/entities/ChatsState';
+import DirectsController from '../../../../api/DirectsController';
+import ChatPreview from './features/chat-preview/ChatPreview';
+import ChatsHelper from './ChatsHelper';
+import SortingHandler from '../../../../../../utils/handlers/SortingHandler';
+import GroupsController from '../../../../api/GroupsController';
+import ContextMenu from '../../../../shared/context-menus/context-menu/ContextMenu';
 
 const Chats = observer(({isMobile, setOpenState = () => {}}) => {
     const [isCreateOpen, setCreateOpenState] = useState(false);
     const [isCreateDirect, setCreateDirectState] = useState(false);
     const [isCreateGroup, setCreateGroupState] = useState(false);
     const ref = useRef();
+
+    const { isHasMoreDirects, isHasMoreGroups, chats, numberOfLoadedDirects, numberOfLoadedGroups } = ChatsState;
+    
+    useEffect(() => {
+        if (isHasMoreDirects) {
+            DirectsController.GetAccountsDirects(numberOfLoadedDirects, 5);
+        };
+    }, [numberOfLoadedDirects]);
+
+    useEffect(() => {
+        if (isHasMoreGroups) {
+            GroupsController.GetGroups(numberOfLoadedGroups, 5);
+        };
+    }, [numberOfLoadedGroups]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -55,6 +77,35 @@ const Chats = observer(({isMobile, setOpenState = () => {}}) => {
                 open={isCreateDirect}
                 close={() => setCreateDirectState(false)}
             />
+            <div className={styles.chatsWrapper}>
+                {chats
+                    .slice()
+                    .sort((a, b) => SortingHandler.CompareTwoDates(a.data, b.data, true))
+                    .map((chat) => {
+                        const data = ChatsHelper.GetChatData(chat);
+                        const items = [
+                            { 
+                                title: 'Delete', 
+                                red: true, 
+                                image: remove, 
+                                callback: () => ChatsHelper.DeleteChat(chat)
+                            }
+                        ];
+
+                        return (
+                            <ContextMenu
+                                key={chat.id}
+                                items={items}
+                            >
+                                <ChatPreview 
+                                    avatar={data.avatar}
+                                    name={data.name}
+                                    chat={chat}
+                                />
+                            </ContextMenu>
+                        );
+                    })}
+            </div>
         </div>
     );
 });

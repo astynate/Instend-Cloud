@@ -15,6 +15,8 @@ namespace Instend.Core.Models.Messenger.Direct
         [NotMapped] public string Type { get; init; } = "direct";
 
         public List<Message.Message> Messages { get; init; } = [];
+        public Account.Account? Account { get; init; } = null;
+        public Account.Account? Owner { get; init; } = null;
 
         private Direct() { }
 

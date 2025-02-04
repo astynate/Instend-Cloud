@@ -93,6 +93,10 @@
     margin-right: 15px;
 }
 
+.chatsWrapper {
+    margin-top: 15px;
+}
+
 @media (max-width: 700px) {
     .header {
         padding-top: 0;

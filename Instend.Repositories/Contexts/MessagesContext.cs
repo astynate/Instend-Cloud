@@ -21,18 +21,6 @@ namespace Instend.Repositories.Contexts
         {
             base.OnModelCreating(modelBuilder);
 
-            //modelBuilder
-            //    .Entity<Message>()
-            //    .HasMany(m => m.Files)
-            //    .WithMany()
-            //    .UsingEntity<MessageFile>();
-
-            //modelBuilder
-            //    .Entity<Message>()
-            //    .HasMany(m => m.Folders)
-            //    .WithMany()
-            //    .UsingEntity<MessageCollection>();
-
             modelBuilder
                 .Entity<Message>()
                 .HasMany(m => m.Attachments)
@@ -52,6 +40,18 @@ namespace Instend.Repositories.Contexts
                 .UsingEntity<DirectMessage>();
 
             modelBuilder
+                .Entity<Direct>()
+                .HasOne(m => m.Account)
+                .WithMany()
+                .HasForeignKey(x => x.AccountId);
+
+            modelBuilder
+                .Entity<Direct>()
+                .HasOne(m => m.Owner)
+                .WithMany()
+                .HasForeignKey(x => x.OwnerId);
+
+            modelBuilder
                 .Entity<Group>()
                 .HasMany(m => m.Messages)
                 .WithMany()
@@ -60,8 +60,7 @@ namespace Instend.Repositories.Contexts
             modelBuilder
                 .Entity<Group>()
                 .HasMany(m => m.Members)
-                .WithMany()
-                .UsingEntity<GroupMember>();
+                .WithOne(gm => gm.Group);
         }
     }
 }

@@ -11,15 +11,16 @@
     backdrop-filter: var(--main-blur-effect);
     display: flex;
     flex-shrink: 0;
-    flex-direction: column;
     z-index: 1;
     user-select: none;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .avatar {
-    height: 37px;
-    width: 37px;
+    height: 40px;
+    width: 40px;
+    object-fit: cover;
     border-radius: 100%;
     overflow: hidden;
 }
@@ -27,12 +28,13 @@
 .avatarImage {
     height: 100%;
     width: 100%;
+    object-fit: cover;
     user-select: none;
 }
 
 .name {
     font-weight: 700;
-    font-size: 13px;
+    font-size: 14px;
     color: var(--main-font-color);
 }
 
@@ -56,4 +58,21 @@
 
 .right {
     display: flex;
+}
+
+.buttonImage {
+    height: 25px;
+    width: 25px;
+    cursor: pointer;
+    object-fit: contain;
+    opacity: 0.5;
+    filter: var(--main-filter);
+}
+
+.buttonImage:hover {
+    opacity: 0.8;
+}
+
+.buttonImage:active {
+    opacity: 1;
 }

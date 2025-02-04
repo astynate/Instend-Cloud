@@ -9,6 +9,10 @@ import MessageList from "../../../../../features/lists/message-list/MessageList"
 const Draft = observer(({operation, setDefaultOperation, scrollElement}) => {
     const { draft } = ChatsState;
 
+    if (!draft) {
+        return null;
+    };
+
     return (
         <>
             <ChatHeader
@@ -34,6 +38,7 @@ const Draft = observer(({operation, setDefaultOperation, scrollElement}) => {
                 operation={operation}
                 setDefaultOperation={setDefaultOperation}
                 chat={draft}
+                type={0}
             />
         </>
     );

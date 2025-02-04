@@ -118,7 +118,7 @@ namespace Instend.Core
             October,
             November,
             December
-        }
+        };
 
         public enum AccessTypes
         {
@@ -126,27 +126,33 @@ namespace Instend.Core
             InvitedUsers,
             SelectedChatsAndInvitedUsers,
             Public
-        }
+        };
 
         public enum CollectionTypes
         {
             Ordinary,
             System,
             Secret
-        }
+        };
 
         public enum EntityRoles
         {
             Reader,
             Writer,
             Owner
-        }
+        };
+
+        public enum GroupRoles
+        {
+            Owner,
+            Member
+        };
 
         public enum AlbumTypes
         {
             Album,
             Playlist
-        }
+        };
 
         public static SymmetricSecurityKey GetSecurityKey() => new(Encoding.UTF8.GetBytes(TestEncryptionKey));
     }

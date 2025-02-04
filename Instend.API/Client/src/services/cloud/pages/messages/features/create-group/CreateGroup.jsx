@@ -1,21 +1,19 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import styles from './main.module.css';
 import PopUpWindow from "../../../../shared/popup-windows/pop-up-window/PopUpWindow";
 import AvatarPicker from "../../../../shared/popup-windows/pop-up-window/elements/avatar-picker/AvatarPicker";
 import Input from "../../../../ui-kit/fields/input/Input";
 import MainButton from "../../../../ui-kit/buttons/main-button/Button";
-import MessangerController from "../../../../api/MessangerController";
+import GroupsController from "../../../../api/GroupsController";
 
 const CreateGroup = ({open, close}) => {
     const [name, setName] = useState('');
     const [avatar, setAvatar] = useState();
-    const navigate = useNavigate();
 
     useEffect(() => {
         setName('');
         setAvatar(null);
-    }, [open])
+    }, [open]);
 
     return (
         <PopUpWindow
@@ -41,7 +39,7 @@ const CreateGroup = ({open, close}) => {
                 <div className={styles.buttons}>
                     <MainButton
                         value={'Next'}
-                        callback={() => MessangerController.CreateGroup()}
+                        callback={() => GroupsController.CreateGroup(name, avatar, close)}
                     />
                 </div>
             </div>

@@ -6,8 +6,10 @@ namespace Instend.Repositories.Messenger
 {
     public interface IGroupsRepository : IChatBase
     {
-        Task<Result<Group>> Create(string name, byte[] avatar, Guid ownerId);
+        Task<Result<Group>> Create(string name, byte[] avatar, string type, Guid ownerId);
         Task<List<Group>> GetAccountGroups(Guid id);
-        Task<Group?> GetByIdAsync(Guid id, Guid userId, int from, int count);
+        Task<Result> DeleteGroupAsync(Guid id, Guid accountId);
+        Task<List<Group>> GetAccountGroups(Guid accountId, int skip, int take);
+        Task<Group?> GetByIdAsync(Guid id, Guid userId, DateTime date, int count);
     }
 }

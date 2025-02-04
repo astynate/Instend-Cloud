@@ -5,9 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Instend.Core.Dependencies.Services.Internal.Helpers;
 using Instend.Repositories.Messenger;
-using Instend.Core.TransferModels.Messenger;
 using Instend.Repositories.Contexts;
-using Microsoft.EntityFrameworkCore;
 
 namespace Instend_Version_2._0._0.Server.Controllers.Messenger
 {
@@ -42,8 +40,9 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
         }
 
         [HttpGet]
+        [Route("/api/[controller]/all")]
         [Authorize]
-        public async Task<IActionResult> GetLastMessages(Guid destination, int from, int count)
+        public async Task<IActionResult> GetDirects(int skip, int take)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
@@ -51,7 +50,48 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
                 return BadRequest(userId.Error);
 
             var direct = await _directRepository
-                .GetAsync(destination, from, count);
+                .GetAccountDirectsAsync(Guid.Parse(userId.Value), skip, take);
+
+            if (direct == null)
+                return Conflict("Direct not found");
+
+            return Ok(_serialyzer.SerializeWithCamelCase(direct));
+        }
+
+        [HttpPut]
+        [Route("/api/[controller]/accept")]
+        [Authorize]
+        public async Task<IActionResult> AcceptDirect(Guid id)
+        {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+                return BadRequest(userId.Error);
+
+            var direct = await _directRepository
+                .AcceptDirect(id, Guid.Parse(userId.Value));
+
+            if (direct == false)
+                return Conflict("Direct not found");
+
+            await _messageHub.Clients
+                .Group(id.ToString())
+                .SendAsync("AcceptDirect", id.ToString());
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetLastMessages(Guid id, DateTime date, int take = 5)
+        {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+                return BadRequest(userId.Error);
+
+            var direct = await _directRepository
+                .GetAsync(id, date, take);
 
             if (direct == null)
                 return Conflict("Direct not found");
@@ -79,7 +119,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
 
             await _messageHub.Clients
                 .Group(result.Value.ToString())
-                .SendAsync("DeleteDirectory", result.Value.ToString());
+                .SendAsync("DeleteDirect", result.Value.ToString());
         
             return Ok();
         }

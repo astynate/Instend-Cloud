@@ -9,7 +9,7 @@ namespace Instend.Core.Models.Messenger.Message
         [Column("message_id")]
         public Guid MessageId { get; private set; }
 
-        [Column("reaction_id")]
+        [Column("attachment_id")]
         public Guid AttachmentId { get; private set; }
     }
 }

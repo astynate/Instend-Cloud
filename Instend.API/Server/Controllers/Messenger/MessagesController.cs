@@ -65,7 +65,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
                 return BadRequest("Invalid type");
 
             var result = await _chatFactory[model.type]
-                .SendMessage(Guid.Parse(userId.Value), model.id, model.text);
+                .SendMessage(model.id, Guid.Parse(userId.Value), model.text);
 
             if (result.IsFailure)
                 return BadRequest(result.Error);
@@ -74,12 +74,12 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
             {
                 case Direct direct:
                 {
-                    await HandleDirectMessgeSend(direct); break;
+                    await HandleDirectMessgeSend(direct, model.queueId); break;
                 }
                 case Group group:
                 {
                     if (group != null)
-                        await NotifyAboutMessage(group, group.Id.ToString());
+                        await NotifyAboutMessage(group, group.Id.ToString(), model.queueId);
 
                     break;
                 }
@@ -88,21 +88,26 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
             return Ok();
         }
 
-        private async Task HandleDirectMessgeSend(Direct direct)
+        private async Task HandleDirectMessgeSend(Direct direct, int queueId)
         {
             if (direct.IsAccepted == false)
             {
-                await _messageHub.Clients.Group(direct.AccountId.ToString()).SendAsync("NewDirectHandler", direct.Id);
-                await _messageHub.Clients.Group(direct.OwnerId.ToString()).SendAsync("NewDirectHandler", direct.Id);
+                await _messageHub.Clients
+                    .Group(direct.AccountId.ToString())
+                    .SendAsync("NewDirectHandler", direct.Id);
+
+                await _messageHub.Clients
+                    .Group(direct.OwnerId.ToString())
+                    .SendAsync("NewDirectHandler", direct.Id);
 
                 return;
             }
 
-            await NotifyAboutMessage(direct, direct.Id.ToString());
+            await NotifyAboutMessage(direct, direct.Id.ToString(), queueId);
         }
 
-        private async Task NotifyAboutMessage(object transferModel, string id) 
-            => await _messageHub.Clients.Group(id).SendAsync("ReceiveMessage", _serializator.SerializeWithCamelCase(transferModel));
+        private async Task NotifyAboutMessage(object transferModel, string id, int queueId) 
+            => await _messageHub.Clients.Group(id).SendAsync("ReceiveMessage", _serializator.SerializeWithCamelCase(new { transferModel, queueId }));
 
         [HttpPost]
         [Authorize]

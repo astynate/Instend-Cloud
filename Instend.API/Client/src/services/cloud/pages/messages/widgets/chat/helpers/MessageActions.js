@@ -1,5 +1,5 @@
-import { instance } from "../../../../../../state/Interceptors";
-import { ConvertDate, IsDayDiffrent } from "../../../../../../utils/DateHandler";
+import { instance } from "../../../../../../../state/application/Interceptors";
+import { ConvertDate, IsDayDiffrent } from "../../../../../../../utils/handlers/DateHandler";
 import { globalWSContext } from "../../../../../layout/Layout";
 
 export const ChangeAccessStateAsync = async (id, isAccept) => {
@@ -32,7 +32,7 @@ export const CopyMessageText = (items) => {
         .catch(err => {
             console.log('Something went wrong', err);
         });
-}
+};
 
 export const DeleteMessages = async (items) => {
     if (items && items.length > 0) {
@@ -41,7 +41,7 @@ export const DeleteMessages = async (items) => {
                 .delete(`/api/message?id=${items[i].id}`);
         }
     }
-}
+};
 
 export const ChangePinnedState = async (items, id) => {
     if (items && items.length > 0) {
@@ -51,7 +51,7 @@ export const ChangePinnedState = async (items, id) => {
             }
         }
     }
-}
+};
 
 const IsDateExist = (elements) => {
     for (let index in elements) {
@@ -61,7 +61,7 @@ const IsDateExist = (elements) => {
     }
     
     return true;
-}
+};
 
 export const GetMessagePosition = (current, chat, index) => {
     let position = 3;
@@ -69,9 +69,9 @@ export const GetMessagePosition = (current, chat, index) => {
     const previous = chat.messages[index - 1];
     const next = chat.messages[index + 1];
 
-    const isMiddleMessage = previous && next && previous.userId === current.userId && next.userId === current.userId;
-    const isLastMessage = previous && previous.userId === current.userId;
-    const isFirstMessage = next && next.userId === current.userId;
+    const isMiddleMessage = previous && next && previous.accountId === current.accountId && next.accountId === current.accountId;
+    const isLastMessage = previous && previous.accountId === current.accountId;
+    const isFirstMessage = next && next.accountId === current.accountId;
 
     if (isMiddleMessage) {
         if (IsDateExist([next, current]) && IsDayDiffrent(next.date, current.date)) {
@@ -98,7 +98,7 @@ export const GetMessagePosition = (current, chat, index) => {
     }
 
     return position;
-}
+};
 
 export const GetMessageDateIfItNessecery = (current, chat, index) => {
     let date = null;
@@ -111,4 +111,4 @@ export const GetMessageDateIfItNessecery = (current, chat, index) => {
     }
 
     return date;
-}
+};

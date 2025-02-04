@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Instend.Core.Models.Abstraction;
+using Instend.Core.Models.Messenger.Group;
 
 namespace Instend.Core.Dependencies.Repositories.Messenger
 {
