@@ -29,6 +29,18 @@ namespace Instend.Repositories.Contexts
 
             modelBuilder
                 .Entity<Message>()
+                .HasMany(m => m.Files)
+                .WithMany()
+                .UsingEntity<MessageFile>();
+
+            modelBuilder
+                .Entity<Message>()
+                .HasMany(m => m.Collections)
+                .WithMany()
+                .UsingEntity<MessageCollection>();
+
+            modelBuilder
+                .Entity<Message>()
                 .HasOne(m => m.Sender)
                 .WithMany()
                 .HasForeignKey(x => x.AccountId);

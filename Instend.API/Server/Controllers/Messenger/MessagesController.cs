@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.SignalR;
 using Instend.Core.Dependencies.Services.Internal.Helpers;
 using Instend.Core.Models.Messenger.Direct;
 using Instend.Core.Models.Messenger.Group;
+using Instend.Services.External.FileService;
 
 namespace Instend_Version_2._0._0.Server.Controllers.Messenger
 {
@@ -51,7 +52,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> SendMessage([FromForm] MessageTransferModel model)
+        public async Task<IActionResult> SendMessage(IFileService fileService, IMessengerRepository messengerRepository, [FromForm] MessageTransferModel model, Guid senderId)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
@@ -65,7 +66,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
                 return BadRequest("Invalid type");
 
             var result = await _chatFactory[model.type]
-                .SendMessage(model.id, Guid.Parse(userId.Value), model.text);
+                .SendMessage(fileService, messengerRepository, model, Guid.Parse(userId.Value));
 
             if (result.IsFailure)
                 return BadRequest(result.Error);

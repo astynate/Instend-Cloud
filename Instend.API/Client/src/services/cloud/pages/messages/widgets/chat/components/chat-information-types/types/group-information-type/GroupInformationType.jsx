@@ -1,19 +1,20 @@
+import { useState } from 'react';
 import globalStyles from '../../global.module.css';
 import StorageController from '../../../../../../../../../../api/StorageController';
 import ChatContentLink from '../../../../features/chat-content-link/ChatContentLink';
 import account from '../../images/account.png';
-import { useState } from 'react';
+import ChatMembers from '../../windows/chat-members/ChatMembers';
 
 const GroupInformationType = ({chat}) => {
-    const [currectHandler, setCurrentHandler] = useState();
+    const [CurrectHandler, setCurrentHandler] = useState();
 
     if (!chat) {
         return null;
     };
 
-    if (currectHandler) {
+    if (CurrectHandler) {
         return (
-            <currectHandler 
+            <CurrectHandler 
                 chat={chat}
                 setCurrentHandler={setCurrentHandler}
             />
@@ -38,7 +39,7 @@ const GroupInformationType = ({chat}) => {
                 <ChatContentLink 
                     image={account} 
                     title={'Members'}
-                    action={() => setCurrentHandler()}
+                    action={() => setCurrentHandler(ChatMembers)}
                 />
             </div>
         </div>

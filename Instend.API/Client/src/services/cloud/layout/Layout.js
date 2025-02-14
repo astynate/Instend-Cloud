@@ -17,6 +17,7 @@ import './css/fonts.css';
 import './css/colors.css';
 import './css/main.css';
 import './css/animations.css';
+import ChatsState from '../../../state/entities/ChatsState';
 
 export const globalWSContext = createSignalRContext();
 
@@ -83,8 +84,9 @@ const Layout = observer(() => {
     globalWSContext.useSignalREffect("HandlePinnedStateChanges", WebsocketListener.PinnedStateChangesListener);
     globalWSContext.useSignalREffect("ViewMessage", WebsocketListener.ViewMessageListner);
     globalWSContext.useSignalREffect("DeleteDirect", WebsocketListener.DeleteDirectListner);
+    globalWSContext.useSignalREffect("AddMember", ChatsState.addGroupMember);
+    globalWSContext.useSignalREffect("RemoveMember", ChatsState.removeGroupMember);
     globalWSContext.useSignalREffect("ConnetToGroup", WebsocketListener.ConnectToGroupListner);
-    globalWSContext.useSignalREffect("LeaveGroup", WebsocketListener.LeaveGroupListner);
 
     useEffect(() => {
         WaitingForConnection()
@@ -108,7 +110,7 @@ const Layout = observer(() => {
     useLayoutEffect(() => {
         if (AccountState.isAuthorize === false && AccountState.isLoading === false) {
             navigate('/main');
-        }
+        };
     }, [AccountState.isAuthorize, AccountState.isLoading]);
     
     useEffect(() => {
@@ -123,7 +125,7 @@ const Layout = observer(() => {
             setErrorExistingState(true);
 
             ApplicationState.RemoveErrorFromQueue();
-        }
+        };
     }, [isErrorExist, ApplicationState.errorQueue, ApplicationState.errorQueue.length]);
 
     useEffect(() => {

@@ -1,44 +1,42 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { MessageOperations } from '../../widgets/chat/helpers/MessageOperations';
+import React, { useState, useEffect } from 'react';
 import styles from './main.module.css';
 import attach from './images/attach.png';
 import MainMessageButton from '../../elements/message-button/MainMessageButton';
 import PopUpList from '../../../../shared/popup-windows/pop-up-list/PopUpList';
 import MessangerController from '../../../../api/MessangerController';
+import InstendCloud from '../../../../integrations/instend-cloud/InstendCloud';
+import InputAttachments from './widgets/InputAttachments/InputAttachments';
+import send from './images/send.png';
 
 const Input = ({operation, chat, type = 0, callback = () => {}}) => {
     const [text, setText] = useState('');
     const [attachments, setAttachements] = useState([]);
     const [isCreatePopUpOpen, setCreatePopUpState] = useState(false);
     const [timer, setTimer] = useState(null);
+    const [collections, setCollections] = useState([]);
     const [isInstendCloud, setInstendCloudState] = useState(false);
     const [selectedFiles, setSelectedFiles] = useState([]);
-    const [selectedFolders, setSelectedFolders] = useState([]);
-    const [isLeftArrowOpen, setLeftArrowOpenState] = useState(false);
-    const [isRightArrowOpen, setRightArrowOpenState] = useState(false);
+    const [windowIndex, setWindowIndex] = useState(0);
     const textAreaRef = React.createRef();
-    const attachmentsAreaRef = useRef();
-
-    const SCROLL_SPEED = 200;
 
     const handleFileChange = (event) => {
         if (event.target.files.length > 0) {
-            setAttachements(Array.from(event.target.files).slice(0, 10));
-        }
+            setAttachements(Array.from(event.target.files).slice(0, 7));
+        };
     };
 
     const Open = () => {
         clearTimeout(timer);
         setCreatePopUpState(true);
-    }
+    };
 
     const Close = () => {
         setTimer(
             setTimeout(() => {
                 setCreatePopUpState(false);
-            }, 300)
+            }, 500)
         );
-    }
+    };
 
     useEffect(() => {
         textAreaRef.current.style.height = 'inherit';
@@ -54,81 +52,102 @@ const Input = ({operation, chat, type = 0, callback = () => {}}) => {
       if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault();
         sendMessageAsync();
-      }
+      };
     };
   
     const sendMessageAsync = async () => {
-        const selectedFilesValue = [...selectedFiles].map(e => e.id);
-        const selectedFoldersValue = [...selectedFolders].map(e => e.id);
-        const attachmentsValue = [...attachments];
-        const textValue = text;
-        const replyTo = operation === MessageOperations.Reply ? '' : '';
-
         if (!!text === false) {
             return 
-        }
+        };
 
-        await MessangerController.SendMessage(chat, text, type);
+        const previousText = text;
+        const previousAttachments = attachments;
+        const previousCollections = collections;
+        const previousFiles = selectedFiles;
 
         setText('');
         setAttachements([]);
         setSelectedFiles([]);
-        setSelectedFolders([]);
+        setCollections([]);
+
+        await MessangerController.SendMessage(
+            chat, 
+            previousText, 
+            type,
+            previousAttachments,
+            previousCollections,
+            previousFiles,
+        );
     };
 
-    const HandleAttechmentsScroll = () => {
-        const ref = attachmentsAreaRef.current;
+    const openInstendCloudSubSystem = (index) => {
+        setInstendCloudState(true);
+        setWindowIndex(index);
+    };
 
-        if (ref) {
-            const offset = ref.scrollLeft;
-            const isRightOpen = ref.scrollWidth > ref.clientWidth;
-            
-            setLeftArrowOpenState(offset > 30);
-            setRightArrowOpenState(isRightOpen);
-        }
-    }
+    const isHasAttachments = () => {
+        if (attachments.length > 0) {
+            return true;
+        };
 
-    const HandleNextButtonClick = (offset) => {
-        if (attachmentsAreaRef.current) {
-            attachmentsAreaRef.current.scrollLeft += offset;
-        }
-    }
+        if (selectedFiles.length > 0) {
+            return true;
+        };
 
-    useEffect(() => {
-        HandleAttechmentsScroll();
-    }, [selectedFiles.length, selectedFolders.length])
+        if (collections.length > 0) {
+            return true;
+        };
+
+        return false;
+    };
 
     return (
         <>
+            <InstendCloud 
+                isOpen={isInstendCloud}
+                close={() => setInstendCloudState(false)}
+                collections={collections}
+                files={selectedFiles}
+                setSelectedFiles={setSelectedFiles}
+                windowIndex={windowIndex}
+                setSelectedCollections={setCollections}
+            />
             <div className={styles.input}>
                 <div className={styles.wrapper}>
-                    <div className={styles.inputWrapper}>
-                        <div className={styles.button}>
-                            {isCreatePopUpOpen && 
-                                <div 
-                                    className={styles.popup} 
-                                    onMouseEnter={() => Open()}
-                                    onMouseLeave={() => Close()}
-                                >
-                                    <PopUpList 
-                                        items={[
-                                            { title: 'Collection' },
-                                            { title: 'Album' },
-                                            { title: 'Playlist' },
-                                            { title: 'Photo' },
-                                            { title: 'Music' },
-                                            { title: 'From device' },
-                                            { title: 'From cloud' }
-                                        ]}
-                                    />
-                                </div>}
-                            <MainMessageButton 
-                                image={attach}
+                    <div className={styles.button}>
+                        {isCreatePopUpOpen && 
+                            <div 
+                                className={styles.popup} 
                                 onMouseEnter={() => Open()}
                                 onMouseLeave={() => Close()}
-                                callback={() => document.getElementById('message-file-picker').click()}
-                            />
-                        </div>
+                            >
+                                <PopUpList 
+                                    items={[
+                                        { title: 'Photos', callback: () => openInstendCloudSubSystem(1) },
+                                        { title: 'Songs', callback: () => openInstendCloudSubSystem(2) },
+                                        { title: 'From device', callback: () => document.getElementById('message-file-picker').click() },
+                                        { title: 'From cloud', callback: () => openInstendCloudSubSystem(0) }
+                                    ]}
+                                />
+                            </div>}
+                        {isHasAttachments() === false && <MainMessageButton 
+                            image={attach}
+                            onMouseEnter={() => Open()}
+                            onMouseLeave={() => Close()}
+                            callback={() => document.getElementById('message-file-picker').click()}
+                        />}
+                    </div>
+                    <div className={styles.inputWrapper}>
+                        {isHasAttachments() && 
+                            <InputAttachments 
+                                files={selectedFiles}
+                                collections={collections}
+                                attachements={attachments}
+                                setAttachemnts={setAttachements}
+                                setSelectedFiles={setSelectedFiles}
+                                setCollections={setCollections}
+                                setInstendCloudState={() => setInstendCloudState(true)}
+                            />}
                         <textarea 
                             placeholder='Type a message' 
                             className={styles.input}
@@ -145,9 +164,14 @@ const Input = ({operation, chat, type = 0, callback = () => {}}) => {
                             id="message-file-picker" 
                             style={{ display: 'none' }} 
                             multiple 
-                            onChange={handleFileChange} 
+                            onInput={handleFileChange} 
                         />
                     </div>
+                    {!!text === true && <MainMessageButton 
+                        image={send}
+                        isInverted={false}
+                        callback={sendMessageAsync}
+                    />}
                 </div>
             </div>
         </>

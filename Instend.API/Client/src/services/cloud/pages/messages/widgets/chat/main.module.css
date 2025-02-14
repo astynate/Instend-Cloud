@@ -22,9 +22,8 @@
 
 .rightPanel {
     height: 100%;
-    width: 550px;
-    overflow-y: scroll;
-    overflow-x: hidden;
+    width: 600px;
+    overflow: hidden;
     border-radius: var(--main-border-radius);
     background: var(--background-accent-color);
 }

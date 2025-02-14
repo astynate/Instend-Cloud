@@ -34,7 +34,7 @@ const Cloud = observer(({setPanelState}) => {
   useEffect(() => {
     if (setPanelState) {
       setPanelState(false); 
-    }
+    };
   }, [setPanelState]);
 
   return (

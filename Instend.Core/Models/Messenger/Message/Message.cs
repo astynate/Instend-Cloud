@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using Instend.Core.Models.Storage.Collection;
 using Instend.Core.Models.Storage.File;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,6 +18,8 @@ namespace Instend.Core.Models.Messenger.Message
 
         public Account.Account? Sender { get; set; } = null;
         public Message? ReplyTo { get; set; } = null;
+        public List<Storage.File.File> Files { get; set; } = [];
+        public List<Collection> Collections { get; set; } = [];
         public List<Attachment> Attachments { get; set; } = [];
 
         private Message() { }

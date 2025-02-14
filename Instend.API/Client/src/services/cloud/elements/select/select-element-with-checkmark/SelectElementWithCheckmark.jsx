@@ -1,59 +1,43 @@
-import { useEffect } from 'react';
 import styles from './main.module.css';
 import checkmark from './checkmark.png';
 
 const SelectElementWithCheckmark = ({
-        isSelected = false, 
-        isSelectedOpen = false, 
-        setSelectedState = {}, 
-        element = {},
-        setSelectedFiles = {},
         top = -5,
-        right = -10
+        right = -10,
+        item = {},
+        items = [],
+        children,
+        isSelectedOpen = false,
+        maxLength = 5,
+        setItems = () => {},
     }) => {
 
-    useEffect(() => {
-        if (typeof setSelectedFiles === 'function') {
-            setSelectedFiles(prev => {
-                const file = prev.find(e => e.id === element.id);
-                setSelectedState(!!file);
-                return prev;
-            });
-        }
-    }, []);
-
-    if (isSelectedOpen === false && isSelected === false)
-        return null;
-
     return (
-        <div 
-            className={styles.select}
-            style={{top: `${top}px`, right: `${right}px`}}
-            onClick={(event) => {
-                if (typeof setSelectedFiles === 'function') {
-                    setSelectedFiles(prev => {
-                        const file = prev.find(e => e.id === element.id);
-
-                        if (file) {
-                            setSelectedState(false);
-                            return prev.filter(e => e.id !== element.id);
-                        } else if (prev.length < 5) {
-                            setSelectedState(true);
-                            return [element, ...prev];
-                        }
+        <div className={styles.wrapper}>
+            {children}
+            {isSelectedOpen && <div 
+                className={styles.select}
+                style={{top: `${top}px`, right: `${right}px`}}
+                onClick={(event) => {
+                    setItems(prev => {
+                        if (items.find(e => e.id === item.id)) {
+                            return prev.filter(e => e.id !== item.id);
+                        } else if (prev.length < maxLength) {
+                            return [item, ...prev];
+                        };
 
                         return prev;
                     });
-                }
 
-                event.preventDefault();
-            }}
-        >
-            {isSelected && <div className={styles.checkMark}>
-                <img src={checkmark} draggable="false" />
+                    event.preventDefault();
+                }}
+            >
+                {!!items.find(e => e.id === item.id) && <div className={styles.checkMark}>
+                    <img src={checkmark} draggable="false" />
+                </div>}
             </div>}
         </div>
     );
-}
+};
 
 export default SelectElementWithCheckmark;

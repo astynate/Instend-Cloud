@@ -1,0 +1,31 @@
+.file {
+    display: flex;
+    align-items: center;
+    grid-gap: 10px;
+    margin: 3px;
+    cursor: pointer;
+    padding-right: 30px;
+}
+
+.icon {
+    height: 50px;
+    width: 50px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    background: var(--main-blue-color);
+}
+
+.information {
+    display: flex;
+    flex-direction: column;
+}
+
+.information span {
+    max-width: 200px;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

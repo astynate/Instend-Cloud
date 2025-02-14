@@ -70,7 +70,7 @@ const MainCloudPage = observer(({isAscending, sortingType}) => {
         }
 
         return isAscending ? comparison : -comparison;
-    }
+    };
 
     return (
         <>

@@ -3,7 +3,8 @@ import { ButtonEffectHandler } from '../../../../../../utils/ui/ButtonEffectHand
 import styles from './main.module.css';
 
 const MainMessageButton = ({
-        image, 
+        image,
+        isInverted = true,
         callback = () => {}, 
         onMouseEnter = () => {},
         onMouseLeave = () => {},
@@ -21,6 +22,7 @@ const MainMessageButton = ({
             }}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
+            invertedstate={isInverted ? 'inverted' : 'not-inverted'}
         >
             <img src={image} draggable="false" />
         </button>

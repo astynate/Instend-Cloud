@@ -5,6 +5,7 @@ import sending from './images/time.svg';
 import viewed from './images/sent.svg';
 import styles from './main.module.css';
 import StorageController from '../../../../../../api/StorageController';
+import MessageAttachments from '../../elements/attachments/MessageAttachments';
 
 const Message = ({isCurrentAccountMessage, message, position}) => {
     const types = [styles.first, styles.middle, styles.last, styles.single];
@@ -17,7 +18,7 @@ const Message = ({isCurrentAccountMessage, message, position}) => {
     const getSendingType = () => {
         if (!message.id) {
             return 0;
-        }
+        };
 
         return message.isViewed ? 2 : 1;
     };
@@ -39,6 +40,12 @@ const Message = ({isCurrentAccountMessage, message, position}) => {
                 id={isCurrentAccountMessage ? 'currentAccountMessage' : null}
                 className={`${styles.messageContent} ${types[position]}`} 
             >
+                <div className={styles.attachments}>
+                    <MessageAttachments 
+                        isCurrentAccountMessage={isCurrentAccountMessage}
+                        message={message}
+                    />
+                </div>
                 <div className={styles.messageText}>
                     <div className={styles.textParts}>
                         {message.text.split('\n').map((part, index) => (

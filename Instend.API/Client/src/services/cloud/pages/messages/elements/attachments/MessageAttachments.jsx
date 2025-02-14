@@ -1,60 +1,90 @@
-import { useState } from 'react';
-import Base64Handler from '../../../../../../utils/handlers/Base64Handler';
+import GlobalContext from '../../../../../../global/GlobalContext';
 import styles from './main.module.css';
+import MessageCollectionsAttachments from './types/message-collections-attachments/MessageCollectionsAttachments';
+import MessageFilesAttachments from './types/message-files-attachments/MessageFilesAttachments';
+import MessagePhotosAttachments from './types/message-photos-attachments/MessagePhotosAttachments';
+import MessageVideoAttachments from './types/message-video-attachment/MessageVideoAttachments';
 
-export const validateMediaTypes = (type) => {
-    const types = [...FileAPI.imageTypes, ...FileAPI.videoTypes];
-    return types.includes(type.toLowerCase())
-}
+const MessageAttachments = ({isCurrentAccountMessage = false, message = {}}) => {
+    const isSingleVideo = (files = []) => {
+        if (files.length !== 1) {
+            return false;
+        };
 
-const MessageAttachments = ({messageId, attachments, sendingType}) => {
-    const GetType = (sendingType, attachment) => {
-        if (sendingType === 0) {
-            return attachment && attachment.type ? attachment.type.split('/')[1] : '';
-        } else {
-            return attachment.type;
-        }
-    }
+        if (GlobalContext.supportedVideoTypes.includes(files[0].type) === false) {
+            return false;
+        };
 
-    const [mediaAtachments] = useState(attachments
-        .filter(e => validateMediaTypes(GetType(sendingType, e))));
+        return true;
+    };
+
+    const isAllFilesArePhotos = (files = []) => {
+        for (let file of files) {
+            if (GlobalContext.supportedImageTypes.includes(file.type) === false) {
+                return false;
+            };
+        };
+
+        return true;
+    };
+
+    const getHandler = () => {
+        if (message.collections && message.collections.length > 0) {
+            return <MessageCollectionsAttachments 
+                isCurrentAccountMessage={isCurrentAccountMessage}
+                collections={message.collections}
+            />;
+        };
+
+        if (message.files && message.files.length > 0) {
+            if (isSingleVideo(message.files)) {
+                return <MessageVideoAttachments 
+                    isCurrentAccountMessage={isCurrentAccountMessage}
+                    path={message.files[0].path}
+                />;
+            };
+
+            if (isAllFilesArePhotos(message.files)) {
+                return <MessagePhotosAttachments 
+                    isCurrentAccountMessage={isCurrentAccountMessage}
+                    photos={message.files}
+                />;
+            };
+
+            return <MessageFilesAttachments
+                isCurrentAccountMessage={isCurrentAccountMessage} 
+                files={message.files}
+            />;
+        };
+
+        if (message.attachments && message.attachments.length > 0) {
+            if (isSingleVideo(message.attachments)) {
+                return <MessageVideoAttachments 
+                    path={message.attachments[0].path}
+                />;
+            };
+
+            if (isAllFilesArePhotos(message.files)) {
+                return <MessagePhotosAttachments 
+                    photos={message.attachments}
+                />;
+            };
+
+            return <MessageFilesAttachments 
+                files={message.attachments}
+            />;
+        };
+
+        return <></>;
+    };
+
+    let Handler = getHandler();
 
     return (
-        <div 
-            className={styles.attachments}
-            type={`type-${mediaAtachments.length}`}
-        >
-            {mediaAtachments.map((attachment, index) => {
-                const type = GetType(sendingType, attachment);
-
-                return (
-                    <div key={sendingType !== 0 ? attachment.id : index + "attachement"} className={styles.attachmentsWrapper}>
-                        {FileAPI.imageTypes.includes(type.toLowerCase()) &&
-                            <img 
-                                src={sendingType === 0 ? URL.createObjectURL(attachment) : `data:image/${type.toLowerCase()};base64,${attachment.preview}`} 
-                                draggable="false"
-                                className={styles.image}
-                            />
-                        }
-                        {FileAPI.videoTypes.includes(type.toLowerCase()) &&
-                            <video
-                                poster={Base64Handler.Base64ToUrlFormatPng(attachment.preview)}
-                                className={styles.video}
-                                controls
-                                muted
-                                loop
-                                autoPlay
-                                type={`type-${index}`}
-                                src={sendingType === 0 ? URL.createObjectURL(attachment) : `/api/publictions/stream?publictionId=${messageId}&id=${attachment.id}&type=3`}
-                            >
-                                <source src={sendingType === 0 ? URL.createObjectURL(attachment) : `/api/publictions/stream?publictionId=${messageId}&id=${attachment.id}&type=3`} />
-                            </video>
-                        }
-                    </div>
-                );
-            })}
+        <div className={styles.attachments}>
+            {Handler}
         </div>
     );
-}
+};
 
 export default MessageAttachments;

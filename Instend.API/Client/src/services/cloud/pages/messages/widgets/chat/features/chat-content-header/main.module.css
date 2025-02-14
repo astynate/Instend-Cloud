@@ -1,0 +1,27 @@
+.header {
+    height: 70px;
+    padding-left: 20px;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    background: var(--main-accent-color);
+    color: var(--main-font-color);
+}
+
+.left {
+    display: flex;
+    align-items: center;
+    grid-gap: 15px;
+}
+
+.back {
+    width: 22px;
+    filter: var(--main-filter);
+    opacity: 0.4;
+    cursor: pointer;
+}
+
+.title {
+    font-size: 21px;
+    font-weight: 500;
+}

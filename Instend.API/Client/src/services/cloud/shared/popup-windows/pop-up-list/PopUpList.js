@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './main.module.css';
 
-const PopUpList = ({items, close}) => {
+const PopUpList = ({items, close = () => {}}) => {
     return (
         <div className={styles.popUpList}>
             {items && items.map((element, index) => {
@@ -12,11 +12,9 @@ const PopUpList = ({items, close}) => {
                         onClick={async () => {
                             if (element.callback) {
                                 await element.callback();
-                            }
+                            };
 
-                            if (close) {
-                                close();
-                            }
+                            close();
                         }}
                     >{element.title}</div>
                 );

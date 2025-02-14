@@ -10,7 +10,7 @@ class CollectionsController {
             .then(response => {
                 if (response && response.data) {
                     onSuccess(response.data);
-                }
+                };
             })
             .catch(error => {
                 onError();
@@ -82,7 +82,7 @@ class CollectionsController {
             .then(response => {
                 if (response.data && response.data.length) {
                     onSuccess(response.data);
-                }
+                };
             })
             .catch((error) => { 
                 ApplicationState.AddErrorInQueueByError('Attention!', error);

@@ -3,7 +3,6 @@ using Instend.Services.Internal.Handlers;
 using Instend_Version_2._0._0.Server.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Instend.Services.External.FileService;
 using Microsoft.AspNetCore.Authorization;
 using Instend.Core.Dependencies.Services.Internal.Helpers;
@@ -86,42 +85,87 @@ namespace Instend_Version_2._0._0.Server.Controllers.Messenger
             }
         }
 
-        [HttpPost]
-        [Route("members")]
+        [HttpPut]
         [Authorize]
-        public async Task<ActionResult> LeaveGroup([FromForm] Guid id, [FromForm] Guid[] users)
+        [Route("add/members")]
+        public async Task<ActionResult> AddGroupMembers([FromQuery] Guid id, [FromQuery] Guid[] ids)
         {
-            //var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
-            //if (userId.IsFailure)
-            //    return BadRequest(userId.Error);
+            if (userId.IsFailure)
+                return BadRequest(userId.Error);
 
-            //if (users.Length == 0)
-            //    return BadRequest("TODO: delete group!");
+            var group = await _groupsRepository.GetByIdAsync(id, Guid.Parse(userId.Value), DateTime.Now, 1);
 
-            //var group = await _groupsRepository.GetGroup(id, Guid.Parse(userId.Value));
+            if (ids.Length == 0)
+                return Conflict("Accounts list is empthy");
 
-            //if (group == null)
-            //    return Conflict("Group not found");
+            if (group == null)
+                return Conflict("Group not found");
 
-            //var result = await _groupsRepository.(id, users);
+            var isAccountOwner = group.Members
+                .Where(x => x.AccountId == Guid.Parse(userId.Value) && x.Role == Instend.Core.Configuration.GroupRoles.Owner)
+                .Any();
 
-            //if (result.IsFailure)
-            //    return Conflict(result.Error);
+            if (isAccountOwner == false)
+                return Conflict("You have not permissions to perform this operation.");
 
-            //foreach (var user in result.Value.membersToAdd)
-            //{
-            //    await _messageHub.Clients
-            //        .Group(user.ToString())
-            //        .SendAsync("ConnetToGroup", id);
-            //}
+            var result = await _groupsRepository.AddGroupMembers(id, ids);
 
-            //foreach (var user in result.Value.membersToDelete)
-            //{
-            //    await _messageHub.Clients
-            //        .Group(id.ToString())
-            //        .SendAsync("LeaveGroup", JsonConvert.SerializeObject(new { id, user }));
-            //}
+            if (result.IsFailure)
+                return Conflict(result.Error);
+
+            foreach (var user in result.Value)
+            {
+                await _messageHub.Clients
+                    .Group(id.ToString())
+                    .SendAsync("AddMember", _serialyzer.SerializeWithCamelCase(user));
+
+                await _messageHub.Clients
+                    .Group(user.AccountId.ToString())
+                    .SendAsync("ConnetToGroup", id);
+            }
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Authorize]
+        [Route("remove/member")]
+        public async Task<ActionResult> RemoveGroupMember([FromQuery] Guid id, [FromQuery] Guid accountId)
+        {
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+                return BadRequest(userId.Error);
+
+            var group = await _groupsRepository.GetByIdAsync(id, Guid.Parse(userId.Value), DateTime.Now, 1);
+
+            if (group == null)
+                return Conflict("Group not found");
+
+            var isAccountOwner = group.Members
+                .Where(x => x.AccountId == Guid.Parse(userId.Value) && x.Role == Instend.Core.Configuration.GroupRoles.Owner)
+                .Any();
+
+            if (group.Members.Count() == 1)
+            {
+                await DeleteGroup(id);
+                return Ok();
+            }
+
+            if (isAccountOwner == false)
+                return Conflict("You have not permissions to perform this operation.");
+
+            var result = await _groupsRepository
+                .RemoveMember(group, accountId);
+
+            if (result.IsFailure)
+                return Conflict(result.Error);
+
+            await _messageHub.Clients
+                .Group(id.ToString())
+                .SendAsync("RemoveMember", new { id, accountId });
 
             return Ok();
         }

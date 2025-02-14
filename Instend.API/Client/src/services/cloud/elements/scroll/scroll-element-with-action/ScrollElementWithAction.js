@@ -1,11 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 
-const ScrollElementWithAction = (props) => {
+const ScrollElementWithAction = ({scrollElement, counter, isHasMore, callback = () => {}}) => {
     const ref = useRef();
-    const hasMoreRef = useRef(props.hasMore);
+    const hasMoreRef = useRef(isHasMore);
 
     useEffect(() => {
-        props.callback();
+        if (isHasMore) {
+            callback();
+        };
     }, []);
 
     const checkScroll = async () => {
@@ -13,28 +15,30 @@ const ScrollElementWithAction = (props) => {
         const rect = ref.current.getBoundingClientRect();
 
         if (rect.top < window.innerHeight) {
-            await props.callback();
-        }
-      }
+            await callback();
+        };
+      };
     };
   
     useEffect(() => {
         checkScroll();
-    }, [props.count]);
+    }, [counter]);
 
     useEffect(() => {
-        if (props.scroll && props.scroll.current) {
-            props.scroll.current.addEventListener('scroll', () => checkScroll());
+        if (scrollElement && scrollElement.current) {
+            scrollElement.current.addEventListener('scroll', () => checkScroll());
       
             return () => {
                 try {
-                    props.scroll.current.removeEventListener('scroll', () =>  checkScroll());
-                } catch {}
+                    scrollElement.current.removeEventListener('scroll', () =>  checkScroll());
+                } catch (error) {
+                    console.error(error);
+                };
             };
         }
     }, []);
   
     return <div ref={ref}></div>;
- };
+};
 
 export default ScrollElementWithAction;

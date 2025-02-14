@@ -11,5 +11,7 @@ namespace Instend.Repositories.Messenger
         Task<Result> DeleteGroupAsync(Guid id, Guid accountId);
         Task<List<Group>> GetAccountGroups(Guid accountId, int skip, int take);
         Task<Group?> GetByIdAsync(Guid id, Guid userId, DateTime date, int count);
+        Task<Result<GroupMember[]>> AddGroupMembers(Guid id, Guid[] users);
+        Task<Result> RemoveMember(Group group, Guid memberId);
     }
 }

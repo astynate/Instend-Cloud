@@ -1,6 +1,6 @@
 .InstendCloud {
-    height: 450px;
-    width: 650px;
+    height: 500px;
+    width: 725px;
     display: flex;
     flex-direction: column;
 }

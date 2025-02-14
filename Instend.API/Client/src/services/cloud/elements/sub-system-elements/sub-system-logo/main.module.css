@@ -5,15 +5,15 @@
 }
 
 .subSystemLogo img {
-    height: 28px;
-    width: 28px;
+    height: 30px;
+    width: 30px;
     filter: var(--main-filter);
-    margin-right: 2px;
+    margin-right: 5px;
     object-fit: contain;
 }
 
 .subSystemLogo span {
-    font-size: 21px;
+    font-size: 23px;
     color: var(--main-font-color);
     font-weight: 600;
 }

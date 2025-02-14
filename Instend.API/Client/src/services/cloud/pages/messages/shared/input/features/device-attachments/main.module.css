@@ -1,0 +1,47 @@
+.collection {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    grid-gap: 10px;
+    flex-shrink: 0;
+    border: 1px solid var(--main-border-color);
+    border-radius: 10px;
+    padding-left: 4px;
+    padding-right: 4px;
+    user-select: none;
+    cursor: pointer;
+    text-wrap: nowrap;
+}
+
+.files {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 2px;
+}
+
+.file {
+    height: 41px;
+    width: 41px;
+    border-radius: 5px;
+    background: var(--main-accent-color);
+}
+
+.information {
+    display: flex;
+    flex-direction: column;
+    color: var(--main-font-color);
+}
+
+.name {
+    font-weight: 500;
+    font-size: 14px;
+    max-width: 100px;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+}
+
+.date {
+    font-size: 10px;
+    opacity: 0.5;
+}

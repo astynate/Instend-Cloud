@@ -2,8 +2,20 @@ import { instance } from "../../../state/application/Interceptors";
 import ChatsState from "../../../state/entities/ChatsState";
 
 class MessangerController {
-    static SendMessage = async (chat, text, type, attachments) => {
+    static AddArrayToFormData = (form, title, items) => {
+        for (let i = 0; i < items.length; i++) {
+            form.append(`${title}[${i}]`, items[i]);
+        };
+    };
+
+    static SendMessage = async (chat, text, type, attachments = [], collections = [], files = []) => {
         const form = new FormData();
+        
+        const itemsToAttach = [
+            // { name: 'attachments', items: attachments },
+            { name: 'collections', items: collections.map(e => e.id) },
+            { name: 'files', items: files.map(e => e.id) },
+        ];
 
         const queueId = ChatsState.SetLoadingMessage(
             chat,
@@ -11,13 +23,31 @@ class MessangerController {
             attachments
         );
 
+        for (let itemToAttach of itemsToAttach) {
+            if (itemToAttach.items.length > 0) {
+                MessangerController.AddArrayToFormData(
+                    form,
+                    itemToAttach.name, 
+                    itemToAttach.items
+                );
+            };
+        };
+
+        for (let i = 0; i < attachments.length; i++) {
+            form.append(`attachments`, attachments[i]);
+        };
+
         form.append('id', chat.id);
         form.append('text', text);
         form.append('type', type);
         form.append('queueId', queueId);
         
         await instance
-            .post('api/messages', form)
+            .post('api/messages', form, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }}
+            )
             .catch(error => {
                 console.error(error);
             });

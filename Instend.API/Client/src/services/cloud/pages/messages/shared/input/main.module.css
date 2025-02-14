@@ -1,41 +1,40 @@
 .wrapper {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     background: var(--background-accent-color);
+    padding-left: 3px;
+    transition: 0.25s ease;
 }
 
 .inputWrapper {
     height: auto;
-    /* padding-top: 3px;
-    padding-bottom: 3px; */
     width: 100%;
     display: flex;
-    align-items: center;
+    border-radius: 20px;
     justify-content: center;
-    border-top: 1px solid var(--main-border-color);
+    flex-direction: column;
     transition: 0.25s ease;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background: var(--pop-up-accent-color);
 }
 
 .wrapper textarea {
     width: 100%;
     outline: none;
     border: none;
-    /* padding-left: 13px; */
     background: transparent;
     font-size: 15px;
     font-family: 'Open sans', sans-serif;
-    color: var(--main-font-color);
-    /* background: var(--pop-up-accent-color); */
     resize: none;
     overflow-y: scroll;
     padding-top: 8px;
-    padding-bottom: 13px;
-    /* border-radius: 20px; */
-    max-height: 300px;
+    padding-bottom: 10px;
+    padding-left: 14px;
+    max-height: 200px;
     transition: 0.25s ease;
-    border: 1px solid transparent;
+    color: var(--main-font-color);
 }
 
 .wrapper textarea::-webkit-scrollbar {

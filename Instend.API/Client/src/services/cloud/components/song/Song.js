@@ -5,13 +5,13 @@ import styles from './main.module.css';
 import MusicState from '../../../../state/entities/MusicState';
 import SongCover from '../song-cover/SongCover';
 
-const Song = observer(({index, song, isLoading, isShort, isSelect, setQueue = () => {}}) => {
+const Song = observer(({song, isLoading, isShort, isSelect, setQueue = () => {}}) => {
     const [isHovered, setHoveredState] = useState(false);
     const { IsSongIsPlaying, SetSongAsPlaying } = MusicState;
 
     if (!song) { 
         return null; 
-    }
+    };
 
     return (
         <div 
@@ -22,7 +22,6 @@ const Song = observer(({index, song, isLoading, isShort, isSelect, setQueue = ()
             onMouseLeave={() => setHoveredState(false)}
         >
             <div className={styles.name}>
-                {/* {index && <span className={styles.index}>{index}</span>} */}
                 <div 
                     className={styles.albumCover} 
                     onClick={() => {

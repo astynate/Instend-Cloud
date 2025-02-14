@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 import styles from './main.module.css';
 
-const PopUpItems = ({items = []}) => {
-    const [active, setActive] = useState(0);
+const PopUpItems = ({currentIndex = 0, items = []}) => {
+    const [active, setActive] = useState(currentIndex);
     const ref = useRef();
 
     return (
@@ -29,6 +29,6 @@ const PopUpItems = ({items = []}) => {
             </div>
         </>
     );
-}
+};
 
 export default PopUpItems;

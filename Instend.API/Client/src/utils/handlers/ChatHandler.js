@@ -23,10 +23,6 @@ class ChatHandler {
         return user;
     };
 
-    static GetChatInformationHeader = () => {
-        
-    };
-
     static GetChatId = (chat) => {
         return chat.directId ? chat.directId : chat.id;
     };

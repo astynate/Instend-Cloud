@@ -1,28 +1,46 @@
 import { observer } from 'mobx-react-lite';
-import storageState from '../../../../../../states/storage-state';
-import FileAPI from '../../../../api/FileAPI';
-import SongList from '../../../../item-lists/song-list/SongList';
-import Scroll from '../../../../widgets/scroll/Scroll';
 import styles from './main.module.css';
+import StorageState from '../../../../../../state/entities/StorageState';
+import FilesController from '../../../../api/FilesController';
+import GlobalContext from '../../../../../../global/GlobalContext';
+import ScrollElementWithAction from '../../../../elements/scroll/scroll-element-with-action/ScrollElementWithAction';
+import Song from '../../../../components/song/Song';
+import SelectElementWithCheckmark from '../../../../elements/select/select-element-with-checkmark/SelectElementWithCheckmark';
 
-const InstendMusicSubPage = observer(({wrapper, setSelectedFiles}) => {
-    let songs = storageState.GetSelectionByType(FileAPI.musicTypes);
+const InstendMusicSubPage = observer(({wrapper, files = [], setFiles = () => {}}) => {
+    let songs = StorageState.GetSelectionByType(GlobalContext.supportedMusicTypes);
 
     return (
         <div className={styles.wrapper}>
-            <SongList
-                songs={songs} 
-                isMobile={true}
-                isHeaderless={true}
-                isHasIndex={false}
-                setSelectedFiles={setSelectedFiles}
-            />
-            <Scroll
+            {songs.map(song => {
+                return (
+                    <SelectElementWithCheckmark
+                        top={5}
+                        right={5}
+                        key={song.id} 
+                        item={song}
+                        items={files}
+                        setItems={setFiles}
+                        isSelectedOpen={true}
+                        maxLength={7}
+                    >
+                        <Song
+                            song={song}
+                        />
+                    </SelectElementWithCheckmark>
+                )
+            })}
+            <ScrollElementWithAction
                 scroll={wrapper}
-                isHasMore={storageState.hasMoreSongs}
-                count={storageState.countSongs}
+                isHasMore={StorageState.hasMoreSongs}
+                count={StorageState.countSongs}
                 callback={() => {
-                    storageState.GetItems(storageState.hasMoreSongs, storageState.countSongs, "music");
+                    FilesController.GetLastFilesWithType(
+                        5, 
+                        songs.length, 
+                        "music",
+                        StorageState.OnGetFilesByTypeSuccess
+                    );
                 }}
             />
         </div>

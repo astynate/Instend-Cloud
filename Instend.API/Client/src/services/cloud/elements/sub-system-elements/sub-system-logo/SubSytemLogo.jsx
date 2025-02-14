@@ -9,6 +9,6 @@ const SubSystemLogo = ({icon, title, subTitle}) => {
             <span>{subTitle ?? ""}</span>
         </div>
     );
-}
+};
 
 export default SubSystemLogo;

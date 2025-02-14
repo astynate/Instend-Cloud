@@ -10,8 +10,8 @@ namespace Instend.Core.TransferModels.Messenger
         [Required] int type,
         [Required] int queueId,
         IFormFile[]? attachments,
-        Guid[]? fileIds,
-        Guid[]? folderIds,
+        Guid[]? files,
+        Guid[]? collections,
         Guid? replyTo
     );
 };

@@ -10,42 +10,6 @@ import Album from '../pages/album/Album';
 import GalleryHeader from '../widgets/gallery-header/GalleryHeader.jsx';
 
 const Gallery = observer((props) => {
-  const PhotosSortFunctions = [
-    {
-      "title": "Name",
-      "isSelected": false
-    },
-    {
-      "title": "Last edit date",
-      "isSelected": true
-    }
-  ];
-  
-  const SortingOrder = [
-    {
-      "title": "Accending",
-      "isSelected": true
-    },
-    {
-      "title": "Descending",
-      "isSelected": false
-    }
-  ];
-
-  const Template = [
-    {
-      "title": "Grid",
-      "isSelected": true
-    },
-    {
-      "title": "Waterfalll",
-      "isSelected": false
-    }
-  ];
-
-  const [scale, setScale] = useState(2);
-  const [template, setTemplate] = useState(Template);
-  const [sortingType, setSortingType] = useState(0);
   const scroll = useRef();
 
   useEffect(() => {
@@ -63,27 +27,15 @@ const Gallery = observer((props) => {
           <Routes>
             <Route 
               path=''
-              element={
-                <Photos 
-                  photoGrid={template} 
-                  scale={scale}
-                  scroll={scroll}
-                  sortingType={sortingType}
-              />} 
+              element={<Photos scroll={scroll} />} 
             />
             <Route 
               path='/albums' 
               element={<Albums />} 
-              photoGrid={template} 
             />
             <Route 
               path='/albums/:id' 
-              element={<Album 
-                photoGrid={template} 
-                scale={scale}
-                scroll={scroll} 
-              />} 
-              photoGrid={template} 
+              element={<Album scroll={scroll} />} 
               scroll={scroll}
             />
           </Routes>

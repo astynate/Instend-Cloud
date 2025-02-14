@@ -1,0 +1,21 @@
+.editAttachments {
+    height: 50px;
+    width: 50px;
+    border-radius: 10px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid var(--main-border-color);
+}
+
+.editAttachments:hover {
+    background: var(--pop-up-accent-color);
+}
+
+.editAttachments img {
+    height: 25px;
+    width: 25px;
+    filter: var(--main-filter);
+}

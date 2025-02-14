@@ -7,8 +7,6 @@ import ChatTypes from "./helpers/ChatTypes";
 import ChatsState from "../../../../../../state/entities/ChatsState";
 import ChatHandler from "../../../../../../utils/handlers/ChatHandler";
 import MessangerController from "../../../../api/MessangerController";
-import DirectInformationType from "./components/chat-information-types/types/direct-information-type/DirectInformationType";
-import GroupInformationType from "./components/chat-information-types/types/group-information-type/GroupInformationType";
 
 const Chat = observer(({isMobile, isOpen, chat}) => {
     const [prevHeight, SetPrevHeight] = useState(0);

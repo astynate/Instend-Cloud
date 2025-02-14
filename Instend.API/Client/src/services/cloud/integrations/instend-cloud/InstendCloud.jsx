@@ -1,77 +1,90 @@
-import { useEffect, useState } from 'react';
-import SubSystemLogo from '../../elements/sub-system-logo/SubSytemLogo';
-import PopUpWindow from '../../shared/pop-up-window/PopUpWindow';
-import PopUpItems from '../../shared/pop-up-window/elements/items/PopUpItems';
-import InstendCloudSubPage from './items/cloud/InstendCloudSubPage';
-import InstendGallerySubPage from './items/gallery/InstendGallerySubPage';
-import InstendMusicSubPage from './items/music/InstendMusicSubPage';
+import { useState } from 'react';
+import { observer } from 'mobx-react-lite';
 import styles from './main.module.css';
+import PopUpWindow from '../../shared/popup-windows/pop-up-window/PopUpWindow';
+import SubSystemLogo from '../../elements/sub-system-elements/sub-system-logo/SubSytemLogo';
+import InstendCloudSubPage from './items/cloud/InstendCloudSubPage';
 import arrow from './images/arrow.png';
-import storageState from '../../../../states/storage-state';
+import PopUpItems from '../../shared/popup-windows/pop-up-window/elements/items/PopUpItems';
+import StorageState from '../../../../state/entities/StorageState';
+import InstendPhotosSubPage from './items/photos/InstendPhotosSubPage';
+import InstendMusicSubPage from './items/music/InstendMusicSubPage';
 
-const InstendCloud = ({open, close, setSelectedFiles, setSelectedFolders}) => {
-    const [folderName, setFolderName] = useState(); 
-    const [folderId, setFolderId] = useState(null);
+const InstendCloud = observer(({
+        isOpen = false, 
+        windowIndex = 0,
+        close = () => {}, 
+        collections = [],
+        files = [],
+        setSelectedFiles = () => {}, 
+        setSelectedCollections = () => {},
+    }) => {
 
-    useEffect(() => {
-        setSelectedFiles([]);
-        setSelectedFolders([]);
-    }, []);
+    const [collectionId, setCollectionId] = useState(null);
+    const { path } = StorageState;
 
-    useEffect(() => {
-        storageState.SetFolderItemsById(folderId);
-        setFolderName(folderId ? storageState.FindFolderById(folderId).name ?? "Unknown" : undefined);
-    }, [folderId]);
+    const GetCurrentCollectionName = () => {
+        return path && path.length > 0 ? path[0].name : 'Instend';
+    };
 
     return (
         <PopUpWindow
-            open={open}
+            open={isOpen}
             close={close}
-            isHeaderPositionAbsulute={true}
+            isHeaderless={false}
+            isHeaderPositionAbsolute={true}
         >
             <div className={styles.InstendCloud}>
                 <div 
                     className={styles.header}
                     onClick={() => {
-                        const path = storageState.path[folderId];
-                        setFolderId(path.length === 1 ? null : path[path.length - 2].id);
+                        if (!path || !path.length) {
+                            setCollectionId(null);
+                            return;
+                        };
+
+                        setCollectionId(path.length <= 1 ? null : path[1].id);
                     }}
                 >
-                    <SubSystemLogo 
-                        icon={folderName ? arrow : undefined} 
-                        title={folderName}
-                        subTitle={folderName ? "" : "Cloud"}
+                    <SubSystemLogo
+                        icon={collectionId ? arrow : undefined} 
+                        title={collectionId ? GetCurrentCollectionName() : 'Instend'}
+                        subTitle={collectionId ? "" : "Cloud"}
                     />
                 </div>
                 <PopUpItems
+                    currentIndex={windowIndex}
                     items={[
                         {
                             title: "Cloud", 
-                            element: <InstendCloudSubPage 
-                                setSelectedFiles={setSelectedFiles} 
-                                setSelectedFolders={setSelectedFolders}
-                                setFolderName={setFolderName}
-                                folderId={folderId}
-                                setFolderId={setFolderId}
+                            element: <InstendCloudSubPage
+                                selectedCollections={collections}
+                                selectedFiles={files}
+                                collectionId={collectionId}
+                                setSelectedFiles={setSelectedFiles}
+                                setCollectionId={setCollectionId}
+                                setSelectedCollections={setSelectedCollections}
                             />,
                         },
                         {
-                            title: "Gallery", 
-                            element: <InstendGallerySubPage 
-                                setSelectedFiles={setSelectedFiles} 
+                            title: "Photos", 
+                            element: <InstendPhotosSubPage
+                                files={files}
+                                setFiles={setSelectedFiles}
                             />,
                         },
                         {
-                            title: "Music", 
-                            element: <InstendMusicSubPage 
-                                setSelectedFiles={setSelectedFiles} 
-                            />,
+                            title: "Songs", 
+                            element: <InstendMusicSubPage
+                                files={files}
+                                setFiles={setSelectedFiles}
+                            />
                         },
                     ]}
                 />
             </div>
         </PopUpWindow>
     );
-}
+});
 
 export default InstendCloud;

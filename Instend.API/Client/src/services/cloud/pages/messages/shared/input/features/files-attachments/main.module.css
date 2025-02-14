@@ -1,0 +1,37 @@
+.fileWrapper {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    grid-gap: 10px;
+    border-radius: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: 1px solid var(--main-border-color);
+    user-select: none;
+    cursor: pointer;
+}
+
+.file {
+    height: 40px;
+    width: 40px;
+    border-radius: 7px;
+    background: var(--main-accent-color);
+}
+
+.information {
+    display: flex;
+    flex-direction: column;
+    color: var(--main-font-color);
+}
+
+.name {
+    font-weight: 500;
+    font-size: 14px;
+    text-wrap: nowrap;
+}
+
+.date {
+    font-size: 10px;
+    opacity: 0.5;
+    text-wrap: nowrap;
+}

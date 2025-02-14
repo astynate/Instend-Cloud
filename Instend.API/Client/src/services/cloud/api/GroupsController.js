@@ -6,7 +6,7 @@ class GroupsController {
     static CreateGroup = async (name, avatar, onSuccess = () => {}) => {
         if (!globalWSContext.connection) {
             return false;
-        }
+        };
 
         const form = new FormData();
 
@@ -16,8 +16,11 @@ class GroupsController {
 
         await instance
             .post('api/groups', form)
-            .then(_ => {
-                onSuccess();
+            .then(response => {
+                if (response && response.data) {
+                    onSuccess();
+                    ChatsState.addChat(response.data);
+                };
             })
             .catch(error => {
                 console.error(error);
@@ -42,6 +45,32 @@ class GroupsController {
     static DeleteGroup = async (id) => {
         await instance
             .delete(`/api/groups?id=${id}`)
+            .catch(error => {
+                console.error(error);
+            });
+    };
+
+    static AddGroupMembers = async (id, ids = [], onSuccess = () => {}, onError = () => {}) => {
+        const idsQuery = ids.map(id => `ids=${id.id}`).join('&');
+
+        await instance
+            .put(`/api/groups/add/members?id=${id}&${idsQuery}`, {}, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(_ => {
+                onSuccess();
+            })
+            .catch(error => {
+                onError();
+                console.error(error);
+            });
+    };
+
+    static RemoveGroupMember = async (id, accountId) => {
+        await instance
+            .put(`/api/groups/remove/member?id=${id}&accountId=${accountId}`)
             .catch(error => {
                 console.error(error);
             });

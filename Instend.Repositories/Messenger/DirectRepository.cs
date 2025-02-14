@@ -7,6 +7,8 @@ using Instend.Core.Models.Messenger.Direct;
 using Instend.Core.Models.Messenger.Message;
 using System.Linq.Expressions;
 using Instend.Core.Models.Abstraction;
+using Instend.Core.TransferModels.Messenger;
+using Instend.Services.External.FileService;
 
 namespace Instend.Repositories.Messenger
 {
@@ -108,9 +110,9 @@ namespace Instend.Repositories.Messenger
             return direct.Id;
         }
 
-        public async Task<Result<DatabaseModel>> SendMessage(Guid id, Guid senderId, string text)
+        public async Task<Result<DatabaseModel>> SendMessage(IFileService fileService, IMessengerRepository messengerRepository, MessageTransferModel model, Guid senderId)
         {
-            var direct = await GetAsync(id, DateTime.Now, 1);
+            var direct = await GetAsync(model.id, DateTime.Now, 1);
 
             if (direct != null && direct.IsAccepted == false)
                 return Result.Failure<DatabaseModel>("Invite is not accepted");
@@ -121,7 +123,7 @@ namespace Instend.Repositories.Messenger
                 {
                     if (direct == null)
                     {
-                        var result = await CreateNewDirect(id, senderId);
+                        var result = await CreateNewDirect(model.id, senderId);
 
                         if (result.IsFailure)
                             return Result.Failure<DatabaseModel>(result.Error);
@@ -129,17 +131,16 @@ namespace Instend.Repositories.Messenger
                         direct = result.Value;
                     }
 
-                    _context.Attach(direct);
-
-                    var message = Message.Create(text, senderId);
+                    var message = await messengerRepository.CreateMessage(fileService, model, senderId);
 
                     if (message.IsFailure)
                         return Result.Failure<DatabaseModel>(message.Error);
 
-                    await _context.Messages.AddAsync(message.Value);
-                    await _context.SaveChangesAsync();
+                    _context.Attach(direct);
+                    _context.Attach(message.Value);
 
                     direct.Messages.Add(message.Value);
+
                     await _context.SaveChangesAsync();
 
                     transaction.Commit();

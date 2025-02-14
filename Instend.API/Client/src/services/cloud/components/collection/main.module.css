@@ -62,6 +62,7 @@
     height: 100%;
     width: 100%;
     background: var(--main-accent-color);
+    background: var(--pop-up-accent-color);
     color: var(--main-blue-color);
     border-radius: 7px;
     display: flex;

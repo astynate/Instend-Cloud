@@ -3,7 +3,7 @@ import GlobalContext from "../../global/GlobalContext";
 
 export const AdaptId = (id) => {
     return (id === '' || id == null) ? GlobalContext.guidEmpthy : id;
-}
+};
 
 class StorageState {
     path = [];
@@ -59,7 +59,7 @@ class StorageState {
         for (let file of files) {
             if (!!file === true) {
                 this.SetItems(files.collectionId, this.files, [file], false);   
-            }
+            };
         }
     };
 

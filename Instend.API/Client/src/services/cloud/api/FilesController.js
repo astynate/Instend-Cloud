@@ -25,7 +25,7 @@ class FilesController {
             .catch((error) => {
                 ApplicationState.AddErrorInQueueByError('Attention!', error);
             });
-    }
+    };
 
     static Delete = async (ids) => {
         for (let i = 0; i < ids.length; i++) {
@@ -35,7 +35,7 @@ class FilesController {
                     ApplicationState.AddErrorInQueueByError('Attention!', error);
                 });
         }
-    }
+    };
 
     static GetLastFilesWithType = async (take, skip, type, onSuccess = () => {}) => {
         await instance
@@ -43,12 +43,12 @@ class FilesController {
             .then(response => {
                 if (response && response.data) {
                     onSuccess(response.data);
-                }
+                };
             })
             .catch(error => {
                 console.error(error);
             });
-    }
+    };
 };
 
 export default FilesController;

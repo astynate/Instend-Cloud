@@ -6,10 +6,10 @@
     border-radius: 17px;
     overflow: hidden;
     grid-gap: 5px;
-    padding-top: 11px;
-    padding-bottom: 11px;
-    margin-left: 15px;
-    margin-right: 15px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    margin-left: 14px;
+    margin-right: 14px;
 }
 
 .search img {
@@ -24,7 +24,7 @@
     width: 100%;
     border: none;
     outline: none;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 400;
     font-family: 'Open Sans', sans-serif;
     background: none;

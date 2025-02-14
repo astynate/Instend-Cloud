@@ -186,21 +186,28 @@ class ChatsState {
         }
     };
 
-    addGroupMember = (id, user) => {
-        const chat = ChatHandler.GetChat(id);
+    addGroupMember = (member) => {
+        let account = JSON.parse(member);
+        let chat = this.GetChatById(account.groupId);
 
         if (chat && chat.members) {
-            chat.members = [...chat.members, user];
-        }
+            chat.members = [...chat.members, account];
+        };
     };
 
-    removeGroupMember = (id, userId) => {
-        const chat = ChatHandler.GetChat(id);
+    removeGroupMember = (data) => {
+        const { id, accountId } = data;
+        const chat = this.GetChatById(id);
+
+        if (accountId === AccountState.account.id) {
+            this.DeleteChat(id);
+            return;
+        };
 
         if (chat && chat.members) {
             chat.members = chat.members
-                .filter(e => e.id !== userId && e.Id !== userId);
-        }
+                .filter(e => e.accountId !== accountId);
+        };
     };
 };
 

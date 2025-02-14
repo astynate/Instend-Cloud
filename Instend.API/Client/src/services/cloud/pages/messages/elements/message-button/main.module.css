@@ -1,5 +1,4 @@
 .button {
-    margin-top: auto;
     height: 50px;
     width: 50px;
     border: none;
@@ -16,11 +15,10 @@
 }
 
 .button img {
-    height: 50%;
-    width: 50%;
-    object-fit: contain;
-    filter: var(--main-filter);
+    height: auto;
+    width: 20px;
     transition: 0.15s ease;
+    filter: var(--main-filter);
 }
 
 .button:hover {
@@ -28,11 +26,13 @@
 }
 
 .button:hover img {
-    height: 55%;
-    width: 55%;
+    width: 25px;
 }
 
 .button:active img {
-    height: 49%;
-    width: 49%;
+    width: 22px;
+}
+
+.button[invertedstate="not-inverted"] img {
+    filter: none;
 }

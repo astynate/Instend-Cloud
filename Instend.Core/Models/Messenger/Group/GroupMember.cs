@@ -22,6 +22,7 @@ namespace Instend.Core.Models.Messenger.Group
         }
 
         public Group? Group { get; set; } = null!;
+        public Account.Account? Account { get; set; } = null;
 
         private GroupMember() { }
 

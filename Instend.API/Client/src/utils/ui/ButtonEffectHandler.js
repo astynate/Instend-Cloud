@@ -16,6 +16,8 @@ export const ButtonEffectHandler = (ref, event) => {
     ref.current.appendChild(element);
 
     setTimeout(() => {
-        ref.current.removeChild(element);
+        if (ref.current) {
+            ref.current.removeChild(element);
+        };
     }, 2000);
-}
+};

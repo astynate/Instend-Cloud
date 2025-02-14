@@ -1,21 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from './main.module.css';
 import StorageItemDescription from '../../features/storage/storage-item-description/StorageItemDescription';
 
-const Collection = ({collection = {}, onContextMenu = () => {}, callback = () => {}, setSelectedFolders = () => {}}) => {
-    const [files, setFiles] = useState([]);
-    const [isSelected, setSelectedState] = useState(false);
-
-    useEffect(() => {
-      if (collection && !collection.isLoading) {
-        setFiles(Array.from({ length: 4 }).map((_, index) => {return (
-          <div className={styles.file} key={index}>
-          </div>
-        )}));
-      }
-    }, [collection]);
-
+const Collection = ({collection = {}, onContextMenu = () => {}, callback = () => {}, isHasLink = true}) => {
     if (collection.isLoading) {
         return (
           <div className={styles.wrapper} onContextMenu={onContextMenu}>
@@ -32,14 +20,16 @@ const Collection = ({collection = {}, onContextMenu = () => {}, callback = () =>
     };
     
     return (
-      <Link to={`/cloud/${collection.id}`} data={collection.id}>
-        <div 
-          className={styles.wrapper} 
-          id={isSelected === true ? 'selected' : null} 
-          onContextMenu={onContextMenu}
-        >
+      <Link to={isHasLink ? `/cloud/${collection.id}` : ''}>
+        <div className={styles.wrapper} onContextMenu={onContextMenu}>
           <div className={styles.content} onClick={callback}>
-            {(files)}
+            {Array.from({ length: 4 }).map((_, index) => {
+                return (
+                  <div className={styles.file} key={index}>
+                  </div>
+                )
+              }
+            )}
           </div>
           <StorageItemDescription
             name={collection.name} 

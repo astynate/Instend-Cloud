@@ -78,7 +78,7 @@
     --button-loader-color: rgb(255, 255, 255);
     --main-blur-effect: blur(10px) saturate(50%);
     --color-scheme: dark;
-    --pop-up-accent-color: #292D2F;
+    --pop-up-accent-color: #292b2d;
     --input-background: rgba(255, 255, 255, 0.05);
     --input-placeholder: #9e9ea5;
     --input-border: #777780;
@@ -100,6 +100,9 @@
     --item-accent-hover-color: #343537;
 
     --background-accent-color: #151618;
+
+    --account-message-accent-color: #2c9bec;
+    --message-accent-color: black;
 }
 
 .cloud-wrapper {

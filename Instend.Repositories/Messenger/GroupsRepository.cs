@@ -5,10 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Instend.Core.Dependencies.Repositories.Account;
 using Instend.Repositories.Contexts;
 using Instend.Core.Models.Messenger.Group;
-using Instend.Core.Models.Messenger.Message;
 using Instend.Core.Models.Abstraction;
 using Instend.Core;
-using Instend.Core.Models.Messenger.Direct;
+using Instend.Core.TransferModels.Messenger;
 
 namespace Instend.Repositories.Messenger
 {
@@ -79,6 +78,19 @@ namespace Instend.Repositories.Messenger
                         .OrderByDescending(m => m.Date)
                         .Take(1))
                         .ThenInclude(x => x.Sender)
+                .AsSplitQuery()
+                .Include(x => x.Group)
+                    .ThenInclude(x => x.Messages)
+                        .ThenInclude(x => x.Attachments)
+                .Include(x => x.Group)
+                    .ThenInclude(x => x.Messages)
+                        .ThenInclude(x => x.Files)
+                .Include(x => x.Group)
+                    .ThenInclude(x => x.Messages)
+                        .ThenInclude(x => x.Collections)
+                    .Include(x => x.Group)
+                        .ThenInclude(x => x.Members)
+                            .ThenInclude(x => x.Account)
                     .Select(x => x.Group)
                 .ToListAsync();
 
@@ -106,53 +118,98 @@ namespace Instend.Repositories.Messenger
                 .AsSplitQuery()
                 .Include(x => x.Messages)
                     .ThenInclude(x => x.Sender)
+                .Include(x => x.Messages)
+                    .ThenInclude(x => x.Files)
+                .Include(x => x.Messages)
+                    .ThenInclude(x => x.Collections)
                 .FirstOrDefaultAsync();
 
             return result;
         }
 
-        public async Task<Result<(Guid[] membersToAdd, Guid[] membersToDelete)>> SetGroupMembers(Guid id, Guid[] users)
+        public async Task<Result<GroupMember[]>> AddGroupMembers(Guid id, Guid[] users)
         {
             var members = await _context.GroupMembers
-                .Where(x => x.GroupId == id).ToArrayAsync();
+                .Where(x => x.GroupId == id)
+                .ToArrayAsync();
 
             if (members == null)
-                return Result.Failure<(Guid[] membersToAdd, Guid[] membersToDelete)>("Members not found");
+                return Result.Failure<GroupMember[]>("Members not found");
 
-            var membersToDelete = members
-                .Select(x => x.AccountId)
-                .Except(users)
-                .ToArray();
+            if (members.Length + users.Length > 100)
+                return Result.Failure<GroupMember[]>("Maximum number of members id 100");
 
             var membersToAdd = users
-                .Except(members
-                .Select(x => x.AccountId))
+                .Except(members.Select(x => x.AccountId))
+                .Select(x => new GroupMember(Configuration.GroupRoles.Member, id, x))
                 .ToArray();
 
-            _context.GroupMembers.RemoveRange(members);
+            if (membersToAdd.Length > 0)
+            {
+                await _context.GroupMembers.AddRangeAsync(membersToAdd);
+                await _context.SaveChangesAsync();
+            }
 
-            await _context.SaveChangesAsync(); 
+            foreach (var member in membersToAdd)
+            {
+                member.Account = await _accountRespository.GetByIdAsync(member.AccountId);
+            }
 
-            return Result.Success((membersToAdd, membersToDelete));
+            return membersToAdd;
         }
 
-        public async Task<Result<DatabaseModel>> SendMessage(Guid groupId, Guid userId, string text)
+        public async Task<Result> RemoveMember(Group group, Guid memberId)
         {
-            var group = await GetByIdAsync(groupId, userId, DateTime.Now, 1);
+            if (group.Members.Count() < 2)
+                return Result.Failure("Can't delete member");
+
+            var numberOfOwners = group.Members
+                .Where(x => x.Role == Configuration.GroupRoles.Owner)
+                .Count();
+
+            var memberToDelete = group.Members
+                .FirstOrDefault(x => x.AccountId == memberId);
+
+            if (memberToDelete == null)
+                return Result.Failure("Can't delete member");
+
+            _context.Attach(group);
+
+            if (numberOfOwners == 1 && memberToDelete.Role == Configuration.GroupRoles.Owner)
+            {
+                group.Members.Remove(memberToDelete);
+                
+                var firstMember = group.Members.FirstOrDefault();
+
+                if (firstMember == null)
+                    return Result.Failure("Can't delete member");
+
+                firstMember.Role = Configuration.GroupRoles.Owner;
+            }
+
+            _context.Remove(memberToDelete);
+            
+            await _context.SaveChangesAsync();
+
+            return Result.Success();
+        }
+
+        public async Task<Result<DatabaseModel>> SendMessage(IFileService fileService, IMessengerRepository messengerRepository, MessageTransferModel message, Guid senderId)
+        {
+            var group = await GetByIdAsync(message.id, senderId, DateTime.Now, 1);
 
             if (group == null)
                 return Result.Failure<DatabaseModel>("Group not found");
 
-            var messageModel = Message.Create(text, userId);
+            var result = await messengerRepository.CreateMessage(fileService, message, senderId);
 
-            if (messageModel.IsFailure)
-                return Result.Failure<DatabaseModel>(messageModel.Error);
+            if (result.IsFailure)
+                return Result.Failure<DatabaseModel>(result.Error);
 
             _context.Attach(group);
-            await _context.AddAsync(messageModel.Value);
+            _context.Attach(result.Value);
 
-            group.Messages.Add(messageModel.Value);
-
+            group.Messages.Add(result.Value);
             await _context.SaveChangesAsync();
 
             return group;

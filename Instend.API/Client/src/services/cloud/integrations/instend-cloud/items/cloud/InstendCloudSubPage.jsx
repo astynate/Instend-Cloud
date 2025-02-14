@@ -1,47 +1,97 @@
-import { useEffect, useState } from 'react';
-import storageState, { AdaptId } from '../../../../../../states/storage-state';
-import File from '../../../../pages/cloud/shared/file/File';
-import Folder from '../../../../pages/cloud/shared/folder/Folder';
-import styles from './main.module.css';
+import { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
+import styles from './main.module.css';
+import StorageState, { AdaptId } from '../../../../../../state/entities/StorageState';
+import Collection from '../../../../components/collection/Collection';
+import CollectionsController from '../../../../api/CollectionsController';
+import CloudController from '../../../../api/CloudController';
+import SelectElementWithCheckmark from '../../../../elements/select/select-element-with-checkmark/SelectElementWithCheckmark';
+import FilesController from '../../../../api/FilesController';
+import File from '../../../../components/file/File';
 
-const InstendCloudSubPage = observer(({setSelectedFiles, setSelectedFolders, setFolderId, folderId}) => {
-    const { folders, files } = storageState;
+const InstendCloudSubPage = observer(({
+        selectedCollections = [], 
+        setSelectedCollections = () => {}, 
+        selectedFiles = [], 
+        setSelectedFiles = () => {}, 
+        setCollectionId = () => {}, 
+        collectionId
+    }) => {
+
+    const { collections, files } = StorageState;
+
+    useEffect(() => {
+        const isHasMoreCollections = StorageState
+            .IsItemsHasMore(collectionId, StorageState.collections);
+
+        const setCollections = (items) => StorageState
+            .SetItems(collectionId, StorageState.collections, items, true);
+
+        if (isHasMoreCollections)
+            CollectionsController.GetCollectionsByParentId(collectionId, setCollections);
+    }, [collectionId, collections]);
+
+    useEffect(() => {
+        const isHasMoreFiles = StorageState
+            .IsItemsHasMore(collectionId, files);
+
+        const setFiles = (files) => StorageState
+            .SetItems(collectionId, StorageState.files, files);
+
+        if (isHasMoreFiles)
+            FilesController.GetFilesByParentCollectionId(collectionId, setFiles);
+    }, [collectionId, files[AdaptId(collectionId)]?.items]);
+
+    useEffect(() => {
+        CloudController.GetPath(collectionId, StorageState.SetPath);
+    }, [collectionId]);
+
+    useEffect(() => {
+        if (selectedCollections.length > 0) {
+            setSelectedFiles([]);
+            return;
+        };
+
+        if (selectedFiles.length > 0) {
+            setSelectedCollections([]);
+            return;
+        };
+    }, [selectedCollections.length, selectedFiles.length]);
 
     return (
         <div className={styles.wrapper}>
-            {folders[AdaptId(folderId)] && folders[AdaptId(folderId)]
+            {collections[AdaptId(collectionId)] && collections[AdaptId(collectionId)].items && collections[AdaptId(collectionId)].items
                 .filter(element => element.typeId !== 'System')
-                .map((element) => (
-                    <Folder 
-                        key={element.id}
-                        id={element.id}
-                        isSelected={false}
-                        folder={element}
-                        name={element.name} 
-                        time={element.creationTime}
-                        isLoading={element.isLoading}
-                        setSelectedFolders={setSelectedFolders}
-                        isPreventDefault={true}
-                        callback={() => {
-                            setFolderId(element.id);
-                        }}
-                    />
-            ))}
-            {files[AdaptId(folderId)] && files[AdaptId(folderId)]
-                .map((element) => (
-                    <File
-                        key={element.id} 
-                        name={element.name}
-                        file={element}
-                        time={element.lastEditTime}
-                        image={element.preview == "" ? null : element.preview}
-                        type={element.type}
-                        isLoading={element.isLoading}
-                        isSelected={false}
-                        setSelectedFiles={setSelectedFiles}
-                    />
-            ))}
+                .map((collection) => (
+                    <SelectElementWithCheckmark 
+                        isSelectedOpen={true} 
+                        key={collection.id}
+                        setItems={setSelectedCollections}
+                        items={selectedCollections}
+                        item={collection}
+                        maxLength={4}
+                    >
+                        <Collection
+                            collection={collection}
+                            onContextMenu={() => {}}
+                            callback={() => setCollectionId(collection.id)}
+                            isHasLink={false}
+                        />
+                    </SelectElementWithCheckmark>
+                ))}
+            {files[AdaptId(collectionId)] && files[AdaptId(collectionId)].items && files[AdaptId(collectionId)].items
+                .map((file) => (
+                    <SelectElementWithCheckmark 
+                        isSelectedOpen={true} 
+                        key={file.id}
+                        setItems={setSelectedFiles}
+                        items={selectedFiles}
+                        item={file}
+                        maxLength={7}
+                    >
+                        <File file={file} />
+                    </SelectElementWithCheckmark>
+                ))}
         </div>
     );
 });

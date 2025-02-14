@@ -1,0 +1,117 @@
+.wrapper {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-rows: 60px auto;
+    grid-gap: 15px;
+}
+
+.accounts {
+    height: 100%;
+    width: 100%;
+    background: var(--main-accent-color);
+}
+
+.account {
+    padding: 15px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    cursor: pointer;
+}
+
+.account:hover {
+    background: var(--pop-up-accent-color);
+}
+
+.avatar {
+    height: 50px;
+    width: 50px;
+    background: var(--main-accent-color);
+    border-radius: 100%;
+}
+
+.left {
+    display: flex;
+    grid-gap: 15px;
+    align-items: center;
+}
+
+.information {
+    display: flex;
+    flex-direction: column;
+}
+
+.name {
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--main-font-color);
+}
+
+.role {
+    font-size: 15px;
+    color: var(--main-blue-color);
+}
+
+.remove {
+    padding: 5px 10px;
+    cursor: pointer;
+    font-weight: 500;
+    border-radius: 15px;
+    background: var(--pop-up-accent-color);
+    color: var(--main-red-color);
+}
+
+.groupMembersWrapper {
+    height: 450px;
+    width: 470px;
+    display: flex;
+    flex-direction: column;
+    grid-gap: 10px;
+}
+
+.openAccessWrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    grid-gap: 20px;
+}
+
+.foundAccounts {
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.bottomButton {
+    height: 70px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.button {
+    height: 90%;
+    width: 93%;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 5px;
+    color: var(--main-font-color);
+    background: var(--main-blue-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.add {
+    height: 22px;
+    width: 22px;
+    object-fit: contain;
+    filter: var(--main-filter);
+    cursor: pointer;
+    margin-right: 22px;
+}

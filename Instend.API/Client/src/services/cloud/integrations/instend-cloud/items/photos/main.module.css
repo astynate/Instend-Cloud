@@ -1,0 +1,29 @@
+.wrapper {
+    padding-left: 15px;
+    padding-right: 15px;
+    display: grid;
+    grid-gap: 3px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    padding-bottom: 15px;
+}
+
+.photo {
+    height: 100%;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: var(--pop-up-accent-color);
+}
+
+.photo img {
+    height: 100%;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+
+.photo video {
+    height: 100%;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+}

@@ -1,0 +1,10 @@
+.inputAttachments {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-bottom: 5px;
+    display: flex;
+    grid-gap: 10px;
+    overflow-y: visible;
+    overflow-x: auto;
+    flex-shrink: 0;
+}

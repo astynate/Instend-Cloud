@@ -19,7 +19,7 @@ class GalleryController {
                 galleryState.DeleteLoadingPhoto(queueId);
             });
         });
-    }
+    };
 
     static AddSelectedPhotosInAlbum = async (selected, activeItems) => {
         if (selected && selected[0] && selected[0].id) {
@@ -35,7 +35,7 @@ class GalleryController {
                 }
             })();
         }
-    }
+    };
 
     static UploadPhotosInAlbum = async (files, folderId, albumId) => {
         files = files.target.files;
