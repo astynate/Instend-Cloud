@@ -3,7 +3,7 @@ import { instance } from "../../../state/application/Interceptors";
 import StorageState, { AdaptId } from "../../../state/entities/StorageState";
 
 class FilesController {
-    static GetFilesByParentCollectionId = async (id, onSuccess = () => {}) => {
+    static GetFilesByParentCollectionAndStorageStateId = async (id, onSuccess = () => {}) => {
         const collectionFiles = StorageState.files[AdaptId(id)];
         const length = collectionFiles ? collectionFiles.items.length : 0;
 
@@ -12,7 +12,20 @@ class FilesController {
             .then(response => {
                 if (response.data && response.data.length) {
                     onSuccess(response.data);
-                }
+                };
+            })
+            .catch((error) => { 
+                ApplicationState.AddErrorInQueueByError('Attention!', error);
+            });
+    };
+
+    static GetFilesByParentCollectionId = async (id, skip = 0, take = 0, onSuccess = () => {}) => {
+        await instance
+            .get(`api/files?id=${id ?? ''}&skip=${skip}&take=${take}`)
+            .then(response => {
+                if (response.data && response.data.length) {
+                    onSuccess(response.data);
+                };
             })
             .catch((error) => { 
                 ApplicationState.AddErrorInQueueByError('Attention!', error);

@@ -7,12 +7,14 @@ namespace Instend.Core.Models.Storage.Album
     public class AlbumAccount : AccessBase
     {
         public Album Album { get; set; } = null!;
+        [Column("album_id")] public Guid AlbumId { get; set; }
 
         private AlbumAccount() { }
 
-        public AlbumAccount(Album album, Configuration.EntityRoles role) : base(role)
+        public AlbumAccount(Album album, Guid accountId, Configuration.EntityRoles role) : base(role)
         {
             Album = album;
+            AccountId = accountId;
         }
     }
 }

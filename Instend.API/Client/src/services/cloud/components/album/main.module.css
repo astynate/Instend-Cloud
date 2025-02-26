@@ -2,18 +2,23 @@
     height: 100%;
     width: 100%;
     user-select: none;
+    transition: 0.15s ease;
+    cursor: pointer;
 }
 
-.album[id="loading"] .cover {
-    background: #ddd;
-    margin-bottom: 5px;
+.album:hover .cover {
+    transform: scale(105%);
+}
+
+.album:active .cover {
+    transform: scale(98%);
 }
 
 .cover {
     height: 100%;
     width: 100%;
     object-fit: cover;
-    aspect-ratio: 1.6 / 1;
+    aspect-ratio: 1.8 / 1;
     border-radius: 15px;
     transition: 0.15s ease;
     outline: 2px solid transparent;
@@ -24,47 +29,8 @@
     outline: 2px solid var(--main-blue-color);
 }
 
-.information {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    color: var(--main-paragraph-color);
-    font-size: 12px;
-    font-weight: 400;
-}
-
-.name {
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--main-font-color);
-}
-
 .coverWrapper {
     position: relative;
     opacity: 0.5;
     animation: fileAnimation 2s ease infinite;
-}
-
-.loader {
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-}
-
-@keyframes fileAnimation {
-    0% {
-        opacity: 0.3;
-    }
-    50% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0.3;
-    }
 }

@@ -3,7 +3,7 @@ import styles from './main.module.css';
 import ImageHelper from '../../helpers/ImageHelper';
 import AttachmentImage from '../../items/image/AttachmentImage';
 
-const HorizontalGridTemplate = ({attachments = [], isEditable = false, setAttachments = () => {}}) => {
+const HorizontalGridTemplate = ({attachments = [], isEditable = false, setAttachments = () => {}, imageCallback = () => {}}) => {
     const [sortedAttachments, setSortedAttachments] = useState([...attachments]);
 
     useEffect(() => { 
@@ -27,6 +27,7 @@ const HorizontalGridTemplate = ({attachments = [], isEditable = false, setAttach
                         isEditable={isEditable}
                         attachments={attachments}
                         setAttachments={setAttachments}
+                        callback={() => imageCallback(index)}
                     />
                 ))}
             </div>
@@ -38,6 +39,7 @@ const HorizontalGridTemplate = ({attachments = [], isEditable = false, setAttach
                         isEditable={isEditable}
                         attachments={attachments}
                         setAttachments={setAttachments}
+                        callback={() => imageCallback(index)}
                     />
                 ))}
             </div>}

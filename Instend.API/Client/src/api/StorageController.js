@@ -8,6 +8,6 @@ class StorageController {
     static getSegmentOfFile = (path) => {
         return `${StorageController.storagePath}/stream?path=${path}`;
     };
-}
+};
 
 export default StorageController;

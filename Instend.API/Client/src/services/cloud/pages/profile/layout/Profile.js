@@ -3,7 +3,6 @@ import { observer } from 'mobx-react-lite';
 import { useParams } from 'react-router-dom';
 import ProfileDescription from '../widgets/profile-description/ProfileDescription';
 import styles from './styles/main.module.css';
-import HeaderSearch from '../../../templates/album-view-template/compontens/header-search/HeaderSearch';
 import MenuWithUnderline from '../../../features/navigation/menu-with-underline/MenuWithUnderline';
 import MainProfilePage from '../pages/main/MainProfilePage';
 import PhotosProfilePage from '../pages/photos/PhotosProfilePage';
@@ -20,10 +19,10 @@ const Profile = observer((props) => {
   const setAccountData = (data) => {
     if (!!data === false) {
       return;
-    }
+    };
 
     setAccount(data);
-  }
+  };
 
   useEffect(() => {
       AccountController.GetAccountData(
@@ -75,11 +74,6 @@ const Profile = observer((props) => {
               title: "Followers", 
               component: (<div className={styles.contentWrapper}></div>)
             },
-          ]}
-          rightItems={[
-              (<HeaderSearch
-                  placeholder={"Search by name"}
-              />)
           ]}
         />
       </div> 

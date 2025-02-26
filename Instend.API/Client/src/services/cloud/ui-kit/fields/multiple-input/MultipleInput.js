@@ -21,6 +21,6 @@ const MultipleInput = ({placeholder, value, setValue}) => {
             onInput={(event) => setValue(event.target.value)}
         ></textarea>
     );
- };
+};
 
 export default MultipleInput;

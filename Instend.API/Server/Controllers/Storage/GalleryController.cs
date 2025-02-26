@@ -7,10 +7,10 @@ using Instend_Version_2._0._0.Server.Hubs;
 using Instend.Core.Dependencies.Repositories.Account;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Instend.Repositories.Contexts;
 using Instend.Core.Models.Storage.Album;
+using Instend.Core.Dependencies.Services.Internal.Helpers;
 
 namespace Instend_Version_2._0._0.Server.Controllers.Storage
 {
@@ -32,9 +32,11 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         private readonly IImageService _imageService;
 
+        private readonly ISerializationHelper _serializationHelper;
+
         private readonly IHubContext<GlobalHub> _globalHub;
 
-        private AccountsContext _context;
+        private GlobalContext _context;
 
         public GalleryController
         (
@@ -46,7 +48,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             IAccountsRepository accountsRepository,
             IAccessHandler accessHandler,
             IImageService imageService,
-            AccountsContext context
+            GlobalContext context,
+            ISerializationHelper serializationHelper
         )
         {
             _fileRespository = fileRespository;
@@ -58,6 +61,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             _accountsRepository = accountsRepository;
             _accessHandler = accessHandler;
             _imageService = imageService;
+            _serializationHelper = serializationHelper;
         }
 
         public class CreateAlbumTransferObject
@@ -80,6 +84,15 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         public async Task<ActionResult<Album[]>> GetPlaylists(int skip, int take) 
             => await GetAlbums(Configuration.AlbumTypes.Playlist, skip, take);
 
+        private (string name, string? type) GetFileData(IFormFile file)
+        {
+            var nameSplit = file.FileName.Split(".");
+            var name = nameSplit[0] ?? "Unknown";
+            var type = nameSplit.Length >= 2 ? nameSplit[nameSplit.Length - 1] : null;
+
+            return (name, type);
+        }
+
         [HttpGet]
         [Authorize]
         [Route("/api/album")]
@@ -97,7 +110,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             var result = await _albumsRepository
                 .GetByIdAsync(Guid.Parse(id), from, count);
 
-            return Ok(result);
+            return Ok(_serializationHelper.SerializeWithCamelCase(result));
         }
 
         [HttpPost]
@@ -122,7 +135,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             var result = await _albumsRepository
                 .GetAlbums(Guid.Parse(userId.Value), type, skip, take);
 
-            return Ok(result);
+            return Ok(_serializationHelper.SerializeWithCamelCase(result));
         }
 
         [HttpPost]
@@ -215,45 +228,40 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         private async Task<IActionResult> CreateAlbumWithType(CreateAlbumTransferObject createTO, Configuration.AlbumTypes type)
         {
-            throw new NotImplementedException();
+            var accountId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
-            //var accountId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
+            if (accountId.IsFailure)
+                return BadRequest(accountId.Error);
 
-            //if (accountId.IsFailure)
-            //    return BadRequest(accountId.Error);
+            if (string.IsNullOrEmpty(createTO.name) || string.IsNullOrWhiteSpace(createTO.name))
+                return BadRequest("Name is required.");
 
-            //if (string.IsNullOrEmpty(createTO.name) || string.IsNullOrWhiteSpace(createTO.name))
-            //    return BadRequest("Name is required.");
+            var fileData = createTO.cover != null ? GetFileData(createTO.cover) : ("", "");
+            var coverAsBytes = new byte[0];
 
-            //var coverAsBytes = new byte[0];
+            using (var coverStream = new MemoryStream())
+            {
+                if (createTO.cover != null && createTO.cover.Length > 0)
+                {
+                    await createTO.cover.CopyToAsync(coverStream);
+                    coverAsBytes = coverStream.ToArray();
+                }
+            }
 
-            //using (var coverStream = new MemoryStream())
-            //{
-            //    if (createTO.cover != null && createTO.cover.Length > 0)
-            //    {
-            //        await createTO.cover.CopyToAsync(coverStream);
-            //        coverAsBytes = coverStream.ToArray();
-            //    }
-            //}
+            var result = await _albumsRepository.AddAsync
+            (
+                Guid.Parse(accountId.Value),
+                coverAsBytes,
+                createTO.name,
+                fileData.Item2,
+                createTO.description,
+                type
+            );
 
-            //var result = await _albumsRepository.AddAsync
-            //(
-            //    Guid.Parse(accountId.Value), 
-            //    coverAsBytes,
-            //    createTO.name,
-            //    createTO.description, 
-            //    type
-            //);
+            if (result.IsFailure)
+                return BadRequest(result.Error);
 
-            //if (result.IsFailure)
-            //    return BadRequest(result.Error);
-
-            //await result.Value.SetCover(_imageService);
-
-            //await _globalHub.Clients.Group(result.Value.AccountId.ToString())
-            //    .SendAsync("Create", new object[] { result.Value, createTO.queueid });
-
-            return Ok();
+            return Ok(_serializationHelper.SerializeWithCamelCase(new object[] { result.Value, createTO.queueid }));
         }
 
         [HttpPut]

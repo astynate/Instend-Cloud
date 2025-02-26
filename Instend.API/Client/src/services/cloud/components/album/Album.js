@@ -1,40 +1,35 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ConvertFullDate } from '../../../../utils/handlers/DateHandler';
 import styles from './main.module.css';
+import StorageItemDescription from '../../features/storage/storage-item-description/StorageItemDescription';
+import StorageController from '../../../../api/StorageController';
 
-const Album = (props) => {
+const Album = ({album = {}}) => {
     return (
         <>
-            {props.album.isLoading === true ?
+            {album.isLoading === true ?
                 <div className={styles.album} id="loading">
                     <div className={styles.coverWrapper}>
                         <div className={styles.cover}>
                         </div>
                     </div>
-                    <div className={styles.information}>
-                        <span className={styles.name}>{props.album.name}</span>
-                        <span>Loading</span>
-                    </div>
+                    <StorageItemDescription name={album.name} />
                 </div>
             :
-                <Link to={`/gallery/albums/${props.album.id}`} className={styles.album} data={props.album.id}>
-                    <div>
-                        <img 
-                            src={`data:image/png;base64,${props.album.cover}`} 
-                            className={styles.cover}
-                            draggable="false"
-                            id={props.isSelected ? 'selected' : null}
-                        />
-                    </div>
-                    <div className={styles.information}>
-                        <span className={styles.name}>{props.album.name}</span>
-                        <span>{ConvertFullDate(props.album.creationTime)}</span>
-                    </div>
+                <Link to={`/gallery/albums/${album.id}`} className={styles.album} data={album.id}>
+                    <img 
+                        src={StorageController.getFullFileURL(album.cover)} 
+                        className={styles.cover}
+                        draggable="false"
+                    />
+                    <StorageItemDescription
+                        name={album.name} 
+                        time={album.creationTime}
+                    />
                 </Link>
             }
         </>
     );
- };
+};
 
 export default Album;

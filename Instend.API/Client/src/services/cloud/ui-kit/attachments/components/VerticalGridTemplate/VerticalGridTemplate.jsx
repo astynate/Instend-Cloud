@@ -4,7 +4,7 @@ import ImageHelper from '../../helpers/ImageHelper';
 import TypeHelper from '../../helpers/TypeHelper';
 import AttachmentImage from '../../items/image/AttachmentImage';
 
-const VerticalGridTemplate = ({attachments = [], isEditable = false, setAttachments = () => {}}) => {
+const VerticalGridTemplate = ({attachments = [], isEditable = false, setAttachments = () => {}, imageCallback = () => {}}) => {
     const [sortedAttachments, setSortedAttachments] = useState([...attachments]);
     const [endIndex, setEndIndex] = useState(1);
 
@@ -45,6 +45,7 @@ const VerticalGridTemplate = ({attachments = [], isEditable = false, setAttachme
                         isEditable={isEditable}
                         attachments={attachments}
                         setAttachments={setAttachments}
+                        callback={() => imageCallback(index)}
                     />
                 ))}
             </div>
@@ -56,6 +57,7 @@ const VerticalGridTemplate = ({attachments = [], isEditable = false, setAttachme
                         isEditable={isEditable}
                         attachments={attachments}
                         setAttachments={setAttachments}
+                        callback={() => imageCallback(index)}
                     />
                 ))}
             </div>

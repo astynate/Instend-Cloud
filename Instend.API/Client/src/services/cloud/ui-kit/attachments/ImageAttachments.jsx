@@ -5,8 +5,11 @@ import ColumnsTemplate from './components/ColumnsTemplate/ColumnsTemplate';
 import HorizontalGridTemplate from './components/HorizontalGridTemplate/HorizontalGridTemplate';
 import VerticalGridTemplate from './components/VerticalGridTemplate/VerticalGridTemplate';
 import GlobalContext from '../../../../global/GlobalContext';
+import Preview from '../../../preview/layout/Preview';
 
 const ImageAttachments = ({attachments = [], isEditable = false, setAttachments = () => {}}) => {
+    const [isPreviewOpen, setPreviewOpenState] = useState(false);
+    const [index, setIndex] = useState(0);
     const [imageAttachments, setImageAttachments] = useState([]);
 
     useEffect(() => {
@@ -44,20 +47,29 @@ const ImageAttachments = ({attachments = [], isEditable = false, setAttachments 
 
         if (imageAttachments.length > 0) {
             DetermineHandler();
-        }
+        };
     }, [imageAttachments]);
 
     if (imageAttachments.length === 0) {
         return null;
-    }
+    };
 
     return (
         <div className={styles.attachments}>
+            {isPreviewOpen && <Preview 
+                close={() => setPreviewOpenState(false)}
+                files={attachments}
+                index={index}
+            />}
             <CurrentHandler
                 key={attachments.length} 
                 attachments={attachments} 
                 isEditable={isEditable}
                 setAttachments={setAttachments}
+                imageCallback={(index) => {
+                    setIndex(index);
+                    setPreviewOpenState(true);
+                }}
             />
         </div>
     );

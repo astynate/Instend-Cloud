@@ -13,12 +13,10 @@ namespace Instend.Core.Models.Storage.Album
         [Column("description")] public string? Description { get; private set; } = string.Empty;
         [Column("cover")] public string Cover { get; private set; } = Configuration.DefaultAlbumCoverPath;
         [Column("creation_time")] public DateTime CreationTime { get; private set; }
-        [Column("last_edit_time")] public DateTime LastEditTime { get; private set; }
         [Column("type")] public string TypeId { get; private set; } = Configuration.AlbumTypes.Album.ToString();
-        [Column("views")] public long Views { get; private set; } = 0;
-        [Column("reactions")] public long Reactions { get; private set; } = 0;
 
         public List<AlbumAccount> AccountsWithAccess { get; init; } = [];
+        public List<File.File> Files { get; init; } = [];
 
         public Album() { }
 
@@ -30,10 +28,10 @@ namespace Instend.Core.Models.Storage.Album
             set => TypeId = value.ToString();
         }
 
-        public static Result<Album> Create(string name, string? description, Configuration.AlbumTypes type, Configuration.AccessTypes access)
+        public static Result<Album> Create(string name, string typeOfCoverFile, string? description, Configuration.AlbumTypes type, Configuration.AccessTypes access)
         {
             var id = Guid.NewGuid();
-            var cover = Configuration.GetAvailableDrivePath() + id.ToString();
+            var cover = Configuration.GetAvailableDrivePath() + id.ToString() + "." + typeOfCoverFile;
 
             return new Album()
             {
@@ -42,7 +40,6 @@ namespace Instend.Core.Models.Storage.Album
                 Description = description,
                 Cover = cover,
                 CreationTime = DateTime.Now,
-                LastEditTime = DateTime.Now,
                 Access = access,
                 AccessId = access.ToString(),
                 Type = type,
@@ -68,11 +65,9 @@ namespace Instend.Core.Models.Storage.Album
             if (string.IsNullOrEmpty(name) == false && string.IsNullOrWhiteSpace(name) == false)
                 Name = name;
 
-            LastEditTime = DateTime.Now;
             Description = description;
         }
 
-        public void IncrementViews() => Views++;
         public void OnDelete(IFileService fileService) => fileService.DeleteFile(Cover);
     }
 }

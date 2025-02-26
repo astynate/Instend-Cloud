@@ -1,7 +1,7 @@
 import AttachmentImage from '../../items/image/AttachmentImage';
 import styles from './main.module.css';
 
-const ColumnsTemplate = ({attachments, isEditable, setAttachments = () => {}}) => {
+const ColumnsTemplate = ({attachments, isEditable, setAttachments = () => {}, imageCallback = () => {}}) => {
     return (
         <div className={styles.wrapper}>
             {attachments.slice(0, Math.min(attachments.length, 4)).map((image, index) => (
@@ -11,6 +11,7 @@ const ColumnsTemplate = ({attachments, isEditable, setAttachments = () => {}}) =
                     isEditable={isEditable}
                     attachments={attachments}
                     setAttachments={setAttachments}
+                    callback={() => imageCallback(index)}
                 />
             ))}
         </div>

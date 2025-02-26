@@ -51,7 +51,7 @@ const Preview = ({
     
         if (handler) {
             return handler.object;
-        }
+        };
 
         return null;
     };
@@ -60,8 +60,8 @@ const Preview = ({
         setCurrentIndex(prev => {
             const newIndex = (prev + value) % files.length;
             return newIndex < 0 ? files.length - 1 < 0 ? 0 : files.length - 1 : newIndex;
-        })
-    }    
+        });
+    };
 
     if (files[currentIndex]) {
         return (
@@ -114,6 +114,6 @@ const Preview = ({
             </div>
         </div>
     );
- };
+};
 
 export default Preview;

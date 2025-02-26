@@ -1,4 +1,6 @@
 import { instance } from "../../../state/application/Interceptors";
+import GalleryState from "../../../state/entities/GalleryState";
+import StorageState from "../../../state/entities/StorageState";
 
 class GalleryController {
     static UploadPhotosInGalleryFromEvent = async (event, id) => {
@@ -6,18 +8,17 @@ class GalleryController {
       
         await Array.from(event.target.files).forEach(async (file) => {
             const files = new FormData();
-            const queueId = galleryState.CreateLoadingPhoto(id);
+            const queueId = GalleryState.CreateLoadingPhoto(id);
 
             files.append('file', file);
             files.append('albumId', id ? id : "");
             files.append('queueId', queueId);
 
             await instance
-            .post(`/api/gallery/upload`, files)
-            .catch((error) => {
-                applicationState.AddErrorInQueue('Attention!', error.response.data);
-                galleryState.DeleteLoadingPhoto(queueId);
-            });
+                .post(`/api/gallery/upload`, files)
+                .catch((_) => {
+                    GalleryState.DeleteLoadingPhoto(queueId);
+                });
         });
     };
 
@@ -27,14 +28,14 @@ class GalleryController {
                 for (let i = 0; i < activeItems.length; i++) {
                     if (activeItems[i] && activeItems[i].id) {
                         await instance
-                        .post(`/api/albums?fileId=${activeItems[i].id}&albumId=${selected[0].id}`)
-                        .catch(response => {
-                            console.error(response);
-                        });
+                            .post(`/api/albums?fileId=${activeItems[i].id}&albumId=${selected[0].id}`)
+                            .catch(response => {
+                                console.error(response);
+                            });
                     }
                 }
             })();
-        }
+        };
     };
 
     static UploadPhotosInAlbum = async (files, folderId, albumId) => {
@@ -50,12 +51,12 @@ class GalleryController {
                     type = type[1];
                 } else{
                     type = null;
-                }
-            }
+                };
+            };
     
             const form = new FormData();
             const fileName = file.name ? file.name : null;
-            const queueId = await storageState.CreateLoadingFile(fileName, folderId, type);
+            const queueId = await StorageState.CreateLoadingFile(fileName, folderId, type);
     
             form.append('file', file);
             form.append('folderId', folderId ? folderId : "");
@@ -64,12 +65,11 @@ class GalleryController {
     
             await instance
                 .post('api/albums/upload', form)
-                .catch(error => {
-                    applicationState.AddErrorInQueue('Attention!', error.response.data);
-                    storageState.DeleteLoadingFile(queueId, file.folderId);
+                .catch(_ => {
+                    StorageState.DeleteLoadingFile(queueId, file.folderId);
                 });
-        })
+        });
     };
-}
+};
 
 export default GalleryController;

@@ -15,7 +15,7 @@ class TypeHelper {
                          ImageHelper.GetAspectRatio(d) > minAspectRatio);
 
         return callback(itemsWithSpecificDimention.length);
-    }
+    };
 
     static IsColumnTemplate = async (attachments) => {
         const isAllImagesHasPortraitOrienation = await TypeHelper.CompareCountPortraitImages(

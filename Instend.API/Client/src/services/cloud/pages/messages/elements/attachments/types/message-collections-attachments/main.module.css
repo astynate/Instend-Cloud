@@ -1,0 +1,61 @@
+.collections {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 5px;
+    grid-gap: 5px;
+}
+
+.collection {
+    user-select: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    grid-gap: 7px;
+    padding: 10px;
+    background: var(--blue-200);
+    border-radius: 10px;
+    transition: 0.15s ease;
+}
+
+.collection:hover {
+    transform: scale(101%);
+}
+
+.collection:active {
+    transform: scale(99%);
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    color: white;
+}
+
+.name {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.time {
+    font-size: 14px;
+    font-weight: 400;
+    opacity: 0.7;
+}
+
+.files {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 3px;
+}
+
+.file {
+    height: 70px;
+    width: 70px;
+    border-radius: 5px;
+    background: var(--blue-300);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    font-family: 12px;
+}

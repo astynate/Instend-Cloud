@@ -1,36 +1,29 @@
 import React, { useState } from 'react';
-import { UploadPhotosInAlbum } from '../../api/GalleryRequests';
-import { SendFilesFromEvent } from '../../../cloud/api/FileRequests';
-import { CreateAlbumRequest } from '../../api/AlbumRequests';
+import CreateAlbum from '../../../../features/pop-up-windows/create-album-popup/CreateAlbum';
+import AddButton from '../../../../ui-kit/buttons/add-button/Add';
 import album from './images/types/album.png';
 import image from './images/types/image.png';
-import CreateAlbum from '../../../../widgets/create-album/CreateAlbum';
-import Add from '../../../../shared/ui-kit/add/Add';
+import AlbumsController from '../../../../api/AlbumsController';
 
-const AddInGallery = (props) => {
+const AddInGallery = ({ id }) => {
     const [isCreateAlbumOpen, setCreateAlbumOpen] = useState(false);
 
     return (
         <>
-            {isCreateAlbumOpen && <CreateAlbum 
-                title='Create album'
+            <CreateAlbum
+                title='Create an album'
                 isOpen={isCreateAlbumOpen}
-                closeCallback={() => {setCreateAlbumOpen(false)}}
-                id={props.id}
+                closeCallback={() => setCreateAlbumOpen(false)}
+                id={id}
                 callback={(name, description, image) => {
-                    CreateAlbumRequest('/api/albums/create', name, description, image);
-                    setCreateAlbumOpen(false);
+                    AlbumsController.CreateAlbum(name, description, image);
                 }}
-            />}
-            <Add 
+            />
+            <AddButton
                 items={[
                     {image: album, title: "Album", callback: () => setCreateAlbumOpen(true)},
                     {image: image, title: "Image", callback: () => {}, type: "upload", sendFiles: (event) => {
-                        if (props.id) {
-                            UploadPhotosInAlbum(event, 'Photos', props.id);
-                        } else {
-                            SendFilesFromEvent(event, 'Photos');
-                        }
+
                     }}
                 ]}
             />

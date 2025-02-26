@@ -3,8 +3,8 @@ import styles from './main.module.css';
 import PopUpWindow from "../../../../shared/popup-windows/pop-up-window/PopUpWindow";
 import AvatarPicker from "../../../../shared/popup-windows/pop-up-window/elements/avatar-picker/AvatarPicker";
 import Input from "../../../../ui-kit/fields/input/Input";
-import MainButton from "../../../../ui-kit/buttons/main-button/Button";
 import GroupsController from "../../../../api/GroupsController";
+import MainButton from "../../../../ui-kit/buttons/main-button/MainButton";
 
 const CreateGroup = ({open, close}) => {
     const [name, setName] = useState('');

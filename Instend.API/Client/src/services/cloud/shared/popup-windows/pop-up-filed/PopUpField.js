@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './main.module.css';
 import PopUpWindow from '../pop-up-window/PopUpWindow';
-import MainButton from '../../../ui-kit/buttons/main-button/Button';
+import MainButton from '../../../ui-kit/buttons/main-button/MainButton';
 
 const PopUpField = ({open, field, callback, close, title, text, placeholder}) => {
     const sendRequest = async () => {

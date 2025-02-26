@@ -49,7 +49,7 @@ const MainCloudPage = observer(({isAscending, sortingType}) => {
             .SetItems(params.id, StorageState.files, files);
 
         if (isHasMoreFiles)
-            FilesController.GetFilesByParentCollectionId(params.id, setFiles);
+            FilesController.GetFilesByParentCollectionAndStorageStateId(params.id, setFiles);
     }, [params.id, files[AdaptId(params.id)]?.items]);
 
     useEffect(() => {
@@ -67,7 +67,7 @@ const MainCloudPage = observer(({isAscending, sortingType}) => {
             const nameA = a.name.toLowerCase();
             const nameB = b.name.toLowerCase();
             comparison = nameA.localeCompare(nameB);
-        }
+        };
 
         return isAscending ? comparison : -comparison;
     };
@@ -112,7 +112,7 @@ const MainCloudPage = observer(({isAscending, sortingType}) => {
                                 setRenameCollectionState(true);
                                 setCollectionName(collection.name);
                                 setId(collection.id);
-                            }
+                            };
 
                             return (
                                 <ContextMenu 
@@ -138,7 +138,7 @@ const MainCloudPage = observer(({isAscending, sortingType}) => {
                                 setRenameFileState(true);
                                 setFileName(file.name);
                                 setId(file.id);
-                            }
+                            };
 
                             return (
                                 <ContextMenu 

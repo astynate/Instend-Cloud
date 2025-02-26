@@ -10,7 +10,7 @@ const PopUpWindow = (props) => {
                 </div>
             </div>
         );
-    }
+    };
 
     return null;
 };

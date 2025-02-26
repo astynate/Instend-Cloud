@@ -27,7 +27,11 @@ const AddButton = (props) => {
                 isOpen={isCreateOpen}
                 items={props.items}
             />
-            <div className={styles.button} onClick={() => setOpenState(prev => !prev)} ref={createWindow}>
+            <div 
+                className={styles.button} 
+                onClick={() => setOpenState(prev => !prev)} 
+                ref={createWindow}
+            >
                 <img 
                     src={add} 
                     draggable="false" 
@@ -35,6 +39,6 @@ const AddButton = (props) => {
             </div>
         </div>
     );
- };
+};
 
 export default AddButton;

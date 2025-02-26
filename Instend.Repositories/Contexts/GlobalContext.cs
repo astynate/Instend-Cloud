@@ -1,4 +1,5 @@
 ﻿using Instend.Core.Models.Abstraction;
+using Instend.Core.Models.Storage.Album;
 using Instend.Core.Models.Storage.Collection;
 using Instend.Core.Models.Storage.File;
 using Instend.Core.Models.Storage.Files;
@@ -18,6 +19,9 @@ namespace Instend.Repositories.Contexts
 
         public DbSet<Collection> Collections { get; set; } = null!;
         public DbSet<CollectionAccount> CollectionsAccounts { get; set; } = null!;
+        public DbSet<Album> Albums { get; set; } = null!;
+        public DbSet<AlbumAccount> AlbumsAccounts { get; set; } = null!;
+        public DbSet<AlbumFile> AlbumsFiles { get; set; } = null!;
         public DbSet<Core.Models.Storage.File.File> Files { get; set; } = null!;
         public DbSet<FileAccount> FilesAccounts { get; set; } = null!;
         public DbSet<Attachment> Attachments { get; set; } = null!;
@@ -73,6 +77,26 @@ namespace Instend.Repositories.Contexts
             modelBuilder.Entity<FileAccount>()
                 .HasOne(ca => ca.Account)
                 .WithMany(a => a.Files)
+                .HasForeignKey(ca => ca.AccountId)
+                .HasPrincipalKey(a => a.Id);
+
+            /// Albums
+            /// [CONFIGURATION]
+
+            modelBuilder.Entity<Album>()
+                .HasMany(x => x.Files)
+                .WithMany()
+                .UsingEntity<AlbumFile>();
+
+            modelBuilder.Entity<Album>()
+                .HasMany(ca => ca.AccountsWithAccess)
+                .WithOne(x => x.Album)
+                .HasForeignKey(x => x.AlbumId)
+                .HasPrincipalKey(x => x.Id);
+
+            modelBuilder.Entity<AlbumAccount>()
+                .HasOne(ca => ca.Account)
+                .WithMany()
                 .HasForeignKey(ca => ca.AccountId)
                 .HasPrincipalKey(a => a.Id);
         }

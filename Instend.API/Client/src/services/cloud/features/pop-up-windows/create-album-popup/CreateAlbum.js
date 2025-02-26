@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import styles from './main.module.css';
-import PopUpWindow from '../../shared/pop-up-window/PopUpWindow';
-import Input from '../../shared/ui-kit/input/Input';
-import TextArea from '../../shared/ui-kit/text-area/TextArea';
-import Button from '../../shared/ui-kit/button/Button';
-import upload from "./images/upload.png";
+import upload from './images/upload.png';
+import Input from '../../../ui-kit/fields/input/Input';
+import MainButton from '../../../ui-kit/buttons/main-button/MainButton';
+import PopUpWindow from '../../../shared/popup-windows/pop-up-window/PopUpWindow';
 
 const CreateAlbum = ({isUpdate, nameValue, descriptionValue, cover, isOpen, closeCallback, title, callback}) => {
     const [name, setName] = useState(isUpdate && nameValue ? nameValue : '');
@@ -23,14 +22,16 @@ const CreateAlbum = ({isUpdate, nameValue, descriptionValue, cover, isOpen, clos
             };
     
             reader.readAsDataURL(file);
-        } catch {}
+        } catch (exception) {
+            console.error(exception);
+        };
     };
 
     return (
         <PopUpWindow
             open={isOpen} 
             close={closeCallback}
-            isHeaderPositionAbsulute={true}
+            isHeaderPositionAbsolute={true}
         >
             <div className={styles.createAlbum}>
                 <div className={styles.header}>
@@ -39,37 +40,49 @@ const CreateAlbum = ({isUpdate, nameValue, descriptionValue, cover, isOpen, clos
                 <div className={styles.content}>
                     <div className={styles.left}>
                         <div className={styles.loadCover}>
-                            {image ? (
-                                <img src={imageAsURL} className={styles.uploadedImage} />
-                            ) : isUpdate ? 
-                                <img src={`data:image/png;base64,${cover}`} className={styles.uploadedImage} />
-                            :
-                                <img src={upload} className={styles.upload} />
-                            }
-                            <input type='file' onChange={handleImageUpload} accept='image/*' />
+                            {image ? 
+                                    <img 
+                                        src={imageAsURL} 
+                                        className={styles.uploadedImage} 
+                                        draggable="false"
+                                    />
+                                :
+                                    <img 
+                                        src={upload} 
+                                        className={styles.upload} 
+                                        draggable="false"
+                                    />}
+                            <input 
+                                type='file' 
+                                onChange={handleImageUpload} 
+                                accept='image/*' 
+                            />
                         </div>
                     </div>
                     <div className={styles.right}>
                         <div className={styles.field}>
-                            <span>Name</span>
-                            <Input 
+                            <span className={styles.title}>Name</span>
+                            <Input
                                 placeholder="Create name"
                                 value={name}
                                 setValue={setName} 
                             />
                         </div>
                         <div className={styles.field}>
-                            <span>Description</span>
-                            <TextArea 
-                                placeholder="Create description" 
-                                value={description}
-                                setValue={setDescription} 
-                            />
+                            <span className={styles.title}>Description</span>
+                            <textarea 
+                                placeholder='Description' 
+                                className={styles.multilineInput}
+                                onInput={(e) => setDescription(e.target.value)}
+                            ></textarea>
                         </div>
                         <div className={styles.buttonWrapper}>
-                            <Button 
+                            <MainButton
                                 value={"Coninue"} 
-                                callback={() => callback(name, description, image)}
+                                callback={async () => {
+                                    await callback(name, description, image);
+                                    closeCallback();
+                                }}
                             />
                         </div>
                     </div>
@@ -77,6 +90,6 @@ const CreateAlbum = ({isUpdate, nameValue, descriptionValue, cover, isOpen, clos
             </div>
         </PopUpWindow>
     );
- };
+};
 
 export default CreateAlbum;

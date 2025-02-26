@@ -4,7 +4,7 @@ import styles from './main.module.css';
 import StorageController from '../../../../../../api/StorageController';
 import Base64Handler from '../../../../../../utils/handlers/Base64Handler';
 
-const AttachmentImage = ({image, isEditable = false, setAttachments}) => {
+const AttachmentImage = ({image, isEditable = false, setAttachments, callback = () => {}}) => {
     const [_, setSelectedState] = useState(true);
 
     return (
@@ -12,6 +12,7 @@ const AttachmentImage = ({image, isEditable = false, setAttachments}) => {
             <img 
                 src={image.preview ? Base64Handler.Base64ToUrlFormatPng(image.preview) : StorageController.getFullFileURL(image.path)} 
                 draggable={false}
+                onClick={callback}
             />
             {isEditable && <SelectElementWithCheckmark
                 isSelected={true} 

@@ -1,61 +1,52 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useParams } from 'react-router-dom';
-import styles from './main.module.css';
-// import GalleryState from '../../../../../../state/entities/GalleryState';
-// import AddInGallery from '../../widgets/add-in-gallery-button/AddInGallery';
-// import AlbumViewTemplate from '../../../../widgets/album-view-template/AlbumViewTemplate';
-// import ScrollElementWithAction from '../../../../elements/scroll-element-with-action/ScrollElementWithAction';
-// import PhotoList from '../../../../features/lists/photo-list/PhotoList';
+import ContentWrapper from '../../../../features/wrappers/content-wrapper/ContentWrapper';
+import AlbumsController from '../../../../api/AlbumsController';
 
 const Album = observer(({}) => {
-    // const { albums } = GalleryState;
-    // const params = useParams();
-    // const wrapper = useRef();
+    const [isHasMore, setHasMoreState] = useState();
+    const [album, setAlbum] = useState(undefined);
+    let params = useParams();
 
-    // useEffect(() => {
-//      GalleryState.GetAlbums(); 
-//      GalleryState.GetAlbumPhotos(params.id);
-    // }, []);
+    useEffect(() => {
+        if (!params || !params.id) {
+            return;
+        };
 
-    // return (
-    //     <>
-    //         <AlbumViewTemplate
-    //             uniqItems={[
-    //                 {'title': "Photos", 'component': 
-    //                     <>
-    //                         <AddInGallery id={params.id} /> 
-    //                         {!albums[params.id] || !albums[params.id].photos || albums[params.id].photos.length === 0 ?
-    //                             <div className={styles.noImages}>
-    //                                 {/* <Placeholder title="No photos uploaded" /> */}
-    //                             </div>
-    //                         :
-    //                             <PhotoList
-    //                                 photos={GalleryState.albums && GalleryState.albums[params.id] && GalleryState.albums[params.id].photos ? 
-    //                                     GalleryState.albums[params.id].photos : []} 
-    //                                 scale={scale}
-    //                                 photoGrid={photoGrid}
-    //                                 forwardRef={wrapper}
-    //                             />
-    //                         }
-    //                         {GalleryState.albums[params.id] &&
-    //                             <ScrollElementWithAction
-    //                                 scroll={scroll}
-    //                                 isHasMore={GalleryState.albums[params.id].hasMore}
-    //                                 count={GalleryState.albums[params.id].photos.length}
-    //                                 callback={async () => {
-    //                                     await GalleryState.GetAlbumPhotos(params.id);
-    //                                 }}
-    //                             />
-    //                         }
-    //                     </>
-    //                 },
-    //             ]}
-    //             views={GalleryState.albums[params.id] && GalleryState.albums[params.id].views ? 
-    //                 GalleryState.albums[params.id].views : 0}
-    //         />
-    //     </>
-    // );
+        AlbumsController.GetAlbum(params.id, album?.files?.length, 5, (data) => {
+            if (!data || !data.files) {
+                setAlbum(undefined);
+                return false;
+            };
+
+            if (album && album.files.length && album.id === params.id) {
+                setHasMoreState(data.files.length >= 5);
+                
+                setAlbum(prev => {
+                    prev.files = [...prev.files, ...data.files];
+                    return prev;
+                });
+
+                return;
+            };
+
+            setHasMoreState(false);
+        });
+    }, [params.id, album]);
+
+    if (!album) {
+        return null;
+    };
+
+    return (
+        <>
+            <ContentWrapper>
+                <h1>{}</h1>
+                <span>{}</span>
+            </ContentWrapper>
+        </>
+    );
 });
 
 export default Album;
