@@ -43,13 +43,18 @@
 }
 
 .left-panel-logo img {
-    height: 75px;
-    width: 75px;
+    height: 45px;
+    width: 45px;
     object-fit: contain;
+    margin-top: 15px;
+    margin-bottom: 12px;
+    margin-left: 14px;
+    margin-right: 14px;
     filter: var(--main-filter);
 }
 
 .mobile-navigation-panel {
+    height: 100%;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     border-top: 1px solid var(--main-border-color);

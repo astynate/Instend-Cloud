@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Route, Routes } from 'react-router-dom';
 import Header from '../../../widgets/header/Header';

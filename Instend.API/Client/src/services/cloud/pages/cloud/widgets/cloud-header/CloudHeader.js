@@ -26,33 +26,31 @@ const CloudHeader = observer(({}) => {
     }, []);
 
     return (
-      <ContentWrapper>
-        <div className={styles.cloudHeader} ref={ref}>
-          <div className={styles.title} onClick={() => setOpenState(p => !p)}>
-            <h1>{path.length > 0 ? path[0].name : "Instend Cloud"}</h1>
-            <img src={openImage} draggable='false' />
-          </div>
-          {isOpen && <div className={styles.titleItems}>
-            {path.length > 0 && path.map(collection => {
-              return (
-                <Link 
-                  to={`/cloud/${collection.id}`} 
-                  key={collection.id}
-                  onClick={() => setOpenState(false)}
-                >
-                  {collection.name}
-                </Link>
-              )
-            })}
-            <Link 
-              to={`/cloud`} 
-              onClick={() => setOpenState(false)}
-            >
-              Instend Cloud
-            </Link>
-          </div>}
+      <div className={styles.cloudHeader} ref={ref}>
+        <div className={styles.title} onClick={() => setOpenState(p => !p)}>
+          <h1>{path.length > 0 ? path[0].name : "Instend Cloud"}</h1>
+          <img src={openImage} draggable='false' />
         </div>
-      </ContentWrapper>
+        {isOpen && <div className={styles.titleItems}>
+          {path.length > 0 && path.map(collection => {
+            return (
+              <Link 
+                to={`/cloud/${collection.id}`} 
+                key={collection.id}
+                onClick={() => setOpenState(false)}
+              >
+                {collection.name}
+              </Link>
+            )
+          })}
+          <Link 
+            to={`/cloud`} 
+            onClick={() => setOpenState(false)}
+          >
+            Instend Cloud
+          </Link>
+        </div>}
+      </div>
     );
 });
   

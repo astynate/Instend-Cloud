@@ -33,7 +33,6 @@
 }
 
 .content {
-    /* margin-top: 20px; */
     padding-bottom: 100px;
     margin-right: 15px;
 }
@@ -95,12 +94,10 @@
 
 @media (max-width: 700px) {
     .gallery {
-        height: calc(100vh - 60px - 50px);
+        height: calc(100vh - var(--mobile-header-height) - var(--mobile-bottom-panel-height));
     }
 
     .content {
         padding-bottom: 0px;
-        margin-left: 5px;
-        margin-right: 5px;
     }
 }

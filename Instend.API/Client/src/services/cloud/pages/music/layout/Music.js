@@ -6,16 +6,17 @@ import Search from '../../../widgets/search/Search';
 import SubMenu from '../../../features/navigation/sub-menu/SubMenu';
 import Songs from '../pages/songs/Songs';
 
-const Music = (props) => {
+const Music = ({setPanelState, isMobile}) => {
   const scroll = useRef();
 
   useEffect(() => {
-    if (props.setPanelState) { props.setPanelState(false); }
-  }, [props.setPanelState]);
+    if (setPanelState) 
+      setPanelState(false);
+  }, [setPanelState]);
 
   return (
     <div className={styles.music} ref={scroll}>
-      {props.isMobile === false && 
+      {isMobile === false && 
         <Header>
           <Search />
         </Header>}
@@ -37,23 +38,12 @@ const Music = (props) => {
         <Routes>
           <Route 
             path=''
-            element={<Songs isMobile={props.isMobile} />} 
+            element={<Songs isMobile={isMobile} />} 
           />
-          {/* <Route 
-            path='/playlists'
-            element={<Playlists />} 
-          />
-          <Route 
-            path='/playlists/:id'
-            element={<Playlist 
-              scroll={scroll}
-              isMobile={props.isMobile}
-            />} 
-          /> */}
         </Routes>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Music;

@@ -25,7 +25,6 @@
     display: flex;
     justify-content: space-between;
     position: relative;
-    /* border-bottom: 1px solid var(--not-transparent-border-color); */
 }
 
 .overlay {
@@ -68,7 +67,7 @@
 
 @media (max-width: 700px) {
     .home {
-        height: calc(100vh - 60px - 50px);
+        height: calc(100vh - var(--mobile-header-height) - var(--mobile-bottom-panel-height));
     }
 
     .header {

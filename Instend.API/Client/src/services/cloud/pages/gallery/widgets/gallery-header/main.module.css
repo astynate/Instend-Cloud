@@ -7,3 +7,10 @@
     background: var(--main-background-color);
     z-index: 9999;
 }
+
+@media (max-width: 700px) {
+    .header {
+        height: 45px;
+        top: 0px;
+    }    
+}

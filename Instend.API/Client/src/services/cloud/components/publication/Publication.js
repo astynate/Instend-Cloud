@@ -70,7 +70,7 @@ const Publication = observer(({
 
     if (isPublicationValid() === false) {
         return null;
-    }
+    };
 
     return (
         <>

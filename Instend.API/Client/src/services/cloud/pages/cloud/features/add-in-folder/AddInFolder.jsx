@@ -44,17 +44,17 @@ const AddInFolder = ({OpenDialog = () => {}}) => {
             placeholder: "Presentation name",
             type: "pptx"
         }
-    }
+    };
 
     return (
         <AddButton
             items={[
                 {image: newFolder, title: "Collection", callback: () => OpenDialog(types.collection)},
                 {image: upload, title: "Upload", callback: () => {}, type: "upload", sendFiles: (event) => CloudController.UploadFilesFromEvent(event, params.id)},
-                {image: note, title: "Note", callback: () => OpenDialog(types.txt)},
-                {image: word, title: "Word", callback: () => OpenDialog(types.docx)},
-                {image: excel, title: "Excel", callback: () => OpenDialog(types.xlsx)},
-                {image: powerpoint, title: "Powerpoint", callback: () => OpenDialog(types.pptx)}
+                // {image: note, title: "Note", callback: () => OpenDialog(types.txt)},
+                // {image: word, title: "Word", callback: () => OpenDialog(types.docx)},
+                // {image: excel, title: "Excel", callback: () => OpenDialog(types.xlsx)},
+                // {image: powerpoint, title: "Powerpoint", callback: () => OpenDialog(types.pptx)}
             ]}
         />
     );

@@ -40,6 +40,6 @@ const GalleryHeader = ({scale}) => {
           </div> */}
         </div>
     );
-}
+};
 
 export default GalleryHeader;

@@ -4,3 +4,9 @@
     grid-gap: 15px;
     margin-top: 5px;
 }
+
+@media (max-width: 700px) {
+    .items {
+        grid-gap: 20px;
+    }
+}

@@ -51,20 +51,20 @@ const NavigationPanel = observer(({isPanelRolledUp}) => {
         const clickHandler = (event) => {
             if (createButtonRef.current && !createButtonRef.current.contains(event.target)) {
                 setOpenedState(false);
-            }
-        }
+            };
+        };
 
         document.addEventListener('click', clickHandler);
 
         return () => {
             document.removeEventListener('click', clickHandler);
-        }
+        };
     }, []);
 
     useEffect(() => {
         if (!!account === true) {
             setOccupiedSpace(occupiedPercentage());
-        }
+        };
     }, [account]);
 
     return (

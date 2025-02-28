@@ -1,3 +1,10 @@
+.cloudHeaderWrapper {
+    top: 60px;
+    width: 100%;
+    position: sticky;
+    z-index: 2;
+}
+
 .header {
     height: auto;
     background: var(--main-background-color);
@@ -71,13 +78,23 @@ img[id="reversed"] {
     transform: rotate(180deg);
 }
 
+.elementsWrapper {
+    padding-bottom: 30px;
+}
+
 @media (max-width: 700px) {
     .wrapper {
-        padding-left: 25px;
-        padding-right: 25px;
+        height: calc(100vh - var(--mobile-header-height) - var(--mobile-bottom-panel-height));
+        padding-left: 15px;
+        padding-right: 15px;
     } 
 
     .content {
         padding-right: 0;
+        grid-gap: 20px;
+    }
+
+    .cloudHeaderWrapper {
+        top: 0px;
     }
 }

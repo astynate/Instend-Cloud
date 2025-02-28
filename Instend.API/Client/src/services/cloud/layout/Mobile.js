@@ -8,6 +8,7 @@ import PrivateRoutes from '../../../routes/PrivateRoutes';
 import logo from './components/navigation-panel/images/logo/main-logo-black.svg';
 import styles from './css/mobile.module.css';
 import './css/main.css';
+import StorageController from '../../../api/StorageController';
 
 const Mobile = observer(() => {
     const { account } = AccountState;
@@ -16,16 +17,24 @@ const Mobile = observer(() => {
         ApplicationState.setIsMobile(true);
     }, []);
 
+    if (!account) {
+        return null;
+    };
+
     return (
         <>
             <div className='mobile-header'>
                 <div className='service-name'>
                     <img src={logo} />
                     <h1 className={styles.application}>Instend&nbsp;</h1>
-                    <h2 className={styles.service}>Cloud</h2>
+                    <h2 className={styles.service}>Home</h2>
                 </div>
                 <NavLink to='/profile' className={styles.profileLink}>
-                    <img src={`data:image/png;base64,${account.avatar || ""}`} className={styles.avatar} />
+                    <img 
+                        src={StorageController.getFullFileURL(account.avatar)} 
+                        className={styles.avatar}
+                        draggable="false"
+                    />
                 </NavLink>
             </div>
             <div className='cloud-content-wrapper'>

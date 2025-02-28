@@ -13,11 +13,11 @@ import MusicPlayer from '../singletons/music-player/MusicPlayer';
 import ConnectedState from '../singletons/connected-state/ConnectedState';
 import AccountController from '../../../api/AccountController';
 import ApplicationLoaderAnimation from '../shared/animations/application-loader-animation/ApplicationLoaderAnimation';
+import ChatsState from '../../../state/entities/ChatsState';
 import './css/fonts.css';
 import './css/colors.css';
 import './css/main.css';
 import './css/animations.css';
-import ChatsState from '../../../state/entities/ChatsState';
 
 export const globalWSContext = createSignalRContext();
 
@@ -142,7 +142,10 @@ const Layout = observer(() => {
             {AccountState.isAuthorize === false ?
                 <ApplicationLoaderAnimation />
             :
-                <div className='cloud-wrapper' style={{'--disconnected-height': ApplicationState.connectionState === 0 ? '0px' : '15px'}}>
+                <div 
+                    className='cloud-wrapper' 
+                    style={{'--disconnected-height': ApplicationState.connectionState === 0 ? '0px' : '15px'}}
+                >
                     <title>Instend</title>
                     <MusicPlayer />
                     {ApplicationState.connectionState !== 0 && <ConnectedState />}

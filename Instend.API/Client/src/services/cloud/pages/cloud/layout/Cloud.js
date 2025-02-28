@@ -19,7 +19,6 @@ import AccountController from '../../../../../api/AccountController.js';
 import AccessController from '../../../api/AccessController.js';
 import download from './images/header/download.png';
 import sort from './images/header/sort.png';
-import arrow from './images/header/arrow.png';
 import PopUpSelectOneOfList from '../../../shared/popup-windows/pop-up-select-one-of-list/PopUpSelectOneOfList.jsx';
 
 const Cloud = observer(({setPanelState}) => {
@@ -41,13 +40,6 @@ const Cloud = observer(({setPanelState}) => {
     <div className={styles.wrapper} ref={selectPlaceWrapper}>
       <Header>
         <Search />
-        <SubMenu 
-          items={[
-            { name: 'Main', route: '/cloud' },
-            { name: 'Publications', route: '/cloud/publications' },
-            { name: 'Messages', route: '/cloud/messages' },
-          ]}
-        />
       </Header>
       <PopUpSelectOneOfList 
         isOpen={isSortWindowOpen}
@@ -57,45 +49,46 @@ const Cloud = observer(({setPanelState}) => {
         ]}
         setOpenState={setSortWindowOpenState}
       />
-      <ContentWrapper>
-        <div className={styles.header}>
-            <div className={styles.accessButton} id={!!params['*'] ? '' : 'disabled'} >
-              <UnitedButton
-                  isAccent={true}
-                  buttons={[{ 
-                      label: 'Open access', 
-                      image: <img src={share} draggable="false" />,
-                      callback: () => setAccessProcessWindowState(p => !p && !!params['*']) 
-                  }]}
+      <div className={styles.cloudHeaderWrapper}>
+        <ContentWrapper>
+          <div className={styles.header}>
+              <div className={styles.accessButton} id={!!params['*'] ? '' : 'disabled'} >
+                <UnitedButton
+                    isAccent={true}
+                    buttons={[{ 
+                        label: 'Open access', 
+                        image: <img src={share} draggable="false" />,
+                        callback: () => setAccessProcessWindowState(p => !p && !!params['*']) 
+                    }]}
+                />
+              </div>
+              <SubMenu 
+                items={[
+                  { name: 'Main', route: '/cloud' },
+                  { name: 'Publications', route: '/cloud/publications' },
+                  { name: 'Messages', route: '/cloud/messages' },
+                ]}
               />
-            </div>
-            <div className={styles.rightButtons}>
-              <UnitedButton
-                  buttons={[
-                    { 
-                      label: '', 
-                      image: <img src={arrow} draggable="false" id={isAscending ? '' : 'reversed'} />,
-                      callback: () => setAscendingState(p => !p)
-                    },
-                  ]}
-              />
-              <UnitedButton
-                  buttons={[
-                    { 
-                      label: 'Download', 
-                      image: <img src={download} draggable="false" />,
-                      callback: () => CollectionsController.DownloadCollection(params.id)
-                    },
-                    { 
-                      label: sortingType === 0 ? 'Date' : 'Name', 
-                      image: <img src={sort} draggable="false" />,
-                      callback: () => setSortWindowOpenState(true)
-                    },
-                  ]}
-              />
-            </div>
-        </div>
-      </ContentWrapper>
+              <div className={styles.rightButtons}>
+                <UnitedButton
+                    buttons={[
+                      { 
+                        label: 'Download', 
+                        image: <img src={download} draggable="false" />,
+                        callback: () => CollectionsController.DownloadCollection(params.id)
+                      },
+                      { 
+                        label: sortingType === 0 ? 'Date' : 'Name', 
+                        image: <img src={sort} draggable="false" />,
+                        callback: () => setSortWindowOpenState(true)
+                      },
+                    ]}
+                />
+              </div>
+          </div>
+          <CloudHeader />
+        </ContentWrapper>
+      </div>
       {isAccessProcessWindowOpen && <OpenAccessProcess 
           isOpen={isAccessProcessWindowOpen}
           close={() => setAccessProcessWindowState(false)}
@@ -103,12 +96,13 @@ const Cloud = observer(({setPanelState}) => {
           fetchData={AccountController.GetAccountsByPrefix}
           sendAccessRequest={(access, roles, onSucces) => AccessController.UpdateCollectionAccess(params['*'], access, roles, onSucces)}
       />}
-      <CloudHeader />
-      <Routes>
-        <Route path=":id?" element={<MainCloudPage sortingType={sortingType} isAscending={isAscending} />} />
-        <Route path="/publications/:id?" element={<PublicationsCloudPage />} />
-        <Route path="/messages/:id?" element={<MessagesCloudPage />} />
-      </Routes>
+      <div className={styles.elementsWrapper}>
+        <Routes>
+          <Route path=":id?" element={<MainCloudPage sortingType={sortingType} isAscending={isAscending} />} />
+          <Route path="/publications/:id?" element={<PublicationsCloudPage />} />
+          <Route path="/messages/:id?" element={<MessagesCloudPage />} />
+        </Routes>
+      </div>
     </div>
   );
 });

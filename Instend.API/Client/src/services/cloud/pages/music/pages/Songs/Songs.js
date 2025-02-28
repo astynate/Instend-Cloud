@@ -9,7 +9,7 @@ import FilesController from '../../../../api/FilesController';
 import Song from '../../../../components/song/Song';
 import MusicState from '../../../../../../state/entities/MusicState';
 
-const Songs = observer(({}) => {
+const Songs = observer(({isMobile = false}) => {
     const { SetSongQueue, ChangePlayingState, GetCurrentSongData } = MusicState;
 
     let songs = StorageState.GetSelectionByType(GlobalContext.supportedMusicTypes);
@@ -26,14 +26,14 @@ const Songs = observer(({}) => {
 
     return (
         <SubContentWrapper>
-            <SongsHeader 
+            {isMobile === false && <SongsHeader 
                 song={song}
                 callback={() => {
                     SetSongQueue(songs);
                     ChangePlayingState();
                 }}
-            />
-            <div className={styles.songListHeader}>
+            />}
+            {isMobile === false && <div className={styles.songListHeader}>
                 <div className={styles.name}>
                     <span className={styles.item}>#</span>
                     <span className={styles.item}>Name</span>
@@ -41,7 +41,7 @@ const Songs = observer(({}) => {
                 <span className={styles.item}>Album</span>
                 <span className={styles.item}>Date</span>
                 <span className={styles.item}>Time</span>
-            </div>
+            </div>}
             <div className={styles.songs}>
                 {songs.map((song, index) => {
                     return (

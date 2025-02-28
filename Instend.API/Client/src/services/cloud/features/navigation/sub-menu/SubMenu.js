@@ -15,20 +15,20 @@ const SubMenu = ({items}) => {
 
         if (location.pathname === route) {
             return true;
-        }
+        };
 
         if (params['id'] !== null && params['id'] !== undefined) {
             let path = location.pathname.replace(params['id'], '');
 
             if (path[path.length - 1] === '/') {
                 path = path.slice(0, -1);
-            }
+            };
 
             result = path === route;
-        }
+        };
 
         return result;
-    }
+    };
 
     useEffect(() => {
         setPointerOffset(pointer.current ? pointer.current.offsetLeft - 15 : 0);

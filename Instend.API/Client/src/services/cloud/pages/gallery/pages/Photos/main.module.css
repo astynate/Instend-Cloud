@@ -27,5 +27,16 @@
     height: 100%;
     width: 100%;
     object-fit: cover;
-    /* border-radius: 5px; */
+}
+
+@media (max-width: 700px) {
+    .photos {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    }
+}
+
+@media (max-width: 500px) {
+    .photos {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
 }

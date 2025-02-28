@@ -6,6 +6,8 @@
 
 body {
     --main-content-width: 36vw;
+    --mobile-header-height: 55px;
+    --mobile-bottom-panel-height: 50px;
 }
 
 body {
@@ -53,7 +55,7 @@ h1 {
     height: 100%;
     width: 100%;
     display: flex;
-    padding: 10px 0px;
+    padding: 5px 13px;
     align-items: center;
 }
 
@@ -64,19 +66,20 @@ h1 {
 
 .service-name h1 {
     margin: 0;
-    font-size: 21px;
+    font-size: 24px;
     font-weight: 600;
+    margin-left: 7px;
     color: var(--main-font-color);
 }
 
 .service-name h2 {
     font-weight: 500;
-    font-size: 21px;
+    font-size: 24px;
     color: var(--main-paragraph-color);
 }
 
 .service-name img {
-    height: 60px;
+    height: 30px;
     filter: var(--main-filter);
 }
 
@@ -93,5 +96,13 @@ h1 {
         transform: scale(2);
         background-color: #fff;
         opacity: 0;
+    }
+}
+
+@media (max-width: 700px) {
+    .cloud-wrapper {
+        height: 100%;
+        display: grid;
+        grid-template-rows: var(--mobile-header-height) auto var(--mobile-bottom-panel-height);
     }
 }
