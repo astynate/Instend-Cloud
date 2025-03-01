@@ -3,14 +3,14 @@ import { observer } from 'mobx-react-lite';
 import create from './images/create.png';
 import styles from './main.module.css';
 import remove from './images/remove.png';
-import SearchInChat from '../../shared/search-in-chat/SearchInChat';
+import SearchField from '../../../../ui-kit/fields/search-field/SearchField';
 import CreateGroup from '../../features/create-group/CreateGroup';
 import NewMessage from '../../features/new-message/NewMessage';
 import ChatsState from '../../../../../../state/entities/ChatsState';
 import DirectsController from '../../../../api/DirectsController';
 import ChatPreview from './features/chat-preview/ChatPreview';
 import ChatsHelper from './ChatsHelper';
-import SortingHandler from '../../../../../../utils/handlers/SortingHandler';
+import SortingHandler from '../../../../../../handlers/SortingHandler';
 import GroupsController from '../../../../api/GroupsController';
 import ContextMenu from '../../../../shared/context-menus/context-menu/ContextMenu';
 
@@ -70,7 +70,7 @@ const Chats = observer(({isMobile, setOpenState = () => {}}) => {
                 close={() => setCreateGroupState(false)} 
             />
             <div className={styles.search}>
-                <SearchInChat />
+                <SearchField />
             </div>
             <NewMessage
                 mainTitle={"New message"}

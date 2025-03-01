@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../../processes/Registration";
+import { useTranslation } from "react-i18next";
 import InputText from "../../shared/input/InputText";
 import Button from "../../shared/button/Button";
-import ValidationHandler from "../../../../utils/handlers/ValidationHandler";
-import { useTranslation } from "react-i18next";
+import ValidationHandler from "../../../../handlers/ValidationHandler";
 
 const ValidateNameForm = (name, surname) => {
     return ValidationHandler.ValidateVarchar(name, 31) &&
         ValidationHandler.ValidateVarchar(surname, 31);
-}
+};
 
 const Name = () => {
     const user = useContext(UserContext);

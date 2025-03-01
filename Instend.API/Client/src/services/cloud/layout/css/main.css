@@ -55,7 +55,6 @@ h1 {
     height: 100%;
     width: 100%;
     display: flex;
-    padding: 5px 13px;
     align-items: center;
 }
 
@@ -66,20 +65,20 @@ h1 {
 
 .service-name h1 {
     margin: 0;
-    font-size: 24px;
+    font-size: 23px;
     font-weight: 600;
-    margin-left: 7px;
+    margin-left: 5px;
     color: var(--main-font-color);
 }
 
 .service-name h2 {
     font-weight: 500;
-    font-size: 24px;
+    font-size: 23px;
     color: var(--main-paragraph-color);
 }
 
 .service-name img {
-    height: 30px;
+    height: 28px;
     filter: var(--main-filter);
 }
 
@@ -101,7 +100,6 @@ h1 {
 
 @media (max-width: 700px) {
     .cloud-wrapper {
-        height: 100%;
         display: grid;
         grid-template-rows: var(--mobile-header-height) auto var(--mobile-bottom-panel-height);
     }

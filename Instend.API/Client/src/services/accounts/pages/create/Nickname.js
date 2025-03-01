@@ -1,10 +1,10 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../../processes/Registration";
+import { useTranslation } from "react-i18next";
 import InputCheck from "../../shared/input-check/InputCheck";
 import Button from "../../shared/button/Button";
-import ValidationHandler from "../../../../utils/handlers/ValidationHandler";
-import { useTranslation } from "react-i18next";
+import ValidationHandler from "../../../../handlers/ValidationHandler";
 
 const Nickname = () => {
     const { t } = useTranslation();

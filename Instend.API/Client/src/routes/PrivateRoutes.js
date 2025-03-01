@@ -12,40 +12,52 @@ const PrivateRoutes = [
     {
         index: true,
         path: '/*',
-        element: <Home />
+        element: <Home />,
+        name: "Home"
     },
     {
         index: true,
         path: '/publication/:id?',
-        element: <PublicationPage />
+        element: <PublicationPage />,
+        name: "Publication"
     },
     {
         path: '/cloud/*',
-        element: <Cloud />
+        element: <Cloud />,
+        name: "Cloud",
+        search: {
+            
+        }
     },
     {
         path: '/explore/*',
-        element: <Explore />
+        element: <Explore />,
+        name: "Explore"
     },
     {
         path: '/gallery/*',
-        element: <Gallery />
+        element: <Gallery />,
+        name: "Gallery"
     },
     {
         path: '/messages/:id?',
-        element: <Messages />
+        element: <Messages />,
+        name: "Messages"
     },
     {
         path: '/music/*',
-        element: <Music />
+        element: <Music />,
+        name: "Music"
     },
     {
         path: '/profile/:id?',
-        element: <Profile />
+        element: <Profile />,
+        name: "Profile"
     },
     {
         path: '/settings/*',
-        element: <Settings />
+        element: <Settings />,
+        name: "Settings"
     }
 ];
 

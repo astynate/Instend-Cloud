@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import { ConvertDateToTime } from '../../../../../../../../utils/handlers/DateHandler';
+import { ConvertDateToTime } from '../../../../../../../../handlers/DateHandler';
 import styles from './main.module.css';
 
 const ChatPreview = ({avatar, name, chat}) => {

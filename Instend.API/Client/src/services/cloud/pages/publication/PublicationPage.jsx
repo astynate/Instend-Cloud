@@ -11,7 +11,7 @@ import NewsState from '../../../../state/entities/NewsState';
 import PublicationsController from '../../api/PublicationsController';
 import PublicationsWrapper from '../../features/wrappers/publications-wrapper/PublicationsWrapper';
 
-const PublicationPage = observer(({setPanelState}) => {
+const PublicationPage = observer(({setPanelState = () => {}}) => {
     const [isOpen, setOpenState] = useState(true);
 
     let params = useParams();

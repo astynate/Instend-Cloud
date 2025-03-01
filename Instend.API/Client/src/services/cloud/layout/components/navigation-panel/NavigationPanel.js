@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
-import { ConvertBytesToMb } from '../../../../../utils/handlers/StorageSpaceHandler';
+import { ConvertBytesToMb } from '../../../../../handlers/StorageSpaceHandler';
 import { useIsActiveButton, useIsCurrentRoute } from './helpers/NavigationPanelLocationHelper';
 import styles from './css/main.module.css';
 import logo from './images/logo/main-logo-black.svg';

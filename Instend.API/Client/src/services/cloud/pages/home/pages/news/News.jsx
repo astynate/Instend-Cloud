@@ -11,8 +11,8 @@ const News = observer(() => {
                 publications={NewsState.news} 
                 fetchRequest={NewsController.SetNewsRequest} 
                 isHasMore={NewsState.isHasMore}
+                isDivided={true}
             />
-            <br />
             <br />
             <br />
             <br />

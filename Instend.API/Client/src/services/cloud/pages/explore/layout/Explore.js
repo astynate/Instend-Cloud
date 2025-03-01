@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ConvertBytesToMb } from '../../../../../utils/handlers/StorageSpaceHandler';
+import { ConvertBytesToMb } from '../../../../../handlers/StorageSpaceHandler';
 import { observer } from 'mobx-react-lite';
 import styles from './main.module.css';
 import Header from '../../../widgets/header/Header';

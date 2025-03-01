@@ -5,7 +5,7 @@ import { MessageOperations } from "./helpers/MessageOperations";
 import styles from './main.module.css';
 import ChatTypes from "./helpers/ChatTypes";
 import ChatsState from "../../../../../../state/entities/ChatsState";
-import ChatHandler from "../../../../../../utils/handlers/ChatHandler";
+import ChatHandler from "../../../../../../handlers/ChatHandler";
 import MessangerController from "../../../../api/MessangerController";
 
 const Chat = observer(({isMobile, isOpen, chat}) => {

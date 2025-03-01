@@ -21,7 +21,7 @@ import download from './images/header/download.png';
 import sort from './images/header/sort.png';
 import PopUpSelectOneOfList from '../../../shared/popup-windows/pop-up-select-one-of-list/PopUpSelectOneOfList.jsx';
 
-const Cloud = observer(({setPanelState}) => {
+const Cloud = observer(({setPanelState, isMobile = false}) => {
   const [isSortWindowOpen, setSortWindowOpenState] = useState(false);
   const [isAccessProcessWindowOpen, setAccessProcessWindowState] = useState(false);
   const [isAscending, setAscendingState] = useState(true);
@@ -52,7 +52,7 @@ const Cloud = observer(({setPanelState}) => {
       <div className={styles.cloudHeaderWrapper}>
         <ContentWrapper>
           <div className={styles.header}>
-              <div className={styles.accessButton} id={!!params['*'] ? '' : 'disabled'} >
+              {isMobile === false && <div className={styles.accessButton} id={!!params['*'] ? '' : 'disabled'} >
                 <UnitedButton
                     isAccent={true}
                     buttons={[{ 
@@ -61,7 +61,7 @@ const Cloud = observer(({setPanelState}) => {
                         callback: () => setAccessProcessWindowState(p => !p && !!params['*']) 
                     }]}
                 />
-              </div>
+              </div>}
               <SubMenu 
                 items={[
                   { name: 'Main', route: '/cloud' },
@@ -69,7 +69,7 @@ const Cloud = observer(({setPanelState}) => {
                   { name: 'Messages', route: '/cloud/messages' },
                 ]}
               />
-              <div className={styles.rightButtons}>
+              {isMobile === false && <div className={styles.rightButtons}>
                 <UnitedButton
                     buttons={[
                       { 
@@ -84,9 +84,11 @@ const Cloud = observer(({setPanelState}) => {
                       },
                     ]}
                 />
-              </div>
+              </div>}
           </div>
-          <CloudHeader />
+          <div className={styles.menu}>
+            <CloudHeader />
+          </div>
         </ContentWrapper>
       </div>
       {isAccessProcessWindowOpen && <OpenAccessProcess 

@@ -74,6 +74,7 @@
 
     .menuWrapper {
         width: 95%;
-        top: 50px;
+        top: calc(var(--mobile-header-height));
+        background: var(--main-accent-color);
     } 
 }

@@ -4,7 +4,7 @@ import { UserContext } from "../../processes/Registration";
 import Button from "../../shared/button/Button";
 import { useTranslation } from "react-i18next";
 import InputText from "../../shared/input/InputText";
-import { CalculateAge } from "../../../../utils/handlers/DateHandler";
+import { CalculateAge } from "../../../../handlers/DateHandler";
 
 const DateOfBirth = () => {
     const user = useContext(UserContext);
@@ -33,6 +33,6 @@ const DateOfBirth = () => {
             </Link>
         </>
     );
-}
+};
 
 export default DateOfBirth;

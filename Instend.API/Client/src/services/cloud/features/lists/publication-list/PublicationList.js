@@ -9,11 +9,11 @@ const PublicationList = ({publications = [], fetchRequest, isHasMore, isHasBorde
     const getLastNewsDate = () => {
         if (publications.length === 0) {
             return "";
-        }
+        };
     
         const lastIndex = publications.length - 1;
         return publications[lastIndex].date;
-    }
+    };
     
     return (
         <PublicationsWrapper key={publications.length} isHasBorder={isHasBorder} borderRadius={borderRadius}>

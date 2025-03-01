@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ConvertFullDate } from '../../../utils/handlers/DateHandler';
+import { ConvertFullDate } from '../../../handlers/DateHandler';
 import { Placeholder } from 'reactstrap';
 import PreviewImage from '../widgets/files/PreviewImage/PreviewImage';
 import styles from './main.module.css';

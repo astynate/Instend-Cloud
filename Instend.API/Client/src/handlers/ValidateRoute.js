@@ -1,6 +1,6 @@
 ﻿const TransformPath = (route) => {
     return route.path.replace('*', '').replace('/:id', '').replace('?', '');
-}
+};
 
 const ValidateRoute = (PrivateRoutes, isAuthenticated, location) => {
     const routes = PrivateRoutes.map(e => TransformPath(e));
@@ -10,6 +10,6 @@ const ValidateRoute = (PrivateRoutes, isAuthenticated, location) => {
     const isPublicRoute = !isPrivateRoute;
 
     return isPublicRoute || isPrivateRouteAndUserAuthorized;
-}
+};
 
 export default ValidateRoute;

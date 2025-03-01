@@ -1,24 +1,24 @@
-import { SpecialTypes } from "./SpecialType";
-import ChatTypes from "../../services/cloud/pages/messages/widgets/chat/helpers/ChatTypes";
-import AccountState from "../../state/entities/AccountState";
-import ChatsState from "../../state/entities/ChatsState";
+import { MessageTypes } from "../entities/MessageTypes";
+import ChatTypes from "../services/cloud/pages/messages/widgets/chat/helpers/ChatTypes";
+import AccountState from "../state/entities/AccountState";
+import ChatsState from "../state/entities/ChatsState";
 
 class ChatHandler {
     static GetMessageUser = (message) => {
         if (!message || message && !message.userId) {
             return {};
-        }
+        };
 
         if (message.userId === AccountState.account.id) {
             return AccountState.account;
-        }
+        };
 
         const user = ChatsState.users
             .find(x => x.id === message.userId);
 
         if (!user) {
             return {};
-        }
+        };
 
         return user;
     };
@@ -47,7 +47,7 @@ class ChatHandler {
 
                     return false;
                 }) || result;
-        }
+        };
 
         return result;
     };
@@ -63,7 +63,7 @@ class ChatHandler {
                 }
                 return false;
             }) || result;
-        }
+        };
 
         return result;
     };
@@ -79,7 +79,7 @@ class ChatHandler {
             isAccepted: directModel.isAccepted,
             ownerId: directModel.ownerId,
             hasMore: true
-        }
+        };
 
         return chat;
     };
@@ -87,11 +87,11 @@ class ChatHandler {
     static AdaptGroup = (groupModel, messageModel) => {
         if (!messageModel) {
             messageModel = {
-                specialType: SpecialTypes.Alert,
+                specialType: MessageTypes.Alert,
                 text: 'Chat has beeen created.',
                 date: groupModel.date
             };
-        }
+        };
 
         const chat = {
             type: 'group',
@@ -102,7 +102,7 @@ class ChatHandler {
             avatar: groupModel.avatar,
             members: groupModel.members,
             hasMore: true
-        }
+        };
 
         return chat;
     };

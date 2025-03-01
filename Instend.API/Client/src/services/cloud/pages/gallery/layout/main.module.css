@@ -94,7 +94,7 @@
 
 @media (max-width: 700px) {
     .gallery {
-        height: calc(100vh - var(--mobile-header-height) - var(--mobile-bottom-panel-height));
+        height: calc(100dvh - var(--mobile-header-height) - var(--mobile-bottom-panel-height));
     }
 
     .content {

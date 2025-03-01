@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { CalculateAge, ConvertYearMonthOnly } from '../../../../../../utils/handlers/DateHandler';
+import { CalculateAge, ConvertYearMonthOnly } from '../../../../../../handlers/DateHandler';
 import SubContentWrapper from '../../../../features/wrappers/sub-content-wrapper/SubContentWrapper';
 import Data from '../../../../elements/profile/profile-data/Data';
 import styles from './main.module.css';

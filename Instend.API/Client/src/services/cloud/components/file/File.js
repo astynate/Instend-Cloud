@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { CircularProgress } from '@mui/joy';
-import { ConvertDate } from '../../../../utils/handlers/DateHandler';
+import { ConvertDate } from '../../../../handlers/DateHandler';
 import styles from './main.module.css';
 import StorageItemDescription from '../../features/storage/storage-item-description/StorageItemDescription';
 import GlobalContext from '../../../../global/GlobalContext';

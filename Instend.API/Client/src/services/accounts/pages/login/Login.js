@@ -9,9 +9,7 @@ import InputText from "../../shared/input/InputText";
 import InputPassword from "../../shared/password/InputPassword";
 import Line from '../../shared/line/Line';
 import Error from '../../shared/error/Error'
-import AccountState from '../../../../state/entities/AccountState';
-import ValidationHandler from '../../../../utils/handlers/ValidationHandler';
-import AccountController from '../../../../api/AccountController';
+import ValidationHandler from '../../../../handlers/ValidationHandler';
 import './main.css';
 
 const ValidateLoginForm = (email, password) => {

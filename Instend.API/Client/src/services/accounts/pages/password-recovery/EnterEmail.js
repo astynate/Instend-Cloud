@@ -3,14 +3,13 @@ import { Link } from "react-router-dom";
 import InputCheck from "../../shared/input-check/InputCheck";
 import Button from "../../shared/button/Button";
 import { useNavigate } from "react-router-dom";
-import ValidationHandler from "../../../../utils/handlers/ValidationHandler";
+import ValidationHandler from "../../../../handlers/ValidationHandler";
 import { PasswordRecoveryContext } from "../../processes/PasswordRecovery";
 import Error from '../../shared/error/Error';
 import Back from '../../shared/back/Back';
 import Line from "../../shared/line/Line";
 
 const EnterEmail = () => {
-
     const data = useContext(PasswordRecoveryContext);
     const [email, setEmail] = useState(data.email);
     const [isError, setErrorState] = useState(false);
@@ -19,19 +18,14 @@ const EnterEmail = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-
         data.email = email;
 
         if (buttonState !== 'loading') {
-            
             setButtonState(isValidEmail ? 'valid' : 'invalid');
-
-        }
-
+        };
     }, [data, email, buttonState, isValidEmail]);
 
     const SendRecoveryRequest = async () => {
-
         const controller = new AbortController();
         const { signal } = controller;
     
@@ -45,16 +39,12 @@ const EnterEmail = () => {
         const confirmationLink = await response.text();
     
         if (response.status === 200) {
-
             navigate(`/account/password/recovery/${confirmationLink}`);
             setButtonState('valid');
-
         } else {
-
             setErrorState(true);
             setButtonState('invalid');
-
-        }
+        };
     
         clearTimeout(timeoutId);
     };    
@@ -89,9 +79,7 @@ const EnterEmail = () => {
                 </div>
             </div>
         </>
-
     );
-
-}
+};
 
 export default EnterEmail;

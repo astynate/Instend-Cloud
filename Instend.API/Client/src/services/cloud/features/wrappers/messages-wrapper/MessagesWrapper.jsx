@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useParams } from 'react-router-dom';
 import styles from './main.module.css';
-import ChatHandler from '../../../../../utils/handlers/ChatHandler';
+import ChatHandler from '../../../../../handlers/ChatHandler';
 
 const MessagesWrapper = observer(({children}) => {
     const [chat, setChat] = useState(undefined);

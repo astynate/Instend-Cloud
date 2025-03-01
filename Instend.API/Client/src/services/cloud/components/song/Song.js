@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { convertFromTimespan } from '../../../../utils/TimeHandler';
+import { convertFromTimespan } from '../../../../handlers/TimeHandler';
 import styles from './main.module.css';
 import MusicState from '../../../../state/entities/MusicState';
 import SongCover from '../song-cover/SongCover';

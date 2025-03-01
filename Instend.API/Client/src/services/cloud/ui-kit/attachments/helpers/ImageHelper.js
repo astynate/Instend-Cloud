@@ -1,4 +1,4 @@
-import Base64Handler from "../../../../../utils/handlers/Base64Handler";
+import Base64Handler from "../../../../../handlers/Base64Handler";
 
 class ImageHelper {
     static GetImageDimentions = async (images) => {

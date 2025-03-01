@@ -1,7 +1,7 @@
 import { instance } from "../../../state/application/Interceptors";
 import ApplicationState from "../../../state/application/ApplicationState";
 import StorageState from "../../../state/entities/StorageState";
-import ResponseHandler from "../../../utils/handlers/ResponseHandler";
+import ResponseHandler from "../../../handlers/ResponseHandler";
 
 class CollectionsController {
     static GetCollectionById = async (id, onSuccess, onError) => {

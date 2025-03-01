@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { ButtonEffectHandler } from '../../../../../../utils/ui/ButtonEffectHandler';
+import { ButtonEffectHandler } from '../../../../../../handlers/ButtonEffectHandler';
 import styles from './main.module.css';
 
 const MainMessageButton = ({

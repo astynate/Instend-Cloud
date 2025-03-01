@@ -3,7 +3,6 @@ import { observer } from "mobx-react-lite";
 import { Link } from "react-router-dom";
 import styles from './main.module.css';
 import openImage from './images/open.png';
-import ContentWrapper from "../../../../features/wrappers/content-wrapper/ContentWrapper";
 import StorageState from "../../../../../../state/entities/StorageState";
 
 const CloudHeader = observer(({}) => {

@@ -1,4 +1,4 @@
-import { ConvertFullDate } from '../../../../../../../../utils/handlers/DateHandler';
+import { ConvertFullDate } from '../../../../../../../../handlers/DateHandler';
 import SelectElementWithCheckmark from '../../../../../../elements/select/select-element-with-checkmark/SelectElementWithCheckmark';
 import styles from './main.module.css';
 

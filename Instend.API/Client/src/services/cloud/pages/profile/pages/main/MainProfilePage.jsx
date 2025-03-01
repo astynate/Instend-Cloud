@@ -29,12 +29,12 @@ const MainProfilePage = ({
                 setPhotos,
                 0
             );
-        }
+        };
     }, [account]);
 
     if (!!account === false) {
         return null;
-    }
+    };
 
     return (
         <div className={styles.wrapper}>

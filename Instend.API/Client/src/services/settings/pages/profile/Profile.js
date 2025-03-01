@@ -7,7 +7,7 @@ import SettingType from '../../shared/setting-type/SettingType';
 import AccountState from '../../../../state/entities/AccountState';
 import UploadAvatarProcess from './processes/upload-avatar/UploadAvatarProcess';
 import Input from '../../shared/input/Input';
-import Base64Handler from '../../../../utils/handlers/Base64Handler';
+import Base64Handler from '../../../../handlers/Base64Handler';
 import GlobalContext from '../../../../global/GlobalContext';
 import InputLink from '../../shared/input/components/link/InputLink';
 import AccountController from '../../../../api/AccountController';

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { convertSecondsToTicks, convertTicksToSeconds } from '../../../../utils/TimeHandler';
+import { convertSecondsToTicks, convertTicksToSeconds } from '../../../../handlers/TimeHandler';
 import styles from './main.module.css';
 import MusicState from '../../../../state/entities/MusicState';
 

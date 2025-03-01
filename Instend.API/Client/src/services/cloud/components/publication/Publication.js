@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { ConvertDate } from '../../../../utils/handlers/DateHandler';
+import { ConvertDate } from '../../../../handlers/DateHandler';
+import { observer } from 'mobx-react-lite';
 import styles from './main.module.css';
 import UserAvatar from '../../shared/avatars/user-avatar/UserAvatar';
 import BurgerMenu from '../../shared/context-menus/burger-menu/BurgerMenu';
@@ -10,7 +11,6 @@ import CreatePublicationPopup from '../../features/pop-up-windows/create-publica
 import AccountState from '../../../../state/entities/AccountState';
 import PublicationsController from '../../api/PublicationsController';
 import Reaction from '../../ui-kit/reactions/reaction/Reaction';
-import { observer } from 'mobx-react-lite';
 
 const Publication = observer(({
         publication, 
@@ -42,7 +42,7 @@ const Publication = observer(({
         }
 
         return true;
-    }
+    };
 
     useEffect(() => {
         if (isPublicationValid() === false) 

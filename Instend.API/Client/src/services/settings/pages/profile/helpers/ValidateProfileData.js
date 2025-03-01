@@ -1,4 +1,4 @@
-import { CalculateAge } from "../../../../../utils/handlers/DateHandler";
+import { CalculateAge } from "../../../../../handlers/DateHandler";
 
 export const ValidateProfileData = (name, surname, nickname, dateOfBirth, links = []) => {
     const linkRegex = /^https:\/\/.+/;

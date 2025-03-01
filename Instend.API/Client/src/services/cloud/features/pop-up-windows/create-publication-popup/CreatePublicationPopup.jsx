@@ -4,7 +4,7 @@ import { toJS } from 'mobx';
 import PopUpWindow from '../../../shared/popup-windows/pop-up-window/PopUpWindow';
 import styles from './main.module.css';
 import AccountState from '../../../../../state/entities/AccountState';
-import Base64Handler from '../../../../../utils/handlers/Base64Handler';
+import Base64Handler from '../../../../../handlers/Base64Handler';
 import image from './images/image.png';
 import ImageAttachments from '../../../ui-kit/attachments/ImageAttachments';
 import FilesInputWrapper from '../../wrappers/files-input-wrapper/FilesInputWrapper';

@@ -1,11 +1,11 @@
 import { makeAutoObservable } from "mobx";
 import AccountState from "./AccountState";
-import ChatHandler from "../../utils/handlers/ChatHandler";
+import ChatHandler from "../../handlers/ChatHandler";
 import GlobalContext from "../../global/GlobalContext";
 import ChatTypes from "../../services/cloud/pages/messages/widgets/chat/helpers/ChatTypes";
-import SortingHandler from "../../utils/handlers/SortingHandler";
-import { SpecialTypes } from "../../utils/handlers/SpecialType";
+import SortingHandler from "../../handlers/SortingHandler";
 import StorageController from "../../api/StorageController";
+import { MessageTypes } from "../../entities/MessageTypes";
 
 class ChatsState {
     chats = [];
@@ -21,7 +21,7 @@ class ChatsState {
 
     constructor() {
         makeAutoObservable(this);
-    }
+    };
 
     increaseNumberOfLoadedDirects = (value) => {
         this.numberOfLoadedDirects += value;
@@ -48,7 +48,7 @@ class ChatsState {
         if (!chat.messages || chat.messages.length === 0) {
             const message = {
                 id: GlobalContext.NewGuid(),
-                specialType: SpecialTypes.Alert,
+                specialType: MessageTypes.Alert,
                 date: chat.date,
                 text: 'Chat has been created'
             };
@@ -101,7 +101,7 @@ class ChatsState {
 
         if (state === false) {
             this.chats = [];
-        }
+        };
     };
 
     AcceptDirect = (id) => {
@@ -114,7 +114,7 @@ class ChatsState {
 
         if (!!chat === false) {
             return queueId;
-        }
+        };
 
         const messageValue = {
             date: new Date(),

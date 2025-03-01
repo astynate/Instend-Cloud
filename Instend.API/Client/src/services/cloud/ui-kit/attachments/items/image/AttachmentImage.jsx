@@ -2,7 +2,7 @@ import { useState } from 'react';
 import SelectElementWithCheckmark from '../../../../elements/select/select-element-with-checkmark/SelectElementWithCheckmark';
 import styles from './main.module.css';
 import StorageController from '../../../../../../api/StorageController';
-import Base64Handler from '../../../../../../utils/handlers/Base64Handler';
+import Base64Handler from '../../../../../../handlers/Base64Handler';
 
 const AttachmentImage = ({image, isEditable = false, setAttachments, callback = () => {}}) => {
     const [_, setSelectedState] = useState(true);

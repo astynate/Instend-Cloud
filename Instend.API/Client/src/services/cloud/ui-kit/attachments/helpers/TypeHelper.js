@@ -1,5 +1,5 @@
 import GlobalContext from "../../../../../global/GlobalContext";
-import Base64Handler from "../../../../../utils/handlers/Base64Handler";
+import Base64Handler from "../../../../../handlers/Base64Handler";
 import ImageHelper from "./ImageHelper";
 
 class TypeHelper {

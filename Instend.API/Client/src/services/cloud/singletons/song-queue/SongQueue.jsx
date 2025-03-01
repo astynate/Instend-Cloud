@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import { formatTimeInSecond } from '../../../../utils/TimeHandler';
+import { formatTimeInSecond } from '../../../../handlers/TimeHandler';
 import SimpleRange from '../../ui-kit/ranges/simple-range/SimpleRange';
 import styles from './main.module.css';
 import play from './images/play.png';

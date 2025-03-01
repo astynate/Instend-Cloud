@@ -1,4 +1,4 @@
-import { ConvertDate } from '../../../../../utils/handlers/DateHandler';
+import { ConvertDate } from '../../../../../handlers/DateHandler';
 import PointsLoaderAnimation from '../../../shared/animations/points-loader-animation/PointsLoaderAnimation';
 import styles from './main.module.css';
 

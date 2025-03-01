@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import InputPassword from "../../shared/password/InputPassword";
 import Button from "../../shared/button/Button";
 import Error from "../../shared/error/Error";
-import ValidationHandler from "../../../../utils/handlers/ValidationHandler";
+import ValidationHandler from "../../../../handlers/ValidationHandler";
 
 const ValidateUserData = (user, password, confirm) => {
     if (ValidationHandler.ValidateEmail(user.email) === false) {

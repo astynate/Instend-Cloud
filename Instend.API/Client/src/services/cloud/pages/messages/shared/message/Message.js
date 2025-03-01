@@ -1,5 +1,5 @@
 import React from 'react';
-import { ConvertDateToTime } from '../../../../../../utils/handlers/DateHandler';
+import { ConvertDateToTime } from '../../../../../../handlers/DateHandler';
 import sent from './images/tick.svg';
 import sending from './images/time.svg';
 import viewed from './images/sent.svg';

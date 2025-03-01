@@ -1,5 +1,5 @@
 import { instance } from "../../../../../../../state/application/Interceptors";
-import { ConvertDate, IsDayDiffrent } from "../../../../../../../utils/handlers/DateHandler";
+import { ConvertDate, IsDayDiffrent } from "../../../../../../../handlers/DateHandler";
 import { globalWSContext } from "../../../../../layout/Layout";
 
 export const ChangeAccessStateAsync = async (id, isAccept) => {

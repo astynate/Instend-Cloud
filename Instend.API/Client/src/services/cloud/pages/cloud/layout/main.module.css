@@ -3,6 +3,7 @@
     width: 100%;
     position: sticky;
     z-index: 2;
+    background: var(--main-background-color);
 }
 
 .header {
@@ -84,7 +85,7 @@ img[id="reversed"] {
 
 @media (max-width: 700px) {
     .wrapper {
-        height: calc(100vh - var(--mobile-header-height) - var(--mobile-bottom-panel-height));
+        height: calc(100dvh - var(--mobile-header-height) - var(--mobile-bottom-panel-height));
         padding-left: 15px;
         padding-right: 15px;
     } 
@@ -96,5 +97,9 @@ img[id="reversed"] {
 
     .cloudHeaderWrapper {
         top: 0px;
+    }
+
+    .menu {
+        margin-top: 25px;
     }
 }

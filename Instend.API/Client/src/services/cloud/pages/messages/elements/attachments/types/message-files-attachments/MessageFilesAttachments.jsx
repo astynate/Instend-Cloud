@@ -1,4 +1,4 @@
-import { FormatFileSize } from '../../../../../../../../utils/handlers/StorageSpaceHandler';
+import { FormatFileSize } from '../../../../../../../../handlers/StorageSpaceHandler';
 import MessageAttachmentsWrapper from '../../../../../../features/wrappers/message-attachments-wrapper/MessageAttachmentsWrapper';
 import styles from './main.module.css';
 

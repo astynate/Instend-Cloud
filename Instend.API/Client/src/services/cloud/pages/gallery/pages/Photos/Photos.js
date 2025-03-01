@@ -6,7 +6,7 @@ import GlobalContext from '../../../../../../global/GlobalContext';
 import StorageController from '../../../../../../api/StorageController';
 import FilesController from '../../../../api/FilesController';
 import ContentWrapper from '../../../../features/wrappers/content-wrapper/ContentWrapper';
-import SortingHandler from '../../../../../../utils/handlers/SortingHandler';
+import SortingHandler from '../../../../../../handlers/SortingHandler';
 import Preview from '../../../../../preview/layout/Preview';
 
 const Photos = observer(({}) => {
