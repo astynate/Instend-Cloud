@@ -1,0 +1,13 @@
+.wrapper {
+    height: 100%;
+    width: 100%;
+    background: var(--sub-accent-background);
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 15px 20px;
+    transition: 0.15s ease;
+}
+
+.wrapper:hover {
+    background: var(--main-accent-color);
+}

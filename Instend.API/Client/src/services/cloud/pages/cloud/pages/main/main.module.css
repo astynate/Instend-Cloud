@@ -1,12 +1,12 @@
 .items {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    grid-gap: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-gap: 10px;
     margin-top: 5px;
 }
 
 @media (max-width: 700px) {
     .items {
-        grid-gap: 20px;
+        grid-gap: 7px;
     }
 }

@@ -8,7 +8,6 @@ import PrivateRoutes from '../../../routes/PrivateRoutes';
 import logo from './components/navigation-panel/images/logo/main-logo-black.svg';
 import styles from './css/mobile.module.css';
 import StorageController from '../../../api/StorageController';
-import SearchField from '../ui-kit/fields/search-field/SearchField';
 import './css/main.css';
 
 const routes = PrivateRoutes.reverse();
@@ -34,33 +33,21 @@ const Mobile = observer(() => {
         setCurrentRouteIndex(currentRoute);
     }, [location.pathname]);
 
-    useEffect(() => {
-        const headerHeight = PrivateRoutes[currentRouteIndex].search ? '100px' : '55px';
-
-        document.body.style.setProperty(
-            '--mobile-header-height', 
-            headerHeight
-        );
-    }, [currentRouteIndex]);
-
     return (
         <>
-            <div className={styles.mobileHeaderWrapper}>
-                <div className='mobile-header'>
-                    <div className='service-name'>
-                        <img src={logo} draggable="false" />
-                        <h1 className={styles.application}>Instend&nbsp;</h1>
-                        <h2 className={styles.service}>{currentRouteIndex ? PrivateRoutes[currentRouteIndex].name : "Home"}</h2>
-                    </div>
-                    <NavLink to='/profile' className={styles.profileLink}>
-                        <img 
-                            src={StorageController.getFullFileURL(account.avatar)} 
-                            className={styles.avatar}
-                            draggable="false"
-                        />
-                    </NavLink>
+            <div className='mobile-header'>
+                <div className='service-name'>
+                    <img src={logo} draggable="false" />
+                    <h1 className={styles.application}>Instend&nbsp;</h1>
+                    <h2 className={styles.service}>{currentRouteIndex ? PrivateRoutes[currentRouteIndex].name : "Home"}</h2>
                 </div>
-                {PrivateRoutes[currentRouteIndex].search && <SearchField />}
+                <NavLink to='/profile' className={styles.profileLink}>
+                    <img 
+                        src={StorageController.getFullFileURL(account.avatar)} 
+                        className={styles.avatar}
+                        draggable="false"
+                    />
+                </NavLink>
             </div>
             <div className='cloud-content-wrapper'>
                 <Routes>

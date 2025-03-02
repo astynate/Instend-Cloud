@@ -5,6 +5,7 @@ import styles from './main.module.css';
 import StorageItemDescription from '../../features/storage/storage-item-description/StorageItemDescription';
 import GlobalContext from '../../../../global/GlobalContext';
 import StorageController from '../../../../api/StorageController';
+import StorageItemWrapper from '../../features/wrappers/storage-item-wrapper/StorageItemWrapper';
 
 const File = ({isLoading, file}) => {
   const [aspectRatio, setAspectRatio] = useState(1);
@@ -53,30 +54,32 @@ const File = ({isLoading, file}) => {
   };
     
   return (
-    <div 
-      className={styles.wrapper} 
-      data={file.id}
-      onMouseEnter={() => setSelectedOpenState(true)}
-      onMouseLeave={() => setSelectedOpenState(false)}
-    >
-      <div className={styles.content}>
-        {image ? 
-          <img 
-            src={image} 
-            className={styles.image}
-            draggable={false}
-            id={aspectRatio < 1 ? 'width' : 'height'}
-          />
-        : 
-          <div className={styles.file}>
-            <span>{file.type}</span>
-          </div>}
+    <StorageItemWrapper>
+      <div 
+        className={styles.wrapper} 
+        data={file.id}
+        onMouseEnter={() => setSelectedOpenState(true)}
+        onMouseLeave={() => setSelectedOpenState(false)}
+      >
+        <div className={styles.content}>
+          {image ? 
+            <img 
+              src={image} 
+              className={styles.image}
+              draggable={false}
+              id={aspectRatio < 1 ? 'width' : 'height'}
+            />
+          : 
+            <div className={styles.file}>
+              <span>{file.type}</span>
+            </div>}
+        </div>
+        <StorageItemDescription
+          name={file ? file.name : 'Unknown'} 
+          time={file ? file.creationTime : undefined} 
+        />
       </div>
-      <StorageItemDescription
-        name={file ? file.name : 'Unknown'} 
-        time={file ? file.creationTime : undefined} 
-      />
-    </div>
+    </StorageItemWrapper>
   );
 };
 

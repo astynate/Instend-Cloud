@@ -5,7 +5,7 @@ import styles from './main.module.css';
 import openImage from './images/open.png';
 import StorageState from "../../../../../../state/entities/StorageState";
 
-const CloudHeader = observer(({}) => {
+const CloudHeader = observer(({isMobile}) => {
     const [isOpen, setOpenState] = useState(false);
     const { path } = StorageState;
     const ref = useRef();
@@ -13,7 +13,7 @@ const CloudHeader = observer(({}) => {
     const close = (event) => {
       if (ref.current && !ref.current.contains(event.target)) {
         setOpenState(false);
-      }
+      };
     };
 
     useEffect(() => {

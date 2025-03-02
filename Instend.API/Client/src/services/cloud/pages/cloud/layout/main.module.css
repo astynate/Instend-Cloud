@@ -83,6 +83,11 @@ img[id="reversed"] {
     padding-bottom: 30px;
 }
 
+.headerPlaceholder {
+    height: 50px;
+    background: var(--main-background-color);
+}
+
 @media (max-width: 700px) {
     .wrapper {
         height: calc(100dvh - var(--mobile-header-height) - var(--mobile-bottom-panel-height));

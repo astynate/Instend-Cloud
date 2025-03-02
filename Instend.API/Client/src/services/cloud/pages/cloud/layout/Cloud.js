@@ -86,9 +86,10 @@ const Cloud = observer(({setPanelState, isMobile = false}) => {
                 />
               </div>}
           </div>
-          <div className={styles.menu}>
-            <CloudHeader />
-          </div>
+          {isMobile === false ? 
+            <CloudHeader /> 
+          :
+            <div className={styles.headerPlaceholder}></div>}
         </ContentWrapper>
       </div>
       {isAccessProcessWindowOpen && <OpenAccessProcess 
