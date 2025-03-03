@@ -3,8 +3,12 @@ import { observer } from 'mobx-react-lite';
 import { Link } from 'react-router-dom';
 import styles from './main.module.css';
 import StorageController from '../../../../api/StorageController';
+import AccountState from '../../../../state/entities/AccountState';
+import FollowersController from '../../../../api/FollowersController';
 
 const User = observer(({id, name, nickname, avatar}) => {
+    const IsFollowing = !AccountState.IsAccountInTheListOfFollowingAcounts(id);
+
     return (
         <div className={styles.user}>
             <Link to={`/profile/${id}`} className={styles.information}>
@@ -19,7 +23,13 @@ const User = observer(({id, name, nickname, avatar}) => {
                     <span className={styles.fullname}>{name}</span>
                 </div>
             </Link>
-            <button className={styles.button}>Follow</button> 
+            <button 
+                id={IsFollowing ? 'follow' : 'unfollow'}
+                className={styles.button}
+                onClick={() => FollowersController.Follow(id)}
+            >
+                {IsFollowing ? 'Follow' : 'Unfollow'}
+            </button> 
         </div>
     );
 });

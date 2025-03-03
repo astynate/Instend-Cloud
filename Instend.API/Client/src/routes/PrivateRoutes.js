@@ -40,7 +40,14 @@ const PrivateRoutes = [
         name: "Gallery"
     },
     {
-        path: '/messages/:id?',
+        path: '/messages/:id',
+        element: <Messages />,
+        name: "Messages",
+        isHeaderless: true,
+        isWithoutBottomPanel: true,
+    },
+    {
+        path: '/messages',
         element: <Messages />,
         name: "Messages"
     },

@@ -13,6 +13,8 @@ class SearchHandler {
                 await AccountController.GetAccountsByPrefix(prefix, ExploreState.setAccounts);
                 setAvailable(true);
             }, 700));
+        } else {
+            ExploreState.setAccounts([]);
         };
     };
 };

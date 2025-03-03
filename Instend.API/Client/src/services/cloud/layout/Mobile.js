@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { observer } from 'mobx-react-lite';
 import { matchPath, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import MobileNavigation from './components/navigation-panel/MobileNavigation';
@@ -10,7 +10,7 @@ import styles from './css/mobile.module.css';
 import StorageController from '../../../api/StorageController';
 import './css/main.css';
 
-const routes = PrivateRoutes.reverse();
+const routes = [...PrivateRoutes].reverse();
 
 const Mobile = observer(() => {
     const [currentRouteIndex, setCurrentRouteIndex] = useState(0);
@@ -27,19 +27,21 @@ const Mobile = observer(() => {
 
     useEffect(() => {
         const currentRoute = routes
-            .findIndex(route => 
-                matchPath({ path: route.path, exact: true, strict: true }, location.pathname));
+            .findIndex(route => {
+                console.log(route, location.pathname);
+                return matchPath({ path: route.path, exact: true, strict: true }, location.pathname)}
+            );
                 
         setCurrentRouteIndex(currentRoute);
-    }, [location.pathname]);
+    }, [routes, location.pathname]); 
 
     return (
         <>
-            <div className='mobile-header'>
+            {!routes[currentRouteIndex].isHeaderless && <div className='mobile-header'>
                 <div className='service-name'>
                     <img src={logo} draggable="false" />
                     <h1 className={styles.application}>Instend&nbsp;</h1>
-                    <h2 className={styles.service}>{currentRouteIndex ? PrivateRoutes[currentRouteIndex].name : "Home"}</h2>
+                    <h2 className={styles.service}>{currentRouteIndex ? routes[currentRouteIndex].name : "Home"}</h2>
                 </div>
                 <NavLink to='/profile' className={styles.profileLink}>
                     <img 
@@ -48,10 +50,10 @@ const Mobile = observer(() => {
                         draggable="false"
                     />
                 </NavLink>
-            </div>
+            </div>}
             <div className='cloud-content-wrapper'>
                 <Routes>
-                    {PrivateRoutes.map((route, index) => {
+                    {routes.map((route, index) => {
                         const { element, ...rest } = route;
                         return (<Route 
                             key={index} 
@@ -63,7 +65,7 @@ const Mobile = observer(() => {
                     })}
                 </Routes>
             </div>
-            <MobileNavigation />
+            {!routes[currentRouteIndex].isWithoutBottomPanel && <MobileNavigation />}
         </>
     );
 });

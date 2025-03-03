@@ -91,13 +91,13 @@ img[id="reversed"] {
 @media (max-width: 700px) {
     .wrapper {
         height: calc(100dvh - var(--mobile-header-height) - var(--mobile-bottom-panel-height));
-        padding-left: 15px;
-        padding-right: 15px;
+        padding-left: 0px;
+        padding-right: 0px;
     } 
 
     .content {
         padding-right: 0;
-        grid-gap: 20px;
+        grid-gap: 10px;
     }
 
     .cloudHeaderWrapper {

@@ -22,7 +22,7 @@
     font-family: 'Open Sans', sans-serif;
 }
 
-.information h5 {
+.content h5 {
     font-weight: 600;
     font-size: 15px;
     color: var(--main-font-color);
@@ -44,4 +44,22 @@
     display: flex;
     grid-gap: 15px;
     align-items: center;
+}
+
+@media (max-width: 700px) {
+    .content {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .information {
+        grid-gap: 20px;
+        padding-top: 10px;
+        padding-left: 10px;
+        padding-bottom: 25px;
+    }
+
+    .buttonText {
+        width: 100%;
+    }
 }

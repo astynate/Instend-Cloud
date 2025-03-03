@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { createSignalRContext } from "react-signalr/signalr";
 import { observer } from 'mobx-react-lite';
-import { useNavigate } from 'react-router-dom';
+import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import Desktop from './Desktop';
 import Mobile from './Mobile';
 import ApplicationState from '../../../state/application/ApplicationState';
@@ -18,6 +18,7 @@ import './css/fonts.css';
 import './css/colors.css';
 import './css/main.css';
 import './css/animations.css';
+import PrivateRoutes from '../../../routes/PrivateRoutes';
 
 export const globalWSContext = createSignalRContext();
 
@@ -54,11 +55,15 @@ const WaitingForConnection = async () => {
     };
 };
 
+const routes = [...PrivateRoutes].reverse();
+
 const Layout = observer(() => {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [isErrorExist, setErrorExistingState] = useState(false);
+    const [currentRouteIndex, setCurrentRouteIndex] = useState(0);
     const [errorTitle, setErrorTitle] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const location = useLocation();
 
     let navigate = useNavigate();
 
@@ -137,6 +142,14 @@ const Layout = observer(() => {
         };
     }, []);
 
+    useEffect(() => {
+        const currentRoute = routes
+            .findIndex(route => 
+                matchPath({ path: route.path, exact: false, strict: false }, location.pathname));
+                
+        setCurrentRouteIndex(currentRoute);
+    }, [location.pathname]);
+
     return (
         <globalWSContext.Provider url={process.env.REACT_APP_SERVER_URL + '/global-hub'}>
             {AccountState.isAuthorize === false ?
@@ -145,6 +158,7 @@ const Layout = observer(() => {
                 <div 
                     className='cloud-wrapper' 
                     style={{'--disconnected-height': ApplicationState.connectionState === 0 ? '0px' : '15px'}}
+                    nocontrols={routes[currentRouteIndex].isHeaderless ? 'true' : null}
                 >
                     <title>Instend</title>
                     <MusicPlayer />

@@ -12,7 +12,7 @@ class AccountState {
 
     constructor() {
         makeAutoObservable(this);
-    }
+    };
 
     Logout = () => {
         this.account = null;
@@ -25,7 +25,7 @@ class AccountState {
 
         localStorage.setItem('system_access_token', undefined);
         localStorage.setItem('system_refresh_token', undefined);
-    }
+    };
 
     SetUser = (user) => this.account = user;
     DeletePublication = (id) => this.publications = this.publications.filter(element => element.comment.id !== id);
@@ -47,30 +47,30 @@ class AccountState {
 
             return element;
         });
-    }
+    };
 
     GetUserOnSuccessCallback = (data) => {
         this.account = data;
         this.isAuthorize = true;
         this.isLoading = false;
-    }
+    };
 
     GetUserOnFailureCallback = () => {
         this.isAuthorize = false;
         this.isLoading = false;
-    }
+    };
 
     ChangeOccupiedSpace(occupiedSpace) {
         if (!this.account) 
             return false;
         
         this.account.occupiedSpace = occupiedSpace;
-    }
+    };
 
     ChangeFollowingState = (accountId) => {
         if (!!this.account === false) {
             return false;
-        }
+        };
 
         const originalLength = this.account.following.length; 
 
@@ -79,21 +79,21 @@ class AccountState {
         
         if (originalLength === this.account.following.length) {
             this.account.following = [...this.account.following, {accountId: accountId}];
-        }
-    }
+        };
+    };
 
     IsAccountInTheListOfFollowingAcounts = (accountId) => {
         if (this.account && this.account.following) {
             return !!this.GetFollowerById(accountId);
-        }
+        };
 
         return false;
-    }
+    };
 
     GetFollowerById = (accountId) => {
         return this.account.following
             .find(a => a.accountId === accountId);
-    }
-}
+    };
+};
 
 export default new AccountState();

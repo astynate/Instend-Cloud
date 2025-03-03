@@ -73,6 +73,10 @@
     color: var(--main-blue-color);
 }
 
+.button[id="unfollow"] {
+    color: var(--main-red-color);
+}
+
 .button:hover {
     background: var(--main-accent-color);
 }
@@ -80,4 +84,11 @@
 .statistic {
     display: flex;
     grid-gap: 15px;
+}
+
+@media (max-width: 700px) {
+    .avatar {
+        height: 80px;
+        width: 80px;
+    }
 }

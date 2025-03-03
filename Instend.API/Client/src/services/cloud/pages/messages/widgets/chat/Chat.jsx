@@ -69,6 +69,7 @@ const Chat = observer(({isMobile, isOpen, chat}) => {
                     chat={chat}
                     setRightPanelOpenState={setRightPanelOpenState}
                     scrollElement={scrollElement}
+                    isMobile={isMobile}
                 />
             </div>
             {isRightPanelOpen && currentChatType.information && 

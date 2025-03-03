@@ -6,14 +6,11 @@ class ExploreState {
 
     constructor() {
         makeAutoObservable(this);
-    }
+    };
 
     setAccounts = (accounts) => {
-        if (accounts && accounts.length > 0) {
-            this.accounts = accounts;
-            console.log(this.accounts);
-        }
-    }
-}
+        this.accounts = accounts ?? [];
+    };
+};
 
 export default new ExploreState();

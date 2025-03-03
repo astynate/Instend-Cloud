@@ -104,4 +104,13 @@ h1 {
         display: grid;
         grid-template-rows: var(--mobile-header-height) auto var(--mobile-bottom-panel-height);
     }
+
+    .cloud-wrapper[nocontrols="true"] {
+        display: grid;
+        grid-template-rows: auto;
+    }
+
+    body {
+
+    }
 }

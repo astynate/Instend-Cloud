@@ -6,7 +6,7 @@ import ChatHeader from "../components/chat-header/ChatHeader";
 import ChatsState from "../../../../../../../state/entities/ChatsState";
 import MessageList from "../../../../../features/lists/message-list/MessageList";
 
-const Draft = observer(({operation, setDefaultOperation, scrollElement}) => {
+const Draft = observer(({isMobile, operation, setDefaultOperation, scrollElement}) => {
     const { draft } = ChatsState;
 
     if (!draft) {
@@ -21,6 +21,7 @@ const Draft = observer(({operation, setDefaultOperation, scrollElement}) => {
                 subTitle={"Draft personal chat"}
                 isChatInformation={false}
                 setChatInformation={() => {}}
+                isMobile={isMobile}
             />
             {draft.messages.length === 0 ?
                 <div className={styles.draftBody}>

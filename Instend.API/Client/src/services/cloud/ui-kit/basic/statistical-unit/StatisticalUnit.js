@@ -9,7 +9,7 @@ const StatisticalUnit = ({title, amount}) => {
             </span>
             {title}
         </span>
-    )
-}
+    );
+};
 
 export default StatisticalUnit;

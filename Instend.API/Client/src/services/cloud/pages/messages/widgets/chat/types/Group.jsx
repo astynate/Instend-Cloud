@@ -5,7 +5,7 @@ import Input from "../../../shared/input/Input";
 import ChatsHelper from "../../chats/ChatsHelper";
 import MessagesWrapper from "../../../../../features/wrappers/messages-wrapper/MessagesWrapper";
 
-const Group = observer(({setRightPanelOpenState = () => {}, chat, operation, setDefaultOperation, scrollElement}) => {
+const Group = observer(({isMobile, setRightPanelOpenState = () => {}, chat, operation, setDefaultOperation, scrollElement}) => {
     const data = ChatsHelper.GetChatData(chat);
     
     if (!chat) {
@@ -19,6 +19,7 @@ const Group = observer(({setRightPanelOpenState = () => {}, chat, operation, set
                 title={data.name}
                 setRightPanelOpenState={setRightPanelOpenState}
                 subTitle={`${data.numberOfMembers} members`}
+                isMobile={isMobile}
             />
             <MessagesWrapper>
                 <MessageList

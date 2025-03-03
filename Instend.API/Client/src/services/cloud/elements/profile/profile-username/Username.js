@@ -7,7 +7,7 @@ const Username = ({isLoading, username, children}) => {
       <div className={styles.wrapper}>
         <div className={styles.placeholder}></div>
       </div>
-    )
+    );
   };
     
   return (
@@ -16,6 +16,6 @@ const Username = ({isLoading, username, children}) => {
       {children}
     </div>
   );
-}
+};
 
 export default Username;

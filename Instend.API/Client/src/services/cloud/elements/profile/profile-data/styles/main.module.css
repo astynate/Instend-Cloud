@@ -30,16 +30,23 @@
     color: var(--main-font-color);
 }
 
-@media (max-width: 500px) {
+@media (max-width: 700px) {
     .data {
-        grid-gap: 20px;
+        grid-gap: 15px;
+    }
+
+    .counter {
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        grid-gap: 0px;
     }
 
     .counter h2 {
-        font-size: 12px;
+        font-size: 15px;
     }
 
     .counter span {
-        font-size: 12px;
+        font-size: 13px;
     }
 }

@@ -1,5 +1,4 @@
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
 import ChatHeader from "../components/chat-header/ChatHeader";
 import styles from './main.module.css';
 import ChatPlaceholder from "../components/chat-placeholder/ChatPlaceholder";
@@ -10,13 +9,13 @@ import ChatsHelper from "../../chats/ChatsHelper";
 import DirectsController from "../../../../../api/DirectsController";
 import MessagesWrapper from "../../../../../features/wrappers/messages-wrapper/MessagesWrapper";
 
-const Direct = observer(({chat, operation, setDefaultOperation, scrollElement}) => {
+const Direct = observer(({isMobile, chat, operation, setDefaultOperation, scrollElement}) => {
     let { account } = AccountState;
     const data = ChatsHelper.GetChatData(chat);
     
     if (!chat) {
         return null;
-    }
+    };
 
     const isUserInviter = () => {
         return chat.ownerId === account.id;
@@ -28,6 +27,7 @@ const Direct = observer(({chat, operation, setDefaultOperation, scrollElement}) 
                 avatar={data.avatar}
                 title={data.name}
                 subTitle={"last seen recently"}
+                isMobile={isMobile}
             />
             <MessagesWrapper>
                 {!chat.isAccepted && 

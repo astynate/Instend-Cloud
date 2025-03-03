@@ -1,6 +1,5 @@
 import styles from './main.module.css';
 import search from './images/search.png';
-import SearchHandler from '../../../../../handlers/SearchHandler';
 import { useState } from 'react';
 
 const SearchField = ({placeholder = "Search", callback = () => {}}) => {
@@ -13,7 +12,7 @@ const SearchField = ({placeholder = "Search", callback = () => {}}) => {
             <input 
                 className={styles.searchField}
                 placeholder={placeholder}
-                onInput={(event) => SearchHandler.SearchAll(event.target.value, isAvailable, setAvailable, timerId, setTimerId)}
+                onInput={(event) => callback(event.target.value, isAvailable, setAvailable, timerId, setTimerId)}
             />
         </div>
     );

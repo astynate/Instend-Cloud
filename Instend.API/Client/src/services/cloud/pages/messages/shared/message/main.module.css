@@ -4,6 +4,7 @@
     image-rendering: pixelated;
     height: fit-content;
     align-items: end;
+    width: fit-content;
 }
 
 .message[id="margin"] {
@@ -40,6 +41,7 @@
     flex-direction: column;
     overflow: hidden;
     border-radius: 15px;
+    width: fit-content;
     background: var(--pop-up-accent-color);
 }
 
@@ -52,12 +54,6 @@
     max-width: 500px;
     font-weight: 500;
     color: var(--main-font-color);
-}
-
-.message[id="selected"] .messageContent {
-    /* filter: brightness(150%); */
-    /* outline: 1px solid var(--main-font-color);
-    outline-offset: -1px; */
 }
 
 .messageContent[id="currentAccountMessage"] {
@@ -111,4 +107,10 @@
     margin-bottom: 2px;
     margin-left: 5px;
     object-fit: contain;
+}
+
+@media (max-width: 700px) {
+    .messageText {
+        max-width: 80%;
+    }
 }

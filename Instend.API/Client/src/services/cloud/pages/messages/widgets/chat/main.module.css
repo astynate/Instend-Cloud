@@ -141,3 +141,12 @@
     width: 32px;
     filter: var(--main-filter);
 }
+
+@media (max-width: 700px) {
+    .chat {
+        height: 100%;
+        width: 100%;
+        /* background: none; */
+        border-radius: 0;
+    }
+}

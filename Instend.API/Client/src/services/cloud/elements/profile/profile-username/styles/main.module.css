@@ -13,8 +13,8 @@
     font-weight: 600;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
     .username {
-        font-size: 24px;
+        font-size: 20px;
     }
 }

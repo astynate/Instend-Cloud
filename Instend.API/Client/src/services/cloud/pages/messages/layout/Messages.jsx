@@ -7,9 +7,8 @@ import Chat from '../widgets/chat/Chat';
 import ChatsState from '../../../../../state/entities/ChatsState';
 
 const Messages = observer(({isMobile, setPanelState = () => {}}) => { 
-    const { chats } = ChatsState;
     const [chat, setChat] = useState(undefined);
-
+    const { chats } = ChatsState;
     const params = useParams();
   
     useEffect(() => {
@@ -22,8 +21,8 @@ const Messages = observer(({isMobile, setPanelState = () => {}}) => {
   
     return (
         <div className={styles.wrapper}>
-          <Chats isMobile={isMobile} />
-          <Chat chat={chat} />
+          {(!isMobile || !params.id) && <Chats isMobile={isMobile} />}
+          {(!isMobile || params.id) && <Chat chat={chat} isMobile={isMobile} />}
         </div>
     );
 });

@@ -15,7 +15,7 @@ class AccountController {
                 console.error(error);
                 onErrorCallback();
             });
-    }
+    };
 
     static GetUserPublications = async () => {
         let publications = [];
@@ -29,7 +29,7 @@ class AccountController {
             });
 
         return publications;
-    }
+    };
 
     static GetAccountById = async (id) => {
         let friend = null;
@@ -38,11 +38,11 @@ class AccountController {
             .then(response => {
                 if (response.data) {
                     friend = response.data;
-                }
+                };
             });
 
         return friend;
-    }
+    };
 
     static ChangeAccountData = async (name, surname, nickname, description, avatar, dateOfBirth, links, onSuccess, onError) => {
         let form = new FormData();
@@ -55,7 +55,7 @@ class AccountController {
 
         if (!!avatar === true) {
             form.append('avatar', avatar);
-        }
+        };
 
         for (let i = 0; i < links.length; i++) {
             form.append(`links[${i}].Id`, links[i].id);
@@ -78,7 +78,7 @@ class AccountController {
                 console.error(error);
                 onError();
             });
-    }
+    };
 
     static GetAccountPhotos = async (accountId, setState = () => {}, skip) => {
         await instance
@@ -91,7 +91,7 @@ class AccountController {
             .catch(error => {
                 console.error(error);
             });
-    }
+    };
 
     static GetAccountsByPrefix = async (prefix, setState) => {
         if (!!prefix === false)
@@ -107,7 +107,7 @@ class AccountController {
             .catch(error => {
                 console.error(error);
             });
-    }
-}
+    };
+};
 
 export default AccountController;

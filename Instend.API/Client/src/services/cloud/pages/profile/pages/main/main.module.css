@@ -75,3 +75,10 @@
     object-fit: cover;
     border-radius: 3px;
 }
+
+@media (max-width: 700px) {
+    .wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+}

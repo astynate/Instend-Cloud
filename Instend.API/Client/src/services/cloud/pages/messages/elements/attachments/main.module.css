@@ -26,3 +26,9 @@
 .attachments[type="type-5"] { grid-template-columns: repeat(3, 1fr); }
 .attachments[type="type-5"] .attachmentsWrapper:nth-child(1) { grid-row: span 2; }
 .attachments[type="type-6"] { grid-template-columns: repeat(3, 1fr); }
+
+@media (max-width: 700px) {
+    .attachments {
+        max-width: 80%;
+    }
+}

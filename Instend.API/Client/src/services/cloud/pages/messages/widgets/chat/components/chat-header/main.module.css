@@ -76,3 +76,14 @@
 .buttonImage:active {
     opacity: 1;
 }
+
+.back {
+    width: 25px;
+    filter: var(--main-filter);
+}
+
+@media (max-width: 700px) {
+    .header {
+        background: none;
+    }
+}
