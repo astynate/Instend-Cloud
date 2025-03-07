@@ -4,7 +4,6 @@ import { toJS } from 'mobx';
 import styles from './main.module.css';
 import storageState, { AdaptId } from '../../../../states/storage-state';
 
-
 export const CalculateAverageEqual = (a, b, offest) => {
     return b < a + offest && b > a - offest;
 }

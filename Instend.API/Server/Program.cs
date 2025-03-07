@@ -20,6 +20,7 @@ using Instend.Core.Dependencies.Services.Internal.Helpers;
 using Instend.Repositories.Contexts;
 using Instend.Services.Internal.Services;
 using Instend.Repositories.Publications;
+using Instend_Version_2._0._0.Server.Controllers.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,9 @@ builder.Services.AddCors(options =>
 builder.Services.AddTransient<LoggingMiddleware>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<GalleryController>();
+builder.Services.AddTransient<FilesController>();
 
 builder.Services.AddDbContext<GlobalContext>();
 
@@ -54,6 +58,7 @@ builder.Services.AddScoped<IAccessHandler, AccessHandler>();
 builder.Services.AddScoped<IPublicationsPhotosRepository, PublicationsPhotosRepository>();
 builder.Services.AddScoped<IPublicationsRepository, PublicationsRepository>();
 builder.Services.AddScoped<IAttachmentsRepository, AttachmentsRepository>();
+builder.Services.AddScoped<FilesController>();
 
 builder.Services.AddSingleton<IValidationService, ValidationService>();
 builder.Services.AddSingleton<IPreviewService, PreviewService>();

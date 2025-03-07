@@ -39,7 +39,7 @@ const InstendCloudSubPage = observer(({
             .SetItems(collectionId, StorageState.files, files);
 
         if (isHasMoreFiles)
-            FilesController.GetFilesByParentCollectionId(collectionId, setFiles);
+            FilesController.GetFilesByParentCollectionAndStorageStateId(collectionId, setFiles);
     }, [collectionId, files[AdaptId(collectionId)]?.items]);
 
     useEffect(() => {

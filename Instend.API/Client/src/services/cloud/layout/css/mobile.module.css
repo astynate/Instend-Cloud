@@ -16,3 +16,24 @@
 .application {
     font-size: 24px;
 }
+
+.button {
+    height: 37px;
+    width: 37px;
+    border-radius: 100%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--main-accent-color);
+}
+
+.button img {
+    height: 22px;
+    width: 22px;
+}
+
+.buttons {
+    display: flex;
+    grid-gap: 5px;
+}

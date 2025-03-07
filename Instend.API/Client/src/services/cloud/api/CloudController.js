@@ -2,6 +2,7 @@ import { instance } from "../../../state/application/Interceptors";
 import ApplicationState from "../../../state/application/ApplicationState";
 import StorageState from "../../../state/entities/StorageState";
 import ResponseHandler from "../../../handlers/ResponseHandler";
+import AlbumsController from "./AlbumsController";
 
 class CloudController {
     static CreateFile = async (name, type, folderId) => {
@@ -29,30 +30,31 @@ class CloudController {
             });
     };
 
-    static UploadFilesAsync = async (files, folderId) => {
-        await Array.from(files).forEach(async (file) => {
-            let type = null;
-    
-            if (file.type) {
-                type = file.type.split('/');
-    
-                if (type.length === 2) {
-                    type = type[1];
-                } else{
-                    type = null;
-                }
+    static GetFileType = (file) => {
+        if (file.type) {
+            let type = file.type.split('/');
+
+            if (type.length === 2) {
+                type = type[1];
+                return type;
             }
-    
-            const files = new FormData();
-            const fileName = file.name ? file.name : null;
-            const queueId = await StorageState.CreateLoadingFile(fileName, folderId, type);
-    
-            files.append('file', file);
-            files.append('collectionId', folderId ? folderId : "");
-            files.append('queueId', queueId);
-    
-            await instance
-                .post('/api/files', files, {
+
+            return null;
+        };
+    };
+
+    static UploadFilesAsync = async (files, folderId) => {
+        const uploadPromises = Array.from(files).map(async (file) => {
+            const type = CloudController.GetFileType(file);
+            const form = new FormData();
+            const queueId = await StorageState.CreateLoadingFile(file.name ?? null, folderId, type);
+            
+            form.append('file', file);
+            form.append('collectionId', folderId ? folderId : "");
+            form.append('queueId', queueId);
+            
+            const response = await instance
+                .post('/api/files', form, {
                     onUploadProgress: (progressEvent) => {
                         const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
                         StorageState.SetLoadingFilePerscentage(queueId, percentCompleted);
@@ -61,8 +63,18 @@ class CloudController {
                 .catch(error => {
                     ApplicationState.AddErrorInQueue('Attention!', error.response.data);
                     StorageState.DeleteLoadingFile(queueId, file.folderId);
+                    throw error;
                 });
+    
+            return response.data;
         });
+    
+        return Promise.all(uploadPromises);
+    };    
+
+    static UploadFilesInAlbumAsync = async (id, files = [], type) => {
+        var filesIds = await CloudController.UploadFilesAsync(files, type);
+        await AlbumsController.UploadInAlbum(id, filesIds.map(id => { return { id: id }}));
     };
 
     static GetFilesByType = async (from, type) => {
@@ -93,7 +105,7 @@ class CloudController {
     static UploadFilesFromDragEvent = async (event, folderId) => {
         const files = event.dataTransfer.files;
         await CloudController.UploadFilesAsync(files, folderId);
-    }
+    };
 
     static GetPath = async (id, onSuccess = () => {}) => {
         await instance
@@ -103,7 +115,7 @@ class CloudController {
                     onSuccess(response.data);
                 }
             }); 
-    }
-}
+    };
+};
 
 export default CloudController;

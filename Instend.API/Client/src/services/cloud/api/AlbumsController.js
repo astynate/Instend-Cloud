@@ -24,7 +24,7 @@ class AlbumsController {
         await instance
             .get(`/api/albums?skip=${skip}&take=${take}`)
             .then(response => {
-                if (response.data) {
+                if (response && response.data) {
                     GalleryState.AddAlbums(response.data);
                     GalleryState.setHasMoreAlbumsState(response.data >= 5);
                 };
@@ -102,7 +102,7 @@ class AlbumsController {
     };
 
     static DeleteAlbums = async (albums) => {
-        if (albums && albums.length <= 0) {
+        if (!albums || albums.length <= 0) {
             return false;
         };
 
@@ -111,7 +111,25 @@ class AlbumsController {
                 GalleryState.SetAlbumAsLoading(albums[i].id);
                 await instance.delete(`/api/albums?id=${albums[i].id}`);
             };
-        }
+        };
+    };
+
+    static UploadInAlbum = async (id, files) => {
+        let form = new FormData();
+
+        form.append('id', id);
+
+        for (let i = 0; i < files.length; i++) {
+            form.append(`files[${i}]`, files[i].id);
+        };
+
+        await instance
+            .post(`/api/albums/upload/existing`, form);
+    };
+
+    static RemoveFileAsync = async (id, file) => {
+        await instance
+            .put(`/api/albums/remove?id=${id}&file=${file.id}`);
     };
 };
 

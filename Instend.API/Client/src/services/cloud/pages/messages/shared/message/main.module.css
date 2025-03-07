@@ -58,7 +58,10 @@
 
 .messageContent[id="currentAccountMessage"] {
     background: var(--main-blue-color);
-    color: white;
+}
+
+.messageContent[id="currentAccountMessage"] .messageText {
+    color: white !important;
 }
 
 .first {
@@ -91,13 +94,17 @@
 }
 
 .time {
-    color: white;
+    color: var(--main-font-color);
     opacity: 0.8;
     font-size: 12px;
     margin-left: 8px;
     text-wrap: nowrap;
     margin-top: auto;
     user-select: none;
+}
+
+.messageContent[id="currentAccountMessage"] .time {
+    color: white;
 }
 
 .messageState {

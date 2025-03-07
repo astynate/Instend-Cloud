@@ -144,29 +144,35 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         [Authorize]
         [RequestSizeLimit(10L * 1024L * 1024L * 1024L)]
         [RequestFormLimits(MultipartBodyLengthLimit = 10L * 1024L * 1024L * 1024L)]
-        public async Task<ActionResult<Guid>> UploadFiles([FromForm] IFormFile file, [FromForm] Guid? collectionId, [FromForm] int queueId)
+        public async Task<ActionResult<Guid>> UploadFiles([FromForm] IFormFile file, [FromForm] string? collectionId, [FromForm] string queueId)
         {
-            var available = await _accessHandler
-                .GetAccountAccessToCollection(collectionId, Request, Configuration.EntityRoles.Reader);
+            Guid id;
 
-            if (available.IsFailure)
-                return Conflict(available.Error);
+            if (Guid.TryParse(collectionId, out id))
+            {
+                var available = await _accessHandler
+                    .GetAccountAccessToCollection(id, Request, Configuration.EntityRoles.Reader);
 
+                if (available.IsFailure)
+                    return Conflict(available.Error);
+            }
+
+            var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
             var fileData = GetFileData(file);
 
             return await _context.Database.CreateExecutionStrategy().ExecuteAsync<ActionResult>(async () =>
             {
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
-                    var fileModel = await _filesRespository.AddAsync(fileData.name, fileData.type, file.Length, available.Value.accountId, collectionId);
+                    var fileModel = await _filesRespository.AddAsync(fileData.name, fileData.type, file.Length, Guid.Parse(userId.Value), collectionId);
 
                     if (fileModel.IsFailure)
                         return Conflict(fileModel.Error);
 
                     await _fileService.SaveIFormFile(file, fileModel.Value.Path);
 
-                    var result = await _accountsRepository.ChangeOccupiedSpaceValue(available.Value.accountId, file.Length);
-                    var group = fileModel.Value.CollectionId ?? available.Value.accountId;
+                    var result = await _accountsRepository.ChangeOccupiedSpaceValue(Guid.Parse(userId.Value), file.Length);
+                    var group = fileModel.Value.CollectionId ?? Guid.Parse(userId.Value);
 
                     if (result.IsFailure)
                         return Conflict(result.Error);

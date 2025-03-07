@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Authorization;
 using Instend.Repositories.Contexts;
 using Instend.Core.Models.Storage.Album;
 using Instend.Core.Dependencies.Services.Internal.Helpers;
+using DocumentFormat.OpenXml.Wordprocessing;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Instend_Version_2._0._0.Server.Controllers.Storage
 {
@@ -18,7 +21,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
     [Route("api/[controller]")]
     public class GalleryController : ControllerBase
     {
-        private readonly IFilesRespository _fileRespository;
+        private readonly IFilesRespository _filesRespository;
 
         private readonly ICollectionsRepository _folderRespository;
 
@@ -38,6 +41,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         private GlobalContext _context;
 
+        private FilesController _filesController;
+
         public GalleryController
         (
             IFilesRespository fileRespository, 
@@ -48,11 +53,12 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             IAccountsRepository accountsRepository,
             IAccessHandler accessHandler,
             IImageService imageService,
+            ISerializationHelper serializationHelper,
             GlobalContext context,
-            ISerializationHelper serializationHelper
+            FilesController filesController
         )
         {
-            _fileRespository = fileRespository;
+            _filesRespository = fileRespository;
             _requestHandler = requestHandler;
             _albumsRepository = albumRepository;
             _folderRespository = folderRepository;
@@ -62,6 +68,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             _accessHandler = accessHandler;
             _imageService = imageService;
             _serializationHelper = serializationHelper;
+            _filesController = filesController;
         }
 
         public class CreateAlbumTransferObject
@@ -96,11 +103,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         [HttpGet]
         [Authorize]
         [Route("/api/album")]
-        public async Task<IActionResult> GetAlbum(string id, int from, int count)
+        public async Task<IActionResult> GetAlbum(Guid id, int skip, int take)
         {
-            if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
-                return BadRequest("Invalid album id");
-
             var userId = _requestHandler
                 .GetUserId(Request.Headers["Authorization"]);
 
@@ -108,7 +112,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest(userId.Error);
 
             var result = await _albumsRepository
-                .GetByIdAsync(Guid.Parse(id), from, count);
+                .GetByIdAsync(id, skip, take);
 
             return Ok(_serializationHelper.SerializeWithCamelCase(result));
         }
@@ -136,94 +140,6 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                 .GetAlbums(Guid.Parse(userId.Value), type, skip, take);
 
             return Ok(_serializationHelper.SerializeWithCamelCase(result));
-        }
-
-        [HttpPost]
-        [Authorize]
-        [Route("/api/gallery/upload")]
-        public async Task<IActionResult> UploadToGallery
-        (
-            IPreviewService previewService,
-            IHubContext<GlobalHub> globalHub,
-            [FromForm] IFormFile file,
-            [FromForm] string? albumId,
-            [FromForm] int queueId
-        )
-        {
-            throw new NotImplementedException();
-
-            //var accountId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
-
-            //if (accountId.IsFailure)
-            //    return Unauthorized(accountId.Error);
-
-            //var account = await _accountsRepository
-            //    .GetByIdAsync(Guid.Parse(accountId.Value));
-
-            //if (account == null)
-            //    return BadRequest("User not found");
-
-            //var splitedName = file.FileName.Split(".");
-            
-            //var fileName = splitedName[0] ?? "Not set";
-            //var fileType = splitedName.Length >= 2 ? splitedName[splitedName.Length - 1] : null;
-
-            //if (fileType == null || Configuration.imageTypes.Contains(fileType.ToLower()) == false)
-            //    return BadRequest("Invalid fileType");
-
-            //return await _context.Database.CreateExecutionStrategy().ExecuteAsync<IActionResult>(async () =>
-            //{
-            //    using (var transaction = _context.Database.BeginTransaction())
-            //    {
-            //        var fileModel = await _fileRespository.AddPhotoAsync
-            //        (
-            //            fileName, 
-            //            fileType, 
-            //            file.Length, 
-            //            Guid.Parse(accountId.Value)
-            //        );
-
-            //        if (fileModel.IsFailure)
-            //            return Conflict(fileModel.Error);
-
-            //        if (file.Length > 0 && fileModel.IsFailure == false)
-            //        {
-            //            using (var fileStream = new FileStream(fileModel.Value.Path, FileMode.Create))
-            //            {
-            //                await file.CopyToAsync(fileStream);
-            //            }
-
-            //            await fileModel.Value.SetPreview(previewService);
-            //        }
-
-            //        if (string.IsNullOrEmpty(albumId) == false && string.IsNullOrWhiteSpace(albumId) == false)
-            //        {
-            //            //var result = await _albumRepository.(fileModel.Value, Guid.Parse(albumId));
-
-            //            //if (result.IsFailure)
-            //            //    return Conflict(result.Error);
-
-            //            await _globalHub.Clients.Group(albumId)
-            //                .SendAsync("Upload", new object[] { fileModel.Value, albumId, queueId });
-            //        }
-
-            //        var space = await _accountsRepository
-            //            .ChangeOccupiedSpaceValue(Guid.Parse(accountId.Value), file.Length);
-
-            //        if (space.IsFailure)
-            //            return Conflict(space.Error);
-
-            //        await globalHub.Clients.Group(fileModel.Value.AccountId.ToString())
-            //            .SendAsync("UploadFile", new object[] { fileModel.Value, queueId });
-
-            //        await globalHub.Clients.Group(fileModel.Value.AccountId.ToString())
-            //            .SendAsync("UpdateOccupiedSpace", account.OccupiedSpace + file.Length);
-
-            //        transaction.Commit();
-                    
-            //        return Ok();
-            //    }
-            //});
         }
 
         private async Task<IActionResult> CreateAlbumWithType(CreateAlbumTransferObject createTO, Configuration.AlbumTypes type)
@@ -262,6 +178,69 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                 return BadRequest(result.Error);
 
             return Ok(_serializationHelper.SerializeWithCamelCase(new object[] { result.Value, createTO.queueid }));
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("/api/albums/upload/existing")]
+        public async Task<IActionResult> AddInAlbumAsync([FromForm] Guid id, [FromForm] Guid[] files)
+        {
+            var album = await _albumsRepository.GetByIdAsync(id, 0, int.MaxValue);
+            var items = await _filesRespository.GetFilesByIdsAsync(files);
+
+            string[] galleryTypes = [..Configuration.imageTypes, ..Configuration.videoTypes];
+
+            if (album == null)
+                return BadRequest("Album not found");
+
+            switch(album.Type)
+            {
+                case (Configuration.AlbumTypes.Album):
+                {
+                    items = items
+                        .Where(x => galleryTypes.Contains(x.Type))
+                        .ToList();
+
+                    break;
+                }
+                case (Configuration.AlbumTypes.Playlist):
+                {
+                    items = items
+                        .Where(x => Configuration.musicTypes.Contains(x.Type))
+                        .ToList();
+
+                    break;
+                }
+            }
+
+            var albumFiles = album.Files.Select(x => x.Id);
+
+            items = items
+                .Where(x => albumFiles.Contains(x.Id) == false)
+                .ToList();
+
+            if (items.Count() > 0)
+                await _albumsRepository.UploadFilesInAlbum(id, items.ToArray());
+
+            await _globalHub.Clients
+                .Group(id.ToString())
+                .SendAsync("UploadInAlbum", _serializationHelper.SerializeWithCamelCase(new { id, items }));
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Authorize]
+        [Route("/api/albums/remove")]
+        public async Task<IActionResult> RemoveFileFromAlbum(Guid id, Guid file)
+        {
+            await _albumsRepository.RemoveFileFromAlbum(id, file);
+
+            await _globalHub.Clients
+                .Group(id.ToString())
+                .SendAsync("RemoveFromAlbum", _serializationHelper.SerializeWithCamelCase(new { id, file }));
+
+            return Ok();
         }
 
         [HttpPut]
@@ -324,7 +303,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
                 return BadRequest("Invalid id");
 
-            var result = await _albumsRepository.DeleteAlbumAsync(Guid.Parse(id), Guid.Parse(userId.Value));
+            var result = await _albumsRepository
+                .DeleteAlbumAsync(Guid.Parse(id), Guid.Parse(userId.Value));
 
             if (result.IsFailure)
                 return BadRequest(result.Error);

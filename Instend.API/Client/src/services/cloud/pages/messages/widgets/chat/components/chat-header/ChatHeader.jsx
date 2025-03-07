@@ -15,7 +15,7 @@ const ChatHeader = ({
     return (
         <div className={styles.header}>
             <div className={styles.left}>
-                {isMobile && <Link to="/messages">
+                {isMobile && <Link to="/messages" className={styles.link}>
                     <img 
                         src={back}
                         className={styles.back} 

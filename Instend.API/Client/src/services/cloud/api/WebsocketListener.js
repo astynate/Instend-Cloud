@@ -36,8 +36,9 @@ class WebsocketListener {
         ChatsState.DeleteMessage(chatId, messageId);
     };
 
-    static UploadFileListener = ([file, queueId]) => {
-        StorageState.ReplaceLoadingFile(file, queueId);
+    static UploadFileListener = (data) => {
+        const { value, queueId } = JSON.parse(data);
+        StorageState.ReplaceLoadingFile(value, queueId);
     };
 
     static AddCommentListner = ({comment, user, albumId, queueId}) => {
@@ -90,11 +91,20 @@ class WebsocketListener {
         globalWSContext.connection.invoke('ConnectToDirect', id);
     };
 
+    static UploadInAlbum = (data) => {
+        const { id, items } = JSON.parse(data);
+        GalleryState.UploadInAlbum(id, items);
+    };
+
+    static RemoveFromAlbum = (data) => {
+        const { id, file } = JSON.parse(data);
+        GalleryState.RemoveFromAlbum(id, file);
+    };
+
     static DeleteDirectListner = (id) => ChatsState.DeleteChat(id);
     static ViewMessageListner = ({ id, chatId }) => ChatsState.ViewMessage(id, chatId);
     static UpdateOccupiedSpaceListner = (space) => AccountState.ChangeOccupiedSpace(space);
     static DeleteCommentListner = (id) => GalleryState.DeleteCommentById(id);
-    static AddToAlbumListner = ([file, albumId]) => GalleryState.AddToAlbum(file, albumId);
     static DeleteAlbumListner = (id) => GalleryState.DeleteAlbumById(id);
     static UpdateAlbumListner = ({id, coverAsBytes, name, description}) => GalleryState.UpdateAlbum(id, coverAsBytes, name, description);
     static CreateAlbumListner = ([album, queueId]) => GalleryState.ReplaceLoadingAlbum(album, queueId);

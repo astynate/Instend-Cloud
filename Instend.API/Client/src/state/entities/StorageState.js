@@ -126,7 +126,7 @@ class StorageState {
     CreateLoadingFile(name, collectionId, type) {
         const file = {
             id: GlobalContext.NewGuid(),
-            queueId: this.fileQueueId,
+            queueId: GlobalContext.NewGuid(),
             name: name,
             isLoading: true,
             perscentage: 0,
@@ -136,7 +136,6 @@ class StorageState {
 
         runInAction(() => {
             this.SetItems(collectionId, this.files, [file]);
-            this.fileQueueId++;
         });
 
         return file.queueId;

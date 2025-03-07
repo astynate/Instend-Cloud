@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 
 class GalleryState {
+    album = undefined;
     albums = [];
     albumsQueueId = 0;
     albumCommentQueueId = 0;
@@ -11,6 +12,10 @@ class GalleryState {
         makeAutoObservable(this);
     };
 
+    setAlbum = (album) => {
+        this.album = album;
+    };
+
     setHasMoreAlbumsState = (state) => {
         this.isHasMoreAlbums = state;
     };
@@ -19,12 +24,20 @@ class GalleryState {
         this.albums = [...this.albums, ...newAlbums];
     };
 
-    AddToAlbum(photo, albumId) {
-        runInAction(() => {
-            if (albumId !== null && albumId !== '' && this.albums[albumId] && this.albums[albumId].photos) {
-                this.albums[albumId].photos = [photo, ...this.albums[albumId].photos];
-            };
-        });
+    UploadInAlbum(id, items) {
+        if (id !== this.album.id) {
+            return;
+        };
+
+        this.album.files = [...this.album.files, ...items];
+    };
+
+    RemoveFromAlbum = (id, file) => {
+        if (id !== this.album.id) {
+            return;
+        };
+
+        this.album.files = this.album.files.filter(f => f.id !== file);
     };
 
     SetCommentQueueId = (id) => {
@@ -81,7 +94,7 @@ class GalleryState {
     };
 
     DeleteAlbumById(id) {
-        delete this.albums[id];
+        this.albums = this.albums.filter(x => x.id !== id);
     };
 
     SetComments = (id, commets) => {

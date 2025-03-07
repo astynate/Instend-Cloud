@@ -96,7 +96,7 @@ namespace Instend.Repositories.Contexts
 
             modelBuilder.Entity<AlbumAccount>()
                 .HasOne(ca => ca.Account)
-                .WithMany()
+                .WithMany(x => x.Albums)
                 .HasForeignKey(ca => ca.AccountId)
                 .HasPrincipalKey(a => a.Id);
         }

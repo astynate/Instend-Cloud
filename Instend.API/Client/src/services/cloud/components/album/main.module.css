@@ -1,5 +1,5 @@
 .album {
-    height: 100%;
+    height: fit-content;
     width: 100%;
     user-select: none;
     transition: 0.15s ease;
@@ -18,7 +18,7 @@
     height: 100%;
     width: 100%;
     object-fit: cover;
-    aspect-ratio: 1.8 / 1;
+    aspect-ratio: 1.5 / 1;
     border-radius: 15px;
     transition: 0.15s ease;
     outline: 2px solid transparent;

@@ -1,5 +1,4 @@
 .items {
-    /* width: 100%; */
     margin-top: 8px;
     margin-bottom: 8px;
     margin-left: 15px;
@@ -49,9 +48,6 @@
 .element {
     height: 100%;
     width: 100%;
-    /* display: flex;
-    align-items: center;
-    justify-content: center; */
     overflow-y: scroll;
     overflow-x: hidden;
 }

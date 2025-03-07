@@ -25,9 +25,27 @@ namespace Instend.Repositories.Storage
             return result ?? Result.Failure<Core.Models.Storage.File.File>("File not found");
         }
 
-        public async Task<Result<Core.Models.Storage.File.File>> AddAsync(string name, string? type, double size, Guid accountId, Guid? collectionId)
+        public async Task<Result<Core.Models.Storage.File.File>> AddAsync(string name, string? type, double size, Guid accountId, string? collectionId)
         {
-            var file = Core.Models.Storage.File.File.Create(name, type, size, accountId, collectionId);
+            Guid? collectionIdAsGuid = null;
+
+            if (Configuration.SystemCollections.Contains(collectionId))
+            {
+                var collections = await _context.CollectionsAccounts
+                    .Where(x => x.AccountId == accountId && x.RoleId == Configuration.EntityRoles.Owner.ToString())
+                    .Include(x => x.Collection)
+                    .FirstOrDefaultAsync(x => x.Collection != null && 
+                                              x.Collection.Name == collectionId && 
+                                              x.Collection.TypeId == Configuration.CollectionTypes.System.ToString());
+
+                if (collections != null)
+                    collectionIdAsGuid = collections.CollectionId;
+            }
+
+            if (Guid.TryParse(collectionId, out Guid id))
+                collectionIdAsGuid = id;
+
+            var file = Core.Models.Storage.File.File.Create(name, type, size, accountId, collectionIdAsGuid);
 
             var owner = new FileAccount
             (
@@ -115,6 +133,14 @@ namespace Instend.Repositories.Storage
             //    .ToArrayAsync();
 
             return [];
+        }
+
+        public async Task<List<Core.Models.Storage.File.File>> GetFilesByIdsAsync(Guid[] ids)
+        {
+            return await _context.Files
+                .Where(x => ids.Contains(x.Id))
+                    .Include(x => x.AccountsWithAccess)
+                    .ToListAsync();
         }
     }
 }

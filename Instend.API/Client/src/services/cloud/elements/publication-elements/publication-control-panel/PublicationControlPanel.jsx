@@ -29,18 +29,18 @@ const PublicationControlPanel = ({
 
         if (reactionId && publicationId) {
             await PublicationsController.React(publicationId, reactionId);
-        }
-    }
+        };
+    };
 
     const open = () => {
         clearTimeout(timeoutId);
         setOpenState(true);
-    }
+    };
 
     const close = () => {
         clearTimeout(timeoutId);
         setTimeoutId(setTimeout(() => setOpenState(false), 250));
-    }
+    };
     
     return (
         <div className={styles.control}>

@@ -6,6 +6,8 @@ import GalleryState from '../../../../../../state/entities/GalleryState';
 import Album from '../../../../components/album/Album';
 import AlbumsController from '../../../../api/AlbumsController';
 import ContentWrapper from '../../../../features/wrappers/content-wrapper/ContentWrapper';
+import ContextMenu from '../../../../shared/context-menus/context-menu/ContextMenu';
+import remove from './images/remove.png';
 
 const Albums = observer(() => {
     const wrapper = useRef();
@@ -24,10 +26,21 @@ const Albums = observer(() => {
                 <div className={styles.content} ref={wrapper}>
                     {GalleryState.albums.map(value => {
                             return (
-                                <Album
+                                <ContextMenu
                                     key={value.id} 
-                                    album={value}
-                                />
+                                    items={[
+                                        { 
+                                            title: "Delete", 
+                                            image: remove, 
+                                            red: true, 
+                                            callback: () => {
+                                                AlbumsController.DeleteAlbums([value]);
+                                            }
+                                        }
+                                    ]}
+                                >
+                                    <Album album={value} />
+                                </ContextMenu>
                             )
                         })
                     }

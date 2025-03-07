@@ -9,6 +9,7 @@
 	<ItemGroup>
 		<PackageReference Include="CSharpFunctionalExtensions" Version="2.40.3" />
 		<PackageReference Include="Mammoth" Version="1.4.0" />
+		<PackageReference Include="Microsoft.AspNet.SignalR.Core" Version="2.4.3" />
 		<PackageReference Include="NAudio.WaveFormRenderer" Version="2.0.0" />
 		<PackageReference Include="NReco.VideoConverter" Version="1.2.1" />
 		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />

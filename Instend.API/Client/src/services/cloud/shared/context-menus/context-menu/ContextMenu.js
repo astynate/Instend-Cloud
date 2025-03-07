@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import styles from './main.module.css';
 
+/// items = {
+///     red,
+///     title,
+///     image,
+///     callback
+/// }
+
 const ContextMenu = ({children, items = [], textBefore = '', onContextMenu = () => {}}) => {
     const [position, setPosition] = useState([0, 0]);
     const [isContextMenuOpen, setContextMenuState] = useState(false);
@@ -29,6 +36,7 @@ const ContextMenu = ({children, items = [], textBefore = '', onContextMenu = () 
                 setPosition([x, y]);
                 onContextMenu();
             }}
+            className={styles.wrapper}
         >
             {children}
             {isContextMenuOpen && <div 

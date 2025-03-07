@@ -14,3 +14,19 @@
     flex-direction: column;
     cursor: pointer;
 }
+
+.add {
+    width: 100%;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--main-blue-color);
+    user-select: none;
+    cursor: pointer;
+}
+
+.add:hover {
+    background: var(--pop-up-accent-color);
+}

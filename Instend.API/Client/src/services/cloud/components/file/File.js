@@ -31,6 +31,7 @@ const File = ({isLoading, file}) => {
   
   if (isLoading === true) {
     return (
+      <StorageItemWrapper>
         <div className={styles.wrapper}>
           <div className={styles.content}>
               <div className={styles.file} id="loading">
@@ -50,6 +51,7 @@ const File = ({isLoading, file}) => {
             name={file ? file.name : 'Unknown'} 
           />
         </div>
+      </StorageItemWrapper>
     );
   };
     

@@ -19,7 +19,7 @@
 }
 
 @media (max-width: 700px) {
-    .wrapper {
+    .wrapper[fullsize="true"] {
         width: 100%;
     }
 }

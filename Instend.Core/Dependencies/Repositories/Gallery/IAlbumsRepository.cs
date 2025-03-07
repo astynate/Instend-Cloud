@@ -12,5 +12,7 @@ namespace Instend.Repositories.Gallery
         Task<List<Album>> GetAllAccountAlbums(Guid accountId);
         Task<Album?> GetByIdAsync(Guid id, int skip, int take);
         Task<Result> UpdateAlbum(Guid id, byte[] cover, string? name, string? description);
+        Task<Result> UploadFilesInAlbum(Guid id, Core.Models.Storage.File.File[] files);
+        Task RemoveFileFromAlbum(Guid id, Guid file);
     }
 }

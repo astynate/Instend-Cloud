@@ -8,6 +8,7 @@ import PrivateRoutes from '../../../routes/PrivateRoutes';
 import logo from './components/navigation-panel/images/logo/main-logo-black.svg';
 import styles from './css/mobile.module.css';
 import StorageController from '../../../api/StorageController';
+import search from './images/search.png';
 import './css/main.css';
 
 const routes = [...PrivateRoutes].reverse();
@@ -43,13 +44,18 @@ const Mobile = observer(() => {
                     <h1 className={styles.application}>Instend&nbsp;</h1>
                     <h2 className={styles.service}>{currentRouteIndex ? routes[currentRouteIndex].name : "Home"}</h2>
                 </div>
-                <NavLink to='/profile' className={styles.profileLink}>
-                    <img 
-                        src={StorageController.getFullFileURL(account.avatar)} 
-                        className={styles.avatar}
-                        draggable="false"
-                    />
-                </NavLink>
+                <div className={styles.buttons}>
+                    <NavLink to='/explore' className={styles.button}>
+                        <img src={search} draggable="false" />
+                    </NavLink>
+                    <NavLink to='/profile' className={styles.profileLink}>
+                        <img 
+                            src={StorageController.getFullFileURL(account.avatar)} 
+                            className={styles.avatar}
+                            draggable="false"
+                        />
+                    </NavLink>
+                </div>
             </div>}
             <div className='cloud-content-wrapper'>
                 <Routes>

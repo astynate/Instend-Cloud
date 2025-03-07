@@ -41,6 +41,7 @@ const WaitingForConnection = async () => {
         try {
             await globalWSContext.invoke('JoinToDirects', token);
             await globalWSContext.invoke('JoinToGroups', token);
+            await globalWSContext.invoke('JoinToAlbums', token);
             await globalWSContext.invoke('JoinToCollections', token);
         } catch(error) {
             console.error(error);
@@ -74,9 +75,9 @@ const Layout = observer(() => {
     globalWSContext.useSignalREffect("RenameFile", WebsocketListener.RenameFileListener); 
     globalWSContext.useSignalREffect("DeleteFile", WebsocketListener.DeleteFileListener);
     globalWSContext.useSignalREffect("UpdateOccupiedSpace", WebsocketListener.UpdateOccupiedSpaceListner);
-    globalWSContext.useSignalREffect("AddToAlbum", WebsocketListener.AddToAlbumListner);
+    globalWSContext.useSignalREffect("UploadInAlbum", WebsocketListener.UploadInAlbum);
+    globalWSContext.useSignalREffect("RemoveFromAlbum", WebsocketListener.RemoveFromAlbum);
     globalWSContext.useSignalREffect("Create", WebsocketListener.CreateAlbumListner);
-    globalWSContext.useSignalREffect("Update", WebsocketListener.UpdateAlbumListner);
     globalWSContext.useSignalREffect("Upload", WebsocketListener.UploadFileListener);
     globalWSContext.useSignalREffect("DeleteAlbum", WebsocketListener.DeleteAlbumListner);
     globalWSContext.useSignalREffect("AddComment", WebsocketListener.AddCommentListner);

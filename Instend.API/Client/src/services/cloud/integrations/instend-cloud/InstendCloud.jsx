@@ -18,6 +18,7 @@ const InstendCloud = observer(({
         files = [],
         setSelectedFiles = () => {}, 
         setSelectedCollections = () => {},
+        button = null,
     }) => {
 
     const [collectionId, setCollectionId] = useState(null);
@@ -82,6 +83,9 @@ const InstendCloud = observer(({
                         },
                     ]}
                 />
+                {button && <div className={styles.add} onClick={button.callback}>
+                    <span>{button.title}</span>
+                </div>}
             </div>
         </PopUpWindow>
     );

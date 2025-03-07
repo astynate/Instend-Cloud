@@ -57,6 +57,7 @@ h1 {
     display: flex;
     align-items: center;
     padding: 5px 13px;
+    justify-content: space-between;
 }
 
 .service-name {
@@ -108,9 +109,5 @@ h1 {
     .cloud-wrapper[nocontrols="true"] {
         display: grid;
         grid-template-rows: auto;
-    }
-
-    body {
-
     }
 }

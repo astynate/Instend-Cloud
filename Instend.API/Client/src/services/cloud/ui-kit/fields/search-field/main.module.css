@@ -17,6 +17,11 @@
     font-family: 'Open Sans', sans-serif;
     background: none;
     font-weight: 400;
+    color: var(--main-font-color);
+}
+
+.searchField::placeholder {
+    color: var(--main-paragraph-color);
 }
 
 .image {

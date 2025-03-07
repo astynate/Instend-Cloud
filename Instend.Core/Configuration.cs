@@ -49,7 +49,7 @@ namespace Instend.Core
 
         public static readonly string[] documentTypes = {"doc", "docx"};
 
-        public static readonly string[] systemFolders = { "Music", "Photos", "Trash" };
+        public static readonly string[] SystemCollections = { "Music", "Photos", "Trash" };
 
         public static readonly string[] postAvailableTypes = imageTypes.Concat(videoTypes).ToArray();
 

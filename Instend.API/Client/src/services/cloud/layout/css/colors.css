@@ -42,7 +42,7 @@
     --search-border-color: rgba(0, 0, 0, 0.15);
     --search-font-color: #bebebe;
 
-    --not-transparent-border-color: rgba(255, 255, 255, 0.2);
+    --not-transparent-border-color: rgb(222, 222, 222);
 
     --publication-background-color: #0f0f0f;
     --item-accent-color: #f3f3f3;

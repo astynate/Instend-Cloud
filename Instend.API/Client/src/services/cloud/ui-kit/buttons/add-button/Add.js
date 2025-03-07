@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
 import add from './Add.png';
-import menu from './images/menu.png';
-import search from './images/search.png';
 import CreateItemsListPopUp from '../../../features/pop-up-windows/create-items-list-popup/CreateItemsListPopUp';
 
 const AddButton = ({items}) => {
@@ -29,20 +27,12 @@ const AddButton = ({items}) => {
                 isOpen={isCreateOpen}
                 items={items}
             />
-            <div className={styles.buttons}>
-                <div className={styles.subButton}>
-                    <img src={menu} draggable="false" />
-                </div>
-                <div 
-                    className={styles.button} 
-                    onClick={() => setOpenState(prev => !prev)} 
-                    ref={createWindow}
-                >
-                    <img src={add} draggable="false" />
-                </div>
-                <div className={styles.subButton}>
-                    <img src={search} draggable="false" />
-                </div>
+            <div 
+                className={styles.button} 
+                onClick={() => setOpenState(prev => !prev)} 
+                ref={createWindow}
+            >
+                <img src={add} draggable="false" />
             </div>
         </div>
     );

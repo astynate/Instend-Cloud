@@ -225,3 +225,9 @@
 }
 
 /* ============================================== */
+
+@media (max-width: 700px) {
+    .publication {
+        background: var(--main-accent-color);
+    }
+}

@@ -22,11 +22,13 @@ namespace Instend.Repositories.Storage
                 .AsNoTracking()
                     .Where(x => x.Id == id)
                     .Include(x => x.Files
-                        .OrderBy(x => x.CreationTime))
+                        .OrderBy(x => x.CreationTime)
+                        .Skip(skip)
+                        .Take(take))
                     .Include(x => x.AccountsWithAccess)
                     .FirstOrDefaultAsync();
 
-            return null;
+            return album;
         }
 
         public async Task<Album[]> GetAlbums(Guid userId, Configuration.AlbumTypes type, int skip, int take)
@@ -46,15 +48,15 @@ namespace Instend.Repositories.Storage
 
         public async Task<List<Album>> GetAllAccountAlbums(Guid accountId)
         {
-            //var albums = await _storageContext.AlbumsAccounts
-            //    .AsNoTracking()
-            //    .Where(x => x.Account.Id == accountId)
-            //    .Include(x => x.Album)
-            //        .ThenInclude(x => x.AccountsWithAccess)
-            //    .Select(x => x.Album)
-            //    .ToListAsync();
+            var albums = await _context.AlbumsAccounts
+                .AsNoTracking()
+                .Where(x => x.AccountId == accountId)
+                .Include(x => x.Album)
+                    .ThenInclude(x => x.AccountsWithAccess)
+                .Select(x => x.Album)
+                .ToListAsync();
 
-            return [];
+            return albums;
         }
 
         public async Task<Result<Album>> AddAsync(Guid ownerId, byte[] cover, string name, string typeOfCoverFile, string? description, Configuration.AlbumTypes type)
@@ -66,7 +68,7 @@ namespace Instend.Repositories.Storage
 
             var owner = new AlbumAccount(album.Value, ownerId, Configuration.EntityRoles.Owner);
 
-            await File.WriteAllBytesAsync(album.Value.Cover, cover);
+            await System.IO.File.WriteAllBytesAsync(album.Value.Cover, cover);
 
             await _context.AddAsync(album.Value);
             await _context.SaveChangesAsync();
@@ -94,6 +96,21 @@ namespace Instend.Repositories.Storage
             return Result.Success(album);
         }
 
+        public async Task<Result> UploadFilesInAlbum(Guid id, Core.Models.Storage.File.File[] files)
+        {
+            var album = await GetByIdAsync(id, 0, 5);
+
+            if (album == null)
+                return Result.Failure("File nout found");
+
+            _context.Files.AttachRange(files);
+
+            await _context.AlbumsFiles.AddRangeAsync(files.Select(x => new AlbumFile(id, x.Id)));
+            await _context.SaveChangesAsync();
+
+            return Result.Success();
+        }
+
         public async Task<Result> UpdateAlbum(Guid id, byte[] cover, string? name, string? description)
         {
             //var albumModel = await _storageContext.Albums
@@ -109,6 +126,13 @@ namespace Instend.Repositories.Storage
 
             //await _storageContext.SaveChangesAsync();
             return Result.Success();
+        }
+
+        public async Task RemoveFileFromAlbum(Guid id, Guid file)
+        {
+            await _context.AlbumsFiles
+                .Where(x => x.FileId == file && x.AlbumId == id)
+                .ExecuteDeleteAsync();
         }
     }
 }

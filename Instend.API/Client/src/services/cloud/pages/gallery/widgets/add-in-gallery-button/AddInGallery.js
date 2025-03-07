@@ -4,6 +4,7 @@ import AddButton from '../../../../ui-kit/buttons/add-button/Add';
 import album from './images/types/album.png';
 import image from './images/types/image.png';
 import AlbumsController from '../../../../api/AlbumsController';
+import CloudController from '../../../../api/CloudController';
 
 const AddInGallery = ({ id }) => {
     const [isCreateAlbumOpen, setCreateAlbumOpen] = useState(false);
@@ -23,7 +24,7 @@ const AddInGallery = ({ id }) => {
                 items={[
                     {image: album, title: "Album", callback: () => setCreateAlbumOpen(true)},
                     {image: image, title: "Image", callback: () => {}, type: "upload", sendFiles: (event) => {
-
+                        CloudController.UploadFilesFromEvent(event, 'Photos');
                     }}
                 ]}
             />
