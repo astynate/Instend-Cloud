@@ -28,6 +28,7 @@ class MusicState {
 
     GetCurrentSongData = () => {
         const defaultSong = {
+            id: undefined,
             name: 'Song is not selected',
             artist: 'Artist',
             album: 'Album'
@@ -42,6 +43,7 @@ class MusicState {
             return defaultSong;
 
         return {
+            id: song.id,
             name: song.name ? song.name : 'Untitled song',
             artist: song.artist ? song.artist : 'Unknown',
             album: song.album ? song.album : 'Album',
@@ -89,7 +91,7 @@ class MusicState {
             this.currentSongIndex = this.songQueue.length - 1;
         } else {
             this.currentSongIndex = index;
-        }
+        };
 
         this.setTime(0);
         this.isPlaying = true;

@@ -24,29 +24,12 @@ const Album = observer(({}) => {
             return;
         };
 
-        AlbumsController.GetAlbum(params.id, album?.files?.length, 5, (data) => {
-            if (!data || !data.files) {
-                setAlbum(undefined);
-                return false;
-            };
-
-            if (album && album.files.length && album.id === params.id) {
-                setHasMoreState(data.files.length >= 5);
-                let proxyAlbum = {...album};
-
-                proxyAlbum.files = [
-                    ...proxyAlbum.files, 
-                    ...data.files
-                ];
-                
-                setAlbum(proxyAlbum);
-                return;
-            } else {
-                setAlbum(data);
-            };
-
-            setHasMoreState(false);
-        });
+        AlbumsController.GetAlbum(
+            params.id, 
+            album?.files?.length, 
+            5, 
+            (data) => AlbumsController.GetAlbumDefaultCallback(data, album, setAlbum, params, setHasMoreState)
+        );
     }, [params.id, album, isHasMore]);
 
     useEffect(() => {

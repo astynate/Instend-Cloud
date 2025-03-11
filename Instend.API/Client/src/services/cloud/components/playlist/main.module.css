@@ -1,6 +1,9 @@
-.albumView {
+.playlist {
     height: auto;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    grid-gap: 0px;
 }
 
 .cover {
@@ -8,14 +11,22 @@
     width: 100%;
     aspect-ratio: 1 / 1;
     object-fit: cover;
-    border-radius: 5px;
+    border-radius: 15px;
     cursor: pointer;
     user-select: none;
-    background: var(--main-accent-color);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: 0.15s ease;
+    transition: 0.25s ease;
+}
+
+.playlist:hover .cover img {
+    transform: scale(103%);
+}
+
+
+.playlist:active .cover img {
+    transform: scale(99%);
 }
 
 .cover[id="selected"] {
@@ -65,4 +76,10 @@
 .time {
     font-size: 11px;
     color: var(--main-paragraph-color);
+}
+
+@media (max-width: 700px) {
+    .playlist {
+        grid-gap: 7px;
+    }
 }

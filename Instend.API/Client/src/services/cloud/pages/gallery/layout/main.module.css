@@ -5,15 +5,14 @@
 }
 
 .header {
-    height: 55px;
-    top: 60px;
+    height: 50px;
+    top: 50px;
     left: 0;
     position: sticky;
     background: var(--main-header-background-color);
     background: var(--main-background-color);
     padding-top: 10px;
     padding-right: 20px;
-    padding-bottom: 18px;
     display: flex;
     grid-gap: 30px;
     flex-direction: column;

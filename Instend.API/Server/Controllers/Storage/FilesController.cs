@@ -144,7 +144,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         [Authorize]
         [RequestSizeLimit(10L * 1024L * 1024L * 1024L)]
         [RequestFormLimits(MultipartBodyLengthLimit = 10L * 1024L * 1024L * 1024L)]
-        public async Task<ActionResult<Guid>> UploadFiles([FromForm] IFormFile file, [FromForm] string? collectionId, [FromForm] string queueId)
+        public async Task<ActionResult<Guid>> UploadFiles(GlobalContext context, [FromForm] IFormFile file, [FromForm] string? collectionId, [FromForm] string queueId)
         {
             Guid id;
 
@@ -160,9 +160,9 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
             var fileData = GetFileData(file);
 
-            return await _context.Database.CreateExecutionStrategy().ExecuteAsync<ActionResult>(async () =>
+            return await context.Database.CreateExecutionStrategy().ExecuteAsync<ActionResult>(async () =>
             {
-                using (var transaction = await _context.Database.BeginTransactionAsync())
+                using (var transaction = await context.Database.BeginTransactionAsync())
                 {
                     var fileModel = await _filesRespository.AddAsync(fileData.name, fileData.type, file.Length, Guid.Parse(userId.Value), collectionId);
 
@@ -257,7 +257,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
                     await _filesRespository.Delete(id);
 
                     await _accountsRepository
-                        .ChangeOccupiedSpaceValue(access.Value.accountId, access.Value.file.Size);
+                        .ChangeOccupiedSpaceValue(access.Value.accountId, -access.Value.file.Size);
 
                     await transaction.CommitAsync();
 

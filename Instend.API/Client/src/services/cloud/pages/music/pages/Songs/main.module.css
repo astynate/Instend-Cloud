@@ -4,31 +4,6 @@
     padding-top: 0;
 }
 
-.songListHeader {
-    width: 100%;
-    padding-bottom: 10px;
-    align-items: center;
-    border-bottom: 1px solid var(--main-border-color);
-    display: grid;
-    grid-template-columns: repeat(4, 1fr) 30px;
-    user-select: none;
-    margin-top: 25px;
-    padding-right: 10px;
-    padding-left: 10px;
-}
-
-.item {
-    width: fit-content;
-    font-size: 16px;
-    color: var(--main-paragraph-color);
-    justify-self: end;
-}
-
-.name {
-    display: flex;
-    grid-gap: 20px;
-}
-
 @media (max-width: 700px) {
     .songs {
         padding: 5px;

@@ -20,6 +20,29 @@ class AlbumsController {
             });
     };
 
+    static GetAlbumDefaultCallback = (data, item, setItem, params, setHasMoreState) => {
+        if (!data || !data.files) {
+            setItem(undefined);
+            return false;
+        };
+
+        setHasMoreState(data.files.length >= 5);
+
+        if (item && item.files.length && item.id === params.id) {
+            let proxyAlbum = {...item};
+
+            proxyAlbum.files = [
+                ...proxyAlbum.files, 
+                ...data.files
+            ];
+            
+            setItem(proxyAlbum);
+            return;
+        } else {
+            setItem(data);
+        };
+    };
+
     static GetAlbums = async (skip, take) => {
         await instance
             .get(`/api/albums?skip=${skip}&take=${take}`)
@@ -27,6 +50,17 @@ class AlbumsController {
                 if (response && response.data) {
                     GalleryState.AddAlbums(response.data);
                     GalleryState.setHasMoreAlbumsState(response.data >= 5);
+                };
+            });
+    };
+
+    static GetPlaylists = async (skip, take) => {
+        await instance
+            .get(`/api/playlists?skip=${skip}&take=${take}`)
+            .then(response => {
+                if (response && response.data) {
+                    GalleryState.AddPlaylists(response.data);
+                    GalleryState.setHasMorePlaylistsState(response.data >= 5);
                 };
             });
     };

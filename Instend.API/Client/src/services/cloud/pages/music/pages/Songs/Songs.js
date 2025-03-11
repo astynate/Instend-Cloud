@@ -8,10 +8,12 @@ import SubContentWrapper from '../../../../features/wrappers/sub-content-wrapper
 import FilesController from '../../../../api/FilesController';
 import Song from '../../../../components/song/Song';
 import MusicState from '../../../../../../state/entities/MusicState';
+import AddInSongs from './add-in-songs-button/AddInSongs';
+import SongsInformationHeader from '../../widgets/songs-information-header/SongsInformationHeader';
+import { ConvertFullDate } from '../../../../../../handlers/DateHandler';
 
 const Songs = observer(({isMobile = false}) => {
     const { SetSongQueue, ChangePlayingState, GetCurrentSongData } = MusicState;
-
     let songs = StorageState.GetSelectionByType(GlobalContext.supportedMusicTypes);
     let song = GetCurrentSongData();
 
@@ -27,21 +29,15 @@ const Songs = observer(({isMobile = false}) => {
     return (
         <SubContentWrapper>
             {isMobile === false && <SongsHeader 
-                song={song}
+                title={song ? song.name : null}
+                song={song ? ConvertFullDate(song.creationTime) : null}
                 callback={() => {
                     SetSongQueue(songs);
                     ChangePlayingState();
                 }}
             />}
-            {isMobile === false && <div className={styles.songListHeader}>
-                <div className={styles.name}>
-                    <span className={styles.item}>#</span>
-                    <span className={styles.item}>Name</span>
-                </div>
-                <span className={styles.item}>Album</span>
-                <span className={styles.item}>Date</span>
-                <span className={styles.item}>Time</span>
-            </div>}
+            <AddInSongs />
+            {isMobile === false && <SongsInformationHeader />}
             <div className={styles.songs}>
                 {songs.map((song, index) => {
                     return (

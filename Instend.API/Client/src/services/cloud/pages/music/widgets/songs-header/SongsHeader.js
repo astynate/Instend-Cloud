@@ -4,20 +4,29 @@ import styles from './main.module.css';
 import PlayButton from '../../../../ui-kit/buttons/play-button/PlayButton';
 import MusicState from '../../../../../../state/entities/MusicState';
 
-const SongsHeader = observer(({song, callback = () => {}}) => {
+const SongsHeader = observer(({isMobile, image, title, subTitle, song, callback = () => {}}) => {
+    if (!song) {
+        return null;
+    };
+
     return (
         <div className={styles.songInformation}>
             <div className={styles.coverWrapper}>
                 <div className={styles.cover}>
+                    {image && <img 
+                        src={image} 
+                        draggable="false"
+                        className={styles.coverImage} 
+                    />}
                 </div>
             </div>
             <div className={styles.information}>
                 <div className={styles.songData}>
                     <div className={styles.songName}>
-                        <span>Doesn't play</span>
+                        <span>{title ?? "Doesn't play"}</span>
                     </div>
                     <div className={styles.artist}>
-                        <span>Artist — Album</span>
+                        <span>{subTitle ?? "Artist — Album"}</span>
                     </div>
                 </div>
                 <div className={styles.playPanel}>
@@ -26,7 +35,7 @@ const SongsHeader = observer(({song, callback = () => {}}) => {
                         callback={() => {
                             if (callback) {
                                 callback();
-                            }
+                            };
                         }}
                     />
                 </div>

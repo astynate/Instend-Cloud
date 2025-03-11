@@ -5,6 +5,8 @@ import Header from '../../../widgets/header/Header';
 import Search from '../../../widgets/search/Search';
 import SubMenu from '../../../features/navigation/sub-menu/SubMenu';
 import Songs from '../pages/songs/Songs';
+import Playlists from '../pages/playlists/Playlists';
+import Playlist from '../pages/playlist/Playlist';
 
 const Music = ({setPanelState, isMobile}) => {
   const scroll = useRef();
@@ -39,6 +41,14 @@ const Music = ({setPanelState, isMobile}) => {
           <Route 
             path=''
             element={<Songs isMobile={isMobile} />} 
+          />
+          <Route 
+            path='/playlists'
+            element={<Playlists isMobile={isMobile} />} 
+          />
+          <Route 
+            path='/playlist/:id'
+            element={<Playlist isMobile={isMobile} />} 
           />
         </Routes>
       </div>

@@ -37,7 +37,11 @@ namespace Instend.Repositories.Storage
                 .Where(x => x.AccountId == userId)
                 .Include(x => x.Account)
                 .Include(x => x.Album)
+                    .ThenInclude(x => x.Files.Skip(0).Take(5))
+                .Include(x => x.Album)
                     .ThenInclude(x => x.AccountsWithAccess)
+                .OrderByDescending(x => x.Album.CreationTime)
+                .Where(x => x.Album.TypeId == type.ToString())
                 .Skip(skip)
                 .Take(take)
                 .Select(x => x.Album)
@@ -98,13 +102,6 @@ namespace Instend.Repositories.Storage
 
         public async Task<Result> UploadFilesInAlbum(Guid id, Core.Models.Storage.File.File[] files)
         {
-            var album = await GetByIdAsync(id, 0, 5);
-
-            if (album == null)
-                return Result.Failure("File nout found");
-
-            _context.Files.AttachRange(files);
-
             await _context.AlbumsFiles.AddRangeAsync(files.Select(x => new AlbumFile(id, x.Id)));
             await _context.SaveChangesAsync();
 

@@ -11,6 +11,7 @@ namespace Instend.Repositories.Contexts
             var connectionString = "server=localhost;user=root;password=47188475;database=async_storage";
             var version = new MySqlServerVersion(new Version(8, 3, 0));
 
+            optionsBuilder.EnableSensitiveDataLogging();
             optionsBuilder.UseMySql(connectionString, version, mySqlOptions => mySqlOptions.EnableRetryOnFailure());
         }
     }

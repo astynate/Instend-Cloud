@@ -176,7 +176,7 @@ class StorageState {
             .filter(element => element.type ? types.includes(element.type) === true : null);
 
         return result;
-    }
-}
+    };
+};
 
 export default new StorageState();

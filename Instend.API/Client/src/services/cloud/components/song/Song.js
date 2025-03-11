@@ -27,11 +27,11 @@ const Song = observer(({song, isLoading, isShort, isSelect, setQueue = () => {}}
                     onClick={() => {
                         if (setQueue) {
                             setQueue();
-                        }
+                        };
 
                         if (song && song.id) {
                             SetSongAsPlaying(song);
-                        }
+                        };
                     }}
                 >
                     <SongCover
@@ -42,7 +42,7 @@ const Song = observer(({song, isLoading, isShort, isSelect, setQueue = () => {}}
                     />
                 </div> 
                 <div className={styles.artistName}>
-                    <span className={styles.item} id='name'>{song && song.title ? song.title : song && song.name ? song.name : 'Not set'}</span>
+                    <span className={styles.item} id='name'>{song && song.title ? song.title : song && song.name ? song.name : 'No name'}</span>
                     <span className={styles.item}>{song && song.artist ? song.artist : 'Unknown'}</span>
                 </div>
             </div>

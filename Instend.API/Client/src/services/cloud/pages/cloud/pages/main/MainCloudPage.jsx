@@ -15,6 +15,8 @@ import ContextMenu from '../../../../shared/context-menus/context-menu/ContextMe
 import remove from './images/remove.png';
 import rename from './images/rename.png';
 import File from '../../../../components/file/File';
+import SelectElementWithCheckmark from '../../../../elements/select/select-element-with-checkmark/SelectElementWithCheckmark';
+import { sortItems } from './SortingHelper';
 
 const MainCloudPage = observer(({isAscending, sortingType}) => {
     const [newItemName, setNewItemName] = useState('');
@@ -26,6 +28,7 @@ const MainCloudPage = observer(({isAscending, sortingType}) => {
     const [fileName, setFileName] = useState('');
     const [isNewItem, setNewItemState] = useState();
     const [creationType, setCreationType] = useState({});
+    const [selectedFiles, setSelectedFiles] = useState([]);
     
     const params = useParams();
     const { files, collections } = StorageState;
@@ -55,22 +58,6 @@ const MainCloudPage = observer(({isAscending, sortingType}) => {
     useEffect(() => {
         CloudController.GetPath(params.id, StorageState.SetPath);
     }, [params.id]);
-
-    const sortItems = (a, b) => {
-        let comparison = 0;
-
-        if (sortingType === 0) {
-            const dateA = new Date(a.creationTime);
-            const dateB = new Date(b.creationTime);
-            comparison = dateA - dateB;
-        } else if (sortingType === 1) {
-            const nameA = a.name.toLowerCase();
-            const nameB = b.name.toLowerCase();
-            comparison = nameA.localeCompare(nameB);
-        };
-
-        return isAscending ? comparison : -comparison;
-    };
 
     return (
         <>
@@ -106,7 +93,7 @@ const MainCloudPage = observer(({isAscending, sortingType}) => {
                     {collections[AdaptId(params.id)] && collections[AdaptId(params.id)].items && collections[AdaptId(params.id)].items
                         .filter(collection => collection.typeId !== 'System')
                         .slice()
-                        .sort(sortItems)
+                        .sort((a, b) => sortItems(a, b, sortingType))
                         .map(collection => {
                             const renameCallback = () => {
                                 setRenameCollectionState(true);
@@ -124,15 +111,13 @@ const MainCloudPage = observer(({isAscending, sortingType}) => {
                                         {title: "Delete", red: true, image: remove, callback: () => CollectionsController.Delete(ids) },
                                     ]}
                                 >
-                                    <Collection 
-                                        collection={collection}
-                                    />
+                                    <Collection collection={collection} />
                                 </ContextMenu>
                             )
                         })}
                     {files[AdaptId(params.id)] && files[AdaptId(params.id)].items && files[AdaptId(params.id)].items
                         .slice()
-                        .sort(sortItems)
+                        .sort((a, b) => sortItems(a, b, sortingType))
                         .map(file => {
                             const renameCallback = () => {
                                 setRenameFileState(true);
@@ -150,10 +135,16 @@ const MainCloudPage = observer(({isAscending, sortingType}) => {
                                         {title: "Delete", red: true, image: remove, callback: () => FilesController.Delete(ids)},
                                     ]}
                                 >
-                                    <File
-                                        file={file}
-                                        isLoading={file.isLoading}
-                                    />
+                                    <SelectElementWithCheckmark
+                                        isSelectedOpen={selectedFiles.length > 0}
+                                    >
+                                        <div>
+                                            <File
+                                                file={file}
+                                                isLoading={file.isLoading}
+                                            />
+                                        </div>
+                                    </SelectElementWithCheckmark>
                                 </ContextMenu>
                             )
                         })}

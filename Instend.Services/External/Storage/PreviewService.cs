@@ -6,7 +6,6 @@ using System.Drawing.Imaging;
 using Spire.Doc.Documents;
 using NReco.VideoConverter;
 using Document = Spire.Doc.Document;
-using Instend.Core.Models.Abstraction;
 
 namespace Instend.Services.External.FileService
 {

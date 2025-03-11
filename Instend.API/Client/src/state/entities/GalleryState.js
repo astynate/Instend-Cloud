@@ -3,6 +3,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 class GalleryState {
     album = undefined;
     albums = [];
+    playlists = [];
     albumsQueueId = 0;
     albumCommentQueueId = 0;
     isHasMoreAlbums = true;
@@ -20,8 +21,16 @@ class GalleryState {
         this.isHasMoreAlbums = state;
     };
 
+    setHasMorePlaylistsState = (state) => {
+        this.isHasMorePlaylists = state;
+    };
+
     AddAlbums = (newAlbums = []) => {
         this.albums = [...this.albums, ...newAlbums];
+    };
+
+    AddPlaylists = (newPlaylist = []) => {
+        this.playlists = [...this.albums, ...newPlaylist];
     };
 
     UploadInAlbum(id, items) {

@@ -40,6 +40,12 @@ namespace Instend.Repositories.Storage
 
                 if (collections != null)
                     collectionIdAsGuid = collections.CollectionId;
+
+                if (collectionId == "Music" && Configuration.musicTypes.Contains(type) == false)
+                    return Result.Failure<Core.Models.Storage.File.File>("Invalid type");
+
+                if (collectionId == "Photos" && (Configuration.videoTypes.Contains(type) == false || Configuration.imageTypes.Contains(type) == false))
+                    return Result.Failure<Core.Models.Storage.File.File>("Invalid type");
             }
 
             if (Guid.TryParse(collectionId, out Guid id))
@@ -114,6 +120,8 @@ namespace Instend.Repositories.Storage
                 .AsNoTracking()
                 .Where(x => x.AccountId == accountId)
                 .Include(x => x.File)
+                .Where(x => types.Contains(x.File.Type))
+                .OrderByDescending(x => x.File.CreationTime)
                 .Skip(from)
                 .Take(count)
                 .Select(x => x.File)
@@ -138,6 +146,7 @@ namespace Instend.Repositories.Storage
         public async Task<List<Core.Models.Storage.File.File>> GetFilesByIdsAsync(Guid[] ids)
         {
             return await _context.Files
+                .AsNoTracking()
                 .Where(x => ids.Contains(x.Id))
                     .Include(x => x.AccountsWithAccess)
                     .ToListAsync();

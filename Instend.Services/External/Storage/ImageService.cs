@@ -23,7 +23,7 @@ namespace Instend.Services.External.FileService
             return false;
         }
 
-        public byte[] ResizeImageToBase64(byte[] inputImage, int maxSize)
+        public byte[] ResizeImageToBase64(byte[] inputImage, int maxSize, string type)
         {
             try
             {
@@ -49,7 +49,7 @@ namespace Instend.Services.External.FileService
                         {
                             using (MemoryStream newStream = new MemoryStream())
                             {
-                                newImage.Save(newStream, ImageFormat.Png);
+                                newImage.Save(newStream, GetImageFormat(type));
                                 byte[] compressedImageBytes = newStream.ToArray();
 
                                 return compressedImageBytes;
@@ -67,17 +67,15 @@ namespace Instend.Services.External.FileService
         public byte[] CompressImage(byte[] inputImage, int quality, string type)
         {
             if (inputImage == null || inputImage.Length == 0)
-            {
                 return inputImage ?? [];
-            }
 
             Dictionary<string, ImageFormat> keyValuePairs = new()
             {
                 { "png", ImageFormat.Png },
                 { "jpg", ImageFormat.Jpeg },
+                { "jpeg", ImageFormat.Jpeg },
+                { "gif", ImageFormat.Gif },
             };
-
-            ImageFormat format = ImageFormat.Png;
 
             if (keyValuePairs.ContainsKey(type.ToLower()) == false)
                 return inputImage;
@@ -89,9 +87,9 @@ namespace Instend.Services.External.FileService
                     using (var bitmap = new Bitmap(inputStream))
                     {
                         EncoderParameters encoderParameters = new EncoderParameters(1);
-                        encoderParameters.Param[0] = new EncoderParameter(Encoder.Quality, quality);
+                        encoderParameters.Param[0] = new EncoderParameter(Encoder.Quality, 1L);
 
-                        ImageCodecInfo codecInfo = GetEncoderInfo(format);
+                        ImageCodecInfo codecInfo = GetEncoderInfo(keyValuePairs[type]);
                         bitmap.Save(outputStream, codecInfo, encoderParameters);
                     }
 
@@ -113,6 +111,22 @@ namespace Instend.Services.External.FileService
             }
 
             return null;
+        }
+
+        private ImageFormat GetImageFormat(string type)
+        {
+            Dictionary<string, ImageFormat> keyValuePairs = new()
+            {
+                { "png", ImageFormat.Png },
+                { "jpg", ImageFormat.Jpeg },
+                { "jpeg", ImageFormat.Jpeg },
+                { "gif", ImageFormat.Gif },
+            };
+
+            if (keyValuePairs.ContainsKey(type.ToLower()) == false)
+                return ImageFormat.Png;
+
+            return keyValuePairs[type];
         }
 
         public async Task<Result<string>> ReadImageAsBase64(string path)

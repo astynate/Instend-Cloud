@@ -12,8 +12,11 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
     {
         private readonly IFileService _fileService;
 
-        public StorageController(IFileService fileService)
+        private readonly IImageService _imageService;
+
+        public StorageController(IFileService fileService, IImageService imageService)
         {
+            _imageService = imageService;
             _fileService = fileService;
         }
 
@@ -60,7 +63,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             return NotFound();
         }
 
-        private async Task<IActionResult> GetFile(string path)
+        private async Task<IActionResult> GetFile(string path, bool compressing = true)
         {
             var file = await _fileService.ReadFileAsync(path);
 
@@ -72,7 +75,12 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
             if (splitedPath.Length < 2)
                 return BadRequest("File has not type");
 
-            return File(file.Value, Configuration.ConvertTypeToContentType(splitedPath[splitedPath.Length - 1]));
+            var value = file.Value;
+
+            if (Configuration.imageTypes.Contains(splitedPath[1]) && compressing == true)
+                value = _imageService.ResizeImageToBase64(file.Value, 300, splitedPath[1]);
+
+            return File(value, Configuration.ConvertTypeToContentType(splitedPath[splitedPath.Length - 1]));
         }
 
         [HttpGet]

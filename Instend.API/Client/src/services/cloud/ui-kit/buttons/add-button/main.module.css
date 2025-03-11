@@ -67,4 +67,8 @@
     .add {
         bottom: 55px;
     }
+
+    .add[shifted="true"] {
+        bottom: 105px;
+    }
 }

@@ -66,7 +66,7 @@ class CloudController {
                     throw error;
                 });
     
-            return response.data;
+            return response && response.data ? response.data : {};
         });
     
         return Promise.all(uploadPromises);

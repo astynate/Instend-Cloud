@@ -15,7 +15,7 @@ const Gallery = observer((props) => {
   useEffect(() => {
     if (props.setPanelState) {
         props.setPanelState(false);
-    }
+    };
   }, [props.setPanelState]);
 
   return (

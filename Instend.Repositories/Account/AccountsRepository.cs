@@ -52,6 +52,8 @@ namespace Instend.Repositories.Repositories
 
         public async Task<Result<double>> ChangeOccupiedSpaceValue(Guid accountId, double value)
         {
+            _context.ChangeTracker.Clear();
+
             var account = await GetByIdAsync(accountId);
 
             if (account == null)

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import SortingHandler from '../../../../../handlers/SortingHandler';
 import styles from './main.module.css';
 import Preview from '../../../../preview/layout/Preview';
 import StorageController from '../../../../../api/StorageController';
@@ -22,28 +21,28 @@ const PhotosList = ({ photos = [], contextMenuItems = [] }) => {
                     files={photos}
                 />}
                 {photos
-                .sort((a, b) => SortingHandler.CompareTwoDates(a.creationTime, b.creationTime))
-                .map((photo, index) => {
-                    return (
-                    <ContextMenu 
-                        key={photo.id + index}
-                        items={contextMenuItems.map(item => ({
-                        ...item,
-                        callback: () => item.callback(photo)
-                        }))}
-                    >
-                        <div 
-                            className={styles.photo} 
-                            onClick={() => {
-                                setIndex(index);
-                                setPreviewOpenState(true);
-                            }}
-                        >
-                            <img src={StorageController.getFullFileURL(photo.path)} draggable="false" />
-                        </div>
-                    </ContextMenu>
-                    )
-                })}
+                    // .sort((a, b) => SortingHandler.CompareTwoDates(a.creationTime, b.creationTime, true))
+                    .map((photo, index) => {
+                        return (
+                            <ContextMenu 
+                                key={photo.id + index}
+                                items={contextMenuItems.map(item => ({
+                                    ...item,
+                                    callback: () => item.callback(photo)
+                                }))}
+                            >
+                                <div 
+                                    className={styles.photo} 
+                                    onClick={() => {
+                                        setIndex(index);
+                                        setPreviewOpenState(true);
+                                    }}
+                                >
+                                    <img src={StorageController.getFullFileURL(photo.path)} draggable="false" />
+                                </div>
+                            </ContextMenu>
+                        )
+                    })}
         </div>
     );
 };

@@ -10,6 +10,7 @@ import styles from './css/mobile.module.css';
 import StorageController from '../../../api/StorageController';
 import search from './images/search.png';
 import './css/main.css';
+import MobileMusicPlayer from '../singletons/mobile-music-player/MobileMusicPlayer';
 
 const routes = [...PrivateRoutes].reverse();
 
@@ -29,7 +30,6 @@ const Mobile = observer(() => {
     useEffect(() => {
         const currentRoute = routes
             .findIndex(route => {
-                console.log(route, location.pathname);
                 return matchPath({ path: route.path, exact: true, strict: true }, location.pathname)}
             );
                 
@@ -71,6 +71,7 @@ const Mobile = observer(() => {
                     })}
                 </Routes>
             </div>
+            <MobileMusicPlayer />
             {!routes[currentRouteIndex].isWithoutBottomPanel && <MobileNavigation />}
         </>
     );

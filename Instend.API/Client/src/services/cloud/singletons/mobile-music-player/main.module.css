@@ -1,0 +1,15 @@
+.player {
+    height: 50px;
+    width: 98%;
+    background: var(--main-accent-color);
+    border-radius: 15px;
+    position: absolute;
+    bottom: 49px;
+    left: 1%;
+    z-index: 9999;
+}
+
+.cover {
+    height: 50px;
+    width: 50px;
+}

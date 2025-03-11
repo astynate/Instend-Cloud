@@ -5,9 +5,6 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr) 30px;
     user-select: none;
-    padding-right: 10px;
-    padding-left: 10px;
-    border-radius: 5px;
     position: relative;
 }
 
@@ -17,14 +14,9 @@
     transition: 0.25s ease;
 }
 
-.song:hover {
-    background: var(--main-accent-color);
-}
-
 .song[id="short"] {
     display: flex;
     justify-content: space-between;
-    padding-right: 10px;
 }
 
 .song[id="short"] .item {
@@ -41,9 +33,9 @@
 }
 
 .item {
-    max-width: 10ic;
+    max-width: 20ic;
     width: fit-content;
-    font-size: 16px;
+    font-size: 15px;
     justify-content: center;
     color: var(--main-paragraph-color);
     justify-self: end;
@@ -70,13 +62,13 @@
 }
 
 .albumCover {
-    height: 47px;
-    width: 47px;
+    height: 50px;
+    width: 50px;
     margin-top: auto;
     margin-bottom: auto;
     position: relative;
     overflow: hidden;
-    border-radius: 3px;
+    border-radius: 8px;
     transition: 0.1s;
     cursor: pointer;
 }

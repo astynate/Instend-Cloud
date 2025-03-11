@@ -7,6 +7,7 @@ import Messages from '../services/cloud/pages/messages/layout/Messages';
 import Music from '../services/cloud/pages/music/layout/Music';
 import Profile from '../services/cloud/pages/profile/layout/Profile';
 import Settings from '../services/settings/layout/Settings';
+import Playlist from '../services/cloud/pages/music/pages/playlist/Playlist';
 
 const PrivateRoutes = [
     {
@@ -55,6 +56,12 @@ const PrivateRoutes = [
         path: '/music/*',
         element: <Music />,
         name: "Music"
+    },
+    {
+        path: '/music/playlist/:id',
+        element: <Playlist />,
+        name: "Music",
+        isHeaderless: true,
     },
     {
         path: '/profile/:id?',
