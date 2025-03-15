@@ -11,8 +11,7 @@ import StorageController from '../../../api/StorageController';
 import search from './images/search.png';
 import './css/main.css';
 import MobileMusicPlayer from '../singletons/mobile-music-player/MobileMusicPlayer';
-
-const routes = [...PrivateRoutes].reverse();
+import { SpecificRoutes } from '../../../routes/SpecificRoutes';
 
 const Mobile = observer(() => {
     const [currentRouteIndex, setCurrentRouteIndex] = useState(0);
@@ -28,21 +27,21 @@ const Mobile = observer(() => {
     };
 
     useEffect(() => {
-        const currentRoute = routes
+        const currentRoute = SpecificRoutes
             .findIndex(route => {
-                return matchPath({ path: route.path, exact: true, strict: true }, location.pathname)}
+                return matchPath({ path: route.path, exact: false, strict: false }, location.pathname)}
             );
                 
         setCurrentRouteIndex(currentRoute);
-    }, [routes, location.pathname]); 
+    }, [SpecificRoutes, location.pathname]);
 
     return (
         <>
-            {!routes[currentRouteIndex].isHeaderless && <div className='mobile-header'>
+            {!SpecificRoutes[currentRouteIndex].isHeaderless && <div className='mobile-header'>
                 <div className='service-name'>
                     <img src={logo} draggable="false" />
                     <h1 className={styles.application}>Instend&nbsp;</h1>
-                    <h2 className={styles.service}>{currentRouteIndex ? routes[currentRouteIndex].name : "Home"}</h2>
+                    <h2 className={styles.service}>{currentRouteIndex ? SpecificRoutes[currentRouteIndex].name : "Home"}</h2>
                 </div>
                 <div className={styles.buttons}>
                     <NavLink to='/explore' className={styles.button}>
@@ -59,7 +58,7 @@ const Mobile = observer(() => {
             </div>}
             <div className='cloud-content-wrapper'>
                 <Routes>
-                    {routes.map((route, index) => {
+                    {PrivateRoutes.map((route, index) => {
                         const { element, ...rest } = route;
                         return (<Route 
                             key={index} 
@@ -72,7 +71,7 @@ const Mobile = observer(() => {
                 </Routes>
             </div>
             <MobileMusicPlayer />
-            {!routes[currentRouteIndex].isWithoutBottomPanel && <MobileNavigation />}
+            {!SpecificRoutes[currentRouteIndex].isWithoutBottomPanel && <MobileNavigation />}
         </>
     );
 });

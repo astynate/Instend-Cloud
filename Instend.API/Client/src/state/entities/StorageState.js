@@ -20,15 +20,15 @@ class StorageState {
 
     constructor() {
         makeAutoObservable(this);
-    }
+    };
 
     SetCollectionsAsDefaultValue = () => {
         this.collections = {};
-    }
+    };
 
-    IsItemsHasMore = (id, items) => {
+    AreThereMoreItems = (id, items) => {
         return items[AdaptId(id)] ? items[AdaptId(id)].isHasMore : true;
-    }
+    };
 
     RenameCollection = (collection) => this.RenameItem(this.collections, collection);   
     RenameFile = (file) => this.RenameItem(this.files, file);
@@ -46,12 +46,12 @@ class StorageState {
             if (!combinedItems.has(newItem.id)) {
                 combinedItems.add(newItem.id);
                 uniqueNewItems.push(newItem);
-            }
+            };
         });
     
         items[adaptId] = {
             items: [...existingItems, ...uniqueNewItems],
-            isHasMore: setIsHasMore ? newItems.length >= 5 : false
+            isHasMore: setIsHasMore ? uniqueNewItems.length >= 5 : false
         };
     };
     

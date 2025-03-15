@@ -14,7 +14,7 @@ const File = ({isLoading, file}) => {
   const [isSelectedOpen, setSelectedOpenState] = useState(false);
 
   useLayoutEffect(() => { 
-    if (GlobalContext.supportedImageTypes.includes(file.type)) {
+    if (file && GlobalContext.supportedImageTypes.includes(file.type)) {
       var img = new Image();
 
       img.onload = function() {

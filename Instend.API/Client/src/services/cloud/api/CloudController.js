@@ -3,6 +3,8 @@ import ApplicationState from "../../../state/application/ApplicationState";
 import StorageState from "../../../state/entities/StorageState";
 import ResponseHandler from "../../../handlers/ResponseHandler";
 import AlbumsController from "./AlbumsController";
+import CollectionsController from "./CollectionsController";
+import FilesController from "./FilesController";
 
 class CloudController {
     static CreateFile = async (name, type, folderId) => {
@@ -115,6 +117,28 @@ class CloudController {
                     onSuccess(response.data);
                 }
             }); 
+    };
+
+    static FetchFilesByCollectionId = async (collectionId) => {        
+        const isHasMoreFiles = StorageState
+            .AreThereMoreItems(collectionId, StorageState.files);
+
+        const setFiles = (files) => StorageState
+            .SetItems(collectionId, StorageState.files, files);
+
+        if (isHasMoreFiles)
+            await FilesController.GetFilesByParentCollectionAndStorageStateId(collectionId, setFiles);
+    };
+
+    static FetchCollectionsByCollectionId = async (collectionId) => {        
+        const isHasMoreCollections = StorageState
+            .AreThereMoreItems(collectionId, StorageState.collections);
+
+        const setCollections = (items) => StorageState
+            .SetItems(collectionId, StorageState.collections, items);
+
+        if (isHasMoreCollections)
+            await CollectionsController.GetCollectionsByParentId(collectionId, setCollections);
     };
 };
 

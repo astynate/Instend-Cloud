@@ -82,12 +82,14 @@ class CollectionsController {
             .then(response => {
                 if (response.data && response.data.length) {
                     onSuccess(response.data);
+                } else {
+                    onSuccess([]);
                 };
             })
             .catch((error) => { 
                 ApplicationState.AddErrorInQueueByError('Attention!', error);
             });
-    }
-}
+    };
+};
 
 export default CollectionsController;

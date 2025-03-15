@@ -7,11 +7,16 @@ class MusicState {
     isPlaying = false;
     loadPercentage = 0;
     repeatState = 0;
+    isMusicPanelOpen = false;
     time = 0;
     duration = 0;
 
     constructor() {
         makeAutoObservable(this);
+    };
+
+    SetMusicPanelOpenState = (state) => {
+        this.isMusicPanelOpen = state;
     };
 
     SetCurrentSongIndex = (index) => {
@@ -48,16 +53,16 @@ class MusicState {
             artist: song.artist ? song.artist : 'Unknown',
             album: song.album ? song.album : 'Album',
         };
-    }
+    };
 
     IsSongIsPlaying = (id) => {
         if (this.isPlaying === false) {
             return false;
-        }
+        };
 
         if (!this.songQueue || this.songQueue.length === 0) {
             return false;
-        }
+        };
 
         return this.songQueue[this.currentSongIndex].id === id;
     };
@@ -113,7 +118,7 @@ class MusicState {
     GetCurrentSongId = () => {
         if (this.songQueue[this.currentSongIndex] && this.songQueue[this.currentSongIndex].id) {
             return this.songQueue[this.currentSongIndex].id;
-        }
+        };
 
         return null;
     };
@@ -144,7 +149,7 @@ class MusicState {
             this.isPlaying = false;
         } else {
             this.currentSongIndex++;
-        }
+        };
     };
 
     HandleRepeatStateTwo = () => {
@@ -170,6 +175,14 @@ class MusicState {
         ];
         
         callbacks[this.repeatState]();
+    };
+
+    TurnOnPreviousSong = () => {
+        if (this.currentSongIndex > 0) {
+            this.currentSongIndex--;
+        } else {
+            this.time = 0;
+        };
     };
 };
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
+import { sortItems } from './SortingHelper';
 import { ConvertFullDate } from '../../../../../../handlers/DateHandler';
 import PopUpField from '../../../../shared/popup-windows/pop-up-filed/PopUpField';
 import AddInFolder from '../../features/add-in-folder/AddInFolder';
@@ -16,7 +17,8 @@ import remove from './images/remove.png';
 import rename from './images/rename.png';
 import File from '../../../../components/file/File';
 import SelectElementWithCheckmark from '../../../../elements/select/select-element-with-checkmark/SelectElementWithCheckmark';
-import { sortItems } from './SortingHelper';
+import FetchItemsWithPlaceholder from '../../../../shared/fetch/fetch-items-with-placeholder/FetchItemsWithPlaceholder';
+import StorageItemWrapper from '../../../../features/wrappers/storage-item-wrapper/StorageItemWrapper';
 
 const MainCloudPage = observer(({isAscending, sortingType}) => {
     const [newItemName, setNewItemName] = useState('');
@@ -29,31 +31,8 @@ const MainCloudPage = observer(({isAscending, sortingType}) => {
     const [isNewItem, setNewItemState] = useState();
     const [creationType, setCreationType] = useState({});
     const [selectedFiles, setSelectedFiles] = useState([]);
-    
-    const params = useParams();
     const { files, collections } = StorageState;
-
-    useEffect(() => {
-        const isHasMoreCollections = StorageState
-            .IsItemsHasMore(params.id, StorageState.collections);
-
-        const setCollections = (collections) => StorageState
-            .SetItems(params.id, StorageState.collections, collections);
-
-        if (isHasMoreCollections)
-            CollectionsController.GetCollectionsByParentId(params.id, setCollections);
-    }, [params.id, collections]);
-
-    useEffect(() => {
-        const isHasMoreFiles = StorageState
-            .IsItemsHasMore(params.id, files);
-
-        const setFiles = (files) => StorageState
-            .SetItems(params.id, StorageState.files, files);
-
-        if (isHasMoreFiles)
-            FilesController.GetFilesByParentCollectionAndStorageStateId(params.id, setFiles);
-    }, [params.id, files[AdaptId(params.id)]?.items]);
+    const params = useParams();
 
     useEffect(() => {
         CloudController.GetPath(params.id, StorageState.SetPath);
@@ -138,16 +117,31 @@ const MainCloudPage = observer(({isAscending, sortingType}) => {
                                     <SelectElementWithCheckmark
                                         isSelectedOpen={selectedFiles.length > 0}
                                     >
-                                        <div>
-                                            <File
-                                                file={file}
-                                                isLoading={file.isLoading}
-                                            />
-                                        </div>
+                                        <File
+                                            file={file}
+                                            isLoading={file.isLoading}
+                                        />
                                     </SelectElementWithCheckmark>
                                 </ContextMenu>
                             )
                         })}
+                    <FetchItemsWithPlaceholder
+                        item={
+                            <StorageItemWrapper>
+                                <File isLoading={true} />
+                            </StorageItemWrapper>
+                        }
+                        isHasMore={StorageState.AreThereMoreItems(params.id, collections) || StorageState.AreThereMoreItems(params.id, files)}
+                        callback={async () => {
+                            if (StorageState.AreThereMoreItems(params.id, collections)) {
+                                await CloudController.FetchCollectionsByCollectionId(params.id);
+                            };
+                            
+                            if (StorageState.AreThereMoreItems(params.id, files)) {
+                                await CloudController.FetchFilesByCollectionId(params.id);
+                            };
+                        }}
+                    />
                 </div>
             </ContentWrapper>
             <AddInFolder
