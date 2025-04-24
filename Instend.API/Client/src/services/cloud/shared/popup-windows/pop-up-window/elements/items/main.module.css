@@ -27,8 +27,8 @@
 }
 
 .item[id="active"] { 
-    color: var(--main-accent-font-color);
-    background: var(--sub-accent-color);
+    color: var(--main-button-font-color);
+    background: var(--main-button-background-color);
 }
 
 .item[id="next"] { 

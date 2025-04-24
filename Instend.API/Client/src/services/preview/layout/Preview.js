@@ -16,6 +16,10 @@ const Preview = ({
     }) => {
 
     const [currentIndex, setCurrentIndex] = useState(index);
+
+    if (files.length === 0) {
+        return null;
+    };
     
     const fileTypeHandlers = [
         {

@@ -19,6 +19,7 @@ import File from '../../../../components/file/File';
 import SelectElementWithCheckmark from '../../../../elements/select/select-element-with-checkmark/SelectElementWithCheckmark';
 import FetchItemsWithPlaceholder from '../../../../shared/fetch/fetch-items-with-placeholder/FetchItemsWithPlaceholder';
 import StorageItemWrapper from '../../../../features/wrappers/storage-item-wrapper/StorageItemWrapper';
+import FetchCollectionData from '../../../../singletons/fetch-collection-data/FetchCollectionData';
 
 const MainCloudPage = observer(({isAscending, sortingType}) => {
     const [newItemName, setNewItemName] = useState('');
@@ -125,23 +126,7 @@ const MainCloudPage = observer(({isAscending, sortingType}) => {
                                 </ContextMenu>
                             )
                         })}
-                    <FetchItemsWithPlaceholder
-                        item={
-                            <StorageItemWrapper>
-                                <File isLoading={true} />
-                            </StorageItemWrapper>
-                        }
-                        isHasMore={StorageState.AreThereMoreItems(params.id, collections) || StorageState.AreThereMoreItems(params.id, files)}
-                        callback={async () => {
-                            if (StorageState.AreThereMoreItems(params.id, collections)) {
-                                await CloudController.FetchCollectionsByCollectionId(params.id);
-                            };
-                            
-                            if (StorageState.AreThereMoreItems(params.id, files)) {
-                                await CloudController.FetchFilesByCollectionId(params.id);
-                            };
-                        }}
-                    />
+                    <FetchCollectionData id={params.id} />
                 </div>
             </ContentWrapper>
             <AddInFolder

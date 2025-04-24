@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './main.module.css';
 
 const ExpandingElementWrapper = ({ targetWidth = 500, targetHeight = 500, children }) => {
@@ -24,23 +24,56 @@ const ExpandingElementWrapper = ({ targetWidth = 500, targetHeight = 500, childr
         setIsExpanded(true);
     };
 
+    const handleClickOutside = (event) => {
+        if (!elementRef.current || elementRef.current.contains(event.target)) {
+            return false;
+        };
+
+        if (!isExpanded) {
+            return false;
+        };
+
+        setIsExpanded(false);
+
+        setDimensions({
+            offsetTop: 0,
+            offsetLeft: 0,
+            height: '100%',
+            width: '100%'
+        });
+    };
+
     return (
         <div 
-            ref={elementRef} 
-            className={`${styles.expandingElement} ${isExpanded ? styles.expanded : ''}`}
-            onClick={handleClick}
+            className={styles.wrapper}
             style={{
-                top: isExpanded ? '50%' : `${dimensions.offsetTop}px`,
-                left: isExpanded ? '50%' : `${dimensions.offsetLeft}px`,
-                height: isExpanded ? targetHeight : dimensions.height,
-                width: isExpanded ? targetWidth : dimensions.width,
-                transform: isExpanded ? 'translate(-50%, -50%)' : 'none',
+                top: isExpanded ? '0%' : `${dimensions.offsetTop}px`,
+                left: isExpanded ? '0%' : `${dimensions.offsetLeft}px`,
+                height: isExpanded ? '100svh' : dimensions.height,
+                width: isExpanded ? '100dvw' : dimensions.width,
                 position: isExpanded ? 'fixed' : 'absolute',
                 opacity: isExpanded ? '1' : '0',
                 transition: 'all 0.5s ease'
             }}
+            onClick={handleClickOutside}
         >
-            {children}
+            <div 
+                ref={elementRef} 
+                className={`${styles.expandingElement} ${isExpanded ? styles.expanded : ''}`}
+                onClick={handleClick}
+                style={{
+                    top: isExpanded ? '50%' : `${dimensions.offsetTop}px`,
+                    left: isExpanded ? '50%' : `${dimensions.offsetLeft}px`,
+                    height: isExpanded ? targetHeight : dimensions.height,
+                    width: isExpanded ? targetWidth : dimensions.width,
+                    transform: isExpanded ? 'translate(-50%, -50%)' : 'none',
+                    position: isExpanded ? 'fixed' : 'absolute',
+                    opacity: isExpanded ? '1' : '0',
+                    transition: 'all 0.5s ease'
+                }}
+            >
+                {children}
+            </div>
         </div>
     );
 };

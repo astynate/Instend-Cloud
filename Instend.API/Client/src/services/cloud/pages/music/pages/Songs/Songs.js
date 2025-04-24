@@ -11,6 +11,7 @@ import MusicState from '../../../../../../state/entities/MusicState';
 import AddInSongs from './add-in-songs-button/AddInSongs';
 import SongsInformationHeader from '../../widgets/songs-information-header/SongsInformationHeader';
 import { ConvertFullDate } from '../../../../../../handlers/DateHandler';
+import FetchItemsWithPlaceholder from '../../../../shared/fetch/fetch-items-with-placeholder/FetchItemsWithPlaceholder';
 
 const Songs = observer(({isMobile = false}) => {
     const { SetSongQueue, ChangePlayingState, GetCurrentSongData } = MusicState;
@@ -18,12 +19,7 @@ const Songs = observer(({isMobile = false}) => {
     let song = GetCurrentSongData();
 
     useEffect(() => {
-        FilesController.GetLastFilesWithType(
-            5, 
-            songs.length, 
-            'music',
-            StorageState.OnGetFilesByTypeSuccess
-        );
+        
     }, [songs.length]);
 
     return (
@@ -50,6 +46,20 @@ const Songs = observer(({isMobile = false}) => {
                     )
                 })}
             </div>
+            <FetchItemsWithPlaceholder
+                item={
+                    <div></div>
+                }
+                isHasMore={StorageState.isHasMoreSongs}
+                callback={async () => {
+                    await FilesController.GetLastFilesWithType(
+                        5, 
+                        songs.length, 
+                        'music',
+                        (files) => StorageState.OnGetFilesByTypeSuccess(files, 'music')
+                    );
+                }}
+            />
         </SubContentWrapper>
     );
 });

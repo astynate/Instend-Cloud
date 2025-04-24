@@ -11,7 +11,7 @@ class Base64Handler {
         return Object.keys(object)
             .map(key => `${key}=${encodeURIComponent(object[key])}`)
             .join('&');
-    }
-}
+    };
+};
 
 export default Base64Handler;

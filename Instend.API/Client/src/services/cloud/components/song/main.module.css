@@ -1,11 +1,13 @@
 .song {
-    height: 68px;
+    height: auto;
     width: 100%;
     align-items: center;
     display: grid;
     grid-template-columns: repeat(4, 1fr) 30px;
     user-select: none;
     position: relative;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .select {
@@ -62,8 +64,8 @@
 }
 
 .albumCover {
-    height: 50px;
-    width: 50px;
+    height: 45px;
+    width: 45px;
     margin-top: auto;
     margin-bottom: auto;
     position: relative;

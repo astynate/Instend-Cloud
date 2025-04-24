@@ -5,7 +5,6 @@ const FetchItemsWithPlaceholder = ({ item = <div></div>, isHasMore = true, callb
     const [isFetching, setIsFetching] = useState(false);
     const [placeholders, setPlaceholders] = useState([]);
     const containerRef = useRef(null);
-    const itemRef = useRef(null);
 
     const fetchItems = async () => {
         if (isHasMore && !isFetching) {

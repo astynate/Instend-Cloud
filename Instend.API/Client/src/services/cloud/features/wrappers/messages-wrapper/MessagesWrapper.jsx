@@ -10,9 +10,18 @@ const MessagesWrapper = observer(({children}) => {
     const params = useParams();
 
     const scrollToBottom = () => {
-        if (wrapperRef.current) {
-            wrapperRef.current.scrollTop = wrapperRef.current.scrollHeight;
+        if (!wrapperRef.current) {
+            return false;
         };
+
+        const currentScrollPosition = wrapperRef.current.scrollTop;
+        const maxScrollHeight = wrapperRef.current.scrollHeight - wrapperRef.current.clientHeight;
+    
+        if (maxScrollHeight - currentScrollPosition > 50) {
+            return false;
+        };
+
+        wrapperRef.current.scrollTop = wrapperRef.current.scrollHeight;
     };
 
     useEffect(() => {

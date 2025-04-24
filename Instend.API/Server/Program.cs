@@ -58,6 +58,8 @@ builder.Services.AddScoped<IAccessHandler, AccessHandler>();
 builder.Services.AddScoped<IPublicationsPhotosRepository, PublicationsPhotosRepository>();
 builder.Services.AddScoped<IPublicationsRepository, PublicationsRepository>();
 builder.Services.AddScoped<IAttachmentsRepository, AttachmentsRepository>();
+builder.Services.AddScoped<IAccountsStatisticsRepository, AccountsStatisticsRepository>();
+builder.Services.AddScoped<IStorageStatisticsReposotory, StorageStatisticsReposotory>();
 builder.Services.AddScoped<FilesController>();
 
 builder.Services.AddSingleton<IValidationService, ValidationService>();

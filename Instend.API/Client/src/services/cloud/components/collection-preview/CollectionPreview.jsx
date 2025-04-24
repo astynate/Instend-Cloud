@@ -11,6 +11,8 @@ const CollectionPreview = ({ collection }) => {
         return null;
     };
 
+    console.log(collection.id);
+
     return (
         <ExpandingElementWrapper targetHeight={pageIndex === 0 ? 550 : 600} targetWidth={pageIndex === 0 ? 900 : 500}>
             <div className={styles.collection}>
@@ -24,7 +26,7 @@ const CollectionPreview = ({ collection }) => {
                     items={[
                         {
                             title: "Main", 
-                            element: <MainCollectionPreviewPage />,
+                            element: <MainCollectionPreviewPage collectionId={collection.id} />,
                         },
                         {
                             title: "Publications", 

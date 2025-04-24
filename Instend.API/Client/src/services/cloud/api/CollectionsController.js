@@ -88,6 +88,7 @@ class CollectionsController {
             })
             .catch((error) => { 
                 ApplicationState.AddErrorInQueueByError('Attention!', error);
+                onSuccess([]);
             });
     };
 };

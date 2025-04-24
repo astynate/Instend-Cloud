@@ -6,7 +6,6 @@ import styles from './main.module.css';
 import ChatTypes from "./helpers/ChatTypes";
 import ChatsState from "../../../../../../state/entities/ChatsState";
 import ChatHandler from "../../../../../../handlers/ChatHandler";
-import MessangerController from "../../../../api/MessangerController";
 
 const Chat = observer(({isMobile, isOpen, chat}) => {
     const [prevHeight, SetPrevHeight] = useState(0);
@@ -35,25 +34,15 @@ const Chat = observer(({isMobile, isOpen, chat}) => {
     }, [params, draft, chats]);
 
     useEffect(() => {
-        if (chat && chat.isHasMore && chat.id) {
-            MessangerController.GetMessages(
-                chat.id, 
-                chat, 
-                ChatsState.addUniqueMessages
-            );
-        }
-    }, [chat, chat?.messages]);
-
-    useEffect(() => {
-        if (scrollElement.current) {
-            let element = scrollElement.current;
-            let currentHeight = element.scrollHeight;
+        // if (scrollElement.current) {
+        //     let element = scrollElement.current;
+        //     let currentHeight = element.scrollHeight;
     
-            let scrollDifference = currentHeight - prevHeight;
-            element.scrollTop += scrollDifference;
+        //     let scrollDifference = currentHeight - prevHeight;
+        //     element.scrollTop += scrollDifference;
     
-            SetPrevHeight(currentHeight);
-        };
+        //     SetPrevHeight(currentHeight);
+        // };
     }, [scrollElement, scrollElement.current, scrollElement.current?.scrollHeight, chat?.messages, chat?.messages?.length]);
 
     if (isMobile === true && isOpen === false) {

@@ -1,43 +1,30 @@
+import { observer } from 'mobx-react-lite';
 import StorageState, { AdaptId } from '../../../../../../state/entities/StorageState';
-import CloudController from '../../../../api/CloudController';
-import StorageItemWrapper from '../../../../features/wrappers/storage-item-wrapper/StorageItemWrapper';
-import FetchItemsWithPlaceholder from '../../../../shared/fetch/fetch-items-with-placeholder/FetchItemsWithPlaceholder';
+import FetchCollectionData from '../../../../singletons/fetch-collection-data/FetchCollectionData';
 import Collection from '../../../collection/Collection';
-import File from '../../../file/File';
 import styles from './main.module.css';
+import File from '../../../file/File';
 
-const MainCollectionPreviewPage = ({ collectionId }) => {
-    const { collections } = StorageState;
+const MainCollectionPreviewPage = observer(({ collectionId }) => {
+    const { collections, files } = StorageState;
 
     return (
         <div className={styles.main}>
             {collections[AdaptId(collectionId)] && collections[AdaptId(collectionId)].items && collections[AdaptId(collectionId)].items
-                .filter(collection => collection.typeId !== 'System')
-                .slice()
                 .map(collection => {
                     return (
-                        <Collection collection={collection} />
+                        <Collection key={collection.id} collection={collection} />
                     )
                 })}
-            {collections[AdaptId(collectionId)] && collections[AdaptId(collectionId)].items && collections[AdaptId(collectionId)].items
-                .filter(collection => collection.typeId !== 'System')
-                .slice()
-                .map(collection => {
+            {files[AdaptId(collectionId)] && files[AdaptId(collectionId)].items && files[AdaptId(collectionId)].items
+                .map(file => {
                     return (
-                        <Collection collection={collection} />
+                        <File key={file.id} file={file} />
                     )
                 })}
-            <FetchItemsWithPlaceholder
-                item={
-                    <StorageItemWrapper>
-                        <File isLoading={true} />
-                    </StorageItemWrapper>
-                }
-                isHasMore={false}
-                callback={() => CloudController.FetchCollectionData(collectionId)}
-            />
+            <FetchCollectionData id={collectionId} />
         </div>
     );
-};
+});
 
 export default MainCollectionPreviewPage;

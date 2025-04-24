@@ -72,17 +72,22 @@ namespace Instend.Repositories.Storage
 
         public async Task<Core.Models.Storage.File.File[]> GetByParentCollectionId(Guid accountId, Guid? parentCollectionId, int skip, int take)
         {
-            var files = await _context.FilesAccounts
-                .AsNoTracking()
-                .Where(x => x.AccountId == accountId)
-                .Include(x => x.File)
-                .Where(file => file.File.CollectionId == parentCollectionId)
-                .Skip(skip)
-                .Take(take)
-                .Select(x => x.File)
-                .ToArrayAsync();
+            if (parentCollectionId == null)
+            {
+                return await _context.FilesAccounts
+                    .AsNoTracking()
+                    .Where(x => x.AccountId == accountId)
+                    .Include(x => x.File)
+                    .Where(file => file.File.CollectionId == parentCollectionId)
+                    .Skip(skip)
+                    .Take(take)
+                    .Select(x => x.File)
+                    .ToArrayAsync();
+            }
 
-            return files;
+            return await _context.Files
+                .Where(x => x.CollectionId == parentCollectionId)
+                .ToArrayAsync();
         }
 
         public async Task<Result<Core.Models.Storage.File.File>> UpdateName(Guid id, string name)

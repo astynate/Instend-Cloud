@@ -1,3 +1,13 @@
+.wrapper {
+    height: 100dvh;
+    width: 100dvw;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    position: fixed;
+}
+
 .expandingElement {
     height: 100%;
     width: 100%;

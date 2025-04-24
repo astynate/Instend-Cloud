@@ -1,5 +1,5 @@
 .main {
-    height: calc(100% - 10px);
+    height: auto;
     width: 100%;
     border-radius: 0px;
     margin-left: 10px;
@@ -7,4 +7,10 @@
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
     background: var(--background-accent-color);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-gap: 20px;
+    padding-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
 }

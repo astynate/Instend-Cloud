@@ -3,14 +3,11 @@ import styles from './main.module.css';
 import Preview from '../../../../preview/layout/Preview';
 import StorageController from '../../../../../api/StorageController';
 import ContextMenu from '../../../shared/context-menus/context-menu/ContextMenu';
+import FetchItemsWithPlaceholder from '../../../shared/fetch/fetch-items-with-placeholder/FetchItemsWithPlaceholder';
 
-const PhotosList = ({ photos = [], contextMenuItems = [] }) => {
+const PhotosList = ({ isHasMore = true, callback = () => {}, photos = [], contextMenuItems = [] }) => {
     const [index, setIndex] = useState(0);
     const [isPreviewOpen, setPreviewOpenState] = useState(false);
-
-    if (!photos || !photos.length) {
-        return null;
-    };
 
     return (
         <div className={styles.photos}>
@@ -43,6 +40,13 @@ const PhotosList = ({ photos = [], contextMenuItems = [] }) => {
                             </ContextMenu>
                         )
                     })}
+                <FetchItemsWithPlaceholder
+                    item={
+                        <div></div>
+                    }
+                    isHasMore={isHasMore}
+                    callback={callback}
+                />
         </div>
     );
 };
