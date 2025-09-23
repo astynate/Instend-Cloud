@@ -1,6 +1,7 @@
 :root {
     --main-background-color: #f5f5f7;
-    --main-border-color: rgba(0, 0, 0, 0.15);
+    --background-accent-color: #f8f8fa;
+    --main-border-color: rgba(0, 0, 0, 0.05);
     --main-accent-color: #fff;
     --main-font-color: #000;
     --main-header-font-color: #c2c2c2;
@@ -27,7 +28,7 @@
     --button-loader-color: rgb(255, 255, 255);
     --main-blur-effect: blur(10px) saturate(50%);
     --color-scheme: light;
-    --pop-up-accent-color: rgba(0, 0, 0, 0.1);
+    --pop-up-accent-color: rgba(11, 11, 11, 0.05);
     --input-background: rgba(0, 0, 0, 0.05);
     --input-placeholder: #fffff6;
     --input-border: #777780;

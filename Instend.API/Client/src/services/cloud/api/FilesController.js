@@ -12,6 +12,8 @@ class FilesController {
             .then(response => {
                 if (response.data && response.data.length) {
                     onSuccess(response.data);
+                } else {
+                    onSuccess([]);
                 };
             })
             .catch((error) => { 

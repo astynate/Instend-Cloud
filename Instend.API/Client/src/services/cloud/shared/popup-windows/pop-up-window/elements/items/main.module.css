@@ -4,13 +4,18 @@
     margin-left: 15px;
     margin-right: 15px;
     display: flex;
-    grid-gap: 10px;
+    grid-gap: 7px;
     position: relative;
 }
 
+.items[centered="true"] {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .item {
-    height: 35px;
-    padding: 7px 17px;
+    height: fit-content;
+    padding: 8px 25px;
     width: fit-content;
     border-radius: 30px;
     font-size: 14px;
@@ -22,8 +27,8 @@
 }
 
 .item[id="active"] { 
-    color: var(--sub-font-color);
-    background: var(--sub-accent-color);
+    color: var(--main-button-font-color);
+    background: var(--main-button-background-color);
 }
 
 .item[id="next"] { 

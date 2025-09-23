@@ -5,7 +5,6 @@
     margin-bottom: auto;
     position: relative;
     overflow: hidden;
-    border-radius: 3px;
     transition: 0.1s;
     cursor: pointer;
     object-fit: cover;
@@ -20,7 +19,7 @@
 .albumCoverImage {
     height: 100%;
     width: 100%;
-    border-radius: 5px;
+    border-radius: 0px;
     margin-top: auto;
     margin-bottom: auto;
     z-index: 99999;
@@ -85,7 +84,6 @@
 .playImage {
     height: 35%;
     width: 35%;
-    /* filter: var(--main-filter); */
     object-fit: contain;
     filter: invert(100%);
 }

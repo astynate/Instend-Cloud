@@ -47,7 +47,7 @@ const Music = ({setPanelState, isMobile}) => {
             element={<Playlists isMobile={isMobile} />} 
           />
           <Route 
-            path='/playlist/:id'
+            path='/playlist/:id?'
             element={<Playlist isMobile={isMobile} />} 
           />
         </Routes>

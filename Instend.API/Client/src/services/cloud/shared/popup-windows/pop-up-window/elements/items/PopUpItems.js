@@ -1,13 +1,17 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from './main.module.css';
 
-const PopUpItems = ({currentIndex = 0, items = []}) => {
+const PopUpItems = ({currentIndex = 0, items = [], isCentered = false, setExternalActiveIndex = () => {}}) => {
     const [active, setActive] = useState(currentIndex);
     const ref = useRef();
 
+    useEffect(() => {
+        setExternalActiveIndex(active);
+    }, [active]);
+
     return (
         <>
-            <div className={styles.items}>
+            <div className={styles.items} centered={isCentered ? "true" : null}>
                 {items.map((element, index) => {
                     return (
                         <div 
@@ -20,9 +24,6 @@ const PopUpItems = ({currentIndex = 0, items = []}) => {
                         </div>
                     );
                 })}
-                {/* <div className={styles.item} id="next">
-                    <img src={next} draggable="false" />
-                </div> */}
             </div>
             <div className={styles.element} ref={ref}>
                 {React.cloneElement(items[active].element, {wrapper: ref})}

@@ -89,7 +89,9 @@ namespace Instend.Repositories.Storage
 
         public async Task<Result<Album>> DeleteAlbumAsync(Guid id, Guid userId)
         {
-            var album = await GetByIdAsync(id, 0, 1);
+            var album = await _context.Albums
+                .Where(x => x.Id == id)
+                .FirstOrDefaultAsync();
 
             if (album == null)
                 return Result.Failure<Album>("album not found or you don't have an permissions to perform this operation");

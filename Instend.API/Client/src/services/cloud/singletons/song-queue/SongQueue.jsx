@@ -2,13 +2,13 @@ import { observer } from 'mobx-react-lite';
 import { formatTimeInSecond } from '../../../../handlers/TimeHandler';
 import SimpleRange from '../../ui-kit/ranges/simple-range/SimpleRange';
 import styles from './main.module.css';
-import play from './images/play.png';
 import pause from './images/pause.png';
 import next from './images/next.png';
 import repeat from './images/repeat.png';
 import sound from './images/sound.png';
 import MusicState from '../../../../state/entities/MusicState';
 import Song from '../../components/song/Song';
+import play from './images/play.png';
 
 const SongQueue = observer(() => {
     const { songQueue, isPlaying, ChangePlayingState, GetCurrentSongData } = MusicState;

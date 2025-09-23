@@ -5,6 +5,10 @@
     grid-gap: 5px;
 }
 
+.collections[isexpanded="true"] {
+    grid-template-columns: repeat(1, 1fr);
+}
+
 .collection {
     user-select: none;
     cursor: pointer;
@@ -15,14 +19,15 @@
     background: var(--blue-200);
     border-radius: 10px;
     transition: 0.15s ease;
+    position: relative;
 }
 
 .collection:hover {
-    transform: scale(101%);
+    /* transform: scale(101%); */
 }
 
 .collection:active {
-    transform: scale(99%);
+    /* transform: scale(99%); */
 }
 
 .header {
@@ -48,6 +53,10 @@
     grid-gap: 3px;
 }
 
+.collections[isexpanded="true"] .files {
+    grid-template-columns: repeat(5, 1fr);
+}
+
 .file {
     height: 70px;
     width: 70px;
@@ -58,4 +67,5 @@
     align-items: center;
     text-transform: uppercase;
     font-family: 12px;
+    color: white;
 }

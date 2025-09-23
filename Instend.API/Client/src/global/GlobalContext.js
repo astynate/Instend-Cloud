@@ -31,6 +31,6 @@ class GlobalContext {
         {name: 'Editor'},
         {name: 'Owner'},
     ];
-}
+};
 
 export default GlobalContext;

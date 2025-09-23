@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import styles from './main.module.css';
 import play from './images/play.png';
 import pause from './images/pause.png';
-import defaultCover from './images/default-playlist-cover.png';
+import defaultCover from '../../../../assets/default/song-cover.png';
 
 const SongCover = observer(({song, isPlaying, isLoading, isHovered}) => {
     return (

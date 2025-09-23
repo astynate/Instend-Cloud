@@ -1,6 +1,5 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { CircularProgress } from '@mui/joy';
-import { ConvertDate } from '../../../../handlers/DateHandler';
 import styles from './main.module.css';
 import StorageItemDescription from '../../features/storage/storage-item-description/StorageItemDescription';
 import GlobalContext from '../../../../global/GlobalContext';
@@ -14,7 +13,7 @@ const File = ({isLoading, file}) => {
   const [isSelectedOpen, setSelectedOpenState] = useState(false);
 
   useLayoutEffect(() => { 
-    if (GlobalContext.supportedImageTypes.includes(file.type)) {
+    if (file && GlobalContext.supportedImageTypes.includes(file.type)) {
       var img = new Image();
 
       img.onload = function() {

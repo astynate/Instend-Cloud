@@ -1,3 +1,10 @@
+.files {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    grid-gap: 5px;
+}
+
 .file {
     display: flex;
     align-items: center;
@@ -16,6 +23,7 @@
     align-items: center;
     text-transform: uppercase;
     background: var(--main-blue-color);
+    color: white;
 }
 
 .information {
@@ -28,4 +36,26 @@
     text-wrap: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    color: white;
+}
+
+.play {
+    height: 45px;
+    width: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--main-blue-color);
+    border-radius: 100%;
+    cursor: pointer;
+}
+
+.play img {
+    height: 18px;
+}
+
+.range {
+    height: 21px;
+    display: flex;
+    align-items: center;
 }

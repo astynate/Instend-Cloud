@@ -75,15 +75,20 @@ namespace Instend.Repositories.Storage
 
         public async Task<IEnumerable<Collection>> GetCollectionsByParentId(Guid accountId, Guid? parentCollectionId, int skip, int take = 5)
         {
-            var collections = await _context.CollectionsAccounts
-                .Include(x => x.Account)
-                .Where(x => x.Account.Id == accountId)
-                .Include(x => x.Collection)
-                .Where(x => x.Collection.CollectionId == parentCollectionId)
-                .Select(x => x.Collection)
-                .ToArrayAsync();
+            if (parentCollectionId == null)
+            {
+                return await _context.CollectionsAccounts
+                    .Include(x => x.Account)
+                    .Where(x => x.Account.Id == accountId)
+                    .Include(x => x.Collection)
+                    .Where(x => x.Collection != null && x.Collection.CollectionId == parentCollectionId)
+                    .Select(x => x.Collection)
+                    .ToArrayAsync();
+            }
 
-            return collections;
+            return await _context.Collections
+                .Where(x => x.CollectionId == parentCollectionId)
+                .ToArrayAsync();
         }
 
         public async Task<IEnumerable<Collection?>> GetShortPathAsync(Guid? collectionId)

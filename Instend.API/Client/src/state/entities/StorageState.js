@@ -13,22 +13,22 @@ class StorageState {
     messages = {};
     collectionQueueId = 0;
     fileQueueId = 0;
-    hasMoreSongs = true;
-    hasMorePhotos = true;
+    isHasMoreSongs = true;
+    isHasMorePhotos = true;
     countPhotos = 0;
     countSongs = 0;
 
     constructor() {
         makeAutoObservable(this);
-    }
+    };
 
     SetCollectionsAsDefaultValue = () => {
         this.collections = {};
-    }
+    };
 
-    IsItemsHasMore = (id, items) => {
+    AreThereMoreItems = (id, items) => {
         return items[AdaptId(id)] ? items[AdaptId(id)].isHasMore : true;
-    }
+    };
 
     RenameCollection = (collection) => this.RenameItem(this.collections, collection);   
     RenameFile = (file) => this.RenameItem(this.files, file);
@@ -46,21 +46,34 @@ class StorageState {
             if (!combinedItems.has(newItem.id)) {
                 combinedItems.add(newItem.id);
                 uniqueNewItems.push(newItem);
-            }
+            };
         });
+
+        const previousHasMore = items[adaptId] ? items[adaptId].isHasMore : true;
     
         items[adaptId] = {
             items: [...existingItems, ...uniqueNewItems],
-            isHasMore: setIsHasMore ? newItems.length >= 5 : false
+            isHasMore: setIsHasMore ? uniqueNewItems.length >= 5 : !!previousHasMore
         };
     };
     
-    OnGetFilesByTypeSuccess = (files) => {
+    OnGetFilesByTypeSuccess = (files, type = 'gallery') => {
         for (let file of files) {
             if (!!file === true) {
                 this.SetItems(files.collectionId, this.files, [file], false);   
             };
-        }
+        };
+
+        switch (type) {
+            case 'gallery': {
+                this.isHasMorePhotos = files.length >= 5;
+                break;
+            }
+            case 'music': {
+                this.isHasMoreSongs = files.length >= 5;
+                break;
+            }
+        };
     };
 
     CreateLoadingCollection = (name, collectionId) => {
@@ -109,7 +122,7 @@ class StorageState {
                 });
             }
         };
-    }
+    };
 
     RemoveCollection = (id) => {
         if (this.collections[id])
@@ -120,8 +133,8 @@ class StorageState {
                 this.collections[key].items = this.collections[key].items
                     .filter(element => element.id !== id);
             });
-        }
-    }
+        };
+    };
 
     CreateLoadingFile(name, collectionId, type) {
         const file = {
@@ -139,7 +152,7 @@ class StorageState {
         });
 
         return file.queueId;
-    }
+    };
 
     SetLoadingFilePerscentage(queueId, perscentage) {
         const object = Object
@@ -149,7 +162,7 @@ class StorageState {
 
         if (object && object.perscentage !== null && object.perscentage !== undefined)
             object.perscentage = perscentage;
-    }
+    };
 
     ReplaceLoadingFile(file, queueId) {
         this.DeleteFile(queueId);
@@ -157,7 +170,7 @@ class StorageState {
         runInAction(() => {
             this.SetItems(file.collectionId, this.files, [file]);
         });
-    }
+    };
     
     DeleteFile = (data) => {
         for (let key in this.files) {

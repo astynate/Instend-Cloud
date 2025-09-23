@@ -58,12 +58,6 @@ const PrivateRoutes = [
         name: "Music"
     },
     {
-        path: '/music/playlist/:id',
-        element: <Playlist />,
-        name: "Music",
-        isHeaderless: true,
-    },
-    {
         path: '/profile/:id?',
         element: <Profile />,
         name: "Profile"

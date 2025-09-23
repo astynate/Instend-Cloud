@@ -250,7 +250,7 @@ namespace Instend.Repositories.Comments
             var publicationReaction = new PublicationReaction();
 
             publicationReaction.Reaction = reaction;
-            publicationReaction.Account = publication.Account;
+            publicationReaction.AccountId = accountId;
 
             _context.Attach(publicationReaction);
 

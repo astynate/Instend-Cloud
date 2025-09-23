@@ -13,7 +13,7 @@ namespace Instend.Core.Models.Public
         public Guid ReactionId { get; set; }
 
         [Column("account_id")]
-        public Guid AccountId { get; private set; }
+        public Guid AccountId { get; set; }
 
         public Reaction Reaction { get; set; } = null!;
         public Publication Publication { get; set; } = null!;

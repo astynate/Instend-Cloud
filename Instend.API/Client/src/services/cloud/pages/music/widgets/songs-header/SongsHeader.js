@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite';
 import styles from './main.module.css';
 import PlayButton from '../../../../ui-kit/buttons/play-button/PlayButton';
 import MusicState from '../../../../../../state/entities/MusicState';
+import defaultCover from '../../../../../../assets/default/song-cover.png'
 
 const SongsHeader = observer(({isMobile, image, title, subTitle, song, callback = () => {}}) => {
     if (!song) {
@@ -13,11 +14,11 @@ const SongsHeader = observer(({isMobile, image, title, subTitle, song, callback 
         <div className={styles.songInformation}>
             <div className={styles.coverWrapper}>
                 <div className={styles.cover}>
-                    {image && <img 
-                        src={image} 
+                    <img 
+                        src={image ?? defaultCover}
                         draggable="false"
                         className={styles.coverImage} 
-                    />}
+                    />
                 </div>
             </div>
             <div className={styles.information}>
