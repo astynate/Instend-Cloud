@@ -1,53 +1,64 @@
 .background {
-    height: 100svh;
-    width: 100vw;
+    height: 100%;
+    width: 100svw;
     position: fixed;
     top: 0;
     left: 0;
     object-fit: cover;
+    background: linear-gradient(
+        to bottom,
+        #E5ECFB 0%,
+        #DBEBFF 26%,
+        #FEDBDA 60%,
+        #FFF0FF 100%
+    );
 }
 
 .main {
     height: 100svh;
+    min-height: auto;
     width: 100vw;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .content {
-    height: 100%;
+    height: auto;
     width: 100%;
+    padding-top: 170px;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     display: flex;
     flex-direction: column;
-    grid-gap: 25px;
     z-index: 1;
+    margin-bottom: auto;
 }
 
 .title {
     font-size: 42px;
-    max-width: 600px;
-    font-weight: 700;
+    max-width: 500px;
+    font-weight: 600;
     margin-left: 5%;
     margin-right: 5%;
+    opacity: 0.95;
 }
 
 .information {
     font-size: 18px;
-    max-width: 500px;
-    font-weight: 600;
-    opacity: 0.7;
+    max-width: 600px;
+    font-weight: 400;
+    opacity: 0.3;
     margin-left: 10%;
     margin-right: 10%;
 }
 
 .logo {
-    height: 85px;
-    width: 85px;
+    height: 80px;
+    width: 80px;
     flex-shrink: 0;
     object-fit: contain;
 }
@@ -81,13 +92,105 @@
 }
 
 .button[id="sub"] {
-    /* opacity: 0.7; */
     background: white;
     color: black;
 }
+
+.blueButton {
+    padding: 10px 40px;
+    color: white;
+    border-radius: 3px;
+    cursor: pointer;
+    background: #2D9EFF;
+    transition: 0.15s ease;
+}
+
+.blueButton:hover {
+    transform: scale(103%);
+    background: #2993f1;
+}
+
+.blueButton:active {
+    transform: scale(97%);
+    background: #44a8ff;
+}
+
+/* ================================================== */
+
+.items {
+    height: auto;
+    width: 100%;
+    position: relative;
+    user-select: none;
+}
+
+.christianHartley, .escapeFranchise, .playlist, .album {
+    position: absolute;
+}
+
+.christianHartley {
+    width: 252px;
+    right: 30%;
+    top: -50px;
+    animation: 10s ease-in item-animation infinite;
+    animation-delay: 0s;
+}
+
+.escapeFranchise {
+    width: 232px;
+    left: 18%;
+    top: -100px;
+    animation: 10s ease-out item-animation infinite;
+    animation-delay: 5s;
+}
+
+.playlist {
+    width: 323px;
+    right: 50%;
+    top: 100px;
+    animation: 10s linear item-animation infinite;
+    animation-delay: 2s;
+}
+
+.album {
+    width: 253px;
+    right: 10%;
+    top: -200px;
+    animation: 10s linear item-animation infinite;
+    animation-delay: 6s;
+}
+
+/* ================================================== */
+
+@keyframes item-animation {
+    0% {
+        scale: 100%;
+        filter: blur(0px);
+    }
+    33% {
+        scale: 90%;
+        filter: blur(30px);
+    }
+    50% {
+        scale: 100%;
+        filter: blur(0px);
+    }
+    66% {
+        scale: 110%;
+        filter: blur(0px);
+    }
+    100% {
+        scale: 100%;
+        filter: blur(0px);
+    }
+}
+
+/* ================================================== */
 
 @media (max-width: 500px) {
     .title {
         font-size: 28px;
     }
 }
+
+/* ================================================== */

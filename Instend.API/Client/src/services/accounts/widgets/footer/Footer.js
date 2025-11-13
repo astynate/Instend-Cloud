@@ -6,11 +6,9 @@ import './styles/media.css';
 import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
-
     const { t } = useTranslation();
 
     return (
-
         <div className='footer'>
             <div className='footer-links'>
                 <Link to="/" className='footer-link'>{t('account.privacy_policy')}</Link>
@@ -21,9 +19,7 @@ const Footer = () => {
                 <span>{t('account.copyright')}</span>
             </div>
         </div>
-
     );
-
-}
+};
 
 export default Footer;

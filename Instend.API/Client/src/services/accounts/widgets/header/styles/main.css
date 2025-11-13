@@ -12,7 +12,7 @@
     z-index: 9999999;
     padding-bottom: 5px;
     transition: 0.5s ease;
-    background: var(--accounts-main-header-color);
+    /* background: var(--accounts-main-header-color); */
     backdrop-filter: blur(20px) saturate(100%);
     -webkit-backdrop-filter: blur(20px) saturate(100%);
     align-items: center;
@@ -95,22 +95,15 @@
 }
 
 .header-menu-links .link {
-
     padding-top: 20px;
     padding-bottom: 20px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-
 }
 
 .header-menu-links .link span {
-
     font-size: 16px;
-
 }
 
 .header-menu-links .link img {
-
     height: 16px;
-    
-
 }
