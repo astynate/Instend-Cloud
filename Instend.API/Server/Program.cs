@@ -136,6 +136,7 @@ app.Use(async (context, next) =>
 });
 
 app.UseHttpsRedirection();
+//app.UseHsts();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors("CorsPolicy");

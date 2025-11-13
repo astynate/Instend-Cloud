@@ -66,7 +66,7 @@ const Profile = observer(({isSaving, cancel, setCancelState, setSavingState = ()
             onSuccess,
             onError
         );
-    }
+    };
 
     const addNewLink = () => {
         const defaultLink = {
@@ -78,7 +78,7 @@ const Profile = observer(({isSaving, cancel, setCancelState, setSavingState = ()
         };
 
         setLinks(prev => [...prev, defaultLink]);
-    }
+    };
 
     useEffect(() => {
         saveChanges();

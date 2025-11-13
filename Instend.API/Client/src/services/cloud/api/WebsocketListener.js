@@ -4,6 +4,7 @@ import ChatsState from "../../../state/entities/ChatsState";
 import GalleryState from "../../../state/entities/GalleryState";
 import StorageState from "../../../state/entities/StorageState";
 import AccountState from "../../../state/entities/AccountState";
+import NotificationHandler from "../../../handlers/NotificationHandler";
 
 class WebsocketListener {
     static CreateCollectionListener = async (data) => {
@@ -54,7 +55,7 @@ class WebsocketListener {
         ChatsState.setChatsLoadedState(true);
     };
 
-    static ReceiveMessageListner = (data, navigate) => {
+    static ReceiveMessageListner = (data, navigate, notify = false) => {
         const { transferModel, queueId } = JSON.parse(data);
 
         if (!transferModel) {
@@ -62,6 +63,10 @@ class WebsocketListener {
         };
 
         ChatsState.AddMessage(transferModel, queueId);
+
+        if (notify === true) {
+            NotificationHandler.NotifyAboutMessage(transferModel);
+        };
 
         if (ChatsState.IsDraftWithTargetUser(transferModel)) {
             navigate(`/messages/${transferModel.id}`);

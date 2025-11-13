@@ -4,7 +4,7 @@ import { CalculateAge, ConvertYearMonthOnly } from '../../../../../../handlers/D
 import SubContentWrapper from '../../../../features/wrappers/sub-content-wrapper/SubContentWrapper';
 import Data from '../../../../elements/profile/profile-data/Data';
 import styles from './main.module.css';
-import Username from '../../../../elements/profile/profile-username/Username';
+import AccountFullName from '../../../../elements/profile/profile-username/Username';
 import UserAvatar from '../../../../shared/avatars/user-avatar/UserAvatar';
 import ProfileDescriptionButtons from './ProfileDescriptionButtons';
 
@@ -22,26 +22,23 @@ const ProfileDescription = observer(({isMobile, account}) => {
                         avatar={account.avatar}
                     />
                     <div className={styles.data}>
-                        <div className={styles.username}>
-                            <Username
-                                username={account.nickname}
-                            />
-                            {isMobile === false && <ProfileDescriptionButtons account={account} />}
-                        </div>
+                        <AccountFullName username={`${account.name} ${account.surname}`} />
+                        <span className={styles.nickname}>{`@${account.nickname}`}</span>
+                        {/* {isMobile === false && <ProfileDescriptionButtons account={account} />} */}
                         <Data 
                             stats={[
                                 {title: 'followers', amount: account.numberOfFollowers},
                                 {title: 'following', amount: account.numberOfFollowingAccounts},
-                                {title: 'coins', amount: account.balance}
+                                // {title: 'coins', amount: account.balance}
                             ]}
                         />
-                        {isMobile === false && <div style={{display: 'flex', gridGap: '5px', flexDirection: 'column'}}>
+                        {/* {isMobile === false && <div style={{display: 'flex', gridGap: '5px', flexDirection: 'column'}}>
                             <div style={{display: 'flex', gridGap: '10px'}}>
                                 <h5>{account.name} {account.surname}</h5>
                                 <span className={styles.paragraph}>{CalculateAge(account.dateOfBirth)} y.o.</span>
                             </div>
                             <span className={styles.paragraph}>Joined {ConvertYearMonthOnly(account.registrationDate)}</span>
-                        </div>}
+                        </div>} */}
                     </div>
                 </div>
                 {isMobile && <div style={{display: 'flex', gridGap: '5px', flexDirection: 'column'}}>

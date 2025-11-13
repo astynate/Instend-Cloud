@@ -51,7 +51,14 @@ const Profile = observer((props) => {
           account={account}
           isMobile={props.isMobile}
         />
-        <MenuWithUnderline 
+        <MainProfilePage
+          account={account}
+          isHasMore={isHasMore}
+          publications={publications}
+          setHasMoreState={setHasMoreState}
+          setPublications={setPublications}
+        />
+        {/* <MenuWithUnderline 
           margin={20}
           items={[
             {
@@ -75,7 +82,7 @@ const Profile = observer((props) => {
               component: (<div className={styles.contentWrapper}></div>)
             },
           ]}
-        />
+        /> */}
       </div> 
     </div>
   );

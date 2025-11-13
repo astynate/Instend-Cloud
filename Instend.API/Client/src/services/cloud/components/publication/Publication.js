@@ -84,7 +84,7 @@ const Publication = observer(({
             <div className={styles.publication} paddingstate={isHasPaddings ? 'visible': 'hidden'}>
                 <div className={styles.header}>
                     <div className={styles.left}>
-                        <UserAvatar size={42} />
+                        <UserAvatar avatar={publication.account ? publication.account.avatar : undefined} size={42} />
                         <div className={styles.information}>
                             <span className={styles.nickname}>{publication.account ? publication.account.nickname : "Unknown"}</span>
                             <span className={styles.time}>{publication ? ConvertDate(publication.date) : "Friday 13, 1666"}</span>

@@ -1,6 +1,6 @@
 .wrapper {
     display: grid;
-    grid-template-columns: 1fr 1.25fr;
+    /* grid-template-columns: 1fr 1.25fr; */
     grid-gap: 15px;
     overflow: visible;
 }

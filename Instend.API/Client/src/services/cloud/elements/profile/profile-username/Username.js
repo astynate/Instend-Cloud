@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './styles/main.module.css';
 
-const Username = ({isLoading, username, children}) => {
+const AccountFullName = ({isLoading, username, children}) => {
   if (isLoading === true) {
     return (
       <div className={styles.wrapper}>
@@ -18,4 +18,4 @@ const Username = ({isLoading, username, children}) => {
   );
 };
 
-export default Username;
+export default AccountFullName;

@@ -113,7 +113,7 @@ const Layout = observer(() => {
         };
     }, [AccountState.account]);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         if (AccountState.isAuthorize === false && AccountState.isLoading === false) {
             navigate('/main');
         };

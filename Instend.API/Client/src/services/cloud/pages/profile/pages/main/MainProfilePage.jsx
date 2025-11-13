@@ -38,7 +38,7 @@ const MainProfilePage = ({
 
     return (
         <div className={styles.wrapper}>
-            <div className={styles.blocksWrapper}>
+            {/* <div className={styles.blocksWrapper}>
                 <div className={styles.blocks}>
                     <ProfileInformationBlock 
                         title={'Information'}
@@ -83,7 +83,7 @@ const MainProfilePage = ({
                         }
                     />
                 </div>
-            </div>
+            </div> */}
             <div className={styles.publicatios}>
                 <PublicationList
                     borderRadius={30}

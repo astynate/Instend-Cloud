@@ -8,7 +8,7 @@
 
 .data {
     display: flex;
-    grid-gap: 45px;
+    grid-gap: 25px;
     margin-top: 10px;
     margin-bottom: 10px;
     text-transform: lowercase;

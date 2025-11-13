@@ -38,14 +38,19 @@ const Chats = observer(({isMobile, setOpenState = () => {}}) => {
         const handleClickOutside = (event) => {
             if (ref.current && !ref.current.contains(event.target)) {
                 setCreateOpenState(false);
-            }
-        }
+            };
+        };
+        
         document.addEventListener("mousedown", handleClickOutside);
         
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [ref]);
+
+    const CalculateLastMessageIndex = (messages) => {
+        return Math.max(messages.length - 1, 0);
+    };
 
     return (
         <div className={styles.chats} id={isMobile ? 'mobile' : null}>
@@ -80,7 +85,7 @@ const Chats = observer(({isMobile, setOpenState = () => {}}) => {
             <div className={styles.chatsWrapper}>
                 {chats
                     .slice()
-                    .sort((a, b) => SortingHandler.CompareTwoDates(a.data, b.data, true))
+                    .sort((a, b) => SortingHandler.CompareTwoDates(a.messages[CalculateLastMessageIndex(a.messages)].date, b.messages[CalculateLastMessageIndex(b.messages)].date, true))
                     .map((chat) => {
                         const data = ChatsHelper.GetChatData(chat);
                         const items = [

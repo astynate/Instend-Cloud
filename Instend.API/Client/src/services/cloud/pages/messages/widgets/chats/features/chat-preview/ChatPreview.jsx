@@ -1,8 +1,9 @@
 import { Link, useParams } from 'react-router-dom';
 import { ConvertDateToTime } from '../../../../../../../../handlers/DateHandler';
 import styles from './main.module.css';
+import { observer } from 'mobx-react-lite';
 
-const ChatPreview = ({avatar, name, chat}) => {
+const ChatPreview = observer(({avatar, name, chat}) => {
     let params = useParams();
 
     if (!chat) {
@@ -34,6 +35,6 @@ const ChatPreview = ({avatar, name, chat}) => {
             <span className={styles.time}>{ConvertDateToTime(GetMessage().date)}</span>
         </Link>
     );
-};
+});
 
 export default ChatPreview;
