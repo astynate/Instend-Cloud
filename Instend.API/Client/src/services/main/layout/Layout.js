@@ -35,6 +35,7 @@ const Layout = () => {
                         <img src={playlist} className={styles.playlist} draggable={false} />
                         <img src={album} className={styles.album} draggable={false} />
                     </div>
+                    <div className={styles.items}></div>
                 </div>
                 <Footer />
             </div>

@@ -1,6 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
 import { observer } from "mobx-react-lite";
-import { useParams } from 'react-router-dom';
 import { GetMessageDateIfItNessecery, GetMessagePosition } from '../../../pages/messages/widgets/chat/helpers/MessageActions';
 import styles from './main.module.css';
 import Message from '../../../pages/messages/shared/message/Message';
@@ -8,21 +6,27 @@ import AccountState from '../../../../../state/entities/AccountState';
 import MessangerController from '../../../api/MessangerController';
 import ChatsState from '../../../../../state/entities/ChatsState';
 import FetchItemsWithPlaceholder from '../../../shared/fetch/fetch-items-with-placeholder/FetchItemsWithPlaceholder';
+import { useState } from "react";
 
 const MessageList = observer(({chat, scroll}) => {
     const { account } = AccountState;
+    const [isHasMore, setHasMoreState] = useState(true);
+
+    useState(() => {
+        console.log(isHasMore)
+        setHasMoreState(true);
+    }, [chat.id]);
 
     return (
         <div className={styles.messages}>
             <FetchItemsWithPlaceholder
-                item={
-                    <div></div>
-                }
-                isHasMore={chat.hasMore}
+                item={<div></div>}
+                isHasMore={isHasMore}
                 callback={async () => {
                     await MessangerController.GetMessages(
                         chat.id, 
-                        chat, 
+                        chat,
+                        setHasMoreState,
                         ChatsState.addUniqueMessages
                     );
                 }}

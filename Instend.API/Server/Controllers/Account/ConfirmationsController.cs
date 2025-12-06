@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Instend.Server.Controllers.Account
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ConfirmationsController : ControllerBase
     {
         private readonly IAccountsRepository _accountsRepository;

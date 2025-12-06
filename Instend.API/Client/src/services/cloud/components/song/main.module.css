@@ -3,11 +3,13 @@
     width: 100%;
     align-items: center;
     display: grid;
-    grid-template-columns: repeat(4, 1fr) 30px;
     user-select: none;
     position: relative;
     padding-top: 5px;
     padding-bottom: 5px;
+    padding: 12px;
+    border-radius: 24px;
+    background: var(--main-accent-color);
 }
 
 .select {

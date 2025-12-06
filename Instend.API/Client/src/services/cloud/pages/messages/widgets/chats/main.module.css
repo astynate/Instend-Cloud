@@ -7,8 +7,9 @@
     overflow-x: hidden;
     flex-shrink: 0;
     z-index: 2;
-    border-radius: var(--main-border-radius);
-    background: var(--background-accent-color);
+    border-left: 1px solid var(--main-border-color);
+    /* border-radius: var(--main-border-radius); */
+    /* background: var(--background-accent-color); */
 }
 
 .chats[id="mobile"] {
@@ -28,7 +29,7 @@
     position: sticky;
     top: 0;
     left: 0;
-    background: var(--background-accent-color);
+    /* background: var(--background-accent-color); */
     z-index: 1;
 }
 

@@ -53,7 +53,7 @@ class MessangerController {
             });
     };
 
-    static GetMessages = async (id, chat, onSuccess = () => {}) => {
+    static GetMessages = async (id, chat, setHasMoreState = () => {}, onSuccess = () => {}) => {
         if (!chat.messages || chat.messages.length < 1) {
             return false;
         };
@@ -66,6 +66,7 @@ class MessangerController {
             .then(response => {
                 if (response && response.data) {
                     onSuccess(response.data);
+                    setHasMoreState(response.data ? response.data.messages.length > 0 : false);
                 };
             })
             .catch(error => {

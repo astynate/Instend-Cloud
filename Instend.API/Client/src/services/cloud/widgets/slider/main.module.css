@@ -1,0 +1,48 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.slider {
+  position: relative;
+  width: 100%;
+}
+  
+.scrollArea {
+  width: 100%;
+  display: flex;
+  overflow-x: scroll;
+  scroll-behavior: smooth;
+}
+
+.scrollArea::-webkit-scrollbar {
+  display: none;
+}
+
+.wrapper {
+  flex: 0 0 auto;
+  margin-right: 16px;
+  max-width: 200px;
+  background: #f0f0f0;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.controls {
+  width: fit-content;
+  display: flex;
+  grid-gap: 10px;
+  justify-content: space-between;
+}
+
+.button {
+  height: 45px;
+  width: 45px;
+  background: var(--main-accent-color);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+}  

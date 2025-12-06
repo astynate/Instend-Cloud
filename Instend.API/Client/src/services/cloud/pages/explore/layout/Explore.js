@@ -1,17 +1,26 @@
 import React, { useEffect } from 'react';
-import { ConvertBytesToMb } from '../../../../../handlers/StorageSpaceHandler';
 import { observer } from 'mobx-react-lite';
 import styles from './main.module.css';
 import Header from '../../../widgets/header/Header';
 import Search from '../../../widgets/search/Search';
-import SubContentWrapper from '../../../features/wrappers/sub-content-wrapper/SubContentWrapper';
 import ExploreState from '../../../../../state/entities/ExploreState';
 import AccountState from '../../../../../state/entities/AccountState';
 import User from '../../../components/user/User';
 import SearchField from '../../../ui-kit/fields/search-field/SearchField';
 import SearchHandler from '../../../../../handlers/SearchHandler';
+import ContentWrapper from '../../../features/wrappers/content-wrapper/ContentWrapper';
+import Slider from '../../../widgets/slider/Silder';
+import Collection from '../../../components/collection/Collection';
+import File from '../../../components/file/File';
+import FilesController from '../../../api/FilesController';
+import CollectionsController from '../../../api/CollectionsController';
 
 const Explore = observer(({isMobile = false, setPanelState = () => {}}) => {
+  const { files } = ExploreState;
+  const { collections } = ExploreState;
+  const { accounts } = ExploreState;
+  const { friends } = ExploreState;
+
   useEffect(() => {
     if (setPanelState) {
       setPanelState(false);
@@ -21,39 +30,57 @@ const Explore = observer(({isMobile = false, setPanelState = () => {}}) => {
   const isAccountCorrect = (account) => {
     return !account || !account.id || account.id !== AccountState.account.id;
   };
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      if (collections.length === 0) {
+        await CollectionsController.GetLastCollections(10, 0, ExploreState.setCollections);
+      };
+
+      if (files.length === 0) {
+        await FilesController.GetLastFilesWithType(10, 0, undefined, ExploreState.setFiles);
+      };
+    };
+
+    fetchData();
+  }, [files, collections]);
 
   return (
     <div className={styles.explore}>
       {!isMobile && <Header>
-        <Search isMovable={true} />
+        <Search title="Explore" isMovable={true} />
       </Header>}
       {isMobile && <div className={styles.mobileSearch}>
         <SearchField placeholder='Search in Instend' callback={SearchHandler.SearchAll} />
       </div>}
-      {ExploreState.accounts.filter(x => isAccountCorrect(x)).length > 0 && <SubContentWrapper>
-        <div className={styles.itemsWrapper}>
-          <div className={styles.items}>
-            {ExploreState.accounts.map(account => {
+      <ContentWrapper>
+        <Slider title='People'>
+          {accounts.filter(x => isAccountCorrect(x)).length > 0 &&
+              accounts.map(account => {
                 if (isAccountCorrect(account) === false) {
                   return null;  
                 };
 
-                return (
-                  <User
-                      key={account.id}
-                      id={account.id}
-                      avatar={account.avatar}
-                      nickname={account.nickname}
-                      name={`${account.name} ${account.surname}`}
-                      coins={account.balance}
-                      friends={account.friendCount}
-                      space={ConvertBytesToMb(account.storageSpace)}
-                  />
-                );
+                return <User key={account.id} user={account} />;
+              }
+            )}
+        </Slider>
+        <br />
+        <Slider title='Collections'>
+          {collections
+            .filter(collection => collection.typeId !== 'System')
+            .map(collection => {
+                return <Collection key={collection.id} collection={collection} />
             })}
-          </div>
-        </div>
-      </SubContentWrapper>}
+        </Slider>
+        <br />
+        <Slider title='Files'>
+            {files
+              .map(file => {
+                  return <File key={file.id} file={file} />;
+              })}
+        </Slider>
+      </ContentWrapper>
     </div>
   );
 });

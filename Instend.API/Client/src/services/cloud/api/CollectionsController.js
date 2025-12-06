@@ -18,6 +18,19 @@ class CollectionsController {
             });
     }
     
+    static GetLastCollections = async (skip, take, onSuccess) => {    
+        await instance
+            .get(`/api/collections?skip=${skip}&take=${take}`)
+            .then(response => {
+                if (response && response.data) {
+                    onSuccess(response.data);
+                };
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+
     static CreateCollection = async (name, collectionId) => {
         let form = new FormData();
         let queueId = StorageState.CreateLoadingCollection(name, collectionId);
@@ -61,7 +74,7 @@ class CollectionsController {
             .catch((error) => {
                 ApplicationState.AddErrorInQueueByError('Attention!', error);
             });
-    }
+    };
 
     static DownloadCollection = async (id) => {
         await instance({

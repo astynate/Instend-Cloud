@@ -1,14 +1,17 @@
 .navigation-buttons {
+    height: auto;
     display: flex;
     flex-direction: column;
-    grid-gap: 5px;
+    grid-gap: 10px;
+    padding-top: 15px;
+    padding-bottom: 15px;
 }
 
 .navigation-button {
     width: auto;
     height: auto;
-    padding: 15px 16px;
-    margin: 0px 9px;
+    padding: 15px 26px;
+    /* margin: 0px 9px; */
     display: flex;
     align-items: center;
     grid-gap: 17px;
@@ -20,6 +23,10 @@
     font-size: 16px;
     text-decoration: none;
     color: var(--main-font-color);
+}
+
+.navigation-button[id="active"] {
+    background: var(--main-accent-color);
 }
 
 @media (hover: hover) {

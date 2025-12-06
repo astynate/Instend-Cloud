@@ -24,7 +24,7 @@
     transition: 0.15s ease;
     position: relative;
     overflow: hidden;
-    border-radius: 5px;
+    border-radius: 15px;
 }
 
 .content[id="selected"] {
@@ -103,13 +103,14 @@
 }
 
 .file {
-    height: 100%;
-    width: 75%;
-    background: #f5f5f5;
-    font-weight: 600;
+    height: 90%;
+    width: 90%;
+    background: var(--main-accent-color);
+    font-weight: 700;
     text-transform: uppercase;
     color: var(--main-blue-color);
-    border-radius: 5px;
+    border-radius: 15px;
+    font-size: 18px;
     display: flex;
     align-items: center;
     justify-content: center;

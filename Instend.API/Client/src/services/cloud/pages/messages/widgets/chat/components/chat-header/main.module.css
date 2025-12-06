@@ -7,7 +7,7 @@
     top: 0;
     left: 0;
     border-bottom: 1px solid var(--main-border-color);
-    background: var(--background-accent-color);
+    background: var(--main-background-color);
     backdrop-filter: var(--main-blur-effect);
     display: flex;
     flex-shrink: 0;

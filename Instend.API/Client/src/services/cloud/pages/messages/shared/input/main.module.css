@@ -2,9 +2,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--background-accent-color);
+    background: var(--main-background-color);
     padding-left: 3px;
+    padding-right: 10px;
     transition: 0.25s ease;
+    border-top: 1px solid var(--main-border-color);
 }
 
 .inputWrapper {

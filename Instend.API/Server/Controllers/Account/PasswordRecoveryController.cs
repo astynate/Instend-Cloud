@@ -1,6 +1,5 @@
 ﻿using Instend.Core.Dependencies.Repositories.Account;
 using Instend.Core.Dependencies.Services.Internal.Services;
-using Instend.Core.Models.Account;
 using Instend.Core.Models.Email;
 using Instend.Dependencies.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Instend.Server.Controllers.Account
 {
     [ApiController]
-    [Route("/password-recovery")]
+    [Route("api/password-recovery")]
     public class PasswordRecoveryController : ControllerBase
     {
         private readonly IEmailService _emailService;

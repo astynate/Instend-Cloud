@@ -1,17 +1,29 @@
 .wrapper {
-    background: var(--item-accent-color);
-    border-radius: 13px;
+    background: var(--pop-up-accent-color);
+    color: var(--main-font-color);
+    border-radius: 10px;
     cursor: pointer;
     width: fit-content;
     height: fit-content;
     border: 1px solid transparent;
     transition: 0.15s ease;
     user-select: none;
+    font-weight: 600;
+}
+
+.wrapper span {
+    font-size: 16px;
+    font-family: 'Open Sans', sans-serif;
+    opacity: 0.7;
 }
 
 .wrapper[accent="true"] {
-    background: var(--main-blue-color);
-    color: white;
+    background: var(--button-active-background);
+    color: var(--button-active-text-color);
+}
+
+.wrapper[accent="true"] span {
+    opacity: 1;
 }
 
 .wrapper[popup="true"] {

@@ -10,20 +10,20 @@ const ProfileDescriptionButtons = ({account}) => {
         <div className={styles.buttons}>
             {account.id === AccountState.account.id ?
                 <Link to={'/settings/profile'}>
-                    <CircleButtonWrapper isFullSize={true} widthPaddings={20} heightPaddings={7}>
+                    <CircleButtonWrapper isFullSize={true}>
                         <span className={styles.buttonText}>Edit profile</span>
                     </CircleButtonWrapper>
                 </Link>
             : 
                 <div style={{display: 'flex', gridGap: '10px'}}>
                     <div onClick={() => FollowersController.Follow(account.id)}>
-                        <CircleButtonWrapper isFullSize={true} isAccent={!AccountState.IsAccountInTheListOfFollowingAcounts(account.id)} widthPaddings={20} heightPaddings={7}>
-                            <span className={styles.buttonText}>{!AccountState.IsAccountInTheListOfFollowingAcounts(account.id) ? 'Follow' : 'Unfollow'}</span>
+                        <CircleButtonWrapper isFullSize={true} isAccent={!AccountState.IsAccountInTheListOfFollowingAcounts(account.id)}>
+                            <span>{!AccountState.IsAccountInTheListOfFollowingAcounts(account.id) ? 'Follow' : 'Unfollow'}</span>
                         </CircleButtonWrapper>
                     </div>
                     <Link to={'/settings/profile'}>
-                        <CircleButtonWrapper isFullSize={true} widthPaddings={20} heightPaddings={7}>
-                            <span className={styles.buttonText}>Message</span>
+                        <CircleButtonWrapper isFullSize={true}>
+                            <span>Message</span>
                         </CircleButtonWrapper>
                     </Link>
                 </div>

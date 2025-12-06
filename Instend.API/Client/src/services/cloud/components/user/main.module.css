@@ -1,14 +1,12 @@
 .user {
     height: auto;
     width: 100%;
-    border: 1px solid var(--main-border-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-direction: column;
     border-radius: 7px;
     grid-gap: 5px;
-    padding-top: 30px;
     overflow: hidden;
     cursor: pointer;
     user-select: none;
@@ -22,8 +20,8 @@
 }
 
 .avatar {
-    height: 100px;
-    width: 100px;
+    height: 125px;
+    width: 125px;
     border-radius: 100%;
     background: var(--main-accent-color);
     flex-shrink: 0;

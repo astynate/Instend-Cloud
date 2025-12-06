@@ -25,32 +25,7 @@ const EnterEmail = () => {
         };
     }, [data, email, buttonState, isValidEmail]);
 
-    const SendRecoveryRequest = async () => {
-        const controller = new AbortController();
-        const { signal } = controller;
-    
-        setButtonState('loading');
-    
-        const timeoutId = setTimeout(() => {
-            controller.abort();
-        }, 5000);
-    
-        const response = await fetch(`/password-recovery?email=${email}`, { signal, method: 'POST' });
-        const confirmationLink = await response.text();
-    
-        if (response.status === 200) {
-            navigate(`/account/password/recovery/${confirmationLink}`);
-            setButtonState('valid');
-        } else {
-            setErrorState(true);
-            setButtonState('invalid');
-        };
-    
-        clearTimeout(timeoutId);
-    };    
-
     return (
-
         <>
             { isError ? <Error message="Number of requests exceeded." state={isError} setState={setErrorState} /> : null }
             <h1>Password <span className="selected-text">Recovery</span></h1>

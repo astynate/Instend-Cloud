@@ -8,6 +8,7 @@ import MainProfilePage from '../pages/main/MainProfilePage';
 import PhotosProfilePage from '../pages/photos/PhotosProfilePage';
 import Header from '../../../widgets/header/Header';
 import AccountController from '../../../../../api/AccountController';
+import SubContentWrapper from '../../../features/wrappers/sub-content-wrapper/SubContentWrapper';
 
 const Profile = observer((props) => {
   const [account, setAccount] = useState(undefined);
@@ -45,19 +46,19 @@ const Profile = observer((props) => {
 
   return (
     <div className={styles.content}>
-      <Header isBackgroundLess={true} />
-      <div className={styles.wrapper}>
+      {/* <Header isBackgroundLess={true} /> */}
+      <SubContentWrapper>
         <ProfileDescription
           account={account}
           isMobile={props.isMobile}
         />
-        <MainProfilePage
+        {/* <MainProfilePage
           account={account}
           isHasMore={isHasMore}
           publications={publications}
           setHasMoreState={setHasMoreState}
           setPublications={setPublications}
-        />
+        /> */}
         {/* <MenuWithUnderline 
           margin={20}
           items={[
@@ -83,7 +84,7 @@ const Profile = observer((props) => {
             },
           ]}
         /> */}
-      </div> 
+      </SubContentWrapper> 
     </div>
   );
 });

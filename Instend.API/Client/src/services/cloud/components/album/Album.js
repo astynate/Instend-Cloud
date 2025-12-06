@@ -18,16 +18,18 @@ const Album = ({album = {}}) => {
     };
 
     return (
-        <Link to={`/gallery/albums/${album.id}`} className={styles.album} data={album.id}>
-            <img 
-                src={StorageController.getFullFileURL(album.cover)} 
-                className={styles.cover}
-                draggable="false"
-            />
-            <StorageItemDescription
-                name={album.name} 
-                time={album.creationTime}
-            />
+        <Link to={`/album/${album.id}`} className={styles.album} data={album.id}>
+            <div className={styles.albumWrapper}>
+                <img 
+                    src={StorageController.getFullFileURL(album.cover)} 
+                    className={styles.cover}
+                    draggable="false"
+                />
+                <StorageItemDescription
+                    name={album.name} 
+                    time={album.creationTime}
+                />
+            </div>
         </Link>
     );
 };

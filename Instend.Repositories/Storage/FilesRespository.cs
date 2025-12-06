@@ -121,11 +121,15 @@ namespace Instend.Repositories.Storage
 
         public async Task<Core.Models.Storage.File.File[]> GetLastFilesWithType(Guid accountId, int from, int count, string[] types)
         {
-            var result = await _context.FilesAccounts
+            var query = _context.FilesAccounts
                 .AsNoTracking()
-                .Where(x => x.AccountId == accountId)
                 .Include(x => x.File)
-                .Where(x => types.Contains(x.File.Type))
+                .Where(x => x.AccountId == accountId);
+
+            if (types != null && types.Length > 0)
+                query = query.Where(x => types.Contains(x.File.Type));
+
+            var result = await query
                 .OrderByDescending(x => x.File.CreationTime)
                 .Skip(from)
                 .Take(count)

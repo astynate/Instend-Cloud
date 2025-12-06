@@ -17,7 +17,7 @@ using Instend.Repositories.Publications;
 namespace Instend_Version_2._0._0.Server.Controllers.Account
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AccountsController : ControllerBase
     {
         private readonly IConfirmationsRepository _confirmationRepository;

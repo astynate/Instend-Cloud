@@ -1,13 +1,27 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Route, Routes } from 'react-router-dom';
 import styles from './main.module.css';
 import Header from '../../../widgets/header/Header';
 import Search from '../../../widgets/search/Search';
-import News from '../pages/news/News';
-import PublicationPage from '../../publication/PublicationPage';
+import StorageState, { AdaptId } from '../../../../../state/entities/StorageState';
+import ContentWrapper from '../../../features/wrappers/content-wrapper/ContentWrapper';
+import { useParams } from 'react-router-dom';
+import CollectionsArrayTemplate from '../../../templates/collections-array-template/CollectionsArrayTemplate';
+import FetchCollectionData from '../../../singletons/fetch-collection-data/FetchCollectionData';
+import ItemsWrapper from '../../../features/wrappers/items-wrapper/ItemsWrapper';
+import FilesArrayTemplate from '../../../templates/files-array-template/FilesArrayTemplate';
 
 const Home = observer((props) => {
+  const params = useParams();
+  const { files, collections } = StorageState;
+  const [adaptedId, setAdaptedId] = useState(AdaptId(params.id));
+
+  console.log(collections);
+
+  useState(() => {
+    setAdaptedId(AdaptId(params.id))
+  }, [params.id]);
+
   useEffect(() => {
     if (props.setPanelState) {
       props.setPanelState(false);
@@ -17,18 +31,15 @@ const Home = observer((props) => {
   return (
     <div className={styles.home}>
       <Header>
-        <Search />
+        <Search title="Home" />
       </Header>
-      {/* <SubMenu 
-        items={[
-          {'name': 'News', 'route': '/'},
-          {'name': 'People', 'route': '/people'}
-        ]}
-      /> */}
-      <Routes>
-        <Route path='' element={<News />} />
-        <Route path='/publication' element={<PublicationPage />} />
-      </Routes>
+      <ContentWrapper>
+        <ItemsWrapper>
+          <CollectionsArrayTemplate collections={collections} />
+          <FilesArrayTemplate files={files} />
+          <FetchCollectionData id={params.id} />
+        </ItemsWrapper>
+      </ContentWrapper>
     </div>
   );
 });

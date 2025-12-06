@@ -35,7 +35,7 @@ const PhotosList = ({ isHasMore = true, callback = () => {}, photos = [], contex
                                         setPreviewOpenState(true);
                                     }}
                                 >
-                                    <img src={StorageController.getFullFileURL(photo.path)} draggable="false" />
+                                    <img draggable={false} src={StorageController.getFullFileURL(photo.path)} />
                                 </div>
                             </ContextMenu>
                         )

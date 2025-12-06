@@ -1,11 +1,12 @@
 .menuWrapper {
-    position: fixed;
-    top: 57px;
-    left: 50%;
-    transform: translateX(-50%);
+    margin-left: auto;
+    margin-right: auto;
     border-radius: 13px;
     padding: 4px;
     z-index: 9999;
+    background: var(--main-accent-color);
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .menu {

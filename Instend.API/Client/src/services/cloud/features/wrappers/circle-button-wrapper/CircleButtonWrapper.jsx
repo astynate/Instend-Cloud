@@ -1,6 +1,6 @@
 import styles from './main.module.css';
 
-const CircleButtonWrapper = ({children, widthPaddings = 16, heightPaddings = 7, isAccent = false, isPopUpButton = false, isFullSize = false}) => {
+const CircleButtonWrapper = ({children, widthPaddings = 30, heightPaddings = 10, isAccent = false, isPopUpButton = false, isFullSize = false}) => {
     return (
         <button 
             className={styles.wrapper} 

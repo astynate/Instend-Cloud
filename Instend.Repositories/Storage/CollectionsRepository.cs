@@ -154,5 +154,20 @@ namespace Instend.Repositories.Storage
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<Collection[]> GetLastCollections(Guid accountId, int from, int count)
+        {
+            var result = await _context.CollectionsAccounts
+                .AsNoTracking()
+                .Include(x => x.Collection)
+                .Where(x => x.AccountId == accountId && x.Collection != null)
+                .OrderByDescending(x => x.Collection.CreationTime)
+                .Skip(from)
+                .Take(count)
+                .Select(x => x.Collection)
+                .ToArrayAsync();
+
+            return result;
+        }
     }
 }

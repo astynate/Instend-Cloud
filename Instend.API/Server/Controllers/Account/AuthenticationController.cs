@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Instend_Version_2._0._0.Server.Controllers.Account
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AuthenticationController : ControllerBase
     {
         private readonly ITokenService _tokenService;

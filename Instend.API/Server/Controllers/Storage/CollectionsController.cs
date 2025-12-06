@@ -88,6 +88,23 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
 
         [HttpGet]
         [Authorize]
+        [Route("/api/collections/last")]
+        public async Task<IActionResult> GetLastCollections(int skip, int take)
+        {
+            var userId = _requestHandler
+                .GetUserId(Request.Headers["Authorization"]);
+
+            if (userId.IsFailure)
+                return BadRequest(userId.Error);
+
+            var collections = await _collectionsRepository
+                .GetLastCollections(Guid.Parse(userId.Value), skip, take);
+
+            return Ok(collections);
+        }
+
+        [HttpGet]
+        [Authorize]
         [Route("/api/[controller]/download")]
         public async Task<IActionResult> Download(Guid? id)
         {

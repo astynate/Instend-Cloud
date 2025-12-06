@@ -47,7 +47,6 @@
     padding: 0 10px;
     overflow-y: scroll;
     overflow-x: hidden;
-    background: var(--sub-background-color);
 }
 
 .content[id="mobile"] {

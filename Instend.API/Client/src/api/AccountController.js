@@ -3,7 +3,7 @@ import { instance } from "../state/application/Interceptors";
 class AccountController {
     static GetAccountData = async (onSuccessCallback = () => {}, onErrorCallback = () => {}, id = '') => {
         await instance
-            .get(`/accounts?id=${id}`)
+            .get(`/api/accounts?id=${id}`)
             .then((response) => {
                 if (response && response.data) {
                     onSuccessCallback(response.data);
@@ -34,7 +34,7 @@ class AccountController {
     static GetAccountById = async (id) => {
         let friend = null;
 
-        instance.get(`/accounts/id/${id}`)
+        instance.get(`/api/accounts/id/${id}`)
             .then(response => {
                 if (response.data) {
                     friend = response.data;
@@ -66,7 +66,7 @@ class AccountController {
         }
 
         await instance
-            .put('/accounts', form)
+            .put('/api/accounts', form)
             .then(response => {
                 if (response && response.status === 200) {
                     onSuccess();
@@ -98,7 +98,7 @@ class AccountController {
             return;
 
         await instance
-            .get(`accounts/all/${prefix}`)
+            .get(`/api/accounts/all/${prefix}`)
             .then(response => {
                 if (response && response.data) {
                     setState(response.data);
@@ -107,6 +107,36 @@ class AccountController {
             .catch(error => {
                 console.error(error);
             });
+    };
+
+    static SendRegistrationRequest = async (setValidationState, setErrorState, navigate, user = {}) => {
+        try {
+            setValidationState('loading');
+
+            const response = await fetch("/api/accounts", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(user)
+            });
+
+            if (response.status === 200) {
+                const responseData = await response.text();
+
+                navigate(`/account/email/confirmation/${responseData}`.replaceAll('"', ''), { replace: true });
+                setValidationState('valid');
+            } else {
+                setErrorState(true);
+                setValidationState('invalid');
+            };
+
+        } catch (exception) {
+            console.error(exception);
+
+            setErrorState(true);
+            setValidationState('invalid');
+        };
     };
 };
 

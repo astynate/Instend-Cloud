@@ -24,16 +24,7 @@ const Songs = observer(({isMobile = false}) => {
 
     return (
         <SubContentWrapper>
-            {isMobile === false && <SongsHeader 
-                title={song ? song.name : null}
-                song={song ? ConvertFullDate(song.creationTime) : null}
-                callback={() => {
-                    SetSongQueue(songs);
-                    ChangePlayingState();
-                }}
-            />}
             <AddInSongs />
-            {isMobile === false && <SongsInformationHeader />}
             <div className={styles.songs}>
                 {songs.map((song, index) => {
                     return (

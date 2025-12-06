@@ -24,7 +24,7 @@ const Collection = ({collection = {}, onContextMenu = () => {}, callback = () =>
     
     return (
       <StorageItemWrapper>
-        <Link to={isHasLink ? `/cloud/${collection.id}` : ''}>
+        <Link to={isHasLink ? `/collection/${collection.id}` : ''}>
             <div className={styles.wrapper} onContextMenu={onContextMenu}>
               <div className={styles.content} onClick={callback}>
                 {Array.from({ length: 4 }).map((_, index) => {

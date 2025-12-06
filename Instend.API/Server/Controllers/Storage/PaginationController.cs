@@ -34,18 +34,18 @@ namespace Instend_Version_2._0._0.Server.Controllers.Storage
         [HttpGet]
         [Authorize]
         [Route("/api/pagination")]
-        public async Task<IActionResult> GetPhotos(int skip, int take, string type)
+        public async Task<IActionResult> GetFilesWithType(int skip, int take, string? type)
         {
             var userId = _requestHandler.GetUserId(Request.Headers["Authorization"]);
 
             if (userId.IsFailure)
                 return BadRequest(userId.Error);
 
-            if (!Types.ContainsKey(type)) 
-                return BadRequest("Invalid type");
+            //if (!Types.ContainsKey(type)) 
+            //    return BadRequest("Invalid type");
 
             var result = await _fileRespository
-                .GetLastFilesWithType(Guid.Parse(userId.Value), skip, take, Types[type]);
+                .GetLastFilesWithType(Guid.Parse(userId.Value), skip, take, type == null ? [] : Types[type]);
 
             return Ok(_serializationHelper.SerializeWithCamelCase(result));
         }

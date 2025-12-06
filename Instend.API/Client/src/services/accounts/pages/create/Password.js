@@ -6,6 +6,7 @@ import InputPassword from "../../shared/password/InputPassword";
 import Button from "../../shared/button/Button";
 import Error from "../../shared/error/Error";
 import ValidationHandler from "../../../../handlers/ValidationHandler";
+import AccountController from "../../../../api/AccountController";
 
 const ValidateUserData = (user, password, confirm) => {
     if (ValidationHandler.ValidateEmail(user.email) === false) {
@@ -29,35 +30,12 @@ const Password = () => {
     const [isError, setErrorState] = useState(false);
     const { t } = useTranslation();
 
-    const SendRegistrationRequest = async () => {
-        try {
-            setValidationState('loading');
-
-            const response = await fetch("/accounts", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(user)
-            })
-
-            if (response.status === 200) {
-                const responseData = await response.text();
-
-                navigate(`/account/email/confirmation/${responseData}`.replaceAll('"', ''), { replace: true });
-                setValidationState('valid');
-            } else {
-                setErrorState(true);
-                setValidationState('invalid');
-            }
-
-        } catch (exception) {
-            console.error(exception);
-
-            setErrorState(true);
-            setValidationState('invalid');
-        }
-    }
+    AccountController.SendRegistrationRequest(
+        setValidationState, 
+        setErrorState,
+        navigate, 
+        user
+    );
 
     useEffect(() => {
         user.password = password;

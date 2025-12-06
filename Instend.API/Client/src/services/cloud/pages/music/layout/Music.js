@@ -7,6 +7,8 @@ import SubMenu from '../../../features/navigation/sub-menu/SubMenu';
 import Songs from '../pages/songs/Songs';
 import Playlists from '../pages/playlists/Playlists';
 import Playlist from '../pages/playlist/Playlist';
+import SubContentWrapper from '../../../features/wrappers/sub-content-wrapper/SubContentWrapper';
+import MainContentWrapper from '../../../features/wrappers/main-content-wrapper/MainContentWrapper';
 
 const Music = ({setPanelState, isMobile}) => {
   const scroll = useRef();
@@ -20,10 +22,8 @@ const Music = ({setPanelState, isMobile}) => {
     <div className={styles.music} ref={scroll}>
       {isMobile === false && 
         <Header>
-          <Search />
-        </Header>}
-      <div className={styles.header}>
-        <SubMenu 
+          <Search title="Music" />
+          <SubMenu 
           items={[
             {
               'name': 'Songs', 
@@ -35,8 +35,8 @@ const Music = ({setPanelState, isMobile}) => {
             }
           ]}
         />
-      </div>
-      <div className={styles.content}>
+        </Header>}
+      <SubContentWrapper>
         <Routes>
           <Route 
             path=''
@@ -51,7 +51,7 @@ const Music = ({setPanelState, isMobile}) => {
             element={<Playlist isMobile={isMobile} />} 
           />
         </Routes>
-      </div>
+      </SubContentWrapper>
     </div>
   );
 };

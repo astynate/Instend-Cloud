@@ -3,7 +3,7 @@ import styles from './main.module.css'
 
 const GalleryHeader = ({scale}) => {
     return (
-        <div className={styles.header}>
+        <>
           <SubMenu
             items={[
               {
@@ -38,7 +38,7 @@ const GalleryHeader = ({scale}) => {
               />
             </div>}
           </div> */}
-        </div>
+        </>
     );
 };
 

@@ -21,7 +21,7 @@ const Header = observer((props) => {
         const handleClick = (event) => {
             if (wrapper.current && !wrapper.current.contains(event.target)) {
                 setCurrect(-1);
-            }
+            };
         };
       
         window.addEventListener('click', handleClick);
@@ -34,7 +34,7 @@ const Header = observer((props) => {
     return (
         <div className={styles.header} ref={wrapper} background={props.isBackgroundLess ? null : "visible"}>
             {props.children}
-            <div className={styles.buttons}>
+            {/* <div className={styles.buttons}>
                 <div className={styles.button}>
                     <img 
                         src={current === 0 ? musicActive : music} 
@@ -68,7 +68,7 @@ const Header = observer((props) => {
                             <ProfilePopUp forwardRef={profileRef} />
                         </div>}
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 });

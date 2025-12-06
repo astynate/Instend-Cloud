@@ -21,7 +21,7 @@ const Registration = () => {
         dateOfBirth: '',
         email: '',
         password: ''
-    }
+    };
 
     return (
         <UserContext.Provider value={user}>
@@ -45,6 +45,6 @@ const Registration = () => {
             </div>
         </UserContext.Provider>
     );
-}
+};
 
 export { Registration, UserContext };

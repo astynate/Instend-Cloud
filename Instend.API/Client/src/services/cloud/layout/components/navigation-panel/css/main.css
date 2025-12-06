@@ -1,14 +1,18 @@
 .left-panel {
     height: 100%;
-    width: 260px;
+    width: auto;
     user-select: none;
     display: flex;
     flex-direction: column;
     position: relative;
+    justify-content: center;
+    align-items: center;
+    padding-top: 7px;
+    padding-bottom: 7px;
 }
 
 .left-panel[id="rolled-up"] {
-    width: 72px;
+    width: auto;
     display: flex;
     align-items: center;
 }
@@ -18,7 +22,7 @@
 }
 
 .left-panel[id="rolled-up"] {
-    width: 72px;
+    width: auto;
     display: flex;
     align-items: center;
 }
@@ -43,8 +47,8 @@
 }
 
 .left-panel-logo img {
-    height: 43px;
-    width: 43px;
+    height: 42px;
+    width: 42px;
     object-fit: contain;
     margin-top: 15px;
     margin-bottom: 12px;

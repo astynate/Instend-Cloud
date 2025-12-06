@@ -11,13 +11,10 @@
 }
 
 .contentWrapper {
-    --margins: 3px;
     height: calc(100vh - var(--margins) * 2);
     width: calc(100vw - var(--margins) * 2);
     background: var(--main-accent-color);
-    border-radius: 5px;
     overflow: hidden;
-    margin: var(--margins);
     display: grid;
     grid-template-rows: 60px 1fr 60px;
 }

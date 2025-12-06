@@ -2,9 +2,9 @@
     height: 100%;
     width: 100%;
     background: var(--sub-accent-background);
-    border-radius: 5px;
+    border-radius: 35px;
     cursor: pointer;
-    padding: 15px 20px;
+    padding: 26px 26px 20px 26px;
     transition: 0.15s ease;
 }
 

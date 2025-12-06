@@ -2,6 +2,7 @@
     height: calc(100vh - var(--disconnected-height));
     overflow-y: scroll;
     overflow-x: hidden;
+    padding-bottom: 100px;
 }
 
 .header {
@@ -26,29 +27,14 @@
     position: relative;
 }
 
-.itemsWrapper {
-    margin-top: 30px;
-    padding-bottom: 30px;
-}
-
-.itemsWrapper h1 {
-    font-size: 24px;
-}
-
-.items {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    margin-top: 10px;
-    grid-gap: 15px;
-}
-
-.items::-webkit-scrollbar {
-    display: none;
-}
-
 .mobileSearch {
     margin-left: 10px;
     margin-right: 10px;
+}
+
+.doubleRows {
+    display: flex;
+    flex-direction: column;
 }
 
 @media (max-width: 700px) {

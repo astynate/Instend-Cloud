@@ -51,16 +51,16 @@
 }
 
 .dark-mode {
-    --main-background-color: #000;
+    --main-background-color: #0C0F11;
     --main-border-color: rgba(255, 255, 255, 0.15);
-    --main-accent-color: #1e2021; /* 212125 2c2c2c 1e2021 */
+    --main-accent-color: #1e2021;
     --main-font-color: #ffffff;
     --main-header-font-color: #161616;
     --main-header-background-color: #000000ce;
     --main-blue-color: #2DA7FF;
     --main-red-color: rgb(255, 44, 44);
     --main-accent-font-color: white;
-    --main-paragraph-color: #cdcdcd; /* 797979 cdcdcd */
+    --main-paragraph-color: #ffffff80;
     --main-button-background-color: rgb(255, 255, 255);
     --main-filter: invert(100%);
     --main-button-font-color: rgb(0, 0, 0);
@@ -68,13 +68,13 @@
     --main-header-font-color: #555;
     --sub-background-color: #000000;
     --sub-accent-color: rgb(255, 255, 255);
-    --sub-accent-background: #0e0f0f;
+    --sub-accent-background: #ffffff07;
     --sub-filter: invert(0%);
     --button-disabled-backgound: #161616;
-    --button-active-backgound: #ccc;
+    --button-active-background: #ffffff;
     --button-loading-backgound: #000000;
     --button-disabled-text-color: #ffffff;
-    --button-active-text-color: #ffffff;
+    --button-active-text-color: #000000;
     --button-loading-text-color: #ffffff;
     --button-loader-color: rgb(255, 255, 255);
     --main-blur-effect: blur(10px) saturate(50%);

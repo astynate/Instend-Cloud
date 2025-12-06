@@ -1,4 +1,3 @@
-import Cloud from '../services/cloud/pages/cloud/layout/Cloud';
 import Explore from '../services/cloud/pages/explore/layout/Explore';
 import Gallery from '../services/cloud/pages/gallery/layout/Gallery';
 import Home from '../services/cloud/pages/home/layout/Home';
@@ -7,7 +6,8 @@ import Messages from '../services/cloud/pages/messages/layout/Messages';
 import Music from '../services/cloud/pages/music/layout/Music';
 import Profile from '../services/cloud/pages/profile/layout/Profile';
 import Settings from '../services/settings/layout/Settings';
-import Playlist from '../services/cloud/pages/music/pages/playlist/Playlist';
+import Album from '../services/cloud/pages/gallery/pages/album/Album';
+import CollectionPage from '../services/cloud/pages/collection/layout/CollectionPage';
 
 const PrivateRoutes = [
     {
@@ -23,12 +23,10 @@ const PrivateRoutes = [
         name: "Publication"
     },
     {
-        path: '/cloud/*',
-        element: <Cloud />,
-        name: "Cloud",
-        search: {
-            
-        }
+        path: '/collection/*',
+        element: <CollectionPage />,
+        name: "Collection",
+        search: {}
     },
     {
         path: '/explore/*',
@@ -61,6 +59,11 @@ const PrivateRoutes = [
         path: '/profile/:id?',
         element: <Profile />,
         name: "Profile"
+    },
+    {
+        path: '/album/:id?',
+        element: <Album />,
+        name: "Album"
     },
     {
         path: '/settings/*',

@@ -1,13 +1,11 @@
 .contentWrapper {
+    height: 100svh;
     width: 100%;
     display: flex;
     justify-content: center;
     margin-left: auto;
-}
-
-.content {
-    width: 75%;
-    margin-right: 8%;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .albumPlaceholder, .noImages {
@@ -19,11 +17,36 @@
 }
 
 .date {
-    color: var(--main-paragraph-color);
+    color: var(--main-font-color);
+    opacity: 0.25;
+    margin-bottom: 15px;
 }
 
 .header {
-    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 70px;
+    margin-bottom: 20px;
+}
+
+.cover {
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    width: 300px;
+    border-radius: 20px;
+}
+
+.header h1 {
+    font-size: 48px;
+    opacity: 0.5;
+}
+
+.buttons {
+    margin-top: 10px;
+    display: flex;
+    grid-gap: 10px;
 }
 
 @media (max-width: 700px) {

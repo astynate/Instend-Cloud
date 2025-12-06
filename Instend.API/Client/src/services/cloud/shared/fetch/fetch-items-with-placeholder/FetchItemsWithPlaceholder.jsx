@@ -24,7 +24,7 @@ const FetchItemsWithPlaceholder = ({ item = <div></div>, isHasMore = true, callb
                 };
             },
             { 
-                threshold: 1.0 
+                threshold: 0.01
             }
         );
 

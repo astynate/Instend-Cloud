@@ -11,6 +11,7 @@ import Line from '../../shared/line/Line';
 import Error from '../../shared/error/Error'
 import ValidationHandler from '../../../../handlers/ValidationHandler';
 import './main.css';
+import AuthentificationController from '../../../../api/AuthentificationController';
 
 const ValidateLoginForm = (email, password) => {
     return ValidationHandler.ValidateVarchar(email, 45) &&
@@ -24,57 +25,11 @@ const Login = observer(() => {
     const [isError, setErrorState] = useState(false);
 
     const { t } = useTranslation();
-
     const navigate = useNavigate();
-    const location = useLocation();
 
     useEffect(() => {
         setFormState(ValidateLoginForm(email, password) === true ? 'valid' : 'invalid');
     }, [email, password]);
-
-    const Authorize = async () => {
-        const userData = new FormData();
-
-        userData.append('username', email);
-        userData.append('password', password);
-      
-        setFormState('loading');
-      
-        const controller = new AbortController();
-        const signal = controller.signal;
-      
-        const timeoutId = setTimeout(() => {
-            controller.abort();
-            setFormState('invalid');
-        }, 10000);
-      
-        try {
-            const response = await fetch('/authentication', {
-                method: 'POST',
-                body: userData,
-                signal: signal,
-            });
-      
-            clearTimeout(timeoutId);
-        
-            if (response.status === 200) {
-                localStorage.setItem('system_access_token', await response.text());
-
-                navigate('/');
-                setFormState('valid');
-            } else if (response.status === 470) {
-                const confirmationLink = await response.text();
-                navigate('/account/email/confirmation/' + confirmationLink);
-            } else {
-                setErrorState(true);
-                setFormState('invalid');
-            }
-        } catch (error) {
-            clearTimeout(timeoutId);
-            setFormState('invalid');
-            setErrorState(true);
-        }
-    };
 
     return (
         <GoogleOAuthProvider clientId="1099397056156-quc1l3h460li634u6o8eh03feat63s7v.apps.googleusercontent.com">
@@ -84,7 +39,11 @@ const Login = observer(() => {
             <InputText placeholder={t('account.email_or_nickname')} SetValue={setEmail} autofocus={true} />
             <InputPassword placeholder={t('account.password')} SetValue={setPassword} autofocus={false} />
             <div className='margin-top-40'>
-                <Button title={t('account.login')} state={formState} onClick={() => Authorize()} />
+                <Button 
+                    title={t('account.login')} 
+                    state={formState} 
+                    onClick={() => AuthentificationController.Authorize(email, password, setFormState, setErrorState, navigate)} 
+                />
             </div>
             <Line title={t('account.or')} />
             <div className='external-links margin-top-20'>

@@ -10,7 +10,7 @@ const Song = observer(({song, isLoading, isShort, isSelect, setQueue = () => {}}
     const { IsSongIsPlaying, SetSongAsPlaying } = MusicState;
 
     if (!song) { 
-        return null; 
+        return null;
     };
 
     return (

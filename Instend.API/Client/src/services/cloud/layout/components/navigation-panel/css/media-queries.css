@@ -1,6 +1,6 @@
 @media (max-width: 1350px) {
     .left-panel {
-        width: 72px;
+        /* width: 72px; */
         display: flex;
         align-items: center;
     }

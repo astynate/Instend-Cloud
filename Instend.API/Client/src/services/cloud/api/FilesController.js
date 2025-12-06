@@ -54,7 +54,7 @@ class FilesController {
 
     static GetLastFilesWithType = async (take, skip, type, onSuccess = () => {}) => {
         await instance
-            .get(`/api/pagination?take=${take}&skip=${skip}&type=${type}`)
+            .get(`/api/pagination?take=${take}&skip=${skip}&type=${type ?? ''}`)
             .then(response => {
                 if (response && response.data) {
                     onSuccess(response.data);

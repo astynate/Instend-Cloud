@@ -4,6 +4,7 @@
     overflow-y: scroll;
     overflow-x: hidden;
     position: relative;
+    padding-bottom: 40px;
 }
 
 .headerWrapper {

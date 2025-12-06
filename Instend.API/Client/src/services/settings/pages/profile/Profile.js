@@ -17,7 +17,6 @@ import StorageController from '../../../../api/StorageController';
 const Profile = observer(({isSaving, cancel, setCancelState, setSavingState = () => {}}) => {
     const { t } = useTranslation();
     const { account } = AccountState;
-
     const [isAvatarProcessOpen, setAvatarProcessOpenState] = useState(false);
     const [isAvatarSubmitted, setAvatarSubmittedState] = useState(false);
     const [name, setName] = useState(account.name);

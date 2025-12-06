@@ -24,7 +24,6 @@ const ProfileDescription = observer(({isMobile, account}) => {
                     <div className={styles.data}>
                         <AccountFullName username={`${account.name} ${account.surname}`} />
                         <span className={styles.nickname}>{`@${account.nickname}`}</span>
-                        {/* {isMobile === false && <ProfileDescriptionButtons account={account} />} */}
                         <Data 
                             stats={[
                                 {title: 'followers', amount: account.numberOfFollowers},
@@ -32,6 +31,7 @@ const ProfileDescription = observer(({isMobile, account}) => {
                                 // {title: 'coins', amount: account.balance}
                             ]}
                         />
+                        {isMobile === false && <ProfileDescriptionButtons account={account} />}
                         {/* {isMobile === false && <div style={{display: 'flex', gridGap: '5px', flexDirection: 'column'}}>
                             <div style={{display: 'flex', gridGap: '10px'}}>
                                 <h5>{account.name} {account.surname}</h5>
