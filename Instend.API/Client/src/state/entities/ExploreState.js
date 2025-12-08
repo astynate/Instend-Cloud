@@ -15,6 +15,7 @@ class ExploreState {
     };
 
     setFriends = (friends) => {
+        console.log(friends);
         this.friends = friends ?? [];
     };
 

@@ -3,7 +3,7 @@ export const ByDate = (a, b, isAcendng) => {
   const dateB = new Date(b.creationTime);
   
   return isAcendng ? dateA - dateB : dateB - dateA;
-}
+};
 
 export const ByName = (a, b, isAcendng) => {
   if (isAcendng) {
@@ -20,4 +20,4 @@ export const ByName = (a, b, isAcendng) => {
       }
   }
   return 0;
-}
+};

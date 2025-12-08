@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { AdaptId } from '../../../../state/entities/StorageState';
 import { useParams } from 'react-router-dom';
-import { sortItems } from '../../pages/cloud/pages/main/SortingHelper';
 import PopUpField from '../../shared/popup-windows/pop-up-filed/PopUpField';
 import CollectionsController from '../../api/CollectionsController';
 import ContextMenu from '../../shared/context-menus/context-menu/ContextMenu';
@@ -31,7 +30,7 @@ const CollectionsArrayTemplate = observer(({collections, sortingType}) => {
             {collections[AdaptId(params.id)] && collections[AdaptId(params.id)].items && collections[AdaptId(params.id)].items
                 .filter(collection => collection.typeId !== 'System')
                 .slice()
-                .sort((a, b) => sortItems(a, b, sortingType))
+                // .sort((a, b) => sortItems(a, b, sortingType))
                 .map(collection => {
                     const renameCallback = () => {
                         setRenameCollectionState(true);

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AdaptId } from '../../../../state/entities/StorageState';
 import { useParams } from 'react-router-dom';
-import { sortItems } from '../../pages/cloud/pages/main/SortingHelper';
+// import { sortItems } from '../../pages/cloud/pages/main/SortingHelper';
 import PopUpField from '../../shared/popup-windows/pop-up-filed/PopUpField';
 import ContextMenu from '../../shared/context-menus/context-menu/ContextMenu';
 import { ConvertFullDate } from '../../../../handlers/DateHandler';
@@ -31,7 +31,7 @@ const FilesArrayTemplate = observer(({files, sortingType}) => {
             />
             {files[AdaptId(params.id)] && files[AdaptId(params.id)].items && files[AdaptId(params.id)].items
                 .slice()
-                .sort((a, b) => sortItems(a, b, sortingType))
+                // .sort((a, b) => sortItems(a, b, sortingType))
                 .map(file => {
                     const renameCallback = () => {
                         setRenameFileState(true);

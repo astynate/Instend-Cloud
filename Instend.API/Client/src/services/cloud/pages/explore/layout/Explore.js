@@ -14,6 +14,7 @@ import Collection from '../../../components/collection/Collection';
 import File from '../../../components/file/File';
 import FilesController from '../../../api/FilesController';
 import CollectionsController from '../../../api/CollectionsController';
+import FriendsController from '../../../api/FriendsController';
 
 const Explore = observer(({isMobile = false, setPanelState = () => {}}) => {
   const { files } = ExploreState;
@@ -33,6 +34,10 @@ const Explore = observer(({isMobile = false, setPanelState = () => {}}) => {
   
   useEffect(() => {
     const fetchData = async () => {
+      if (friends.length === 0) {
+        await FriendsController.GetFriendsById(AccountState.account.id, ExploreState.setFriends);
+      };
+      
       if (collections.length === 0) {
         await CollectionsController.GetLastCollections(10, 0, ExploreState.setCollections);
       };
@@ -57,28 +62,33 @@ const Explore = observer(({isMobile = false, setPanelState = () => {}}) => {
         <Slider title='People'>
           {accounts.filter(x => isAccountCorrect(x)).length > 0 &&
               accounts.map(account => {
-                if (isAccountCorrect(account) === false) {
-                  return null;  
-                };
-
                 return <User key={account.id} user={account} />;
               }
             )}
         </Slider>
         <br />
-        <Slider title='Collections'>
-          {collections
-            .filter(collection => collection.typeId !== 'System')
-            .map(collection => {
-                return <Collection key={collection.id} collection={collection} />
-            })}
+        <Slider title='Friends'>
+          {friends.map(account => {
+              console.log(account)
+                return <User key={account.id} user={account} />;
+              }
+            )}
         </Slider>
         <br />
-        <Slider title='Files'>
+        <Slider title='Collections' isIterated={true}>
+          <>
+            {collections
+              .filter(collection => collection.typeId !== 'System')
+              .map(collection => {
+                  return <Collection key={collection.id} collection={collection} />
+              })}
+          </>
+          <>
             {files
               .map(file => {
                   return <File key={file.id} file={file} />;
               })}
+          </>
         </Slider>
       </ContentWrapper>
     </div>
