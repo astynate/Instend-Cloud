@@ -34,6 +34,19 @@ namespace Instend.Repositories.Contexts
                 .HasForeignKey(af => af.FollowerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+
+            modelBuilder.Entity<AccountFollower>()
+                .HasOne(af => af.Account)
+                .WithMany(a => a.Followers)
+                .HasForeignKey(af => af.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<AccountFollower>()
+                .HasOne(af => af.Follower)
+                .WithMany(a => a.Following)
+                .HasForeignKey(af => af.FollowerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             base.OnModelCreating(modelBuilder);
         }
     }

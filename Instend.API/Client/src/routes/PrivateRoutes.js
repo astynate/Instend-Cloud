@@ -23,7 +23,7 @@ const PrivateRoutes = [
         name: "Publication"
     },
     {
-        path: '/collection/*',
+        path: '/collection/:id?',
         element: <CollectionPage />,
         name: "Collection",
         search: {}

@@ -28,6 +28,20 @@ namespace Instend.Server.Controllers.Account
             _friendsRepository = friendsRepository;
         }
 
+        [HttpGet]
+        [Authorize]
+        [Route("/api/[controller]/friends")]
+        public async Task<IActionResult> GetFriends(Guid id)
+        {
+            if (id == Guid.Empty)
+                return BadRequest("User not found");
+
+            var result = await _friendsRepository
+                .GetFriendsByUserId(id);
+
+            return Ok(_serialiationHelper.SerializeWithCamelCase(result));
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> ChangeFollowingState(Guid id)

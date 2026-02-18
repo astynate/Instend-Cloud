@@ -16,7 +16,7 @@ class CollectionsController {
                 onError();
                 console.error(error);
             });
-    }
+    };
     
     static GetLastCollections = async (skip, take, onSuccess) => {    
         await instance

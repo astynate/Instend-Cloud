@@ -13,6 +13,8 @@ using Instend.Core.Dependencies.Services.Internal.Services;
 using Instend.Dependencies.Services;
 using Instend.Repositories.Contexts;
 using Instend.Repositories.Publications;
+using Instend.Core.Dependencies.Services.Internal.Helpers;
+using Instend.Services.Internal.Services;
 
 namespace Instend_Version_2._0._0.Server.Controllers.Account
 {
@@ -38,6 +40,8 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
 
         private readonly IPublicationsPhotosRepository _publicationsPhotosRepository;
 
+        private readonly ISerializationHelper _serializationHelper;
+
         private readonly IFollowersRepository _friendsRepository;
 
         private readonly GlobalContext _context;
@@ -56,6 +60,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             IPublicationsPhotosRepository publicationsPhotosRepository,
             IRequestHandler requestHandler,
             IFileService fileService,
+            ISerializationHelper serializationHelper,
             GlobalContext context
         )
         {
@@ -66,6 +71,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             _accountsRepository = accountsRepository;
             _collectionsRepository = folderRepository;
             _friendsRepository = friendsRepository;
+            _serializationHelper = serializationHelper;
             _emailService = emailService;
             _requestHandler = requestHandler;
             _fileService = fileService;
@@ -88,7 +94,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             if (account == null)
                 return Unauthorized("User not found");
 
-            return Ok(account);
+            return Ok(_serializationHelper.SerializeWithCamelCase(account));
         }
 
         [Authorize]
@@ -98,7 +104,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             if (string.IsNullOrEmpty(prefix))
                 return BadRequest("Prefix required");
 
-            return Ok(await _accountsRepository.GetByPrefixAsync(prefix));
+            return Ok(_serializationHelper.SerializeWithCamelCase(await _accountsRepository.GetByPrefixAsync(prefix)));
         }
 
         [Authorize]
@@ -132,7 +138,7 @@ namespace Instend_Version_2._0._0.Server.Controllers.Account
             if (account == null)
                 return StatusCode(470, "User not found");
 
-            return Ok(account);
+            return Ok(_serializationHelper.SerializeWithCamelCase(account));
         }
 
         [HttpGet("nickname/{nickname}")]

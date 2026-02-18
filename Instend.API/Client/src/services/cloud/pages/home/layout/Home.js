@@ -14,13 +14,6 @@ import FilesArrayTemplate from '../../../templates/files-array-template/FilesArr
 const Home = observer((props) => {
   const params = useParams();
   const { files, collections } = StorageState;
-  const [adaptedId, setAdaptedId] = useState(AdaptId(params.id));
-
-  console.log(collections);
-
-  useState(() => {
-    setAdaptedId(AdaptId(params.id))
-  }, [params.id]);
 
   useEffect(() => {
     if (props.setPanelState) {

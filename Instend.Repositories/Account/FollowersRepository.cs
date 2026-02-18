@@ -17,8 +17,14 @@ namespace Instend.Repositories.Account
 
         public async Task<AccountFollower[]> GetFriendsByUserId(Guid userId)
         {
-            return await _context.Followers.AsNoTracking()
-                .Where(x => x.AccountId == userId || x.FollowerId == userId)
+            var followers = _context.Followers.AsNoTracking();
+
+            return await followers
+                .Where(x => x.AccountId == userId)
+                .Where(x => followers.Any(y =>
+                    y.FollowerId == userId && y.AccountId == x.FollowerId))
+                .Include(x => x.Account)
+                .Include(y => y.Follower)
                 .ToArrayAsync();
         }
 

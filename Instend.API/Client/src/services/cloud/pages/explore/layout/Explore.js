@@ -69,7 +69,6 @@ const Explore = observer(({isMobile = false, setPanelState = () => {}}) => {
         <br />
         <Slider title='Friends'>
           {friends.map(account => {
-              console.log(account)
                 return <User key={account.id} user={account} />;
               }
             )}

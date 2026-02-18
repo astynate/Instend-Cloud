@@ -9,6 +9,9 @@ namespace Instend.Core.Models.Account
         [Column("account_id")] public Guid AccountId { get; private set; }
         [Column("follower_id")] public Guid FollowerId { get; private set; }
 
+        public Account? Account { get; private set; } = null;
+        public Account? Follower { get; private set; } = null;
+
         public AccountFollower(Guid accountId, Guid followerId)
         {
             AccountId = accountId;
